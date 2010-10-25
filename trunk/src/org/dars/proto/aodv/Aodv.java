@@ -100,7 +100,7 @@ public class Aodv implements Node {
 	 * 
 	 * @param
 	 */
-	void sendREER() {
+	void sendRREPACK() {
 
 	}
 }
