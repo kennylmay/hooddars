@@ -1,5 +1,5 @@
 package org.dars.proto.aodv;
-
+import org.dars.proto.*;
 
 /**
  * AODV Node Class
@@ -7,7 +7,7 @@ package org.dars.proto.aodv;
  * @author kresss
  *
  */
-public class node implements node {
+public class aodv implements node {
 
 	/**
 	 * Functions that define the org.dars.proto.node interface.
@@ -25,7 +25,7 @@ public class node implements node {
 	 * 
 	 * @param message Preformated message to be transmitted.
 	 */
-	void sendRawMessage() {
+	public void sendRawMessage() {
 		
 	}
 	
@@ -41,7 +41,7 @@ public class node implements node {
 	 * 
 	 * @param message Message from the network simulation engine.
 	 */
-	void receiveRawMessage(){
+	public void receiveRawMessage(){
 		
 	}
 	
