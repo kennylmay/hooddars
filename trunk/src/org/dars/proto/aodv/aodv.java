@@ -1,82 +1,106 @@
 package org.dars.proto.aodv;
-import org.dars.proto.*;
+
+import org.dars.proto.Node;
 
 /**
- * AODV Node Class
+ * AODV Node Class.
  * 
  * @author kresss
- *
+ * 
  */
-public class aodv implements node {
+public class Aodv implements Node {
 
 	/**
 	 * Functions that define the org.dars.proto.node interface.
 	 */
-	
+
 	/**
 	 * Send raw message into the network.
 	 * 
-	 * This function sends a preformed message into the network.  
-	 * A raw message should be thought of as the bits on a wire 
-	 *  not text.
+	 * This function sends a preformed message into the network. A raw message
+	 * should be thought of as the bits on a wire not text.
 	 * 
 	 * @author kresss
 	 * @see org.dars.proto.node.sendRawMessage
 	 * 
-	 * @param message Preformated message to be transmitted.
+	 * @param message
+	 *            Preformated message to be transmitted.
 	 */
 	public void sendRawMessage() {
-		
+
 	}
-	
+
 	/**
 	 * Receive raw message from the network.
 	 * 
-	 * This function will receive a message from the network then
-	 *  determine what type of message it is and call the appropriate 
-	 *  message processing routine.
-	 *  
+	 * This function will receive a message from the network then determine what
+	 * type of message it is and call the appropriate message processing
+	 * routine.
+	 * 
 	 * @author kresss
 	 * @see org.dars.proto.node.receiveRawMessage
 	 * 
-	 * @param message Message from the network simulation engine.
+	 * @param message
+	 *            Message from the network simulation engine.
 	 */
-	public void receiveRawMessage(){
-		
+	public void receiveRawMessage() {
+
 	}
-	
-	
+
 	/**
-	 * Functions that extend the org.dars.proto.node interface
-	 *  to make it unique to aodv.
+	 * Functions that extend the org.dars.proto.node interface to make it unique
+	 * to aodv.
 	 */
-	
+
 	/**
 	 * Generate and send a Route Request Message.
-	 *   
-	 * Send a route request message as defined by
-	 * RFC 3561 Section 5.1
+	 * 
+	 * Send a route request message as defined by RFC 3561 Section 5.1
 	 * 
 	 * @author kresss
 	 * 
-	 * @param 
+	 * @param
 	 */
 	void sendRREQ() {
-		
+
 	}
-	
+
 	/**
 	 * Receive and decode a Route Request Message.
 	 * 
-	 * Decode a Route Request Message as defined by 
-	 * RFC 3561 Section 5.2
+	 * Decode a Route Request Message as defined by RFC 3561 Section 5.2
 	 * 
 	 * @author kresss
 	 * 
 	 * @param
 	 */
 	void receiveRREQ() {
-		
+
 	}
-	
+
+	/**
+	 * Send Route Error Message.
+	 * 
+	 * Send a route error message as defined by RFC 3561 Section 5.3
+	 * 
+	 * @author kresss
+	 * 
+	 * @param
+	 */
+	void sendREER() {
+
+	}
+
+	/**
+	 * Send Route Acknoledgement Message.
+	 * 
+	 * Send a route ack message as defined by RFC 3561 Section 5.4
+	 * 
+	 * @author kresss
+	 * 
+	 * @param
+	 */
+	void sendREER() {
+
+	}
 }
