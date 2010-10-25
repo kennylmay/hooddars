@@ -9,7 +9,7 @@ package org.dars.proto;
  * @author kresss
  *
  */
-public interface node {
+public abstract interface node {
 
 	/**
 	 * Send raw message into the network.
