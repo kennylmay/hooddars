@@ -1,4 +1,4 @@
-package org.dars;
+package dars;
 
 /**
  * @author Kenny
