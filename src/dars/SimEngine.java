@@ -1,5 +1,7 @@
 package dars;
 
+import dars.NodeStore;
+import dars.proto.*;
 /**
  * @author Kenny
  * 
@@ -9,7 +11,8 @@ public class SimEngine {
 	 * Time to wait for an iteration.
 	 */
 	private int WAIT_TIME = 1;
-
+	NodeStore node_store = new NodeStore();
+		
 	/**
 	 * Function that will start a simulation
 	 * 
@@ -20,7 +23,27 @@ public class SimEngine {
 	 * @param
 	 */
 	void runSimulation() {
-
+		Node node;
+		int index = 1;
+		while(node_store.actionsLeft()){
+			node = node_store.getNodeByIndex(index);
+			// This needs to be a function that a node understands as a second passed.
+			node.notify();
+			index++;
+			/// If we have gone through the list then reset the index.
+			if (index > node_store.getNumberOfNodes()){
+				index = 1;
+	            /// If you want to wait only once per iteration move the try catch here.
+			}
+			
+			try {
+				Thread.currentThread();
+				Thread.sleep(WAIT_TIME);
+			} catch (InterruptedException e) {
+				/// See what kind of crap this causes
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -29,6 +52,7 @@ public class SimEngine {
 	 * This method will allow the adjustment of the time interval(time between
 	 * clock ticks) in seconds.
 	 * 
+	 * 
 	 * @author kennylmay
 	 * 
 	 * @param speed
@@ -36,7 +60,7 @@ public class SimEngine {
 	 *            between ticks.
 	 */
 	void setSimulationSpeed(int speed) {
-		set_speed(speed);
+		WAIT_TIME = speed;
 	}
 	
 	/**
@@ -50,7 +74,7 @@ public class SimEngine {
 	 * @param
 	 */
 	void pauseSimluation() {
-
+		
 	}
 
 	/**
@@ -63,23 +87,7 @@ public class SimEngine {
 	 * @param
 	 */
 	void stopSimluation() {
-
-	}
-
-	/**
-	 * Function that sets the timer speed
-	 * 
-	 * This method will allow the adjustment of the time interval(time between
-	 * clock ticks) in seconds.
-	 * 
-	 * @author kennylmay
-	 * 
-	 * @param speed
-	 *            (int) The time in seconds that a simulation should pause
-	 *            between ticks.
-	 */
-	public void set_speed(int speed) {
-		WAIT_TIME = speed;
+	
 	}
 
 	/**
@@ -96,3 +104,4 @@ public class SimEngine {
 	}
 
 }
+
