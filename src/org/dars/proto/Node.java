@@ -38,6 +38,6 @@ public abstract interface Node {
 	 */
 	void receiveRawMessage();
 	
-	
+	//abstract public Location loc;
 
 }
