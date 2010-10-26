@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.dars.proto;
+package dars.proto;
 
 /**
  * Base Class for all protocol specific node types.

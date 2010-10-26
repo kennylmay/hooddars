@@ -1,6 +1,6 @@
-package org.dars.proto.aodv;
+package dars.proto.aodv;
 
-import org.dars.proto.Node;
+import dars.proto.Node;
 
 /**
  * AODV Node Class.

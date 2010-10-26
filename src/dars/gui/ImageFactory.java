@@ -1,0 +1,112 @@
+package dars.gui;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+public class ImageFactory {
+  static private BufferedImage nodeImg_;
+  static private BufferedImage hoveredNodeImg_;
+  static private BufferedImage selectedNodeImg_;
+  static private BufferedImage ghostedNodeImg_;
+  
+  //set the static instance of the node image. If it's already set, return a ref to it.
+  static public BufferedImage getNodeImg() {
+    //return the instance
+    if(nodeImg_ != null) {
+      return nodeImg_;
+    }
+    
+    //otherwise initialize all images
+    init();
+    return nodeImg_;
+  }
+
+  static public BufferedImage getHoveredNodeImg() {
+    //return the instance
+    if(hoveredNodeImg_ != null) {
+      return hoveredNodeImg_;
+    }
+    
+    //otherwise initialize all images
+    init();
+    return hoveredNodeImg_;
+  }
+
+  static public BufferedImage getSelectedNodeImg() {
+    //return the instance
+    if(selectedNodeImg_ != null) {
+      return selectedNodeImg_;
+    }
+    
+    //otherwise initialize all images
+    init();
+    return selectedNodeImg_;
+  }
+
+  static public BufferedImage getGhostedNodeImg() {
+    //return the instance
+    if(ghostedNodeImg_ != null) {
+      return ghostedNodeImg_;
+    }
+    
+    //otherwise initialize all images
+    init();
+    return ghostedNodeImg_;
+  }
+
+  static private void init() {
+    //initalize images
+    try {
+      nodeImg_ = ImageIO.read(new File("img/node.png"));
+      hoveredNodeImg_  = getHoverImg(nodeImg_);
+      selectedNodeImg_ = getSelectedImg(nodeImg_);
+      ghostedNodeImg_ =  getTransparentImg(nodeImg_, 0.5f);
+
+    } catch(Exception e) {
+      System.out.println("FAIL in image init");
+      System.exit(1);
+    }
+
+  }
+
+
+
+  //Transformation functions
+  //Function that creates a new transparent image from a given image 
+  static public BufferedImage getTransparentImg( BufferedImage src, float alpha) {
+    BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                           BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = dest.createGraphics();
+    int rule = AlphaComposite.SRC_OVER;
+    AlphaComposite ac = AlphaComposite.getInstance(rule, alpha);
+    g2.setComposite(ac);
+    g2.drawImage(src, null, 0, 0);
+    g2.dispose();
+    return dest;
+  }
+
+  //Function that creates a hover image counterpart for a given image
+  static public BufferedImage getHoverImg( BufferedImage src) {
+    BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                           BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = dest.createGraphics();
+    g.drawImage(src,null,0,0);
+    RescaleOp rescaleOp = new RescaleOp(1.5f, 0.0f, null);
+    rescaleOp.filter(dest,dest);
+    return dest;
+  }
+
+  //Function that creates a selected image counterpart for a given image
+  static public BufferedImage getSelectedImg(BufferedImage src) {
+    BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                                           BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = dest.createGraphics();
+    g.setColor(new Color(0,0,255,20)); //blue + 30% transparency
+    g.drawImage(src, null, 0,0);
+    g.fillRect(0,0,dest.getWidth(null), dest.getHeight(null));
+    g.dispose();
+    return dest;
+  }
+}
