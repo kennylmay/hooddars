@@ -5,7 +5,8 @@ package dars;
 
 /**
  * @author Mike
- *
+ * DARSEvent is a Mondo-big class that is
+ * used throughout DARS. 
  */
 public class DARSEvent {
 	
