@@ -2,6 +2,7 @@
  * 
  */
 package logger;
+import dars.DARSConsumer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,10 +10,20 @@ import java.io.IOException;
 import dars.DARSEvent;
 /**
  * @author Mike
- *
+ * Very basic logger. To use, reference the log
+ * method in a static context i.e. Logger.log().
+ * Use a DARSEvent as the only parameter. 
+ * Logger relies on the getLogString() functionality 
+ * provided by the DARSEvent. The logger is 
+ * a primary consumer of events dispatched through
+ * the output handler. As such, it implements the
+ * DARSConsumer interface. Use the getInstance()
+ * method to reference the logger in a DARSConsumer
+ * context.
  */
-public class Logger {
+public class Logger implements DARSConsumer {
   public static void log(DARSEvent e){
+	  
 	//if file handle is not init, do it
     if(fstream == null) {
       try {
@@ -33,7 +44,23 @@ public class Logger {
 	}
 	
   }
+ 
+  public static void trunc() {
+	  
+  }
   
+  //Fulfills the DARSConsumer contract
+  public void consume(DARSEvent e) {
+	//log the event
+    Logger.log(e);
+  }
+  
+  public static Logger getInstance() {
+	  return instance_;
+  }
+  
+  private static Logger instance_ = new Logger();
   private static FileWriter fstream;
   private static BufferedWriter out;
+  private Logger() { };
 }
