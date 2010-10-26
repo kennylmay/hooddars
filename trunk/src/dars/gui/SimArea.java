@@ -25,7 +25,7 @@ public class SimArea extends JLayeredPane {
 
     addNewNodeReq(100,100);        
     addNewNodeReq(300,300);       
- 
+    addNewNode(100,400,"AA");
   }
 
 class NodeActionHandler implements GNodeListener{
@@ -197,24 +197,26 @@ class NodeActionHandler implements GNodeListener{
     gnode.cleanup();
     
     gnode = null;
-
+    this.invalidate();
     this.repaint();
   }
 
   //This function adds a node to the GUI. It's assumed that the node now exists in the simulator.  
   public void addNewNode(int x, int y, String id) {
+    //instantiate a new GNode
     GNode node = new  GNode(id,this,x ,y );
-    gnodemap.put(id, node);
-    this.add(node, JLayeredPane.PALETTE_LAYER);
-    node.addListener(new NodeActionHandler());
-    System.out.println("sanity..");
-    node.echo("Hello World");
     
-    //testing the connection class
-    if( ! id.equals("A") ) {
-      System.out.printf("Adding conn for A and %s\n", id);
-      connMap.addConn(getGNode("A"), node);
-    }
+    //add it to the gnode map
+    gnodemap.put(id, node);
+    
+    //add it to the canvas
+    this.add(node, JLayeredPane.PALETTE_LAYER);
+    
+    //add our node listener 
+    node.addListener(new NodeActionHandler());
+ 
+   
+
   }
 
 

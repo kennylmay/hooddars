@@ -1,5 +1,7 @@
 package dars.gui;
 import java.awt.image.*;
+import java.awt.Font;
+import java.awt.font.*;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.awt.*;
@@ -99,14 +101,39 @@ public class ImageFactory {
   }
 
   //Function that creates a selected image counterpart for a given image
-  static public BufferedImage getSelectedImg(BufferedImage src) {
+  static public BufferedImage getSelectedImg(BufferedImage src1) {
+    BufferedImage src = getHoverImg(src1);
     BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(),
                                            BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = dest.createGraphics();
     g.setColor(new Color(0,0,255,20)); //blue + 30% transparency
     g.drawImage(src, null, 0,0);
     g.fillRect(0,0,dest.getWidth(null), dest.getHeight(null));
-    g.dispose();
+     
+ 
+    g.setColor(new Color(0,0,255,255));
+    for(int i=0; i<3; i++) {
+      g.drawRoundRect(i, i ,dest.getWidth(null) - 2*i -1, dest.getHeight(null) - 2*i -1 ,10,10);
+    }
+
     return dest;
+  }
+
+  //Function that draws a letter directly onto a buffered image
+  static public void drawNodeID(Graphics g1, String id, Rectangle r){
+    //get the center
+    Graphics2D g = (Graphics2D)g1;
+   
+    //g.drawRect(r.x,r.y,r.width,r.height);
+    
+    g.setColor(new Color(0,0,0,255));
+    Font f = new Font("arial", Font.PLAIN, 16);
+    g.setFont(f);
+    FontMetrics fm = g.getFontMetrics();
+    g.drawString(id, 
+                 r.x + r.width/2 - fm.stringWidth(id)/2,
+                 r.y + r.height/2 + fm.getAscent() /2 );
+
+    
   }
 }
