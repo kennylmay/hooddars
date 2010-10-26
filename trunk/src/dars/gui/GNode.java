@@ -210,12 +210,18 @@ public class GNode extends JPanel {
   private class GNodeMouseListener extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
+      // Invalidate any other drag notions initially    	
+      isClicked= false;
+      
       // If this is a popup event, notify the handlers and return
       if (e.isPopupTrigger()) {
         System.out.println("Popup event");
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
+          
         }
+        layeredPane.repaint();
+        layeredPane.invalidate();
         return;
       }
 
@@ -242,6 +248,9 @@ public class GNode extends JPanel {
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
         }
+        layeredPane.repaint();
+        layeredPane.invalidate();
+        
         return;
       }
 
@@ -297,15 +306,10 @@ public class GNode extends JPanel {
   private class GNodeMouseMotionListener extends MouseMotionAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
-      // If its a popup event, notify the handlers
-      if (e.isPopupTrigger()) {
-        for (GNodeListener l : listeners) {
-          l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
-        }
-      }
+
       // If its a right click, return
       if (!isClicked) {
-        System.out.println("Node dragged AVOIDED");
+        layeredPane.repaint();
         return;
       }
 
