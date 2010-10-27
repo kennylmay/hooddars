@@ -1,7 +1,10 @@
 package dars;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
+
 import dars.NodeStore;
-import dars.proto.Node;
 import dars.proto.*;
 /**
  * @author Kenny
@@ -11,8 +14,22 @@ public class SimEngine {
 	/**
 	 * Time to wait for an iteration.
 	 */
-	private int WAIT_TIME = 1;
-			
+	private int WAIT_TIME = 1000;
+	/**
+	 * Boolean that is used to keep track of the state of the simulation
+	 */
+    private boolean paused = false;
+   
+    ActionListener engine = new ActionListener() {
+	      public void actionPerformed(ActionEvent evt) {
+	         /// Issue a clock tick to each node in the node store. 
+	      }
+	};
+	/**
+	 * Timer that will control the execution of the simulation
+	 */
+	Timer timer = new Timer(WAIT_TIME, engine);
+		
 	/**
 	 * Function that will start a simulation
 	 * 
@@ -22,7 +39,8 @@ public class SimEngine {
 	 * 
 	 * @param
 	 */
-	void runSimulation() {	
+	void runSimulation() {
+		timer.start();
 	}
 
 	/**
@@ -39,7 +57,7 @@ public class SimEngine {
 	 *            between ticks.
 	 */
 	void setSimulationSpeed(int speed) {
-		WAIT_TIME = speed;
+		timer.setDelay(speed);
 	}
 	
 	/**
@@ -53,7 +71,18 @@ public class SimEngine {
 	 * @param
 	 */
 	void pauseSimluation() {
-		
+		if (paused == false){
+			try {
+				timer.wait();
+			} catch (InterruptedException e) {
+				/// May have to change this catch later
+				e.printStackTrace();
+			}
+			paused = true;
+		}else{
+			timer.notify();
+			paused = false;
+		}
 	}
 
 	/**
@@ -66,7 +95,9 @@ public class SimEngine {
 	 * @param
 	 */
 	void stopSimluation() {
+		timer.stop();
 	}
+	
 
 	/**
 	 * Function that returns the timer speed
@@ -77,9 +108,8 @@ public class SimEngine {
 	 * 
 	 * @param 
 	 */
-	public int get_speed() {
-		return WAIT_TIME;
+	public int getSimSpeed() {
+		return timer.getDelay();
 	}
-
 }
 
