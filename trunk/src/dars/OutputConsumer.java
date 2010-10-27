@@ -3,6 +3,6 @@ package dars;
  * @author Mike
  *
  */
-public interface DARSConsumer {
+public interface OutputConsumer {
    public void consume(DARSEvent e);
 }

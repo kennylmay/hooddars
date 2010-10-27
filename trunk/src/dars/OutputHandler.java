@@ -11,18 +11,18 @@ import java.util.ArrayList;
  */
 public class OutputHandler {
   //List of consumers
-  private static ArrayList<DARSConsumer> consumers = new ArrayList<DARSConsumer>();
+  private static ArrayList<OutputConsumer> consumers = new ArrayList<OutputConsumer>();
 
-  public static void removeConsumer(DARSConsumer c) {
+  public static void removeConsumer(OutputConsumer c) {
     consumers.remove(c);
   }
 
-  public static void addConsumer(DARSConsumer c) {
+  public static void addConsumer(OutputConsumer c) {
     consumers.add(c);
   }
   
   public static void dispatch(DARSEvent e){
-	  for(DARSConsumer c : consumers){
+	  for(OutputConsumer c : consumers){
 		  c.consume(e);
 	  }
   }

@@ -2,7 +2,7 @@
  * 
  */
 package logger;
-import dars.DARSConsumer;
+import dars.OutputConsumer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import dars.DARSEvent;
  * method to reference the logger in a DARSConsumer
  * context.
  */
-public class Logger implements DARSConsumer {
+public class Logger implements OutputConsumer {
   public static void log(DARSEvent e){
 	  
 	//if file handle is not init, do it
