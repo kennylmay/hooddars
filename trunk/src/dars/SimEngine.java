@@ -1,6 +1,7 @@
 package dars;
 
 import dars.NodeStore;
+import dars.proto.Node;
 import dars.proto.*;
 /**
  * @author Kenny
@@ -11,8 +12,7 @@ public class SimEngine {
 	 * Time to wait for an iteration.
 	 */
 	private int WAIT_TIME = 1;
-	NodeStore node_store = new NodeStore();
-		
+			
 	/**
 	 * Function that will start a simulation
 	 * 
@@ -22,28 +22,7 @@ public class SimEngine {
 	 * 
 	 * @param
 	 */
-	void runSimulation() {
-		Node node;
-		int index = 1;
-		while(node_store.actionsLeft()){
-			node = node_store.getNodeByIndex(index);
-			// This needs to be a function that a node understands as a second passed.
-			node.notify();
-			index++;
-			/// If we have gone through the list then reset the index.
-			if (index > node_store.getNumberOfNodes()){
-				index = 1;
-	            /// If you want to wait only once per iteration move the try catch here.
-			}
-			
-			try {
-				Thread.currentThread();
-				Thread.sleep(WAIT_TIME);
-			} catch (InterruptedException e) {
-				/// See what kind of crap this causes
-				e.printStackTrace();
-			}
-		}
+	void runSimulation() {	
 	}
 
 	/**
@@ -87,7 +66,6 @@ public class SimEngine {
 	 * @param
 	 */
 	void stopSimluation() {
-	
 	}
 
 	/**
