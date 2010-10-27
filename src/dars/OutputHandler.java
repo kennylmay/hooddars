@@ -5,6 +5,8 @@ package dars;
 
 import java.util.ArrayList;
 
+import dars.event.DARSEvent;
+
 /**
  * @author Mike
  *
