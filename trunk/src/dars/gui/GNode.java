@@ -2,6 +2,7 @@ package dars.gui;
 
 import net.java.balloontip.*;
 import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
@@ -28,6 +29,7 @@ public class GNode extends JPanel {
     // Setup the default graphic, state
     img_ = ImageFactory.getNodeImg();
     
+    setOpaque(false);
     
     // Setup the bounds given by x and y, and the size of the node
     setSize(new Dimension(img_.getWidth(null), img_.getHeight(null)));
@@ -36,13 +38,26 @@ public class GNode extends JPanel {
     // Add the internal mouse listeners
     addMouseListener(new GNodeMouseListener());
     addMouseMotionListener(new GNodeMouseMotionListener());
+    
+    rangeIndicator = new RangeIndicator(this);
   }
 
+   private RangeIndicator rangeIndicator;
+   
   public void cleanup() {
     // unref the balloon tip
     if (bt != null) {
       bt.closeBalloon();
+      bt = null;
     }
+    
+    if(rangeIndicator != null) {
+    	rangeIndicator.setVisible(false);
+    	layeredPane.remove(rangeIndicator);
+    	rangeIndicator = null;
+    }
+    
+    
   }
 
   @Override
@@ -54,6 +69,7 @@ public class GNode extends JPanel {
     
     //Draw the node id onto the graphic
     ImageFactory.drawNodeID(g,id_, new Rectangle(16, 7, 35 , 24));
+    
     
   }
 
@@ -77,6 +93,10 @@ public class GNode extends JPanel {
     GNode.SelectedNode = this;
     System.out.println("selecting a node..");
     this.img_ = ImageFactory.getSelectedNodeImg();
+    
+    //show the range indicator
+    rangeIndicator.setFill(true);
+    
     layeredPane.repaint();
   }
 
@@ -86,13 +106,21 @@ public class GNode extends JPanel {
     isSelected = false;
     GNode.SelectedNode = null;
     this.img_ = ImageFactory.getNodeImg();
+    
+    //hide the range indicator
+    rangeIndicator.setFill(false);
     layeredPane.repaint();
 
   }
 
   public void setXY(int x, int y) {
-    // Set the bounds of the canvas
+    // Set the new location of the canvas
     setLocation(new Point(x, y));
+    
+    // If we have a range indicator, update that too
+    if(rangeIndicator != null) {
+    	rangeIndicator.setCenter(getCenter());
+    }
   }
 
   public String getId() {
@@ -371,11 +399,72 @@ public class GNode extends JPanel {
       layeredPane.remove(layeredPane.getIndexOf(this));
 
     }
-
+     
+    
     private BufferedImage img_;
 
     private GNode parent_;
 
   }
 
+  
+  private class RangeIndicator extends JPanel {
+	    /**
+	     * 
+	     */
+	    private static final long serialVersionUID = 1L;
+        private GNode parent_;
+	    RangeIndicator(GNode parent) {
+	      // Copy in attributes
+	      parent_ = parent;
+
+
+          // Add this canvas to the parental container at the lowest layer
+	      parent.layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
+	      
+	      System.out.println("Creating new range indicator");
+	      //get the range of the parent node
+	      setOpaque(false);
+	      int range = parent_.getRange();
+	      
+	      //set the size accordingly
+	      setSize(new Dimension(range*2, range*2));
+	      
+	      //set the center
+	      this.setCenter(parent_.getCenter());
+	      
+
+	    }
+	    
+	    public void setFill(boolean filled) {
+	    	this.isFilled = filled;
+	    }
+
+	    private boolean isFilled;
+	    @Override
+	    public void paintComponent(Graphics g) {
+
+	    	System.out.println("painting ranger");
+	      Graphics2D g2 = (Graphics2D)g;
+	      // Draw the graphic
+	      g2.setColor(Color.BLACK);
+	      g2.drawOval(0,0, parent_.getRange()* 2-2, parent_.getRange() * 2-2);
+	      
+	      if(isFilled) {
+	        g2.setColor(new Color(20,20,0,20));
+	        g2.fillOval(0,0, parent_.getRange()* 2-2, parent_.getRange() * 2-2);
+	      }
+
+	    }
+        public void setCenter(Point p) {
+        	setLocation(p.x - parent_.getRange(), p.y- parent_.getRange());
+        }
+
+  }
+  
+  public int getRange() {
+	  return 200;
+  }
 }
+  
+ 
