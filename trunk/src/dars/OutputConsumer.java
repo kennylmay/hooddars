@@ -1,4 +1,7 @@
 package dars;
+
+import dars.event.DARSEvent;
+
 /**
  * @author Mike
  *

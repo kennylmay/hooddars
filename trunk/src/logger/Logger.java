@@ -7,7 +7,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import dars.DARSEvent;
+import dars.event.DARSEvent;
 /**
  * @author Mike
  * Very basic logger. To use, reference the log
