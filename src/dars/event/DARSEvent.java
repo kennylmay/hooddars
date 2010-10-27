@@ -26,98 +26,98 @@ public class DARSEvent {
   //hide the default constructor
   private DARSEvent() { };
   
-  static class Input {
-	static DARSEvent makeAddNode(NodeAttributes n) {
+  public static class Input {
+	public static DARSEvent makeAddNode(NodeAttributes n) {
 		//stub
 		return new DARSEvent();
 	}
 	
-	static DARSEvent makeDelNode(String id) {
+	public static DARSEvent makeMoveNode(String id,int x, int y) {
 		//stub
 		return new DARSEvent();
 	}
 	
-	static DARSEvent makeDeleteNode(String id) {
+	public static DARSEvent makeDeleteNode(String id) {
 		//stub
 		return new DARSEvent();
 	}
 	
-	static DARSEvent makeEditNode(String id, NodeAttributes n) {
+	public static DARSEvent makeEditNode(String id, NodeAttributes n) {
 		//stub
 		return new DARSEvent();	
 	}
 	
-	static DARSEvent makeSendMessage(Message m, String sourceId, String destinationId) {
+	public static DARSEvent makeSendMessage( String sourceId, String destinationId, Message m) {
 		//stub
 		return new DARSEvent();
 	}
   }
  
-  static class Output {
-	static DARSEvent makeAddNode(NodeAttributes n) {
+  public static class Output {
+	 public static DARSEvent makeAddNode(NodeAttributes n) {
       //stub
 	  return new DARSEvent();
 	}
 		
-	static DARSEvent makeMoveNode(String id) {
+	public static DARSEvent makeMoveNode(String id) {
 		//stub
 		return new DARSEvent();
 	}
 	
-	static DARSEvent makeDeleteNode(String id) {
+	public static DARSEvent makeDeleteNode(String id) {
 		//stub
 		return new DARSEvent();
 	}
-	static DARSEvent makeEditNode(String id, NodeAttributes n) {
+	public static DARSEvent makeEditNode(String id, NodeAttributes n) {
 		//stub
 		return new DARSEvent();	
 	}  
 	
-	static class NodeMsg {
+	public static class NodeMsg {
 		
-		static DARSEvent makeMsgSent(String srcId, String destId) {
+		public static DARSEvent makeMsgSent(String srcId, String destId) {
 	      //stub
 		  return new DARSEvent();
 		}
 		
-		static DARSEvent makeMsgRcvd(String srcId, String destId) {
+		public static DARSEvent makeMsgRcvd(String srcId, String destId) {
 		  //stub
 		  return new DARSEvent();
 		}
 		
-		static DARSEvent makeTableAdd(String srcId, String addedNodeId) {
+		public static DARSEvent makeTableAdd(String srcId, String addedNodeId) {
 		  //stub
 		  return new DARSEvent();
 		}
 		
-		static DARSEvent makeTableDel(String srcId, String removedNodeId) {
+		public static DARSEvent makeTableDel(String srcId, String removedNodeId) {
 			//stub
 			return new DARSEvent();	
 		}
 		
-		static DARSEvent makeHello() {
+		public static DARSEvent makeHello() {
 			//stub
 			return new DARSEvent();
 		}
 		
-		static DARSEvent makeGeneric(String srcid, String message) {
+		public static DARSEvent makeGeneric(String srcid, String message) {
 			//stub
 			return new DARSEvent(); 		
 		}
 	}
 	
-	static class Inform {
-		static DARSEvent makeError() {
+	public static class Inform {
+		public static DARSEvent makeError() {
 		   //stub
 			return new DARSEvent();
 		}
 		
-		static DARSEvent makeDebug() {
+		public static DARSEvent makeDebug() {
 		   //stub
 		   return new DARSEvent();
 		}
 		
-		static DARSEvent makeUser() {
+		public static DARSEvent makeUser() {
 		   //stub
 		   return new DARSEvent();
 		}
