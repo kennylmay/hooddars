@@ -25,7 +25,7 @@ public class SimEngine {
 	      public void actionPerformed(ActionEvent evt) {
 	         /// Issue a clock tick to each node in the node store.
 	    	 for(int index = 0; index < store.getNumberOfNodes(); index++){
-	    		Object = store.getNodeByIndex(index);
+	    		Object i = store.getNodeByIndex(index);
 	    	 }
 	      }
 	};
