@@ -85,6 +85,7 @@ public class GNode extends JPanel {
   // Select
   public void select() {
     // unselect the currently selected node
+    GNode tmp = GNode.SelectedNode;
     if (GNode.SelectedNode != null) {
       GNode.SelectedNode.unselect();
     }
@@ -94,10 +95,16 @@ public class GNode extends JPanel {
     System.out.println("selecting a node..");
     this.img_ = ImageFactory.getSelectedNodeImg();
     
+    
+    if(tmp != null) {
+      tmp.repaint();
+    }
+    
+    this.repaint();
     //show the range indicator
     //rangeIndicator.setFill(true);
     
-    layeredPane.repaint();
+    //layeredPane.repaint();
   }
 
   // Unselect
@@ -109,7 +116,8 @@ public class GNode extends JPanel {
     
     //hide the range indicator
     //rangeIndicator.setFill(false);
-    layeredPane.repaint();
+    //layeredPane.repaint();
+    this.repaint();
 
   }
 
@@ -152,7 +160,7 @@ public class GNode extends JPanel {
     else {
       img_ = ImageFactory.getNodeImg();
     }
-    repaint();
+    this.repaint();
   }
 
   public void echo(String msg) {
@@ -248,8 +256,8 @@ public class GNode extends JPanel {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
           
         }
-        layeredPane.repaint();
-        layeredPane.invalidate();
+        //layeredPane.repaint();
+        //layeredPane.invalidate();
         return;
       }
 
@@ -276,8 +284,8 @@ public class GNode extends JPanel {
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
         }
-        layeredPane.repaint();
-        layeredPane.invalidate();
+        //layeredPane.repaint();
+        //layeredPane.invalidate();
         
         return;
       }
@@ -300,7 +308,7 @@ public class GNode extends JPanel {
 
       // Remove the dragged node.
       draggedGNode.cleanup();
-      layeredPane.repaint();
+     // layeredPane.repaint();
       draggedGNode = null;
       isClicked = false;
     }
@@ -311,7 +319,7 @@ public class GNode extends JPanel {
       setEntered(true);
 
       // invalidate the parent container
-      layeredPane.repaint();
+      //layeredPane.repaint();
 
       // Notify the handlers
       for (GNodeListener l : listeners) {
@@ -352,11 +360,7 @@ public class GNode extends JPanel {
       // Update the dragged node's position.
       draggedGNode.moveXYOffset(e.getX(), e.getY());
 
-      // Invalidate the parent component, this will cause a redraw hopefully
-      Rectangle r = draggedGNode.getBounds();
-      //layeredPane.repaint(r.x,r.y,r.width,r.height);
-    //  draggedGNode.repaint();
-      //layeredPane.invalidate();
+      
     }
   }
 

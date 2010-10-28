@@ -27,6 +27,10 @@ public class SimArea extends JLayeredPane {
     addNewNodeReq(100,100);        
     addNewNodeReq(300,300);       
     addNewNode(100,400,"AA");
+    Random r = new Random();
+    for(int i=1; i<20; i++){
+      addNewNodeReq( r.nextInt(400), r.nextInt(400));
+    }
   }
 
 class NodeActionHandler implements GNodeListener{
@@ -116,7 +120,7 @@ class NodeActionHandler implements GNodeListener{
   //This function will send a request to move a node to the input handler eventually.
   private void moveNodeReq(String id, int x, int y) {
     moveNode(id,x,y);
-    connMap.repaint();
+    //connMap.repaint();
   }
 
 
