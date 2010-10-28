@@ -68,7 +68,7 @@ public class GNode extends JPanel {
     g.drawImage(img_, 0, 0, null);
     
     //Draw the node id onto the graphic
-    ImageFactory.drawNodeID(g,id_, new Rectangle(16, 7, 35 , 24));
+    ImageFactory.drawNodeID(g,id_, new Rectangle(9, 4, 17 , 12));
     
     
   }

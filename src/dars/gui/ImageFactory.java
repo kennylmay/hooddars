@@ -124,15 +124,15 @@ public class ImageFactory {
     //get the center
     Graphics2D g = (Graphics2D)g1;
    
-    //g.drawRect(r.x,r.y,r.width,r.height);
+    g.drawRect(r.x,r.y,r.width,r.height);
     
     g.setColor(new Color(0,0,0,255));
-    Font f = new Font("arial", Font.PLAIN, 16);
+    Font f = new Font("arial", Font.PLAIN, 12);
     g.setFont(f);
     FontMetrics fm = g.getFontMetrics();
     g.drawString(id, 
                  r.x + r.width/2 - fm.stringWidth(id)/2,
-                 r.y + r.height/2 + fm.getAscent() /2 );
+                 r.y + r.height/2 + fm.getAscent() /2 - 1 );
 
     
   }
