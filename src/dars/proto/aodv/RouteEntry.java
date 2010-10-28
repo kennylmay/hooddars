@@ -30,7 +30,18 @@ public class RouteEntry {
 		/**
 		 * The entry is broken but the repair procedure is underway. 
 		 */
-		REPAIRING
+		REPAIRING,
+		/**
+		 * The entry was valid but has expired but should not be deleted yet.
+		 * 
+		 * TODO: This state was not clearly called for in the RFC.
+		 * 
+		 * An expired routing table entry SHOULD NOT be expunged before
+		 * (current_time + DELETE_PERIOD).
+		 * 
+		 * Maybe this state should really be REPAIRABLE.
+		 */
+		EXPIRED
 	}
 
 	
