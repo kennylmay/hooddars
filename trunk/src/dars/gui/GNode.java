@@ -95,7 +95,7 @@ public class GNode extends JPanel {
     this.img_ = ImageFactory.getSelectedNodeImg();
     
     //show the range indicator
-    rangeIndicator.setFill(true);
+    //rangeIndicator.setFill(true);
     
     layeredPane.repaint();
   }
@@ -108,7 +108,7 @@ public class GNode extends JPanel {
     this.img_ = ImageFactory.getNodeImg();
     
     //hide the range indicator
-    rangeIndicator.setFill(false);
+    //rangeIndicator.setFill(false);
     layeredPane.repaint();
 
   }
@@ -337,7 +337,7 @@ public class GNode extends JPanel {
 
       // If its a right click, return
       if (!isClicked) {
-        layeredPane.repaint();
+      //  layeredPane.repaint();
         return;
       }
 
@@ -353,8 +353,10 @@ public class GNode extends JPanel {
       draggedGNode.moveXYOffset(e.getX(), e.getY());
 
       // Invalidate the parent component, this will cause a redraw hopefully
-      draggedGNode.repaint();
-      layeredPane.repaint();
+      Rectangle r = draggedGNode.getBounds();
+      //layeredPane.repaint(r.x,r.y,r.width,r.height);
+    //  draggedGNode.repaint();
+      //layeredPane.invalidate();
     }
   }
 
@@ -377,7 +379,8 @@ public class GNode extends JPanel {
 
       // Add this canvas to the parental container at the popup level
       parent.layeredPane.add(this, JLayeredPane.POPUP_LAYER);
-
+     
+      setOpaque(false);
       System.out.println("Creating new drag node..");
     }
 
