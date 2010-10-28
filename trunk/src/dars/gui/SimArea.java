@@ -13,7 +13,8 @@ public class SimArea extends JLayeredPane {
    */
   private static final long serialVersionUID = 1L;
 
-  ///////////////////////////////Constructor
+
+///////////////////////////////Constructor
   public SimArea() {
     setLayout(null);
 
@@ -57,86 +58,36 @@ class NodeActionHandler implements GNodeListener{
   
 }
 
-
-  //Pop up menu for adding nodes
-  class AddNodePopup extends JPopupMenu implements ActionListener {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-    JMenuItem anItem1;
-    JMenuItem anItem2;
-    int x, y;
-    public AddNodePopup(){
-      anItem1 = new JMenuItem("Add a new node");
-      anItem2 = new JMenuItem("Something else");
-      anItem1.addActionListener(this);
-      add(anItem1);
-      add(anItem2);
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      addNewNodeReq(this.x,this.y);
-    }
+  public String getSelectedNodeID() {
+	if(GNode.SelectedNode != null) {
+		return GNode.SelectedNode.getId();
+	}
+	else return null;
   }
-
-  //Pop up menu for editing/deleting nodes
-  class EditNodePopup extends JPopupMenu {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-    JMenuItem edit_item;
-    JMenuItem delete_item;
-    GNode gnode;
-    public EditNodePopup(){
-      edit_item = new JMenuItem("Edit node");
-      edit_item.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              //edit node action goes here
-           }      
-      });
-    
-      delete_item = new JMenuItem("Delete node");
-      delete_item.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              deleteNodeReq(gnode.getId());
-           }      
-      });
-      add(edit_item);
-      add(delete_item);
-    }
- 
-   
+  
+  public boolean setSelectedNode(String id) {
+    //Get the node by id
+	 GNode n = getGNode(id);
+	 
+	 //If n is null, node not found. return false.
+	 if(n==null) {
+		 return false;
+	 }
+	 
+	 //Otherwise, select the node, return true.
+	 n.select();
+	 return true;
   }
-
-  //Listener for spawning new pop menus
-  class PopClickListener extends MouseAdapter {
-    @Override
-    public void mousePressed(MouseEvent e){
-      if (e.isPopupTrigger()) {
-        doPop(e);
-      }
-    }
-    //override
-    @Override
-    public void mouseReleased(MouseEvent e){
-      if (e.isPopupTrigger()) {
-        doPop(e);
-      }
-    }
-
-    private void doPop(MouseEvent e){
-      //Show the "Add Node" menu.
-      AddNodePopup menu = new AddNodePopup();
-      menu.x = e.getX();
-      menu.y = e.getY();
-      menu.show(e.getComponent(), e.getX(), e.getY());
-    }
+  
+  private Vector<ActionListener> nodeSelectedListeners = new Vector<ActionListener>();
+  public void addNodeSelectedListener(ActionListener e) {
+	  nodeSelectedListeners.add(e);
   }
-
+  
+  public void removeNodeSelectedListener(ActionListener e) {
+	  nodeSelectedListeners.remove(e);
+  }
+  
 
 
 
@@ -230,6 +181,90 @@ class NodeActionHandler implements GNodeListener{
 
   //Testing purposes only
   private char c ='A';
+
+  
+  //Inner classes
+
+  //Pop up menu for adding nodes
+  class AddNodePopup extends JPopupMenu implements ActionListener {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    JMenuItem anItem1;
+    JMenuItem anItem2;
+    int x, y;
+    public AddNodePopup(){
+      anItem1 = new JMenuItem("Add a new node");
+      anItem2 = new JMenuItem("Something else");
+      anItem1.addActionListener(this);
+      add(anItem1);
+      add(anItem2);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+      addNewNodeReq(this.x,this.y);
+    }
+  }
+
+  //Pop up menu for editing/deleting nodes
+  class EditNodePopup extends JPopupMenu {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    JMenuItem edit_item;
+    JMenuItem delete_item;
+    GNode gnode;
+    public EditNodePopup(){
+      edit_item = new JMenuItem("Edit node");
+      edit_item.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              //edit node action goes here
+           }      
+      });
+    
+      delete_item = new JMenuItem("Delete node");
+      delete_item.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              deleteNodeReq(gnode.getId());
+           }      
+      });
+      add(edit_item);
+      add(delete_item);
+    }
+ 
+   
+  }
+
+  //Listener for spawning new pop menus
+  class PopClickListener extends MouseAdapter {
+    @Override
+    public void mousePressed(MouseEvent e){
+      if (e.isPopupTrigger()) {
+        doPop(e);
+      }
+    }
+    //override
+    @Override
+    public void mouseReleased(MouseEvent e){
+      if (e.isPopupTrigger()) {
+        doPop(e);
+      }
+    }
+
+    private void doPop(MouseEvent e){
+      //Show the "Add Node" menu.
+      AddNodePopup menu = new AddNodePopup();
+      menu.x = e.getX();
+      menu.y = e.getY();
+      menu.show(e.getComponent(), e.getX(), e.getY());
+    }
+  }
+
+  
 
  
 } 
