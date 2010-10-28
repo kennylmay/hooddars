@@ -11,6 +11,52 @@ import dars.proto.Node;
 public class Aodv implements Node {
 
 	/**
+	 * Constants needed by the AODV Protocol
+	 */
+	
+
+	public static final int ACTIVE_ROUTE_TIMEOUT = 3000; // Milliseconds
+	public static final int HELLO_INTERVAL = 1000; // Milliseconds
+	public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
+
+	public static final int ALLOWED_HELLO_LOSS = 2;
+	public static final int LOCAL_ADD_TTL = 2;
+	public static final int NET_DIAMETER = 35;
+	public static final int RREQ_RETRIES = 2;
+	public static final int RREQ_RATELIMIT = 10;
+	public static final int TIMEOUT_BUFFER = 2;
+	public static final int TTL_START = 1;
+	public static final int TTL_INCREMENT = 2;
+	public static final int TTL_THRESHOLD = 7;
+	public static final int RERR_RATELIMIT = 10;
+
+	public static final int MAX_REPAIR_TTL = (int)(0.3 * NET_DIAMETER);
+	public static final int NET_TRAVERSAL_TIME = 2 * NODE_TRAVERSAL_TIME
+			* NET_DIAMETER;
+	public static final int BLACKLIST_TIMEOUT = RREQ_RETRIES
+			* NET_TRAVERSAL_TIME;
+	public static final int MY_ROUTE_TIMEOUT = 2 * ACTIVE_ROUTE_TIMEOUT;
+	public static final int NEXT_HOP_WAIT = NODE_TRAVERSAL_TIME + 10;
+	public static final int PATH_DISCOVERY_TIME = 2 * NET_TRAVERSAL_TIME;
+	
+	// Ring Traversal Time is dependent on TTL_VALUE.
+	// Again I find myself not knowing what to do.
+	// public static final int RING_TRAVERSAL_TIME = 2 * NODE_TRAVERSAL_TIME
+	//		* (TTL_VALUE + TIMEOUT_BUFFER);
+	
+	/**
+	 * DELETE_PERIOD = K * max (ACTIVE_ROUTE_TIMEOUT, HELLO_INTERVAL)
+	 *     (K = 5 is recommended).
+	 */
+	public static final int DELETE_PERIOD = 5 * ACTIVE_ROUTE_TIMEOUT;
+	
+	// Don't think that MIN_REPAIR_TTL will really be needed.
+	// public static final int MIN_REPAIR_TTL = ??
+	
+	// Don't think that TTL_VALUE is really a constant.
+	// public static final int TTL_VALUE = ?? 
+	
+	/**
 	 * Functions that define the org.dars.proto.node interface.
 	 */
 
