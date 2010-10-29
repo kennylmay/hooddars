@@ -3,6 +3,8 @@
  */
 package dars;
 
+import java.util.ArrayList;
+
 import logger.Logger;
 import dars.event.DARSEvent;
 
@@ -11,29 +13,21 @@ import dars.event.DARSEvent;
  *
  */
 public  class InputHandler {
-  public static void moveNode(String nodeId, int x, int y){
-      
+  public static void dispatch(DARSEvent e){
+	for(InputConsumer c : inputConsumers){
+	  c.consumeInput(e);
+    }
+  } 
     
-  }  
-  
-  public static void deleteNode(String nodeId){
-	
+  public void addInputConsumer(InputConsumer c) {
+	  inputConsumers.add(c);
   }
   
-  public static void setNodeAttributes(String nodeId, dars.NodeAttributes nodeAttributes) {
-	   
+  public void removeInputConsumer(InputConsumer c) {
+	  inputConsumers.remove(c);
   }
   
-  public static void addNode(int x, int y, dars.NodeAttributes nodeAttributes){
-	  
-  }
-  
-  public static void sendMessage(String sourceId, String destId, dars.Message message) {
-	 
-  }
-  
- 
-  
+  private static final ArrayList<InputConsumer> inputConsumers = new ArrayList<InputConsumer>();
 
 }
 

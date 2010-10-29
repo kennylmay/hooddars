@@ -7,5 +7,5 @@ import dars.event.DARSEvent;
  *
  */
 public interface OutputConsumer {
-   public void consume(DARSEvent e);
+   public void consumeOutput(DARSEvent e);
 }
