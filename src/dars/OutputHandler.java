@@ -25,7 +25,7 @@ public class OutputHandler {
   
   public static void dispatch(DARSEvent e){
 	  for(OutputConsumer c : consumers){
-		  c.consume(e);
+		  c.consumeOutput(e);
 	  }
   }
   

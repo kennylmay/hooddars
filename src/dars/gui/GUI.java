@@ -75,7 +75,7 @@ implements OutputConsumer {
 
 
 
-public void consume(DARSEvent e) {
+public void consumeOutput(DARSEvent e) {
 	// TODO Auto-generated method stub
 	
 }

@@ -50,7 +50,7 @@ public class Logger implements OutputConsumer {
   }
   
   //Fulfills the DARSConsumer contract
-  public void consume(DARSEvent e) {
+  public void consumeOutput(DARSEvent e) {
 	//log the event
     Logger.log(e);
   }
