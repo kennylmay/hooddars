@@ -11,7 +11,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-public class NodeAttributesArea extends JPanel {
+public class NodeAttributesArea extends JPanel implements GNodeListener {
 
 	private JTextField nodeIdField         = new JTextField(3);
 	private JComboBox nodeSelectorComboBox = new JComboBox();
@@ -79,4 +79,34 @@ public class NodeAttributesArea extends JPanel {
 	}
 	private static final long serialVersionUID = 1L;
 
+	public void setSimArea(SimArea simArea) {
+	  this.simArea = simArea;
+	}
+	private SimArea simArea;
+
+  @Override
+  public void nodeEntered(GNode node) {
+    // TODO Auto-generated method stub
+    
+  }
+  @Override
+  public void nodeExited(GNode node) {
+    // TODO Auto-generated method stub
+    
+  }
+  @Override
+  public void nodeMoved(GNode node, int new_x, int new_y) {
+    // TODO Auto-generated method stub
+    
+  }
+  @Override
+  public void nodePopupEvent(GNode node, int x, int y) {
+    // TODO Auto-generated method stub
+    
+  }
+  @Override
+  public void nodeSelected(GNode node) {
+    // TODO Auto-generated method stub
+    
+  }
 }
