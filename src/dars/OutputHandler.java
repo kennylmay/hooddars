@@ -15,11 +15,11 @@ public class OutputHandler {
   //List of consumers
   private static ArrayList<OutputConsumer> consumers = new ArrayList<OutputConsumer>();
 
-  public static void removeConsumer(OutputConsumer c) {
+  public static void removeOutputConsumer(OutputConsumer c) {
     consumers.remove(c);
   }
 
-  public static void addConsumer(OutputConsumer c) {
+  public static void addOutputConsumer(OutputConsumer c) {
     consumers.add(c);
   }
   
