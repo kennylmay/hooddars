@@ -1,5 +1,6 @@
 package dars.proto.aodv;
 
+import dars.NodeAttributes;
 import dars.proto.Node;
 
 /**
@@ -148,5 +149,41 @@ public class Aodv implements Node {
 	 */
 	void sendRREPACK() {
 
+	}
+	
+	/**
+    * Implements the getAttributes function that is defined in the Node Class.
+    * 
+    * This function will return the attributes that are defined in the Node class.
+    * 
+    * @author mayk
+    * 
+    * @return NodeAttributes
+    * 
+    * @param
+    */
+	public NodeAttributes getAttributes(){  
+      return att;
+	}
+	
+	/**
+    * Implements the setAttributes function that is defined in the Node Class.
+    * 
+    * This function will update the attributes for the node.
+    * 
+    * @author mayk
+    * 
+    * @return void
+    * 
+    * @param NodeAttributes
+    */
+	public void setAttributes(NodeAttributes atts){
+      att.locationx = atts.locationx;
+      att.locationy = atts.locationy;
+      att.range = atts.range;
+   }
+	
+	public void clockTick(){
+	   
 	}
 }

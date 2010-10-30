@@ -2,6 +2,7 @@
  * 
  */
 package dars.proto;
+import dars.NodeAttributes;
 
 /**
  * Base Class for all protocol specific node types.
@@ -10,6 +11,11 @@ package dars.proto;
  * 
  */
 public abstract interface Node {
+
+/**
+ * Attributes class for each node
+ */
+   NodeAttributes att = new NodeAttributes();
 
 	/**
 	 * Send raw message into the network.
@@ -37,7 +43,22 @@ public abstract interface Node {
 	 *            Message from the network simulation engine.
 	 */
 	void receiveRawMessage();
-	
-	//abstract public Location loc;
+
+   /**
+    * Returns the Node's attributes
+    * @return NodeAttributes
+    */
+   NodeAttributes getAttributes();
+   
+   /**
+    * Sets the Node's attributes
+    * @return void
+    * 
+    * @param NodeAttributes 
+    */
+   void setAttributes(NodeAttributes att);
+	//public Location loc;
+   
+   void clockTick();
 
 }
