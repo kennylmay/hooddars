@@ -22,32 +22,60 @@ public class DARSEvent {
     OUT_NODE_INFORM, OUT_DEBUG, OUT_ERROR, OUT_INFORM
   };
 
-  public EventType eventType;
-  public String    nodeId;
-  public String    sourceId;
-  public String    destinationId;
-  public String    payload;
-  public String    informationalMessage;
-  public int       newSimSpeed;
+  public EventType      eventType;
+  public String         simulationType;
+  public String         nodeId;
+  public String         sourceId;
+  public String         destinationId;
+  public String         payload;
+  public String         informationalMessage;
+  public int            newSimSpeed;
+  public NodeAttributes nodeAttributes;
 
   // Hide the default constructor. DARSEvents can only be made through the
   // supplied functions that follow.
   private DARSEvent() {
   };
 
-  public static DARSEvent inAddNode(NodeAttributes n) {
-
-    return new DARSEvent();
+  static DARSEvent inStartSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_START_SIM;
+    return e;
+  }
+  
+  static DARSEvent inStopSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_STOP_SIM;
+    return e;
+  }
+  
+  static DARSEvent inPauseSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_PAUSE_SIM;
+    return e;
+  }
+    
+  public static DARSEvent inAddNode(String simType, NodeAttributes n) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_ADD_NODE;
+    e.simulationType = simType;
+    e.nodeAttributes = n;
+    return e;
   }
 
   static DARSEvent inDeleteNode(String id) {
-    // stub
-    return new DARSEvent();
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_DEL_NODE;
+    e.nodeId = id;
+    return e;
   }
 
   static DARSEvent inEditNode(String id, NodeAttributes n) {
-    // stub
-    return new DARSEvent();
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_EDIT_NODE;
+    e.nodeId = id;
+    e.nodeAttributes = n;
+    return e;
   }
 
   static DARSEvent inSendMsg(Message m, String sourceId, String destinationId) {
@@ -56,12 +84,18 @@ public class DARSEvent {
   }
 
   public static DARSEvent inSimSpeed(int newSpeed) {
-    // stub
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_SIM_SPEED;
     e.newSimSpeed = newSpeed;
     return e;
-
+  }
+  
+  public static DARSEvent inMoveNode(String id, NodeAttributes n) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_EDIT_NODE;
+    e.nodeId = id;
+    e.nodeAttributes = n;
+    return e;
   }
 
   static DARSEvent outAddNode(NodeAttributes n) {
