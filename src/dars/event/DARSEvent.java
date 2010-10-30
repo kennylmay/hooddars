@@ -100,9 +100,12 @@ public class DARSEvent {
     return new DARSEvent();
   }
 
-  static DARSEvent outDebug(String informationalMessage) {
-    // stub
-    return new DARSEvent();
+  public static DARSEvent outDebug(String informationalMessage) {
+    
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_DEBUG;
+    d.informationalMessage = informationalMessage;
+    return d;
   }
 
   static DARSEvent outInformation(String informationalMessage) {

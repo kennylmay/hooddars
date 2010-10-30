@@ -36,26 +36,49 @@ public class SimArea extends JLayeredPane {
 class NodeActionHandler implements GNodeListener{
 
   public void nodeMoved(GNode n, int x, int y) {
+    //issue a move node request
     moveNodeReq(n.getId(), x, y);
+    
+    //propagate the signal to other listeners
+    for(GNodeListener g : nodeListeners){
+      g.nodeMoved(n,x,y);
+    }
   }
   
 
   public void nodeEntered(GNode n) {
     
+    //propagate the signal to other listeners
+    for(GNodeListener g : nodeListeners){
+      g.nodeEntered(n);
+    }
   }
   
   public void nodeExited(GNode n) {
     
+    //propagate the signal to other listeners
+    for(GNodeListener g : nodeListeners){
+      g.nodeExited(n);
+    }
   }
   
   public void nodeSelected(GNode n) {
     
+    //propagate the signal to other listeners
+    for(GNodeListener g : nodeListeners){
+      g.nodeSelected(n);
+    }
   }
   
   public void nodePopupEvent(GNode n,int x,int y){
     EditNodePopup edit_menu = new EditNodePopup();
     edit_menu.gnode = n;
     edit_menu.show(n, x, y);
+    
+    //propagate the signal to other listeners
+    for(GNodeListener g : nodeListeners){
+      g.nodePopupEvent(n,x,y);
+    }
 
   }
   
@@ -83,13 +106,13 @@ class NodeActionHandler implements GNodeListener{
 	 return true;
   }
   
-  private Vector<ActionListener> nodeSelectedListeners = new Vector<ActionListener>();
-  public void addNodeSelectedListener(ActionListener e) {
-	  nodeSelectedListeners.add(e);
+  private ArrayList<GNodeListener> nodeListeners = new ArrayList<GNodeListener>();
+  public void addNodeListener(GNodeListener gl) {
+	  nodeListeners.add(gl);
   }
   
-  public void removeNodeSelectedListener(ActionListener e) {
-	  nodeSelectedListeners.remove(e);
+  public void removeNodeSelectedListener(GNodeListener gl) {
+	  nodeListeners.remove(gl);
   }
   
 

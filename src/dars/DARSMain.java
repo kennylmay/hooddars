@@ -34,8 +34,15 @@ public class DARSMain {
     // Instantiate the gui
     GUI g = new GUI();
 
+    // Setup the node inpsector for the gui. This gives the gui a backdoor into the 
+    // simulation, where it can view node attributes
+    g.setNodeInspector(s.getNodeStore());
+    
+    
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
+    
+    
 
   }
 
