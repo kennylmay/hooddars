@@ -79,9 +79,7 @@ public class GUI extends JFrame implements OutputConsumer {
     // Show everything
     this.setVisible(true);
     
-    //Test
-    
-    consumeOutput(DARSEvent.outDebug("HOLY COW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
+
 
   }
 
