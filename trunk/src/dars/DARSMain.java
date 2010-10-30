@@ -42,7 +42,7 @@ public class DARSMain {
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
     
-    
+    OutputHandler.dispatch(DARSEvent.outDebug("HOLY COW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
 
   }
 
