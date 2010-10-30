@@ -1,5 +1,7 @@
 package dars.gui;
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import dars.OutputConsumer;
 import dars.event.DARSEvent;
 import dars.gui.*;
@@ -12,18 +14,20 @@ implements OutputConsumer {
    * 
    */
   private static final long serialVersionUID = 1L;
-  private LogPanel logPanel = new LogPanel();
-  private NodeAttributesPanel nodeAttributesPanel = new NodeAttributesPanel();
+  private JPanel simPanel = new JPanel();
+  private JPanel logPanel = new JPanel();
+  private JPanel nodeAttributesPanel = new JPanel();
   
+  private LogArea logArea = new LogArea();
+  private NodeAttributesArea nodeAttributesArea = new NodeAttributesArea();
+  private SimArea simArea = new SimArea();
   
   public GUI() {
     this.pack();
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-    // Set the size of this window.
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    this.setSize(screenSize.width, screenSize.height);
+
 
     // Setup a new layout for the outermost part of the frame. We'll use the border layout.
     this.setLayout(new BorderLayout());
@@ -44,7 +48,9 @@ implements OutputConsumer {
     this.add(subpanel, BorderLayout.CENTER);
     
     
-    // Add the east panel. This is a placeholder for the "Node Information" panel.
+    // Add the east panel.
+    nodeAttributesPanel.setLayout(new BorderLayout());
+    nodeAttributesPanel.add(nodeAttributesArea, BorderLayout.CENTER);
     this.add(nodeAttributesPanel, BorderLayout.EAST);
    
     /* Elaborate upon the layout of the subpanel. Do this:
@@ -61,17 +67,60 @@ implements OutputConsumer {
    subpanel.setLayout(new BorderLayout());
 
    //Add the GuiCanvas to the Center part
-   subpanel.add(new JScrollPane(new SimArea()), BorderLayout.CENTER);
+   simPanel.setLayout(new BorderLayout());
+   simPanel.add(simArea, BorderLayout.CENTER);
+   subpanel.add(simPanel, BorderLayout.CENTER);
    
-   //Add the Status log to the bottom part. This is a placeholder for the Status Log panel.
-   JScrollPane slog_panel = new JScrollPane();
-   slog_panel.add(logPanel);
-   slog_panel.setPreferredSize(new Dimension(1,200));
-   subpanel.add(slog_panel, BorderLayout.SOUTH);
+   //Add the Status log panel to the bottom part.
+   logPanel.setLayout(new BorderLayout());
+   logPanel.add(logArea, BorderLayout.CENTER);
+   subpanel.add(logPanel, BorderLayout.SOUTH); 
+   
+   
+   //setup the borders
+   setBorders();
+   
+   
 
+
+   //setup the preferred sizes later
+   SwingUtilities.invokeLater(new Runnable() {
+     public void run() {
+       setSizes();
+     }
+   });
+   
    //Show everything
    this.setVisible(true);
+
+   
   }
+
+private void setSizes() {
+  GraphicsEnvironment graphicsEnvironment=GraphicsEnvironment.getLocalGraphicsEnvironment();
+  Rectangle r =graphicsEnvironment.getMaximumWindowBounds();
+  setMaximizedBounds(r);
+  Dimension windowSize = new Dimension(r.width, r.height);
+  
+  this.setPreferredSize(windowSize);
+  logPanel.setPreferredSize(new Dimension((int)(windowSize.width*.8), (int)(windowSize.height*.2)));
+  simPanel.setPreferredSize(new Dimension( (int)(windowSize.width*.8), (int)(windowSize.height*.8)));
+  nodeAttributesPanel.setPreferredSize(new Dimension((int)(windowSize.width*.2), (int)(windowSize.height)));
+
+  pack();
+ 
+}
+
+private void setBorders() {
+  Border raisedBevel, loweredBevel, compound;
+  raisedBevel = BorderFactory.createRaisedBevelBorder();
+  loweredBevel = BorderFactory.createLoweredBevelBorder();
+  compound = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+  simPanel.setBorder(compound);
+  logPanel.setBorder(compound);
+  nodeAttributesPanel.setBorder(compound);
+
+}
 
 
 

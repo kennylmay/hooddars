@@ -11,7 +11,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-public class NodeAttributesPanel extends JPanel {
+public class NodeAttributesArea extends JPanel {
 
 	private JTextField nodeIdField         = new JTextField(3);
 	private JComboBox nodeSelectorComboBox = new JComboBox();
@@ -19,7 +19,7 @@ public class NodeAttributesPanel extends JPanel {
 	private JTextField nodeYField          = new JTextField(4);
     private JSpinner nodeRangeSpinner      = new JSpinner(new SpinnerNumberModel(300, 0, 1000,1));
     
-	public NodeAttributesPanel() {
+	public NodeAttributesArea() {
 		//Use a box layout inside a border layout, with an internal flow layout at each vertical item.
 		/* _____________________
 		 * |  ITEM |  |
