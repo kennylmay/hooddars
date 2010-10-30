@@ -2,12 +2,15 @@
  * 
  */
 package logger;
+import dars.InputConsumer;
 import dars.OutputConsumer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import dars.event.DARSEvent;
+
+
 /**
  * @author Mike
  * Very basic logger. To use, reference the log
@@ -21,7 +24,8 @@ import dars.event.DARSEvent;
  * method to reference the logger in a DARSConsumer
  * context.
  */
-public class Logger implements OutputConsumer {
+public class Logger implements OutputConsumer, InputConsumer {
+  public static String newline = System.getProperty("line.separator");
   public static void log(DARSEvent e){
 	  
 	//if file handle is not init, do it
@@ -34,13 +38,21 @@ public class Logger implements OutputConsumer {
 	     System.exit(1);
 	  }
       out = new BufferedWriter(fstream);
+      //append the head of the DARS log file
+      try {
+		out.append(DARSEvent.getLogHeader() + newline);
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
     }
-    
+   
     try {
 	  out.append(e.getLogString());
+      out.flush();
 	} catch (IOException e1) {
-	  e1.printStackTrace();
-	  System.exit(1);	  
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
 	}
 	
   }
@@ -62,5 +74,11 @@ public class Logger implements OutputConsumer {
   private static Logger instance_ = new Logger();
   private static FileWriter fstream;
   private static BufferedWriter out;
-  private Logger() { };
+  private Logger() { }
+
+@Override
+public void consumeInput(DARSEvent e) {
+	Logger.log(e);
+	
+};
 }
