@@ -20,9 +20,10 @@ public class LogArea extends javax.swing.JPanel {
    * 
    */
   private static final long serialVersionUID = 1L;
-
+  public static String newline = System.getProperty("line.separator");
   public void appendLog(String log) {
     textArea.append(log);
+    textArea.append(newline);
   }
   
 
