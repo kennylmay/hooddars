@@ -35,7 +35,7 @@ ActionListener engine = new ActionListener() {
         mess = messages.poll();
 
         /// If the message is a broadcast then try to send to everyone
-        if (mess.destinationId == "ALL"){
+        if (mess.destinationId == Message.BCAST_STRING){
           for (int index = 0; index < store.getNumberOfNodes(); index++) {
             node = store.getNodeByIndex(index);
             
