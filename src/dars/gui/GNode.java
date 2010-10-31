@@ -315,6 +315,7 @@ public class GNode extends JPanel {
             .getY());
       }
 
+      System.out.println("Moving node.");
       // Remove the dragged node.
       draggedGNode.cleanup();
      // layeredPane.repaint();
@@ -412,7 +413,8 @@ public class GNode extends JPanel {
 
     public void cleanup() {
       // Remove this canvas from the parent container
-      layeredPane.remove(layeredPane.getIndexOf(this));
+      layeredPane.remove(this);
+      layeredPane.repaint();
 
     }
      

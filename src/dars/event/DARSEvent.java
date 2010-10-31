@@ -108,12 +108,12 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent inMoveNode(String id, NodeAttributes n) {
+  public static DARSEvent inMoveNode(String id, int x, int y) {
     DARSEvent e = new DARSEvent();
-    e.eventType = EventType.IN_EDIT_NODE;
+    e.eventType = EventType.IN_MOVE_NODE;
     e.nodeId = id;
-    e.nodeX = n.locationx;
-    e.nodeY = n.locationy;
+    e.nodeX = x;
+    e.nodeY = y;
     return e;
   }
 
@@ -125,9 +125,13 @@ public class DARSEvent {
     
   }
 
-  static DARSEvent outMoveNode(String id) {
-    // stub
-    return new DARSEvent();
+  public static DARSEvent outMoveNode(String id, int x, int y) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_MOVE_NODE;
+    d.nodeId = id;
+    d.nodeX = x;
+    d.nodeY = y;
+    return d;
   }
 
   static DARSEvent outDeleteNode(String id) {
