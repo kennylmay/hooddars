@@ -2,6 +2,7 @@ package dars.proto.aodv;
 
 import dars.NodeAttributes;
 import dars.proto.Node;
+import dars.Message;
 
 /**
  * AODV Node Class.
@@ -14,7 +15,8 @@ public class Aodv implements Node {
 	/**
 	 * Constants needed by the AODV Protocol
 	 */
-	
+  public static final int TTL_START            = 5;
+  
     
 	public static final int ACTIVE_ROUTE_TIMEOUT = 3000; // Milliseconds
 	public static final int HELLO_INTERVAL = 1000; // Milliseconds
@@ -26,7 +28,7 @@ public class Aodv implements Node {
 	public static final int RREQ_RETRIES = 2;
 	public static final int RREQ_RATELIMIT = 10;
 	public static final int TIMEOUT_BUFFER = 2;
-	public static final int TTL_START = 1;
+	//public static final int TTL_START = 1;
 	public static final int TTL_INCREMENT = 2;
 	public static final int TTL_THRESHOLD = 7;
 	public static final int RERR_RATELIMIT = 10;
@@ -73,7 +75,7 @@ public class Aodv implements Node {
 	 * @param message
 	 *            Preformated message to be transmitted.
 	 */
-	public void sendRawMessage() {
+	public void sendRawMessage(dars.Message message) {
 
 	}
 
@@ -99,19 +101,69 @@ public class Aodv implements Node {
 	 * to aodv.
 	 */
 
-	/**
-	 * Generate and send a Route Request Message.
-	 * 
-	 * Send a route request message as defined by RFC 3561 Section 5.1
-	 * 
-	 * @author kresss
-	 * 
-	 * @param
-	 */
-	void sendRREQ() {
+  /**
+   * Generate and send a Route Request Message.
+   * 
+   * Send a route request message as defined by RFC 3561 Section 5.1
+   * 
+   * @author kresss
+   * 
+   * @param DestNodeID
+   *          The Node ID for the destination that a route is needed for.
+   */
+  void sendRREQ(String DestNodeID) {
 
-	}
+    /**
+     * RREQ Message Format
+     * 
+     * TYPE|FLAGS|TTL|RREQID|DESTID|DESTSEQNUM|SRCID|SRCSEQNUM
+     * 
+     */
 
+    /** 
+     * Message object that will be passed to SendRawMessage.
+     */
+    Message Msg;
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+
+    /**
+     * Message Properties
+     */
+    String MsgType = "RREQ";
+    String MsgFlags = "";
+    int MsgTTL = TTL_START;
+    int MsgRREQID = ++this.LastRREQID;
+    String MsgDestID = DestNodeID;
+    int MsgDestSeqNum; // Must look this up in the RouteTable.
+    String MsgSrcID = this.att.id;
+    int MsgSrcSeqNum = ++this.LastSeqNum;
+
+    /**
+     * Look up the last known Destination Sequence Number out of the route
+     * table. If no entry exists in the route table for the destination ID then
+     * set the destination sequence number to 0 and set the destination sequence
+     * unknown flag(U).
+     */
+    // TODO: Try to lookup the destination sequence number. Until then just do
+    // the 'else' part.
+    MsgDestSeqNum = 0;
+    MsgFlags += "U";
+
+    /**
+     * Build the actual message string.
+     */
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgRREQID + '|'
+        + MsgDestID + '|' + MsgDestSeqNum + '|' + MsgSrcID + '|' + MsgSrcSeqNum;
+    
+    Msg = new Message("ALL", MsgSrcID, MsgStr);
+    
+    sendRawMessage(Msg);
+    
+  }
+  
 	/**
 	 * Receive and decode a Route Request Message.
 	 * 
@@ -189,4 +241,23 @@ public class Aodv implements Node {
 	 * Attributes member
 	 */
 	   NodeAttributes att = new NodeAttributes();
+	   
+  /**
+   * Route Request ID
+   * 
+   * The RREQ ID must be unique to each route request sent out by a node. It is
+   * incremented immediately before a route request is generated.
+   */
+  private int    LastRREQID = 0;
+
+  /**
+   * Node Sequence Number
+   * 
+   * The node sequence number is a identifier that is unique across all protocol
+   * control messages(RREQ, RREP, RERR) for a node. It is incremented
+   * immediately before a protocol control message is generated.
+   */
+  private int    LastSeqNum = 0;
+ 
+
 }
