@@ -16,9 +16,10 @@ public class GNode extends JPanel {
    */
   private static final long serialVersionUID = 1L;
 
-  public static String newline = System.getProperty("line.separator");
+  public static String      newline          = System
+                                                 .getProperty("line.separator");
 
-  static public GNode SelectedNode;
+  static public GNode       SelectedNode;
 
   // /Constructor
   public GNode(String id, int x, int y, int range, JLayeredPane layeredPane) {
@@ -26,12 +27,12 @@ public class GNode extends JPanel {
     id_ = id;
     this.layeredPane = layeredPane;
     this.range = range;
-    
+
     // Setup the default graphic, state
     img_ = ImageFactory.getNodeImg();
-    
+
     setOpaque(false);
-    
+
     // Setup the bounds given by x and y, and the size of the node
     setSize(new Dimension(img_.getWidth(null), img_.getHeight(null)));
     setLocation(new Point(x, y));
@@ -39,39 +40,36 @@ public class GNode extends JPanel {
     // Add the internal mouse listeners
     addMouseListener(new GNodeMouseListener());
     addMouseMotionListener(new GNodeMouseMotionListener());
-    
+
     rangeIndicator = new RangeIndicator(this);
   }
 
-   private RangeIndicator rangeIndicator;
-   
+  private RangeIndicator rangeIndicator;
+
   public void cleanup() {
     // unref the balloon tip
     if (bt != null) {
       bt.closeBalloon();
       bt = null;
     }
-    
-    if(rangeIndicator != null) {
-    	rangeIndicator.setVisible(false);
-    	layeredPane.remove(rangeIndicator);
-    	rangeIndicator = null;
+
+    if (rangeIndicator != null) {
+      rangeIndicator.setVisible(false);
+      layeredPane.remove(rangeIndicator);
+      rangeIndicator = null;
     }
-    
-    
+
   }
 
   @Override
   public void paintComponent(Graphics g) {
 
-    
     // Draw the graphic
     g.drawImage(img_, 0, 0, null);
-    
-    //Draw the node id onto the graphic
-    ImageFactory.drawNodeID(g,id_, new Rectangle(9, 4, 17 , 12));
-    
-    
+
+    // Draw the node id onto the graphic
+    ImageFactory.drawNodeID(g, id_, new Rectangle(9, 4, 17, 12));
+
   }
 
   // /Functions
@@ -93,31 +91,30 @@ public class GNode extends JPanel {
 
     isSelected = true;
     GNode.SelectedNode = this;
-    //System.out.println("selecting a node..");
+    // System.out.println("selecting a node..");
     this.img_ = ImageFactory.getSelectedNodeImg();
-    
-    
-    if(tmp != null) {
+
+    if (tmp != null) {
       tmp.repaint();
     }
-    
+
     this.repaint();
-    //show the range indicator
-    //rangeIndicator.setFill(true);
-    
-    //layeredPane.repaint();
+    // show the range indicator
+    // rangeIndicator.setFill(true);
+
+    // layeredPane.repaint();
   }
 
   // Unselect
   public void unselect() {
-    //System.out.println("unselecting a node..");
+    // System.out.println("unselecting a node..");
     isSelected = false;
     GNode.SelectedNode = null;
     this.img_ = ImageFactory.getNodeImg();
-    
-    //hide the range indicator
-    //rangeIndicator.setFill(false);
-    //layeredPane.repaint();
+
+    // hide the range indicator
+    // rangeIndicator.setFill(false);
+    // layeredPane.repaint();
     this.repaint();
 
   }
@@ -125,10 +122,10 @@ public class GNode extends JPanel {
   public void setXY(int x, int y) {
     // Set the new location of the canvas
     setLocation(new Point(x, y));
-    
+
     // If we have a range indicator, update that too
-    if(rangeIndicator != null) {
-    	rangeIndicator.setCenter(getCenter());
+    if (rangeIndicator != null) {
+      rangeIndicator.setCenter(getCenter());
     }
   }
 
@@ -218,31 +215,31 @@ public class GNode extends JPanel {
   }
 
   // ID of the node
-  private String id_;
+  private String                      id_;
 
-  private boolean isEntered, isSelected;
+  private boolean                     isEntered, isSelected;
 
   // DraggedNode boolean. Will be set true if the node is currently being
   // dragged
-  boolean isDragged;
+  boolean                             isDragged;
 
-  private JLayeredPane layeredPane;
+  private JLayeredPane                layeredPane;
 
-  private DraggedGNode draggedGNode;
+  private DraggedGNode                draggedGNode;
 
-  private BufferedImage img_ = null;
+  private BufferedImage               img_         = null;
 
-  private final Vector<GNodeListener> listeners = new Vector<GNodeListener>();
+  private final Vector<GNodeListener> listeners    = new Vector<GNodeListener>();
 
-  private BalloonTip bt = null;
+  private BalloonTip                  bt           = null;
 
-  private BTTextArea bt_text = new BTTextArea();
+  private BTTextArea                  bt_text      = new BTTextArea();
 
-  private JScrollPane bt_scroller;
+  private JScrollPane                 bt_scroller;
 
-  private long BTLastUpdate = 0;
+  private long                        BTLastUpdate = 0;
 
-  private boolean isClicked = false;
+  private boolean                     isClicked    = false;
 
   // Inner classes
   // //////////////////////////////////////////////////////////
@@ -255,18 +252,18 @@ public class GNode extends JPanel {
   private class GNodeMouseListener extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
-      // Invalidate any other drag notions initially    	
-      isClicked= false;
-      
+      // Invalidate any other drag notions initially
+      isClicked = false;
+
       // If this is a popup event, notify the handlers and return
       if (e.isPopupTrigger()) {
-       // System.out.println("Popup event");
+        // System.out.println("Popup event");
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
-          
+
         }
-        //layeredPane.repaint();
-        //layeredPane.invalidate();
+        // layeredPane.repaint();
+        // layeredPane.invalidate();
         return;
       }
 
@@ -289,13 +286,13 @@ public class GNode extends JPanel {
     @Override
     public void mouseReleased(MouseEvent e) {
       if (e.isPopupTrigger()) {
-       // System.out.println("Popup event");
+        // System.out.println("Popup event");
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
         }
-        //layeredPane.repaint();
-        //layeredPane.invalidate();
-        
+        // layeredPane.repaint();
+        // layeredPane.invalidate();
+
         return;
       }
 
@@ -311,14 +308,14 @@ public class GNode extends JPanel {
 
       // Notify the handlers of the node movement
       for (GNodeListener l : listeners) {
-        l.nodeMoved((GNode) e.getSource(), draggedGNode.getX(), draggedGNode
-            .getY());
+        l.nodeMoved((GNode) e.getSource(), draggedGNode.getX(),
+            draggedGNode.getY());
       }
 
       System.out.println("Moving node.");
       // Remove the dragged node.
       draggedGNode.cleanup();
-     // layeredPane.repaint();
+      // layeredPane.repaint();
       draggedGNode = null;
       isClicked = false;
     }
@@ -329,7 +326,7 @@ public class GNode extends JPanel {
       setEntered(true);
 
       // invalidate the parent container
-      //layeredPane.repaint();
+      // layeredPane.repaint();
 
       // Notify the handlers
       for (GNodeListener l : listeners) {
@@ -355,22 +352,21 @@ public class GNode extends JPanel {
 
       // If its a right click, return
       if (!isClicked) {
-      //  layeredPane.repaint();
+        // layeredPane.repaint();
         return;
       }
 
-     // System.out.println("Node dragged");
+      // System.out.println("Node dragged");
       // If this is the first time through, create a new dragged node.
       if (draggedGNode == null) {
         draggedGNode = new DraggedGNode((GNode) e.getSource());
-       // System.out.println("Adding new Dragged Node");
+        // System.out.println("Adding new Dragged Node");
       }
 
-      //System.out.printf("Mouse X: %d Y: %d", e.getX(), e.getY());
+      // System.out.printf("Mouse X: %d Y: %d", e.getX(), e.getY());
       // Update the dragged node's position.
       draggedGNode.moveXYOffset(e.getX(), e.getY());
 
-      
     }
   }
 
@@ -393,9 +389,9 @@ public class GNode extends JPanel {
 
       // Add this canvas to the parental container at the popup level
       parent.layeredPane.add(this, JLayeredPane.POPUP_LAYER);
-     
+
       setOpaque(false);
-      //System.out.println("Creating new drag node..");
+      // System.out.println("Creating new drag node..");
     }
 
     @Override
@@ -417,70 +413,68 @@ public class GNode extends JPanel {
       layeredPane.repaint();
 
     }
-     
-    
+
     private BufferedImage img_;
 
-    private GNode parent_;
+    private GNode         parent_;
 
   }
 
-  
   private class RangeIndicator extends JPanel {
-	    /**
+    /**
 	     * 
 	     */
-	    private static final long serialVersionUID = 1L;
-        private GNode parent_;
-	    RangeIndicator(GNode parent) {
-	      // Copy in attributes
-	      parent_ = parent;
+    private static final long serialVersionUID = 1L;
+    private GNode             parent_;
 
+    RangeIndicator(GNode parent) {
+      // Copy in attributes
+      parent_ = parent;
 
-          // Add this canvas to the parental container at the lowest layer
-	      parent.layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
-	      
-	     // System.out.println("Creating new range indicator");
-	      //get the range of the parent node
-	      setOpaque(false);
-	      int range = parent_.getRange();
-	      
-	      //set the size accordingly
-	      setSize(new Dimension(range*2, range*2));
-	      
-	      //set the center
-	      this.setCenter(parent_.getCenter());
-	      
+      // Add this canvas to the parental container at the lowest layer
+      parent.layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
 
-	    }
-	    
-	    public void setFill(boolean filled) {
-	    	this.isFilled = filled;
-	    }
+      // System.out.println("Creating new range indicator");
+      // get the range of the parent node
+      setOpaque(false);
+      int range = parent_.getRange();
 
-	    private boolean isFilled;
-	    @Override
-	    public void paintComponent(Graphics g) {
+      // set the size accordingly
+      setSize(new Dimension(range * 2, range * 2));
 
-	    //System.out.println("painting ranger");
-	      Graphics2D g2 = (Graphics2D)g;
-	      // Draw the graphic
-	      g2.setColor(Color.BLACK);
-	      g2.drawOval(0,0, parent_.getRange()* 2-2, parent_.getRange() * 2-2);
-	      
-	      if(isFilled) {
-	        g2.setColor(new Color(20,20,0,20));
-	        g2.fillOval(0,0, parent_.getRange()* 2-2, parent_.getRange() * 2-2);
-	      }
+      // set the center
+      this.setCenter(parent_.getCenter());
 
-	    }
-        public void setCenter(Point p) {
-        	setLocation(p.x - parent_.getRange(), p.y- parent_.getRange());
-        }
+    }
+
+    public void setFill(boolean filled) {
+      this.isFilled = filled;
+    }
+
+    private boolean isFilled;
+
+    @Override
+    public void paintComponent(Graphics g) {
+
+      // System.out.println("painting ranger");
+      Graphics2D g2 = (Graphics2D) g;
+      // Draw the graphic
+      g2.setColor(Color.BLACK);
+      g2.drawOval(0, 0, parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
+
+      if (isFilled) {
+        g2.setColor(new Color(20, 20, 0, 20));
+        g2.fillOval(0, 0, parent_.getRange() * 2 - 2,
+            parent_.getRange() * 2 - 2);
+      }
+
+    }
+
+    public void setCenter(Point p) {
+      setLocation(p.x - parent_.getRange(), p.y - parent_.getRange());
+    }
 
   }
-  
+
   private int range;
 }
-  
- 
