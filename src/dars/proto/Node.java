@@ -12,10 +12,7 @@ import dars.NodeAttributes;
  */
 public abstract interface Node {
 
-/**
- * Attributes class for each node
- */
-   NodeAttributes att = new NodeAttributes();
+
 
 	/**
 	 * Send raw message into the network.

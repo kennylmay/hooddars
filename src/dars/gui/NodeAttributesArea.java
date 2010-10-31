@@ -11,6 +11,9 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import dars.NodeAttributes;
+import dars.NodeInspector;
+
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
 	private JTextField nodeIdField         = new JTextField(3);
@@ -105,8 +108,33 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     
   }
   @Override
-  public void nodeSelected(GNode node) {
-    // TODO Auto-generated method stub
+  public void nodeSelected(GNode gnode) {
+    NodeAttributes ni = getAttributes(gnode.getId());
+    if(ni!=null) {
+      setAttributes(ni);
+    }
     
   }
+  
+  private NodeAttributes getAttributes(String id) {
+    // Use the node inspector interface to view the properties of the node
+    return nodeInspector.getNodeAttributes(id);
+  }
+  
+  private void setAttributes(NodeAttributes n){
+    nodeIdField.setText(n.id);
+    nodeXField.setText( Integer.toString(n.locationx));
+    nodeYField.setText( Integer.toString(n.locationy));
+    nodeRangeSpinner.setValue(n.range);
+  }
+  
+  public void setNodeInspector(NodeInspector ni) {
+   this.nodeInspector = ni; 
+  }
+  
+  public void setNode(String nodeId) {
+    
+  }
+  
+  private NodeInspector nodeInspector;
 }
