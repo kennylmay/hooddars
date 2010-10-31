@@ -235,7 +235,18 @@ public void consumeInput(DARSEvent e) {
       store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
 	}
 	else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE){
+	  //Get the current attributes of the node
+	  NodeAttributes na = store.getNodeAttributes(e.nodeId);
+	  
+	  //Set the new x and y
+	  na.locationx = e.nodeX;
+	  na.locationy = e.nodeY;
+	  
+	  //Set the new attributes
       store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+      
+      //Dispatch the moved event
+      OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.locationx, na.locationy));
     }
 	
 }

@@ -154,8 +154,7 @@ class NodeActionHandler implements GNodeListener{
 
   //This function will send a request to move a node to the input handler eventually.
   private void moveNodeReq(String id, int x, int y) {
-    moveNode(id,x,y);
-    //connMap.repaint();
+    InputHandler.dispatch(DARSEvent.inMoveNode(id, x, y));
   }
 
 
