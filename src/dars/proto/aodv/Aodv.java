@@ -1,11 +1,11 @@
 package dars.proto.aodv;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import dars.NodeAttributes;
 import dars.proto.Node;
 import dars.Message;
-import dars.proto.aodv.*;
 import dars.proto.aodv.RouteEntry.StateFlags;
 
 /**
@@ -25,7 +25,9 @@ public class Aodv implements Node {
   public static final int NET_TRAVERSAL_TIME   = 2 * NODE_TRAVERSAL_TIME
                                                    * NET_DIAMETER;
   public static final int PATH_DISCOVERY_TIME  = 2 * NET_TRAVERSAL_TIME;
+  public static final int DELETE_PERIOD = 5;
 
+  // KRESSS - I am unsure if the constants listed below are needed for our implementation.
   public static final int ACTIVE_ROUTE_TIMEOUT = 3000;                      // Milliseconds
   public static final int HELLO_INTERVAL       = 1000;                      // Milliseconds
   // public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
@@ -57,7 +59,7 @@ public class Aodv implements Node {
    * DELETE_PERIOD = K * max (ACTIVE_ROUTE_TIMEOUT, HELLO_INTERVAL) (K = 5 is
    * recommended).
    */
-  public static final int DELETE_PERIOD        = 5 * ACTIVE_ROUTE_TIMEOUT;
+  //public static final int DELETE_PERIOD        = 5 * ACTIVE_ROUTE_TIMEOUT;
 
   // Don't think that MIN_REPAIR_TTL will really be needed.
   // public static final int MIN_REPAIR_TTL = ??
@@ -226,16 +228,105 @@ public class Aodv implements Node {
    * 
    * Send a route error message as defined by RFC 3561 Section 5.3
    * 
+   * Invalidate the RouteEntry for DestNodeID and any other entries that use
+   * that entry for their next hop.
+   * 
    * @author kresss
    * 
-   * @param
+   * @param DestNodeID
+   *          The Destination Node ID for the node that is no longer reachable.
    */
-  void sendREER() {
+  void sendREER(String DestNodeID) {
+
+    /**
+     * RERR Message Format
+     * 
+     * TYPE|FLAGS|DESTCOUNT|DESTID1|DESTSEQID1|...|DESTIDX|DESTSEQX
+     * 
+     */
+
+    /**
+     * Message object that will be passed to SendRawMessage.
+     */
+    Message Msg;
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+
+    /**
+     * Message Properties
+     */
+    String MsgType = "RERR";
+    String MsgFlags = "";
+    int DestPairCount = 0;
+    String IDSEQPairs = "";
+
+    /**
+     * Destination Route Table Entry
+     */
+    RouteEntry DestRouteEntry = RouteTable.get(DestNodeID);
+
+    /**
+     * Iterator and RouteEntry for going through the values in the RouteTable.
+     */
+    Iterator<RouteEntry> RouteTableIter;
+    RouteEntry TempRouteEntry;
+
+    /**
+     * Add the DestNodeID and Sequence Number to the ID & Pair List
+     */
+    IDSEQPairs = DestNodeID + '|' + DestRouteEntry.getSeqNum();
+    DestPairCount++;
+
+    /**
+     * Invalidate Route Entry in the Route Table and increase lifetime by delete
+     * period.
+     */
+    DestRouteEntry.setState(RouteEntry.StateFlags.INVALID);
+    DestRouteEntry.setLifetime(DestRouteEntry.getLifetime() + DELETE_PERIOD);
+    RouteTable.put(DestNodeID, DestRouteEntry);
+
+    /**
+     * Get Iterator for RouteTable and then traverse it looking for nodes that
+     * have DestNodeID as their next hop.
+     */
+    RouteTableIter = RouteTable.values().iterator();
+
+    /**
+     * Check each route entry in the route table to see if the next hop is the
+     * error destination ID. If it then mark the Entry as Reparable. The Route
+     * is marked Repairable because it is no longer valid but there may be
+     * another path the the destination node for that route through a new next
+     * hop.
+     * 
+     * Since the route is no longer known good. Add it to the DestNodeID and
+     * Sequence Number to the ID & Pair List.
+     */
+    while (RouteTableIter.hasNext()) {
+      TempRouteEntry = RouteTableIter.next();
+      if (TempRouteEntry.getNextHopIP() == DestNodeID) {
+        TempRouteEntry.setState(RouteEntry.StateFlags.REPAIRABLE);
+        TempRouteEntry
+            .setLifetime(TempRouteEntry.getLifetime() + DELETE_PERIOD);
+        RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
+
+        IDSEQPairs += '|' + TempRouteEntry.getDestIP() + '|'
+            + TempRouteEntry.getSeqNum();
+        DestPairCount++;
+      }
+    }
+
+    MsgStr = MsgType + '|' + MsgFlags + '|' + DestPairCount + '|' + IDSEQPairs;
+
+    Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
+
+    sendRawMessage(Msg);
 
   }
 
   /**
-   * Send Route Acknoledgement Message.
+   * Send Route Acknowledgment Message.
    * 
    * Send a route ack message as defined by RFC 3561 Section 5.4
    * 
@@ -285,6 +376,12 @@ public class Aodv implements Node {
 
   public void clockTick() {
 
+    /**
+     * Increment the CurrentTick for this time quantum.
+     */
+    CurrentTick++;
+    
+    //TODO: Need to determine what is needed for a cycle in a node.  
   }
 
   /**
