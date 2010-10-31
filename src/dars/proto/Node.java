@@ -3,6 +3,7 @@
  */
 package dars.proto;
 import dars.NodeAttributes;
+import dars.Message;
 
 /**
  * Base Class for all protocol specific node types.
@@ -25,7 +26,7 @@ public abstract interface Node {
 	 * @param message
 	 *            Pre-formatted message to be transmitted.
 	 */
-	void sendRawMessage();
+	void sendRawMessage(Message message);
 
 	/**
 	 * Receive raw message from the network.
@@ -54,7 +55,6 @@ public abstract interface Node {
     * @param NodeAttributes 
     */
    void setAttributes(NodeAttributes att);
-	//public Location loc;
    
    void clockTick();
 
