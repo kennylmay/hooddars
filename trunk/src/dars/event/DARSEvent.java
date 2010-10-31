@@ -12,7 +12,7 @@ import dars.Message;
  * @author Mike
  */
 public class DARSEvent {
-
+  private static String newline = System.getProperty("line.separator");
   public enum EventType {
     // Input event types
     IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_EDIT_NODE, IN_SEND_MSG, IN_SIM_SPEED, 
@@ -30,7 +30,26 @@ public class DARSEvent {
   public String         payload;
   public String         informationalMessage;
   public int            newSimSpeed;
-  public NodeAttributes nodeAttributes;
+  public int            nodeX;
+  public int            nodeY;
+  public int            nodeRange;
+  
+  public NodeAttributes getNodeAttributes() {
+    NodeAttributes n = new NodeAttributes();
+    n.locationx = nodeX;
+    n.locationy = nodeY;
+    n.range = nodeRange;
+    n.id = nodeId;
+    return n;
+  }
+  
+  public void setNodeAttributes(NodeAttributes n) {
+    nodeX = n.locationx;
+    nodeY = n.locationy;
+    nodeRange = n.range;
+    nodeId = n.id;
+    
+  }
 
   // Hide the default constructor. DARSEvents can only be made through the
   // supplied functions that follow.
@@ -58,8 +77,9 @@ public class DARSEvent {
   public static DARSEvent inAddNode(String simType, NodeAttributes n) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_ADD_NODE;
+    e.nodeX = n.locationx;
+    e.nodeY = n.locationy;
     e.simulationType = simType;
-    e.nodeAttributes = n;
     return e;
   }
 
@@ -74,7 +94,8 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_EDIT_NODE;
     e.nodeId = id;
-    e.nodeAttributes = n;
+    e.nodeX = n.locationx;
+    e.nodeY = n.locationy;
     return e;
   }
 
@@ -94,13 +115,17 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_EDIT_NODE;
     e.nodeId = id;
-    e.nodeAttributes = n;
+    e.nodeX = n.locationx;
+    e.nodeY = n.locationy;
     return e;
   }
 
-  static DARSEvent outAddNode(NodeAttributes n) {
-    // stub
-    return new DARSEvent();
+  public static DARSEvent outAddNode(NodeAttributes n) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_ADD_NODE;
+    d.setNodeAttributes(n);
+    return d;
+    
   }
 
   static DARSEvent outMoveNode(String id) {
@@ -181,6 +206,9 @@ public class DARSEvent {
     }
     // remove trailing comma
     ret = ret.substring(0, ret.length() - 1);
+    
+    // add a newline char
+    ret += newline;
     return ret;
   }
 

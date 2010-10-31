@@ -211,17 +211,89 @@ public void consumeInput(DARSEvent e) {
 		setSimSpeed(WAIT_TIME);
 	}
 	else if (e.eventType == DARSEvent.EventType.IN_ADD_NODE){
-        store.addNode(e.nodeId, e.simulationType, e.nodeAttributes);
+	    //assign a node ID
+	    e.nodeId = assignNodeId();
+        store.addNode(e.nodeId, e.simulationType, e.getNodeAttributes());
+        
+        OutputHandler.dispatch(DARSEvent.outAddNode(e.getNodeAttributes()));
     }
 	else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE){
 	    store.deleteNode(e.nodeId);
     }
 	else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE){
-      store.setNodeAttributes(e.nodeId, e.nodeAttributes);
+      store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
 	}
 	else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE){
-      store.setNodeAttributes(e.nodeId, e.nodeAttributes);
+      store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
     }
 	
 }
+
+
+
+  /**
+   * assignNodeId method. 
+   * 
+   *  Assigns a new node id. It uses the private variable currId to keep track
+   *  of the next id. The assignment sequence is as follows:
+   *  
+   *  A......Z
+   *  AA....AZ
+   *  BA....BZ
+   *  ........
+   *  AAA..AAZ
+   *  ABA..ABZ
+   *  ........
+   *  
+   *  The algorithm used is a modified version of the 
+   *  convert decimal to hex algorithm (or any other digit). It
+   *  cheats a bit because there is no "zero" digit in the ID 
+   *  assigning scheme (Just A-Z).
+   * 
+   * @ author Mike
+   *  
+   */
+  private String assignNodeId() {
+    // Assign a three character ID from A-Z
+    //
+    int charA = (int) 'A';
+    int totalChars = 26;
+    String ret = "";
+
+    int remainder;
+    int quotient = currId;
+    int count = 0;
+    while (quotient != 0) {
+
+      // Divide the digit by our alphabet size. The remainder is the digit for
+      // this place.
+      remainder = quotient % totalChars;
+      quotient = quotient / totalChars;
+
+      // Convert the digit to its representation (A-Z)
+
+      // If count is > 0, Cheat and decrement it by one.
+      char c;
+      if (count > 0) {
+        c = (char) (remainder + charA - 1);
+      } else {
+        c = (char) (remainder + charA);
+      }
+
+      count++;
+      // Prepend the return string
+      ret = c + ret;
+    }
+
+    // increment the id
+    currId++;
+
+    //if ret is zero len, this must be the first assignment. Set it to "A".
+    if(ret.length() == 0) {
+      return "A";
+    }
+    
+    return ret;
+  }
+  private int currId = 0;  
 }

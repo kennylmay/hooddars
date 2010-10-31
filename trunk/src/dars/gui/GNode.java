@@ -92,7 +92,7 @@ public class GNode extends JPanel {
 
     isSelected = true;
     GNode.SelectedNode = this;
-    System.out.println("selecting a node..");
+    //System.out.println("selecting a node..");
     this.img_ = ImageFactory.getSelectedNodeImg();
     
     
@@ -109,7 +109,7 @@ public class GNode extends JPanel {
 
   // Unselect
   public void unselect() {
-    System.out.println("unselecting a node..");
+    //System.out.println("unselecting a node..");
     isSelected = false;
     GNode.SelectedNode = null;
     this.img_ = ImageFactory.getNodeImg();
@@ -251,7 +251,7 @@ public class GNode extends JPanel {
       
       // If this is a popup event, notify the handlers and return
       if (e.isPopupTrigger()) {
-        System.out.println("Popup event");
+       // System.out.println("Popup event");
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
           
@@ -280,7 +280,7 @@ public class GNode extends JPanel {
     @Override
     public void mouseReleased(MouseEvent e) {
       if (e.isPopupTrigger()) {
-        System.out.println("Popup event");
+       // System.out.println("Popup event");
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
         }
@@ -349,14 +349,14 @@ public class GNode extends JPanel {
         return;
       }
 
-      System.out.println("Node dragged");
+     // System.out.println("Node dragged");
       // If this is the first time through, create a new dragged node.
       if (draggedGNode == null) {
         draggedGNode = new DraggedGNode((GNode) e.getSource());
-        System.out.println("Adding new Dragged Node");
+       // System.out.println("Adding new Dragged Node");
       }
 
-      System.out.printf("Mouse X: %d Y: %d", e.getX(), e.getY());
+      //System.out.printf("Mouse X: %d Y: %d", e.getX(), e.getY());
       // Update the dragged node's position.
       draggedGNode.moveXYOffset(e.getX(), e.getY());
 
@@ -385,7 +385,7 @@ public class GNode extends JPanel {
       parent.layeredPane.add(this, JLayeredPane.POPUP_LAYER);
      
       setOpaque(false);
-      System.out.println("Creating new drag node..");
+      //System.out.println("Creating new drag node..");
     }
 
     @Override
@@ -429,7 +429,7 @@ public class GNode extends JPanel {
           // Add this canvas to the parental container at the lowest layer
 	      parent.layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
 	      
-	      System.out.println("Creating new range indicator");
+	     // System.out.println("Creating new range indicator");
 	      //get the range of the parent node
 	      setOpaque(false);
 	      int range = parent_.getRange();
@@ -451,7 +451,7 @@ public class GNode extends JPanel {
 	    @Override
 	    public void paintComponent(Graphics g) {
 
-	    	System.out.println("painting ranger");
+	    //System.out.println("painting ranger");
 	      Graphics2D g2 = (Graphics2D)g;
 	      // Draw the graphic
 	      g2.setColor(Color.BLACK);

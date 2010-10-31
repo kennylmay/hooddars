@@ -31,7 +31,7 @@ public class Connections extends JPanel {
   }
   @Override
   public void paintComponent(Graphics g) {
-    System.out.println("painting");
+    //System.out.println("painting");
     //reset the size bounds; size of window may have changed
     this.setSize(new Dimension(jlp_.getWidth(),jlp_.getHeight())); 
     Iterator<HashSet<GNode> > i = connStore.iterator();

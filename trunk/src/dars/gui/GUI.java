@@ -23,8 +23,14 @@ public class GUI extends JFrame implements OutputConsumer {
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
   private SimArea            simArea             = new SimArea();
 
+  private JMenuBar menuBar = new JMenuBar(); 
+  private JMenu fileMenu = new JMenu("File");
+  
   public GUI() {
-    this.pack();
+    
+    //Add the menu bar
+    menuBar.add(fileMenu);
+    this.setJMenuBar(menuBar);
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -126,18 +132,32 @@ public class GUI extends JFrame implements OutputConsumer {
   }
 
   public void setNodeInspector(NodeInspector ni) {
-    nodeInspector = ni;
+    //Give it to the nodeAttributesArea instance.
+    nodeAttributesArea.setNodeInspector(ni);
+    
   }
-
-  private NodeInspector nodeInspector;
 
   private class ThreadSafeConsumer implements Runnable {
     public DARSEvent e;
 
     public void run() {
       switch (e.eventType) {
+      case OUT_ADD_NODE:
+        //Add the node
+        simArea.addNewNode(e.nodeX, e.nodeY, e.nodeId);
+        
+      case OUT_MOVE_NODE:
+        //Move the node
+        simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
+        break;
+      case OUT_EDIT_NODE:
+        //Refresh the node attributes panel
+        nodeAttributesArea.setNode(e.nodeId);
+        break;
+      
       case OUT_DEBUG:
-        logArea.appendLog(e.informationalMessage);
+        logArea.appendLog("DEBUG : " + e.informationalMessage);
+        break;
       }
     }
   }
@@ -146,7 +166,12 @@ public class GUI extends JFrame implements OutputConsumer {
     // schedule the event to be processed later so as to not disturb the gui's
     // event thread
     ThreadSafeConsumer c = new ThreadSafeConsumer();
+    
+    /// Copy the event to the thread safe consumer instance
     c.e = e;
+    
+    //Invoke it later; This will push the runnable instance onto the 
+    //Java Event Dispatching thread 
     SwingUtilities.invokeLater(c);
 
   }

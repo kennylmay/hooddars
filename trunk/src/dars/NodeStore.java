@@ -16,11 +16,15 @@ import java.util.Iterator;
 public class NodeStore implements NodeInspector {
 
 // Hash map of nodes.
-private HashMap<String, Node> store;
+private HashMap<String, Node> store = new HashMap<String, Node>();
 
 // Fulfills the "Node Inspector" contract.
 public NodeAttributes getNodeAttributes(String nodeId) {
    Node node = store.get(nodeId);
+   
+   if(node == null) {
+     return null;
+   }
    return node.getAttributes();
 }
 

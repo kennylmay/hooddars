@@ -15,7 +15,7 @@ public class Aodv implements Node {
 	 * Constants needed by the AODV Protocol
 	 */
 	
-
+    
 	public static final int ACTIVE_ROUTE_TIMEOUT = 3000; // Milliseconds
 	public static final int HELLO_INTERVAL = 1000; // Milliseconds
 	public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
@@ -178,12 +178,15 @@ public class Aodv implements Node {
     * @param NodeAttributes
     */
 	public void setAttributes(NodeAttributes atts){
-      att.locationx = atts.locationx;
-      att.locationy = atts.locationy;
-      att.range = atts.range;
+     att = atts;
    }
 	
 	public void clockTick(){
 	   
 	}
+	
+	/**
+	 * Attributes member
+	 */
+	   NodeAttributes att = new NodeAttributes();
 }
