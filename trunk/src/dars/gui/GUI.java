@@ -132,7 +132,7 @@ public class GUI extends JFrame implements OutputConsumer {
   }
 
   public void setNodeInspector(NodeInspector ni) {
-    //Give it to the nodeAttributesArea instance.
+    //Give it to the nodeAttributesArea instance
     nodeAttributesArea.setNodeInspector(ni);
     
   }
@@ -144,7 +144,7 @@ public class GUI extends JFrame implements OutputConsumer {
       switch (e.eventType) {
       case OUT_ADD_NODE:
         //Add the node
-        simArea.addNewNode(e.nodeX, e.nodeY, e.nodeId);
+        simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
         
       case OUT_MOVE_NODE:
         //Move the node
@@ -175,5 +175,6 @@ public class GUI extends JFrame implements OutputConsumer {
     SwingUtilities.invokeLater(c);
 
   }
+
 
 }

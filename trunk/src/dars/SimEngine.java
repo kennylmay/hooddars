@@ -8,6 +8,7 @@ import javax.swing.Timer;
 import dars.NodeStore;
 import dars.event.DARSEvent;
 import dars.proto.*;
+import dars.proto.aodv.Aodv;
 
 /**
  * @author Kenny
@@ -211,11 +212,21 @@ public void consumeInput(DARSEvent e) {
 		setSimSpeed(WAIT_TIME);
 	}
 	else if (e.eventType == DARSEvent.EventType.IN_ADD_NODE){
-	    //assign a node ID
-	    e.nodeId = assignNodeId();
-        store.addNode(e.nodeId, e.simulationType, e.getNodeAttributes());
+	    //Get the node attributes for this input event
+	    NodeAttributes ni = e.getNodeAttributes();
         
-        OutputHandler.dispatch(DARSEvent.outAddNode(e.getNodeAttributes()));
+	    //Assign an ID to the node
+	    ni.id = assignNodeId();
+	    
+	    //Make a new network node with these attributes
+	    Node n = makeNetworkNode(ni);
+	    
+	    //Add it to the node store
+        store.addNode(n);
+        
+        //Dispatch an output event indicating a new node has entered
+        //the network.
+        OutputHandler.dispatch(DARSEvent.outAddNode(ni));
     }
 	else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE){
 	    store.deleteNode(e.nodeId);
@@ -228,6 +239,42 @@ public void consumeInput(DARSEvent e) {
     }
 	
 }
+
+public enum NodeType { AODV, DSDV };
+private NodeType nodeType = NodeType.AODV;
+
+public NodeType getNodeType() {
+  return nodeType;
+}
+
+public void setNodeType(NodeType nt) {
+  nodeType = nt;
+}
+
+public Node makeNetworkNode(NodeAttributes na) {
+  //Make the network node based on what type of node is set
+  Node n = null;
+  switch(getNodeType()) {
+    case AODV: 
+      n = new Aodv();
+      break;
+   
+    case DSDV:
+      //TODO implement DSDV
+      n = null;
+      break;
+  }
+  
+  assert(n!=null);
+  
+  //Set the node attributes
+  n.setAttributes(na);
+  
+  return n;  
+}
+  
+  
+
 
 
 

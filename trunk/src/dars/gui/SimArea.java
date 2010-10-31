@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import dars.InputHandler;
 import dars.NodeAttributes;
+import dars.NodeInspector;
 import dars.event.DARSEvent;
 
 import java.awt.event.*;
@@ -30,6 +31,16 @@ public class SimArea extends JLayeredPane {
 
   }
 
+  public void setNodeInspector(NodeInspector nodeInspector) {
+    this.nodeInspector = nodeInspector;
+  }
+
+  public NodeInspector getNodeInspector() {
+    return nodeInspector;
+  }
+
+  private NodeInspector nodeInspector;
+  
 class NodeActionHandler implements GNodeListener{
 
   public void nodeMoved(GNode n, int x, int y) {
@@ -130,7 +141,8 @@ class NodeActionHandler implements GNodeListener{
     NodeAttributes n = new NodeAttributes();
     n.locationx = x;
     n.locationy = y;
-    InputHandler.dispatch(DARSEvent.inAddNode(getSimType(),n));
+    n.range = getDefaultRange();
+    InputHandler.dispatch(DARSEvent.inAddNode(n));
   } 
 
   //This function will send a request to del a node to the input handler eventually.
@@ -158,6 +170,8 @@ class NodeActionHandler implements GNodeListener{
      gnode.setXY(x,y); 
   }
 
+  
+  
   public void deleteNode(String id) {
     //Get the gnode
     GNode gnode = getGNode(id);
@@ -179,10 +193,23 @@ class NodeActionHandler implements GNodeListener{
     this.repaint();
   }
 
+  public void setNodeRange(String nodeId, int newRange) {
+    //Get the gnode from the gnode map
+    GNode node = getGNode(nodeId);
+    
+    assert(node != null);
+    
+    
+    node.setRange(newRange);
+    
+    
+  }
+  
+  
   //This function adds a node to the GUI. It's assumed that the node now exists in the simulator.  
-  public void addNewNode(int x, int y, String id) {
+  public void addNewNode(int x, int y, int range, String id) {
     //instantiate a new GNode
-    GNode node = new  GNode(id,this,x ,y );
+    GNode node = new GNode(id, x ,y, range, this);
     
     //add it to the gnode map
     gnodemap.put(id, node);
@@ -193,6 +220,7 @@ class NodeActionHandler implements GNodeListener{
     //add our node listener 
     node.addListener(new NodeActionHandler());
  
+    
    
 
   }
@@ -291,7 +319,9 @@ class NodeActionHandler implements GNodeListener{
     }
   }
 
-  
+  public int getDefaultRange() {
+    return 50;
+  }
 
   public String getSimType() {
      return "AODV";

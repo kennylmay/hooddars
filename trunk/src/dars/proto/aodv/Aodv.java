@@ -178,18 +178,7 @@ public class Aodv implements Node {
     * @param NodeAttributes
     */
 	public void setAttributes(NodeAttributes atts){
-	 if (atts.id != null){
-       att.id = atts.id;
-	 }
-	 else if (atts.locationx != 0){
-	   att.locationx = atts.locationx;
-	 }
-	 else if (atts.locationy != 0){
-       att.locationy = atts.locationy;
-     }
-	 else if (atts.range != 0){
-       att.range = atts.range;
-	 }
+	 this.att = atts;
    }
 	
 	public void clockTick(){
