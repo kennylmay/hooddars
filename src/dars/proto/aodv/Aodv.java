@@ -253,6 +253,8 @@ public class Aodv implements Node {
    * This function will return the attributes that are defined in the Node
    * class.
    * 
+   * Note, this returns a copy of the node attributes. Not a reference to the
+   * attributes object itself.
    * @author mayk
    * 
    * @return NodeAttributes
@@ -260,7 +262,7 @@ public class Aodv implements Node {
    * @param
    */
   public NodeAttributes getAttributes() {
-    return att;
+    return new NodeAttributes(att);
   }
 
   /**
@@ -268,6 +270,9 @@ public class Aodv implements Node {
    * 
    * This function will update the attributes for the node.
    * 
+   *  Note, to be sure that no outside entity can modify the node attributes
+   * object belonging to this instance, this method invokes the copy 
+   * constructor of node attributes.
    * @author mayk
    * 
    * @return void
@@ -275,7 +280,7 @@ public class Aodv implements Node {
    * @param NodeAttributes
    */
   public void setAttributes(NodeAttributes atts) {
-    this.att = atts;
+    this.att = new NodeAttributes(atts);
   }
 
   public void clockTick() {
