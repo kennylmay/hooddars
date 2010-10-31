@@ -41,18 +41,11 @@ public void setNodeAttributes(String nodeId, NodeAttributes nodeAttributes) {
  * 
  * @author kennylmay
  * 
- * @param nodeId, simulationType, NodeAttributes
+ * @param node
  */
 
-public void addNode(String nodeId, String simulationType, NodeAttributes nodeAttributes) {
-   Node node;
-   if (simulationType == "AODV"){
-      node = new Aodv();
-      node.setAttributes(nodeAttributes);
-      store.put(nodeId, node);
-   }else if (simulationType == "DSDV"){
-      node = null;
-   }
+public void addNode(Node node) {
+      store.put(node.getAttributes().id, node);
 }
 
 /**

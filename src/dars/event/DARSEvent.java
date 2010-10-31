@@ -23,7 +23,6 @@ public class DARSEvent {
   };
 
   public EventType      eventType;
-  public String         simulationType;
   public String         nodeId;
   public String         sourceId;
   public String         destinationId;
@@ -74,12 +73,10 @@ public class DARSEvent {
     return e;
   }
     
-  public static DARSEvent inAddNode(String simType, NodeAttributes n) {
+  public static DARSEvent inAddNode(NodeAttributes n) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_ADD_NODE;
-    e.nodeX = n.locationx;
-    e.nodeY = n.locationy;
-    e.simulationType = simType;
+    e.setNodeAttributes(n);
     return e;
   }
 

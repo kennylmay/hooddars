@@ -21,11 +21,12 @@ public class GNode extends JPanel {
   static public GNode SelectedNode;
 
   // /Constructor
-  public GNode(String id, JLayeredPane layeredPane, int x, int y) {
-    // Copy in the id, coordinates
+  public GNode(String id, int x, int y, int range, JLayeredPane layeredPane) {
+    // Copy in the id, coordinates, range
     id_ = id;
     this.layeredPane = layeredPane;
-
+    this.range = range;
+    
     // Setup the default graphic, state
     img_ = ImageFactory.getNodeImg();
     
@@ -129,6 +130,14 @@ public class GNode extends JPanel {
     if(rangeIndicator != null) {
     	rangeIndicator.setCenter(getCenter());
     }
+  }
+
+  public void setRange(int range) {
+    this.range = range;
+  }
+
+  public int getRange() {
+    return range;
   }
 
   public String getId() {
@@ -469,9 +478,7 @@ public class GNode extends JPanel {
 
   }
   
-  public int getRange() {
-	  return 200;
-  }
+  private int range;
 }
   
  
