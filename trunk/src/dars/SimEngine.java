@@ -21,6 +21,8 @@ public class SimEngine implements InputConsumer {
   NodeStore              store     = new NodeStore();
   AbstractQueue<Message> messageQueue;
   MessageRelay thread;
+  static public Object lock = new Object();
+  
 
   /**
    * Function that will start a simulation
@@ -109,9 +111,11 @@ public class SimEngine implements InputConsumer {
   class MessageRelay extends Thread {
     Node    node;
     Message message;
+
     public void run() {
+
       // Make sure the kill switch hasn't been thrown.
-      if (KILL_THREAD == true){
+      if (KILL_THREAD == true) {
         // Reset the flag for the next possible run.
         KILL_THREAD = false;
         return;
@@ -119,43 +123,44 @@ public class SimEngine implements InputConsumer {
       // If there are messages in the messageQueue try to attempt delivery.
       while (messageQueue.isEmpty() == false) {
         message = messageQueue.poll();
+       
+        synchronized (lock) {
+          // If the message is a broadcast then try to send to everyone
+          if (message.destinationId == Message.BCAST_STRING) {
+            for (int index = 0; index < store.getNumberOfNodes(); index++) {
+              node = store.getNodeByIndex(index);
 
-        // If the message is a broadcast then try to send to everyone
-        if (message.destinationId == Message.BCAST_STRING) {
-          for (int index = 0; index < store.getNumberOfNodes(); index++) {
-            node = store.getNodeByIndex(index);
-
-            // Only allow the nodes in range to hear the broadcast.
-            if (canCommuincate(message.originId, node.getAttributes().id)) {
+              // Only allow the nodes in range to hear the broadcast.
+              if (canCommuincate(message.originId, node.getAttributes().id)) {
+                // node.sendRawMessage();
+              }
+            }
+            // Else if the messageQueue is not a broadcast try to send it to the
+            // destination id.
+          } else {
+            if (canCommuincate(message.originId, message.destinationId)) {
               // node.sendRawMessage();
             }
           }
-          // Else if the messageQueue is not a broadcast try to send it to the
-          // destination id.
-        } else {
-          if (canCommuincate(message.originId, message.destinationId)) {
-            // node.sendRawMessage();
-          }
+        }
+
+        // Issue a clock tick to each node so that they can make algorithmic
+        // decisions.
+        for (int index = 0; index < store.getNumberOfNodes(); index++) {
+          // / Issue a clock tick to each node
+          node = store.getNodeByIndex(index);
+          node.clockTick();
+        }
+
+        // Check each node for messages waiting to be sent and gather them up
+        // to be stored in our message queue.
+        for (int index = 0; index < store.getNumberOfNodes(); index++) {
+          // Gather all the messages from each node.
+          // while (somemethodname != null){
+          messageQueue.add(message);
+          // }
         }
       }
-
-      // Issue a clock tick to each node so that they can make algorithmic
-      // decisions.
-      for (int index = 0; index < store.getNumberOfNodes(); index++) {
-        // / Issue a clock tick to each node
-        node = store.getNodeByIndex(index);
-        node.clockTick();
-      }
-
-      // Check each node for messages waiting to be sent and gather them up
-      // to be stored in our message queue.
-      for (int index = 0; index < store.getNumberOfNodes(); index++) {
-        // Gather all the messages from each node.
-        // while (somemethodname != null){
-          messageQueue.add(message);
-        // }
-      }
-      
       // Sleep the user defined amount of time
       // WAIT_TIME is time to wait in milliseconds (default: 1000 = 1 second)
       try {
@@ -192,42 +197,50 @@ public class SimEngine implements InputConsumer {
       setSimSpeed(WAIT_TIME);
     } 
     else if (e.eventType == DARSEvent.EventType.IN_ADD_NODE) {
-      // Get the node attributes for this input event
-      NodeAttributes ni = e.getNodeAttributes();
+      synchronized (lock) {
+        // Get the node attributes for this input event
+        NodeAttributes ni = e.getNodeAttributes();
 
-      // Assign an ID to the node
-      ni.id = assignNodeId();
+        // Assign an ID to the node
+        ni.id = assignNodeId();
 
-      // Make a new network node with these attributes
-      Node n = makeNetworkNode(ni);
+        // Make a new network node with these attributes
+        Node n = makeNetworkNode(ni);
 
-      // Add it to the node store
-      store.addNode(n);
+        // Add it to the node store
+        store.addNode(n);
 
-      // Dispatch an output event indicating a new node has entered
-      // the network.
-      OutputHandler.dispatch(DARSEvent.outAddNode(ni));
-    } 
+        // Dispatch an output event indicating a new node has entered
+        // the network.
+        OutputHandler.dispatch(DARSEvent.outAddNode(ni));
+      }
+    }
     else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE) {
-      store.deleteNode(e.nodeId);
+      synchronized (lock) {
+        store.deleteNode(e.nodeId);
+      }
     } 
     else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE) {
-      store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+      synchronized (lock) {
+        store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+      }
     } 
     else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
-      // Get the current attributes of the node
-      NodeAttributes na = store.getNodeAttributes(e.nodeId);
+      synchronized (lock) {
+        // Get the current attributes of the node
+        NodeAttributes na = store.getNodeAttributes(e.nodeId);
 
-      // Set the new x and y
-      na.locationx = e.nodeX;
-      na.locationy = e.nodeY;
+        // Set the new x and y
+        na.locationx = e.nodeX;
+        na.locationy = e.nodeY;
 
-      // Set the new attributes
-      store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+        // Set the new attributes
+        store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
 
-      // Dispatch the moved event
-      OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.locationx,
-          na.locationy));
+        // Dispatch the moved event
+        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.locationx,
+            na.locationy));
+      }
     }
   }
 
