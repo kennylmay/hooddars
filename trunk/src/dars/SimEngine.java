@@ -4,7 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.util.AbstractQueue;
-import javax.swing.Timer;
+import java.util.Timer;
+import java.util.TimerTask;
 import dars.NodeStore;
 import dars.event.DARSEvent;
 import dars.proto.*;
@@ -18,53 +19,18 @@ public class SimEngine implements InputConsumer {
 /**
  * Time to wait for an iteration.
  */
-private int WAIT_TIME = 1000;
+private int WAIT_TIME = 5;
 /**
  * Boolean that is used to keep track of the state of the simulation
  */
 private boolean paused = false;
-private NodeStore store = new NodeStore();
-private AbstractQueue<Message> messages;
-
-ActionListener engine = new ActionListener() {
-   Node node;
-   Message mess;
-   public void actionPerformed(ActionEvent evt) {
-     /// If we have any messages in the queue attempt a delivery
-     if (messages.isEmpty() == false){
-        mess = messages.poll();
-
-        /// If the message is a broadcast then try to send to everyone
-        if (mess.destinationId == Message.BCAST_STRING){
-          for (int index = 0; index < store.getNumberOfNodes(); index++) {
-            node = store.getNodeByIndex(index);
-            
-            /// Only allow the nodes in range to hear the broadcast.
-            if (canCommuincate(mess.originId, node.getAttributes().id)){
-              node.sendRawMessage();
-            }
-          }
-        /// Else if the messages is not a broadcast try to send it to the destination id.
-        }else{
-           /// If the nodes can talk directly go ahead and send the message;
-           if (canCommuincate(mess.originId, mess.destinationId)){
-             node.sendRawMessage();
-           }
-        }  
-     }
-      /// Issue a clock tick to each node in the node store.
-     for (int index = 0; index < store.getNumberOfNodes(); index++) {
-       /// Issue a clock tick to each node
-        node = store.getNodeByIndex(index);
-        node.clockTick();
-     }
-   }
-};
+NodeStore store = new NodeStore();
+AbstractQueue<Message> messages;
 
 /**
  * Timer that will control the execution of the simulation
  */
-Timer timer = new Timer(WAIT_TIME, engine);
+Timer timer;
 
 /**
  * Function that will start a simulation
@@ -76,7 +42,7 @@ Timer timer = new Timer(WAIT_TIME, engine);
  * @param
  */
 void runSimulation() {
-   timer.start();
+   timer.schedule(new ClockTick(), 100);
 }
 
 /**
@@ -93,7 +59,7 @@ void runSimulation() {
  *           ticks.
  */
 void setSimSpeed(int speed) {
-   timer.setDelay(speed);
+   WAIT_TIME = speed;
 }
 
 /**
@@ -130,7 +96,7 @@ void pauseSimulation() {
  * @param
  */
 void stopSimulation() {
-   timer.stop();
+   timer.cancel();
 }
 
 NodeStore getNodeStore(){
@@ -147,7 +113,7 @@ NodeStore getNodeStore(){
  * @param
  */
 public int getSimSpeed() {
-   return timer.getDelay();
+   return WAIT_TIME;
 }
 
 /**
@@ -163,23 +129,7 @@ public void deliverMessage(Message message){
 	messages.add(message);
 }
 
-/**
- * This method is used for determining if a can send a message to antoher node
- * 
- * @param node1
- * @param node2
- * 
- * @return boolean
- */
-private boolean canCommuincate(String Id1, String Id2){
-    NodeAttributes att1 = store.getNodeAttributes(Id1);
-	NodeAttributes att2 = store.getNodeAttributes(Id2);
-	double distance = Point2D.distanceSq(att1.locationx, att1.locationy, att2.locationx, att2.locationy);
-	if (distance > att1.range || distance > att2.range){
-	  return false;
-	}
-	else return true;
-}
+
 
 /**
  * This function will provide a way to determine the type of even that is issued and
@@ -193,19 +143,13 @@ private boolean canCommuincate(String Id1, String Id2){
 @Override
 public void consumeInput(DARSEvent e) {
 	if (e.eventType == DARSEvent.EventType.IN_START_SIM){
-		if (timer.isRunning() == false){
-			runSimulation();
-		}
+		runSimulation();
 	} 
 	else if (e.eventType == DARSEvent.EventType.IN_STOP_SIM){
-		if (timer.isRunning() == true){
-			stopSimulation();
-		}
+		stopSimulation();
 	}
 	else if (e.eventType == DARSEvent.EventType.IN_PAUSE_SIM){
-		if (timer.isRunning() == true){
-			pauseSimulation();
-		}
+		pauseSimulation();
 	}
 	else if (e.eventType == DARSEvent.EventType.IN_SIM_SPEED){
 		WAIT_TIME = e.newSimSpeed;
@@ -284,11 +228,6 @@ public Node makeNetworkNode(NodeAttributes na) {
   return n;  
 }
   
-  
-
-
-
-
   /**
    * assignNodeId method. 
    * 
@@ -354,4 +293,65 @@ public Node makeNetworkNode(NodeAttributes na) {
     return ret;
   }
   private int currId = 0;  
+
+  /**
+   * This method is used for determining if a can send a message to antoher node
+   * 
+   * @param node1
+   * @param node2
+   * 
+   * @return boolean
+   */
+  private boolean canCommuincate(String Id1, String Id2){
+      NodeAttributes att1 = store.getNodeAttributes(Id1);
+      NodeAttributes att2 = store.getNodeAttributes(Id2);
+      double distance = Point2D.distanceSq(att1.locationx, att1.locationy, att2.locationx, att2.locationy);
+      if (distance > att1.range || distance > att2.range){
+        return false;
+      }
+      else return true;
+  }
+  
+class ClockTick extends TimerTask {
+  private int runTime = 0;
+  
+  @Override
+  public void run() {
+    runTime++;
+    if (runTime%WAIT_TIME != 0){
+      return;      
+    }
+    
+    Node node;
+    Message mess;
+    /// If we have any messages in the queue attempt a delivery
+    if (messages.isEmpty() == false){
+       mess = messages.poll();
+
+       /// If the message is a broadcast then try to send to everyone
+       if (mess.destinationId == Message.BCAST_STRING){
+         for (int index = 0; index < store.getNumberOfNodes(); index++) {
+           node = store.getNodeByIndex(index);
+           
+           /// Only allow the nodes in range to hear the broadcast.
+           if (canCommuincate(mess.originId, node.getAttributes().id)){
+            // node.sendRawMessage();
+           }
+         }
+       /// Else if the messages is not a broadcast try to send it to the destination id.
+       }else{
+          /// If the nodes can talk directly go ahead and send the message;
+          if (canCommuincate(mess.originId, mess.destinationId)){
+           // node.sendRawMessage();
+          }
+       }  
+    }
+     /// Issue a clock tick to each node in the node store.
+    for (int index = 0; index < store.getNumberOfNodes(); index++) {
+      /// Issue a clock tick to each node
+       node = store.getNodeByIndex(index);
+       node.clockTick();
+    }
+  } 
+ }
 }
