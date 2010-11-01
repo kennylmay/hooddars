@@ -25,6 +25,8 @@ public class GUI extends JFrame implements OutputConsumer {
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
   private SimArea            simArea             = new SimArea();
 
+  private JPanel menuPanel = new JPanel();
+  
   // Creating the menu bar and all of its elements
   private JMenuBar menuBar = new JMenuBar(); 
   private JMenu simMenu = new JMenu("Simulation");
@@ -41,66 +43,29 @@ public class GUI extends JFrame implements OutputConsumer {
   private JMenuItem webMenu = new JMenuItem("Web Reference");
   
   // If someone knows a better way to align this stuff please feel free.
-  private JLabel simTypeLabel = new JLabel("                                 Simulation Type: ");
-  JLabel typeLabel = new JLabel("    ");
+  private JLabel simTypeLabel = new JLabel("Simulation Type: ");
+  JLabel typeLabel = new JLabel("AODV");
   
+  private JPanel buttonArea  = new JPanel();
   private JButton playButton = new JButton("Play");
   private JButton pauseButton = new JButton("Pause");
   private JButton stopButton = new JButton("Stop");
   
+  private JPanel speedArea = new JPanel();
+  private JPanel simTypeArea = new JPanel();
+  
   // Labels slider bar for the speed adjustment
-  private JLabel speedLabel = new JLabel("                                                                            Speed           ");
+  private JLabel speedLabel = new JLabel("Speed");
   private ImageIcon minusIcon = new ImageIcon("img/minus.png");
   private JLabel slowerLabel = new JLabel(minusIcon);
   private JSlider slideBar = new JSlider();
   private ImageIcon plusIcon = new ImageIcon("img/plus.png");
   private JLabel fasterLabel = new JLabel(plusIcon);
   
-  // Again if someone can do better please do.
-  private JLabel spaceLabel = new JLabel("                                      ");
   
   public GUI() {
     
-    // Add the sim menu help menu to the menu bar
-    menuBar.add(simMenu);
-    menuBar.add(helpMenu);
-    
-    // Add the web help menu to the menu bar
-    helpMenu.add(webMenu);
- 
-    // Add elements to the sim menu and their sub menus
-    simMenu.add(newMenu);
-    newMenu.add(aodvMenu);
-    newMenu.add(dsdvMenu);
-    simMenu.add(saveMenu);
-    simMenu.add(importMenu);
-    importMenu.add(setupMenu);
-    importMenu.add(replayMenu);
-    simMenu.add(clearMenu);
-    simMenu.add(exitMenu);
-    
-    // Add the simulation type menu lables
-    menuBar.add(simTypeLabel);
-    menuBar.add(typeLabel);
-    menuBar.add(spaceLabel);
-    
-    // Add the Play, pause, and stop buttons 
-    menuBar.add(playButton);
-    menuBar.add(pauseButton);
-    menuBar.add(stopButton);
-    
-    // Add the slider bar, set its properties and values.
-    menuBar.add(speedLabel);
-    menuBar.add(slowerLabel);
-    menuBar.add(slideBar);
-    slideBar.setSnapToTicks(true);
-    slideBar.setMinimum(0);
-    slideBar.setMaximum(10);
-    slideBar.setValue(5);
-    menuBar.add(fasterLabel);
-    
-    this.setJMenuBar(menuBar);
-    
+    initMenuBar();
 
     aodvMenu.addActionListener(
       new ActionListener(){
@@ -254,4 +219,56 @@ public class GUI extends JFrame implements OutputConsumer {
   }
 
 
+  private void initMenuBar() {
+    
+    menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
+    
+    // Add the web help menu to the menu bar
+    helpMenu.add(webMenu);
+    
+    // Add elements to the sim menu and their sub menus
+    simMenu.add(newMenu);
+    newMenu.add(aodvMenu);
+    newMenu.add(dsdvMenu);
+    simMenu.add(saveMenu);
+    simMenu.add(importMenu);
+    importMenu.add(setupMenu);
+    importMenu.add(replayMenu);
+    simMenu.add(clearMenu);
+    simMenu.add(exitMenu);
+
+    menuBar.add(simMenu);
+    menuBar.add(helpMenu);
+    
+    // Add the simulation type menu lables
+    
+    simTypeArea.add(simTypeLabel);
+    simTypeArea.add(typeLabel);
+    menuPanel.add(simTypeArea);
+    
+    
+    // Add the Play, pause, and stop buttons
+    buttonArea.add(playButton);
+    buttonArea.add(pauseButton);
+    buttonArea.add(stopButton);
+    menuPanel.add(buttonArea);
+    
+    // Add the slider bar, set its properties and values.
+    speedArea.add(speedLabel);
+    speedArea.add(slowerLabel);
+    speedArea.add(slideBar);
+    slideBar.setSnapToTicks(true);
+    slideBar.setMinimum(0);
+    slideBar.setMaximum(10);
+    slideBar.setValue(5);
+    speedArea.add(fasterLabel);
+    menuPanel.add(speedArea);
+    
+    menuBar.add(menuPanel);
+    
+    this.setJMenuBar(menuBar);
+  }
+  
+  
 }
+
