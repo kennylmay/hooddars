@@ -2,6 +2,8 @@ package dars.proto.aodv;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.AbstractQueue;
+import java.util.NoSuchElementException;
 
 import dars.NodeAttributes;
 import dars.proto.Node;
@@ -67,46 +69,83 @@ public class Aodv implements Node {
   // Don't think that TTL_VALUE is really a constant.
   // public static final int TTL_VALUE = ??
 
-  /**
+  /*
    * Functions that define the org.dars.proto.node interface.
    */
 
   /**
-   * Send raw message into the network.
+   * Pop a message of the node's transmit queue and return it.
    * 
-   * This function sends a preformed message into the network. A raw message
-   * should be thought of as the bits on a wire not text.
+   * This function is used to return a message off the transmit queue of a node
+   * and return it for the simulation engine to consume. Effectively this is
+   * used to simulate the transmittal of a message into the network.
    * 
    * @author kresss
-   * @see org.dars.proto.node.sendRawMessage
+   * @see dars.node.proto.node.messageToNetwork
    * 
-   * @param message
-   *          Preformated message to be transmitted.
+   * @return Message Message that is being sent into the network. If there are
+   *         no more messages Null is returned.
    */
-  public void sendRawMessage(dars.Message message) {
+  public Message messageToNetwork() {
 
+    Message Msg;
+
+    try {
+      Msg = txQueue.remove();
+    } catch (NoSuchElementException exception) {
+      Msg = null;
+    }
+
+    return (Msg);
   }
 
   /**
-   * Receive raw message from the network.
+   * Push a message into the node's receive queue.
    * 
-   * This function will receive a message from the network then determine what
-   * type of message it is and call the appropriate message processing routine.
+   * This function is used to deliver a message to a node.  The message will be placed into the nodes receive queue effectively the node is receiving the message.
    * 
    * @author kresss
-   * @see org.dars.proto.node.receiveRawMessage
+   * @see dars.node.proto.node.messageToNode
    * 
-   * @param message
-   *          Message from the network simulation engine.
+   * @param Message Message to be delivered to the node.
+   * 
    */
-  public void receiveRawMessage() {
-
+  public void messageToNode(Message message){
+    
   }
-
-  /**
+  
+  /*
    * Functions that extend the org.dars.proto.node interface to make it unique
    * to aodv.
    */
+  
+  /**
+   * Place message into the transmit queue.
+   * 
+   * This function sends a message into the network by adding it to the transmit
+   * queue.
+   * 
+   * @author kresss
+   * 
+   * @param message
+   *          Message to be transmitted.
+   */
+  private void sendMessage(Message message) {
+    
+  }
+  
+  /**
+   * Take a message off the receive queue.
+   * 
+   * This function receives a message from the network by removing it from the
+   * receive queue for processing.
+   * 
+   * @author kresss
+   * 
+   */
+  private void receiveMessage() {
+    
+  }
 
   /**
    * Generate and send a Route Request Message.
@@ -206,7 +245,7 @@ public class Aodv implements Node {
 
     Msg = new Message(Message.BCAST_STRING, MsgSrcID, MsgStr);
 
-    sendRawMessage(Msg);
+    sendMessage(Msg);
 
   }
 
@@ -321,7 +360,7 @@ public class Aodv implements Node {
 
     Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
 
-    sendRawMessage(Msg);
+    sendMessage(Msg);
 
   }
 
@@ -417,5 +456,20 @@ public class Aodv implements Node {
    * Time is loosely defined in the simulation. This is the current tick count
    * for the node.
    */
-  int                                 CurrentTick = 0;
+  private int                                 CurrentTick = 0;
+  
+  /**
+   * Transmit Queue
+   * 
+   * Queue of messages that are waiting to be transmitted into the network.
+   */
+  private AbstractQueue<Message> txQueue;
+  
+  /**
+   * Receive Queue
+   * 
+   * Queue of messages that have been received from the network. 
+   */
+  private AbstractQueue<Message> rxQueue;
+  
 }

@@ -2,6 +2,7 @@
  * 
  */
 package dars.proto;
+
 import dars.NodeAttributes;
 import dars.Message;
 
@@ -12,50 +13,46 @@ import dars.Message;
  * 
  */
 public abstract interface Node {
+  
+  /**
+   * Pop a message of the node's transmit queue and return it.
+   * 
+   * This function is used to return a message off the transmit queue of a node and return it for the simulation engine to consume.  Effectively this is used to simulate the transmittal of a message into the network.
+   * 
+   * @author kresss
+   * 
+   * @return Message Message that is being sent into the network.
+   */
+  Message messageToNetwork();
+  
+  /**
+   * Push a message into the node's receive queue.
+   * 
+   * This function is used to deliver a message to a node.  The message will be placed into the nodes receive queue effectively the node is receiving the message.
+   * 
+   * @author kresss
+   * 
+   * @param Message Message to be delivered to the node.
+   * 
+   */
+  void messageToNode(Message message);
 
+  /**
+   * Returns the Node's attributes
+   * 
+   * @return NodeAttributes
+   */
+  NodeAttributes getAttributes();
 
+  /**
+   * Sets the Node's attributes
+   * 
+   * @return void
+   * 
+   * @param NodeAttributes
+   */
+  void setAttributes(NodeAttributes att);
 
-	/**
-	 * Send raw message into the network.
-	 * 
-	 * This function sends a pre-formatted message into the network. A raw
-	 * message should be thought of as the bits on a wire not text.
-	 * 
-	 * @author kresss
-	 * 
-	 * @param message
-	 *            Pre-formatted message to be transmitted.
-	 */
-	void sendRawMessage(Message message);
-
-	/**
-	 * Receive raw message from the network.
-	 * 
-	 * This function will receive a message from the network then determine what
-	 * type of message it is and call the appropriate message processing
-	 * routine.
-	 * 
-	 * @author kresss
-	 * 
-	 * @param message
-	 *            Message from the network simulation engine.
-	 */
-	void receiveRawMessage();
-
-   /**
-    * Returns the Node's attributes
-    * @return NodeAttributes
-    */
-   NodeAttributes getAttributes();
-   
-   /**
-    * Sets the Node's attributes
-    * @return void
-    * 
-    * @param NodeAttributes 
-    */
-   void setAttributes(NodeAttributes att);
-   
-   void clockTick();
+  void clockTick();
 
 }
