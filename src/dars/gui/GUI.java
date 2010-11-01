@@ -8,6 +8,8 @@ import dars.OutputConsumer;
 import dars.event.DARSEvent;
 import dars.gui.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GUI extends JFrame implements OutputConsumer {
 
@@ -23,14 +25,92 @@ public class GUI extends JFrame implements OutputConsumer {
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
   private SimArea            simArea             = new SimArea();
 
+  // Creating the menu bar and all of its elements
   private JMenuBar menuBar = new JMenuBar(); 
-  private JMenu fileMenu = new JMenu("File");
+  private JMenu simMenu = new JMenu("Simulation");
+  private JMenu newMenu = new JMenu("New");
+  private JMenuItem saveMenu = new JMenuItem("Save");
+  private JMenuItem aodvMenu = new JMenuItem("AODV");
+  private JMenuItem dsdvMenu = new JMenuItem("DSDV");
+  private JMenuItem clearMenu = new JMenuItem("Clear");
+  private JMenuItem exitMenu = new JMenuItem("Exit");
+  private JMenu importMenu = new JMenu("Import");
+  private JMenuItem setupMenu = new JMenuItem("Setup");
+  private JMenuItem replayMenu = new JMenuItem("Replay");
+  private JMenu helpMenu = new JMenu("Help");
+  private JMenuItem webMenu = new JMenuItem("Web Reference");
+  
+  // If someone knows a better way to align this stuff please feel free.
+  private JLabel simTypeLabel = new JLabel("                                 Simulation Type: ");
+  JLabel typeLabel = new JLabel("    ");
+  
+  private JButton playButton = new JButton("Play");
+  private JButton pauseButton = new JButton("Pause");
+  private JButton stopButton = new JButton("Stop");
+  
+  // Labels slider bar for the speed adjustment
+  private JLabel speedLabel = new JLabel("                                                                            Speed           ");
+  private ImageIcon minusIcon = new ImageIcon("img/minus.png");
+  private JLabel slowerLabel = new JLabel(minusIcon);
+  private JSlider slideBar = new JSlider();
+  private ImageIcon plusIcon = new ImageIcon("img/plus.png");
+  private JLabel fasterLabel = new JLabel(plusIcon);
+  
+  // Again if someone can do better please do.
+  private JLabel spaceLabel = new JLabel("                                      ");
   
   public GUI() {
     
-    //Add the menu bar
-    menuBar.add(fileMenu);
+    // Add the sim menu help menu to the menu bar
+    menuBar.add(simMenu);
+    menuBar.add(helpMenu);
+    
+    // Add the web help menu to the menu bar
+    helpMenu.add(webMenu);
+ 
+    // Add elements to the sim menu and their sub menus
+    simMenu.add(newMenu);
+    newMenu.add(aodvMenu);
+    newMenu.add(dsdvMenu);
+    simMenu.add(saveMenu);
+    simMenu.add(importMenu);
+    importMenu.add(setupMenu);
+    importMenu.add(replayMenu);
+    simMenu.add(clearMenu);
+    simMenu.add(exitMenu);
+    
+    // Add the simulation type menu lables
+    menuBar.add(simTypeLabel);
+    menuBar.add(typeLabel);
+    menuBar.add(spaceLabel);
+    
+    // Add the Play, pause, and stop buttons 
+    menuBar.add(playButton);
+    menuBar.add(pauseButton);
+    menuBar.add(stopButton);
+    
+    // Add the slider bar, set its properties and values.
+    menuBar.add(speedLabel);
+    menuBar.add(slowerLabel);
+    menuBar.add(slideBar);
+    slideBar.setSnapToTicks(true);
+    slideBar.setMinimum(0);
+    slideBar.setMaximum(10);
+    slideBar.setValue(5);
+    menuBar.add(fasterLabel);
+    
     this.setJMenuBar(menuBar);
+    
+
+    aodvMenu.addActionListener(
+      new ActionListener(){
+        public void actionPerformed(ActionEvent e) {
+          typeLabel.setText("AODV");
+        }
+      });
+    
+    
+    
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -84,9 +164,6 @@ public class GUI extends JFrame implements OutputConsumer {
 
     // Show everything
     this.setVisible(true);
-    
-
-
   }
 
   private void setSizes() {
