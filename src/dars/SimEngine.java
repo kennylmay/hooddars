@@ -32,7 +32,9 @@ public class SimEngine implements InputConsumer {
    * @param
    */
   void runSimulation() {
-    thread.start();
+    if (thread.isAlive() == false){
+      thread.start();
+    }
   }
 
   /**
