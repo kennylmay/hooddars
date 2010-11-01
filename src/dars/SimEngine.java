@@ -120,11 +120,15 @@ public class SimEngine implements InputConsumer {
         KILL_THREAD = false;
         return;
       }
-      // If there are messages in the messageQueue try to attempt delivery.
-      while (messageQueue.isEmpty() == false) {
-        message = messageQueue.poll();
-       
-        synchronized (lock) {
+      
+      //Enter the critical area for the simulation
+      //////////////////////////////////////////////////////
+      synchronized (lock) {
+
+        // If there are messages in the messageQueue try to attempt delivery.
+        while (messageQueue.isEmpty() == false) {
+          message = messageQueue.poll();
+
           // If the message is a broadcast then try to send to everyone
           if (message.destinationId == Message.BCAST_STRING) {
             for (int index = 0; index < store.getNumberOfNodes(); index++) {
@@ -160,9 +164,13 @@ public class SimEngine implements InputConsumer {
           messageQueue.add(message);
           // }
         }
-      }
+      } // Exit critical area
+      
       // Sleep the user defined amount of time
       // WAIT_TIME is time to wait in milliseconds (default: 1000 = 1 second)
+      
+    
+      
       try {
         Thread.sleep(WAIT_TIME);
       } catch (InterruptedException e) {
@@ -183,21 +191,18 @@ public class SimEngine implements InputConsumer {
    */
   @Override
   public void consumeInput(DARSEvent e) {
-    if (e.eventType == DARSEvent.EventType.IN_START_SIM) {
-      runSimulation();
-    } 
-    else if (e.eventType == DARSEvent.EventType.IN_STOP_SIM) {
-      stopSimulation();
-    } 
-    else if (e.eventType == DARSEvent.EventType.IN_PAUSE_SIM) {
-      pauseSimulation();
-    } 
-    else if (e.eventType == DARSEvent.EventType.IN_SIM_SPEED) {
-      WAIT_TIME = e.newSimSpeed;
-      setSimSpeed(WAIT_TIME);
-    } 
-    else if (e.eventType == DARSEvent.EventType.IN_ADD_NODE) {
-      synchronized (lock) {
+    //Enter critical area
+    synchronized (lock) {
+      if (e.eventType == DARSEvent.EventType.IN_START_SIM) {
+        runSimulation();
+      } else if (e.eventType == DARSEvent.EventType.IN_STOP_SIM) {
+        stopSimulation();
+      } else if (e.eventType == DARSEvent.EventType.IN_PAUSE_SIM) {
+        pauseSimulation();
+      } else if (e.eventType == DARSEvent.EventType.IN_SIM_SPEED) {
+        WAIT_TIME = e.newSimSpeed;
+        setSimSpeed(WAIT_TIME);
+      } else if (e.eventType == DARSEvent.EventType.IN_ADD_NODE) {
         // Get the node attributes for this input event
         NodeAttributes ni = e.getNodeAttributes();
 
@@ -213,35 +218,33 @@ public class SimEngine implements InputConsumer {
         // Dispatch an output event indicating a new node has entered
         // the network.
         OutputHandler.dispatch(DARSEvent.outAddNode(ni));
-      }
-    }
-    else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE) {
-      synchronized (lock) {
-        store.deleteNode(e.nodeId);
-      }
-    } 
-    else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE) {
-      synchronized (lock) {
-        store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
-      }
-    } 
-    else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
-      synchronized (lock) {
-        // Get the current attributes of the node
-        NodeAttributes na = store.getNodeAttributes(e.nodeId);
 
-        // Set the new x and y
-        na.locationx = e.nodeX;
-        na.locationy = e.nodeY;
+      } else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE) {
+        synchronized (lock) {
+          store.deleteNode(e.nodeId);
+        }
+      } else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE) {
+        synchronized (lock) {
+          store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+        }
+      } else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
+        synchronized (lock) {
+          // Get the current attributes of the node
+          NodeAttributes na = store.getNodeAttributes(e.nodeId);
 
-        // Set the new attributes
-        store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+          // Set the new x and y
+          na.locationx = e.nodeX;
+          na.locationy = e.nodeY;
 
-        // Dispatch the moved event
-        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.locationx,
-            na.locationy));
+          // Set the new attributes
+          store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+
+          // Dispatch the moved event
+          OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.locationx,
+              na.locationy));
+        }
       }
-    }
+    } /// Exit critical area
   }
 
   public enum NodeType {
