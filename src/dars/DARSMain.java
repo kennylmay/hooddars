@@ -41,6 +41,7 @@ public class DARSMain {
     
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
+    InputHandler.dispatch(DARSEvent.inStartSim());
     
   }
 

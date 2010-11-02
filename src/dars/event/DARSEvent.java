@@ -56,7 +56,7 @@ public class DARSEvent {
   private DARSEvent() {
   };
 
-  static DARSEvent inStartSim() {
+  public static DARSEvent inStartSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_START_SIM;
     return e;
