@@ -121,24 +121,23 @@ public class SimEngine implements InputConsumer {
 
     public void run() {
       // Make sure the kill switch hasn't been thrown.
-      if (KILL_THREAD == true) {
-        // Reset the flag for the next possible run.
-        KILL_THREAD = false;
-        return;
-      }
-      iterationCount++;
-      // Only attempt to enter the critical area every 100th try
-      if (iterationCount == 100) {
-        // Reset the iterationCount after the 100th try
-        iterationCount = 0;
-        if (paused == false) {
-          // Enter the critical area for the simulation
-          // ////////////////////////////////////////////////////
-          synchronized (lock) {
-            MainLoop();
+      while (KILL_THREAD == false) {
+
+        iterationCount++;
+        // Only attempt to enter the critical area every 100th try
+        if (iterationCount == 100) {
+          // Reset the iterationCount after the 100th try
+          iterationCount = 0;
+          if (paused == false) {
+            // Enter the critical area for the simulation
+            // ////////////////////////////////////////////////////
+            synchronized (lock) {
+              MainLoop();
+            }
           }
         }
       }
+      KILL_THREAD = false;
     }
   }
 
@@ -240,8 +239,8 @@ public class SimEngine implements InputConsumer {
         OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
       } else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE) {
         store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
-        OutputHandler.dispatch(DARSEvent.outEditNode(e.nodeId,
-            store.getNodeAttributes(e.nodeId)));
+        OutputHandler.dispatch(DARSEvent.outEditNode(e.nodeId, store
+            .getNodeAttributes(e.nodeId)));
       } else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
 
         // Get the current attributes of the node
@@ -255,8 +254,7 @@ public class SimEngine implements InputConsumer {
         store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
 
         // Dispatch the moved event
-        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.x,
-            na.y));
+        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.x, na.y));
       }
     } // / Exit critical area
   }
@@ -368,8 +366,7 @@ public class SimEngine implements InputConsumer {
   private boolean canCommuincate(String Id1, String Id2) {
     NodeAttributes att1 = store.getNodeAttributes(Id1);
     NodeAttributes att2 = store.getNodeAttributes(Id2);
-    double distance = Point2D.distanceSq(att1.x, att1.y,
-        att2.x, att2.y);
+    double distance = Point2D.distanceSq(att1.x, att1.y, att2.x, att2.y);
     if (distance > att1.range || distance > att2.range) {
       return false;
     } else
