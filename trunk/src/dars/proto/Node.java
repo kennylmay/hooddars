@@ -32,7 +32,7 @@ public abstract interface Node {
    * 
    * @author kresss
    * 
-   * @param Message Message to be delivered to the node.
+   * @param message Message to be delivered to the node.
    * 
    */
   void messageToNode(Message message);
@@ -47,12 +47,19 @@ public abstract interface Node {
   /**
    * Sets the Node's attributes
    * 
-   * @return void
+   * @author mayk
    * 
-   * @param NodeAttributes
+   * @param atts The new attributes for the node.
    */
-  void setAttributes(NodeAttributes att);
+  void setAttributes(NodeAttributes atts);
 
+  /**
+   * Process an iteration of this node.
+   * 
+   * This will do all the processing for a node's time interval.
+   * 
+   * @author kresss
+   */
   void clockTick();
 
 }

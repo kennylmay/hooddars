@@ -3,12 +3,17 @@ package dars.proto.aodv;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.AbstractQueue;
+
+// Exceptions
 import java.util.NoSuchElementException;
+import java.lang.IllegalStateException;
 
 import dars.NodeAttributes;
+import dars.OutputHandler;
 import dars.proto.Node;
 import dars.Message;
 import dars.proto.aodv.RouteEntry.StateFlags;
+import dars.event.DARSEvent;
 
 /**
  * AODV Node Class.
@@ -27,9 +32,10 @@ public class Aodv implements Node {
   public static final int NET_TRAVERSAL_TIME   = 2 * NODE_TRAVERSAL_TIME
                                                    * NET_DIAMETER;
   public static final int PATH_DISCOVERY_TIME  = 2 * NET_TRAVERSAL_TIME;
-  public static final int DELETE_PERIOD = 5;
+  public static final int DELETE_PERIOD        = 5;
 
-  // KRESSS - I am unsure if the constants listed below are needed for our implementation.
+  // KRESSS - I am unsure if the constants listed below are needed for our
+  // implementation.
   public static final int ACTIVE_ROUTE_TIMEOUT = 3000;                      // Milliseconds
   public static final int HELLO_INTERVAL       = 1000;                      // Milliseconds
   // public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
@@ -61,7 +67,7 @@ public class Aodv implements Node {
    * DELETE_PERIOD = K * max (ACTIVE_ROUTE_TIMEOUT, HELLO_INTERVAL) (K = 5 is
    * recommended).
    */
-  //public static final int DELETE_PERIOD        = 5 * ACTIVE_ROUTE_TIMEOUT;
+  // public static final int DELETE_PERIOD = 5 * ACTIVE_ROUTE_TIMEOUT;
 
   // Don't think that MIN_REPAIR_TTL will really be needed.
   // public static final int MIN_REPAIR_TTL = ??
@@ -102,23 +108,35 @@ public class Aodv implements Node {
   /**
    * Push a message into the node's receive queue.
    * 
-   * This function is used to deliver a message to a node.  The message will be placed into the nodes receive queue effectively the node is receiving the message.
+   * This function is used to deliver a message to a node. The message will be
+   * placed into the nodes receive queue effectively the node is receiving the
+   * message.
    * 
    * @author kresss
    * @see dars.node.proto.node.messageToNode
    * 
-   * @param Message Message to be delivered to the node.
+   * @param message
+   *          Message to be delivered to the node.
    * 
    */
-  public void messageToNode(Message message){
-    
+  public void messageToNode(Message message) {
+
+    try {
+      rxQueue.add(message);
+    } catch (IllegalStateException exception) {
+      OutputHandler
+          .dispatch(DARSEvent
+              .outError(this.att.id
+                  + " Failed to successfully receive message due to a full receive queue."));
+    }
+
   }
-  
+
   /*
    * Functions that extend the org.dars.proto.node interface to make it unique
    * to aodv.
    */
-  
+
   /**
    * Place message into the transmit queue.
    * 
@@ -131,9 +149,16 @@ public class Aodv implements Node {
    *          Message to be transmitted.
    */
   private void sendMessage(Message message) {
-    
+    try {
+      txQueue.add(message);
+    } catch (IllegalStateException exception) {
+      OutputHandler
+          .dispatch(DARSEvent
+              .outError(this.att.id
+                  + " Failed to successfully receive message due to a full receive queue."));
+    }
   }
-  
+
   /**
    * Take a message off the receive queue.
    * 
@@ -142,8 +167,10 @@ public class Aodv implements Node {
    * 
    * @author kresss
    * 
+   * @param message The message the is being received from the network.
    */
-  private void receiveMessage() {
+  private void receiveMessage(Message message) {
+
     
   }
 
@@ -370,11 +397,23 @@ public class Aodv implements Node {
    * Send a route ack message as defined by RFC 3561 Section 5.4
    * 
    * @author kresss
-   * 
-   * @param
+
    */
   void sendRREPACK() {
 
+  }
+  
+  /**
+   * Send a Hello Message (Special RREQ)
+   * 
+   * This function will broadcast a hello message if it is time. 
+   * 
+   * @author kresss
+   */
+  void sendHello() {
+    
+    
+    
   }
 
   /**
@@ -385,11 +424,10 @@ public class Aodv implements Node {
    * 
    * Note, this returns a copy of the node attributes. Not a reference to the
    * attributes object itself.
+   * 
    * @author mayk
    * 
    * @return NodeAttributes
-   * 
-   * @param
    */
   public NodeAttributes getAttributes() {
     return new NodeAttributes(att);
@@ -400,19 +438,25 @@ public class Aodv implements Node {
    * 
    * This function will update the attributes for the node.
    * 
-   *  Note, to be sure that no outside entity can modify the node attributes
-   * object belonging to this instance, this method invokes the copy 
-   * constructor of node attributes.
+   * Note, to be sure that no outside entity can modify the node attributes
+   * object belonging to this instance, this method invokes the copy constructor
+   * of node attributes.
+   * 
    * @author mayk
    * 
-   * @return void
-   * 
-   * @param NodeAttributes
+   * @param atts The new attributes for the node.
    */
   public void setAttributes(NodeAttributes atts) {
     this.att = new NodeAttributes(atts);
   }
 
+  /**
+   * Process an iteration of this node.
+   * 
+   * This will do all the processing for a node's time interval.
+   * 
+   * @author kresss
+   */
   public void clockTick() {
 
     /**
@@ -420,7 +464,18 @@ public class Aodv implements Node {
      */
     CurrentTick++;
     
-    //TODO: Need to determine what is needed for a cycle in a node.  
+    /**
+     * Receive and process each message on the Receive Queue.
+     */
+    while (!rxQueue.isEmpty()) {
+      receiveMessage(rxQueue.remove());
+    }
+    
+    sendHello();
+    
+    
+
+    // TODO: Need to determine what is needed for a cycle in a node.
   }
 
   /**
@@ -456,20 +511,20 @@ public class Aodv implements Node {
    * Time is loosely defined in the simulation. This is the current tick count
    * for the node.
    */
-  private int                                 CurrentTick = 0;
-  
+  private int                         CurrentTick = 0;
+
   /**
    * Transmit Queue
    * 
    * Queue of messages that are waiting to be transmitted into the network.
    */
-  private AbstractQueue<Message> txQueue;
-  
+  private AbstractQueue<Message>      txQueue;
+
   /**
    * Receive Queue
    * 
-   * Queue of messages that have been received from the network. 
+   * Queue of messages that have been received from the network.
    */
-  private AbstractQueue<Message> rxQueue;
-  
+  private AbstractQueue<Message>      rxQueue;
+
 }
