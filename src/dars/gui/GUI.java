@@ -198,12 +198,18 @@ public class GUI extends JFrame implements OutputConsumer {
         nodeAttributesArea.setNode(e.nodeId);
         break;
       
+      case OUT_DEL_NODE:
+        //Remove the node
+        simArea.deleteNode(e.nodeId);
+        break;
+        
       case OUT_DEBUG:
         logArea.appendLog("DEBUG : " + e.informationalMessage);
         break;
       case OUT_ERROR:
         logArea.appendLog("ERROR: " + e.informationalMessage);
         break;
+        
       }
     }
   }
