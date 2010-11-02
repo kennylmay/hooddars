@@ -33,11 +33,25 @@ public class Aodv implements Node {
                                                    * NET_DIAMETER;
   public static final int PATH_DISCOVERY_TIME  = 2 * NET_TRAVERSAL_TIME;
   public static final int DELETE_PERIOD        = 5;
+  
+  /**
+   * How often to send Hello Messages.
+   * 
+   * Hello_Interval is in the number of 'ticks'.
+   * 
+   * The value (25) for Hello_Interval is derived from the original 1000
+   * millisecond hello interval specifed in RFC 3561 divided by the node
+   * traversal time in the RFC.
+   * 
+   */
+  public static final int HELLO_INTERVAL       = 25;                        // Ticks
 
+  
+  
   // KRESSS - I am unsure if the constants listed below are needed for our
   // implementation.
   public static final int ACTIVE_ROUTE_TIMEOUT = 3000;                      // Milliseconds
-  public static final int HELLO_INTERVAL       = 1000;                      // Milliseconds
+  //public static final int HELLO_INTERVAL       = 1000;                      // Milliseconds
   // public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
 
   public static final int ALLOWED_HELLO_LOSS   = 2;
