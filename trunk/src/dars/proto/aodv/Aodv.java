@@ -45,7 +45,7 @@ public class Aodv implements Node {
    * 
    */
   public static final int HELLO_INTERVAL       = 25;                        // Ticks
-
+  public static final int ALLOWED_HELLO_LOSS   = 2;
   
   
   // KRESSS - I am unsure if the constants listed below are needed for our
@@ -54,7 +54,7 @@ public class Aodv implements Node {
   //public static final int HELLO_INTERVAL       = 1000;                      // Milliseconds
   // public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
 
-  public static final int ALLOWED_HELLO_LOSS   = 2;
+  
   public static final int LOCAL_ADD_TTL        = 2;
 
   public static final int RREQ_RETRIES         = 2;
@@ -426,7 +426,63 @@ public class Aodv implements Node {
    */
   void sendHello() {
     
+    /**
+     * RREP Message Format
+     * 
+     * TYPE|FLAGS|HOPCOUNT|DESTID|DESTSEQ|ORIGID|LIFETIME
+     * 
+     */
     
+    
+    
+    /**
+     * Message object that will be passed to SendRawMessage.
+     */
+    Message Msg;
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+
+    /**
+     * Message Properties
+     */
+    String MsgType = "RREP";
+    String MsgFlags = "";
+    int MsgHopCount = 0;
+    String MsgDestID = this.att.id;
+    int MsgDestSeqNum = this.LastSeqNum;
+    String MsgOrigID = this.att.id;
+    int MsgLifetime = ALLOWED_HELLO_LOSS * HELLO_INTERVAL;
+    
+    /**
+     * The node should only send out a Hello Message every Hello_Interval ticks.
+     * If it is not time to send a new hello message yet then return with out sending a message.
+     */
+    if ((HelloSentAt + HELLO_INTERVAL) > this.CurrentTick) {
+      return;
+    }
+    
+    // TODO: Maybe need to add in some checking of the RouteTable for active routes if there is a need to comply with RFC 3561 Section 6.9 Paragraph 1 Sentence 2.
+    
+    /**
+     * Build the message string that will be sent to the other nodes.
+     */
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+    
+    /**
+     * Save the current time as the time of the last hello message that was sent.
+     */
+    HelloSentAt = this.CurrentTick;
+    
+    Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
+    
+    /**
+     * Place the message into the txQueue.
+     */
+    sendMessage(Msg);
+    
+    OutputHandler.dispatch(DARSEvent.outDebug(MsgStr));
     
   }
 
@@ -478,6 +534,8 @@ public class Aodv implements Node {
      */
     CurrentTick++;
     
+    OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + "Received clocktick."));
+    
     /**
      * Receive and process each message on the Receive Queue.
      */
@@ -486,6 +544,7 @@ public class Aodv implements Node {
     }
     
     sendHello();
+    
     
     
 
@@ -540,5 +599,10 @@ public class Aodv implements Node {
    * Queue of messages that have been received from the network.
    */
   private AbstractQueue<Message>      rxQueue;
+  
+  /**
+   * Last Tick That A Hello Message Was Sent At
+   */
+  private int HelloSentAt = 0;
 
 }
