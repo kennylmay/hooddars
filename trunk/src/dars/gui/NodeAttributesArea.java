@@ -123,8 +123,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   
   private void setAttributes(NodeAttributes n){
     nodeIdField.setText(n.id);
-    nodeXField.setText( Integer.toString(n.locationx));
-    nodeYField.setText( Integer.toString(n.locationy));
+    nodeXField.setText( Integer.toString(n.x));
+    nodeYField.setText( Integer.toString(n.y));
     nodeRangeSpinner.setValue(n.range);
   }
   

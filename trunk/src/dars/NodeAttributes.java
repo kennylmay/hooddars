@@ -2,15 +2,15 @@ package dars;
 
 public final class NodeAttributes {
   public String id;
-  public int    locationx;
-  public int    locationy;
+  public int    x;
+  public int    y;
   public int    range;
 
   // Copy constructor.
   public NodeAttributes(NodeAttributes ni) {
     id = ni.id;
-    locationx = ni.locationx;
-    locationy = ni.locationy;
+    x = ni.x;
+    y = ni.y;
     range = ni.range;
   }
 

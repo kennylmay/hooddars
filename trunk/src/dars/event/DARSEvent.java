@@ -36,16 +36,16 @@ public class DARSEvent {
   
   public NodeAttributes getNodeAttributes() {
     NodeAttributes n = new NodeAttributes();
-    n.locationx = nodeX;
-    n.locationy = nodeY;
+    n.x = nodeX;
+    n.y = nodeY;
     n.range = nodeRange;
     n.id = nodeId;
     return n;
   }
   
   public void setNodeAttributes(NodeAttributes n) {
-    nodeX = n.locationx;
-    nodeY = n.locationy;
+    nodeX = n.x;
+    nodeY = n.y;
     nodeRange = n.range;
     nodeId = n.id;
     
@@ -122,8 +122,8 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_EDIT_NODE;
     e.nodeId = id;
-    e.nodeX = n.locationx;
-    e.nodeY = n.locationy;
+    e.nodeX = n.x;
+    e.nodeY = n.y;
     return e;
   }
 
