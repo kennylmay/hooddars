@@ -198,8 +198,7 @@ public class SimEngine implements InputConsumer {
     while(i.hasNext()) {
       node = i.next();
       // Gather all the messages from each node.
-      message = node.messageToNetwork();
-      while (message != null) {
+      while ((message = node.messageToNetwork()) != null) {
         messageQueue.add(message);
       }
     }
