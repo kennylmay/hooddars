@@ -135,8 +135,10 @@ public class DARSEvent {
   }
 
   static DARSEvent outDeleteNode(String id) {
-    // stub
-    return new DARSEvent();
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_DEL_NODE;
+    d.nodeId = id;
+    return d;
   }
 
   static DARSEvent outEditNode(String id, NodeAttributes n) {
