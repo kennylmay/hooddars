@@ -325,4 +325,13 @@ class NodeActionHandler implements GNodeListener{
   public String getSimType() {
      return "AODV";
   }
+  public void selectNode(String nodeId){
+    GNode g = getGNode(nodeId);
+    if (g == null){
+      return;
+    }else{
+      g.select();
+    }
+      
+  }
 } 

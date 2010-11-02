@@ -1,6 +1,7 @@
 package dars.gui;
 
 import javax.swing.*;
+
 import javax.swing.border.Border;
 
 import dars.NodeInspector;
@@ -188,9 +189,9 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_ADD_NODE:
         //Add the node
         simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
-        
+        nodeAttributesArea.nodeAdded(e.nodeId);
       case OUT_MOVE_NODE:
-        //Move the node
+        //Move the nodenodeSelectorComboBox
         simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
         break;
       case OUT_EDIT_NODE:
@@ -201,6 +202,7 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_DEL_NODE:
         //Remove the node
         simArea.deleteNode(e.nodeId);
+        nodeAttributesArea.nodeDeleted(e.nodeId);
         break;
         
       case OUT_DEBUG:

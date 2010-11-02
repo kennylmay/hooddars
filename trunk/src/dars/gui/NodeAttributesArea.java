@@ -2,6 +2,8 @@ package dars.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -13,6 +15,7 @@ import javax.swing.SpinnerNumberModel;
 
 import dars.NodeAttributes;
 import dars.NodeInspector;
+import dars.SimEngine;
 
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
@@ -97,6 +100,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // TODO Auto-generated method stub
     
   }
+  public void nodeAdded(String nodeId){
+    nodeSelectorComboBox.addItem(nodeId);
+  }
+  public void nodeDeleted(String nodeId){
+    nodeSelectorComboBox.removeItem(nodeId);
+  }
   @Override
   public void nodeMoved(GNode node, int new_x, int new_y) {
     // TODO Auto-generated method stub
@@ -135,6 +144,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   public void setNode(String nodeId) {
     
   }
+  public class comboBoxSelection  implements ActionListener {
+    public void actionPerformed(ActionEvent arg0) {
+      nodeSelectorComboBox.getSelectedItem();
+      
+    }
   
+}
   private NodeInspector nodeInspector;
 }
