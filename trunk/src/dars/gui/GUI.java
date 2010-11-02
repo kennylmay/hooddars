@@ -204,7 +204,7 @@ public class GUI extends JFrame implements OutputConsumer {
         break;
         
       case OUT_DEBUG:
-        logArea.appendLog("DEBUG : " + e.informationalMessage);
+        logArea.appendLog("DEBUG: " + e.informationalMessage);
         break;
       case OUT_ERROR:
         logArea.appendLog("ERROR: " + e.informationalMessage);
