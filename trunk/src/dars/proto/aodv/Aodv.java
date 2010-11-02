@@ -3,6 +3,8 @@ package dars.proto.aodv;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.AbstractQueue;
+import java.util.LinkedList;
+import java.util.Queue;
 
 // Exceptions
 import java.util.NoSuchElementException;
@@ -591,14 +593,14 @@ public class Aodv implements Node {
    * 
    * Queue of messages that are waiting to be transmitted into the network.
    */
-  private AbstractQueue<Message>      txQueue;
+  private Queue<Message>      txQueue = new LinkedList<Message>();
 
   /**
    * Receive Queue
    * 
    * Queue of messages that have been received from the network.
    */
-  private AbstractQueue<Message>      rxQueue;
+  private Queue<Message>      rxQueue =  new LinkedList<Message>();
   
   /**
    * Last Tick That A Hello Message Was Sent At
