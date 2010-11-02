@@ -19,7 +19,8 @@ public class DARSEvent {
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL,
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_EDIT_NODE, OUT_NODE_DATA_RECEIVED, 
-    OUT_NODE_INFORM, OUT_DEBUG, OUT_ERROR, OUT_INFORM
+    OUT_NODE_INFORM, OUT_DEBUG, OUT_ERROR, OUT_INFORM, OUT_START_SIM, OUT_PAUSE_SIM,
+    OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED
   };
 
   public EventType      eventType;
@@ -60,6 +61,12 @@ public class DARSEvent {
     e.eventType = EventType.IN_START_SIM;
     return e;
   }
+
+  public static DARSEvent outStartSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_START_SIM;
+    return e;
+  }
   
   static DARSEvent inStopSim() {
     DARSEvent e = new DARSEvent();
@@ -67,9 +74,33 @@ public class DARSEvent {
     return e;
   }
   
+  public static DARSEvent outStopSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_STOP_SIM;
+    return e;
+  }
+  
   static DARSEvent inPauseSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_PAUSE_SIM;
+    return e;
+  }
+  
+  public static DARSEvent outPauseSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_PAUSE_SIM;
+    return e;
+  }
+  
+  static DARSEvent inResumeSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_RESUME_SIM;
+    return e;
+  }
+  
+  public static DARSEvent outResumeSim() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_RESUME_SIM;
     return e;
   }
     
@@ -108,6 +139,13 @@ public class DARSEvent {
     return e;
   }
   
+  public static DARSEvent outSimSpeed(int newSpeed) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_SIM_SPEED;
+    e.newSimSpeed = newSpeed;
+    return e;
+  }
+  
   public static DARSEvent inMoveNode(String id, int x, int y) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_MOVE_NODE;
@@ -134,14 +172,14 @@ public class DARSEvent {
     return d;
   }
 
-  static DARSEvent outDeleteNode(String id) {
+  public static DARSEvent outDeleteNode(String id) {
     DARSEvent d = new DARSEvent();
     d.eventType = EventType.OUT_DEL_NODE;
     d.nodeId = id;
     return d;
   }
 
-  static DARSEvent outEditNode(String id, NodeAttributes n) {
+  public static DARSEvent outEditNode(String id, NodeAttributes n) {
     // stub
     return new DARSEvent();
   }

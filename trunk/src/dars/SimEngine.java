@@ -66,10 +66,23 @@ public class SimEngine implements InputConsumer {
    * @param
    */
   void pauseSimulation() {
+    if (paused == false) {
+      paused = true;
+    }
+  }
+
+  /**
+   * Function that will resume a simulation
+   * 
+   * This function will resume the simulation when the user chooses to continue
+   * 
+   * @author kennylmay
+   * 
+   * @param
+   */
+  void resumeSimulation() {
     if (paused == true) {
       paused = false;
-    } else {
-      paused = true;
     }
   }
 
@@ -105,6 +118,7 @@ public class SimEngine implements InputConsumer {
 
   class MessageRelay extends Thread {
     int iterationCount = 0;
+
     public void run() {
       // Make sure the kill switch hasn't been thrown.
       if (KILL_THREAD == true) {
@@ -114,7 +128,7 @@ public class SimEngine implements InputConsumer {
       }
       iterationCount++;
       // Only attempt to enter the critical area every 100th try
-      if (iterationCount == 100){
+      if (iterationCount == 100) {
         // Reset the iterationCount after the 100th try
         iterationCount = 0;
         if (paused == false) {
@@ -139,7 +153,8 @@ public class SimEngine implements InputConsumer {
       if (message.destinationId == Message.BCAST_STRING) {
         for (int index = 0; index < store.getNumberOfNodes(); index++) {
           node = store.getNodeByIndex(index);
-
+          if (node == null)
+            continue;
           // Only allow the nodes in range to hear the broadcast.
           if (canCommuincate(message.originId, node.getAttributes().id)) {
             node.messageToNode(message);
@@ -158,7 +173,9 @@ public class SimEngine implements InputConsumer {
     // decisions.
     for (int index = 0; index < store.getNumberOfNodes(); index++) {
       // / Issue a clock tick to each node
-      node = store.getNodeByIndex(index);
+      store.getNodeByIndex(index);
+      if (node == null)
+        continue;
       node.clockTick();
     }
 
@@ -188,13 +205,19 @@ public class SimEngine implements InputConsumer {
     synchronized (lock) {
       if (e.eventType == DARSEvent.EventType.IN_START_SIM) {
         runSimulation();
+        OutputHandler.dispatch(DARSEvent.outStartSim());
       } else if (e.eventType == DARSEvent.EventType.IN_STOP_SIM) {
         stopSimulation();
+        OutputHandler.dispatch(DARSEvent.outStopSim());
       } else if (e.eventType == DARSEvent.EventType.IN_PAUSE_SIM) {
         pauseSimulation();
+        OutputHandler.dispatch(DARSEvent.outPauseSim());
+      } else if (e.eventType == DARSEvent.EventType.IN_RESUME_SIM) {
+        resumeSimulation();
+        OutputHandler.dispatch(DARSEvent.outResumeSim());
       } else if (e.eventType == DARSEvent.EventType.IN_SIM_SPEED) {
         WAIT_TIME = e.newSimSpeed;
-        setSimSpeed(WAIT_TIME);
+        OutputHandler.dispatch(DARSEvent.outSimSpeed(WAIT_TIME));
       } else if (e.eventType == DARSEvent.EventType.IN_ADD_NODE) {
         // Get the node attributes for this input event
         NodeAttributes ni = e.getNodeAttributes();
@@ -214,8 +237,11 @@ public class SimEngine implements InputConsumer {
 
       } else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE) {
         store.deleteNode(e.nodeId);
+        OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
       } else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE) {
         store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
+        OutputHandler.dispatch(DARSEvent.outEditNode(e.nodeId,
+            store.getNodeAttributes(e.nodeId)));
       } else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
 
         // Get the current attributes of the node
