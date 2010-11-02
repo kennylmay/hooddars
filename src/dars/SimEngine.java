@@ -1,7 +1,10 @@
 package dars;
 
 import java.awt.geom.Point2D;
-import java.util.AbstractQueue;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import dars.NodeStore;
 import dars.event.DARSEvent;
 import dars.proto.*;
@@ -16,12 +19,12 @@ public class SimEngine implements InputConsumer {
   /**
    * Time to wait for an iteration.
    */
-  private int              WAIT_TIME   = 10;
-  private boolean          KILL_THREAD = false;
-  NodeStore                store       = new NodeStore();
-  AbstractQueue<Message>   messageQueue;
-  MessageRelay             thread;
-  static public Object     lock        = new Object();
+  private int              WAIT_TIME    = 10;
+  private boolean          KILL_THREAD  = false;
+  NodeStore                store        = new NodeStore();
+  Queue<Message>           messageQueue = new LinkedList<Message>();        
+  MessageRelay             thread       = new MessageRelay();
+  static public Object     lock         = new Object();
   private volatile boolean paused;
 
   /**
@@ -136,22 +139,32 @@ public class SimEngine implements InputConsumer {
             }
           }
         }
+        try {
+          Thread.sleep(WAIT_TIME);
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
-      KILL_THREAD = false;
+      
+     
     }
   }
 
   public void MainLoop() {
     Node node = null;
     Message message = null;
+    Iterator<Node> i;
+    
     // If there are messages in the messageQueue try to attempt delivery.
     while (messageQueue.isEmpty() == false) {
       message = messageQueue.poll();
 
       // If the message is a broadcast then try to send to everyone
       if (message.destinationId == Message.BCAST_STRING) {
-        for (int index = 0; index < store.getNumberOfNodes(); index++) {
-          node = store.getNodeByIndex(index);
+        i = store.getNodes();
+        while(i.hasNext()) {
+          node = i.next();
           if (node == null)
             continue;
           // Only allow the nodes in range to hear the broadcast.
@@ -170,9 +183,10 @@ public class SimEngine implements InputConsumer {
 
     // Issue a clock tick to each node so that they can make algorithmic
     // decisions.
-    for (int index = 0; index < store.getNumberOfNodes(); index++) {
+    i = store.getNodes();
+    while(i.hasNext()) {
       // / Issue a clock tick to each node
-      store.getNodeByIndex(index);
+      node = i.next();
       if (node == null)
         continue;
       node.clockTick();
@@ -180,7 +194,9 @@ public class SimEngine implements InputConsumer {
 
     // Check each node for messages waiting to be sent and gather them up
     // to be stored in our message queue.
-    for (int index = 0; index < store.getNumberOfNodes(); index++) {
+    i = store.getNodes();
+    while(i.hasNext()) {
+      node = i.next();
       // Gather all the messages from each node.
       message = node.messageToNetwork();
       while (message != null) {
