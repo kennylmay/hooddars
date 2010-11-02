@@ -65,7 +65,7 @@ public class GUI extends JFrame implements OutputConsumer {
   
   public GUI() {
     
-    initMenuBar();
+   
 
     aodvMenu.addActionListener(
       new ActionListener(){
@@ -90,6 +90,7 @@ public class GUI extends JFrame implements OutputConsumer {
      */
     // Add a center panel, this will serve us merely in a layout capacity.
     JPanel subpanel = new JPanel();
+    initMenuBar();
     this.add(subpanel, BorderLayout.CENTER);
 
     // Add the east panel.
@@ -145,7 +146,7 @@ public class GUI extends JFrame implements OutputConsumer {
         (int) (windowSize.height * .8)));
     nodeAttributesPanel.setPreferredSize(new Dimension(
         (int) (windowSize.width * .2), (int) (windowSize.height)));
-
+   
     pack();
 
   }
@@ -200,6 +201,9 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_DEBUG:
         logArea.appendLog("DEBUG : " + e.informationalMessage);
         break;
+      case OUT_ERROR:
+        logArea.appendLog("ERROR: " + e.informationalMessage);
+        break;
       }
     }
   }
@@ -241,7 +245,6 @@ public class GUI extends JFrame implements OutputConsumer {
     menuBar.add(helpMenu);
     
     // Add the simulation type menu lables
-    
     simTypeArea.add(simTypeLabel);
     simTypeArea.add(typeLabel);
     menuPanel.add(simTypeArea);
@@ -264,8 +267,8 @@ public class GUI extends JFrame implements OutputConsumer {
     speedArea.add(fasterLabel);
     menuPanel.add(speedArea);
     
-    menuBar.add(menuPanel);
-    
+    menuPanel.setOpaque(false);
+    add(menuPanel,BorderLayout.NORTH);
     this.setJMenuBar(menuBar);
   }
   

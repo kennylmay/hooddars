@@ -155,9 +155,11 @@ public class DARSEvent {
     return new DARSEvent();
   }
 
-  static DARSEvent outError(String informationalMessage) {
-    // stub
-    return new DARSEvent();
+  public static DARSEvent outError(String informationalMessage) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_ERROR;
+    d.informationalMessage = informationalMessage;
+    return d;
   }
 
   public static DARSEvent outDebug(String informationalMessage) {
