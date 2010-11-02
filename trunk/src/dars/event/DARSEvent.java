@@ -80,7 +80,7 @@ public class DARSEvent {
     return e;
   }
 
-  static DARSEvent inDeleteNode(String id) {
+  public static DARSEvent inDeleteNode(String id) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_DEL_NODE;
     e.nodeId = id;

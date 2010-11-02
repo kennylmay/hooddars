@@ -145,9 +145,9 @@ class NodeActionHandler implements GNodeListener{
     InputHandler.dispatch(DARSEvent.inAddNode(n));
   } 
 
-  //This function will send a request to del a node to the input handler eventually.
   private void deleteNodeReq(String id) {
-    deleteNode(id);
+    //Dispatch
+    InputHandler.dispatch(DARSEvent.inDeleteNode(id));
   }
   
   
