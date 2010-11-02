@@ -139,8 +139,8 @@ class NodeActionHandler implements GNodeListener{
   //This function will send a request for a new node to the input handler eventually.
   private void addNewNodeReq(int x, int y) {
     NodeAttributes n = new NodeAttributes();
-    n.locationx = x;
-    n.locationy = y;
+    n.x = x;
+    n.y = y;
     n.range = getDefaultRange();
     InputHandler.dispatch(DARSEvent.inAddNode(n));
   } 

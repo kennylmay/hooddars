@@ -248,15 +248,15 @@ public class SimEngine implements InputConsumer {
         NodeAttributes na = store.getNodeAttributes(e.nodeId);
 
         // Set the new x and y
-        na.locationx = e.nodeX;
-        na.locationy = e.nodeY;
+        na.x = e.nodeX;
+        na.y = e.nodeY;
 
         // Set the new attributes
         store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
 
         // Dispatch the moved event
-        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.locationx,
-            na.locationy));
+        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.x,
+            na.y));
       }
     } // / Exit critical area
   }
@@ -368,8 +368,8 @@ public class SimEngine implements InputConsumer {
   private boolean canCommuincate(String Id1, String Id2) {
     NodeAttributes att1 = store.getNodeAttributes(Id1);
     NodeAttributes att2 = store.getNodeAttributes(Id2);
-    double distance = Point2D.distanceSq(att1.locationx, att1.locationy,
-        att2.locationx, att2.locationy);
+    double distance = Point2D.distanceSq(att1.x, att1.y,
+        att2.x, att2.y);
     if (distance > att1.range || distance > att2.range) {
       return false;
     } else
