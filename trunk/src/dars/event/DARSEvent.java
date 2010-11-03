@@ -33,6 +33,7 @@ public class DARSEvent {
   public int            nodeX;
   public int            nodeY;
   public int            nodeRange;
+  public Message         NewMessage;
   
   public NodeAttributes getNodeAttributes() {
     NodeAttributes n = new NodeAttributes();
@@ -128,8 +129,13 @@ public class DARSEvent {
   }
   
   static DARSEvent inSendMsg(Message m, String sourceId, String destinationId) {
-    // stub
-    return new DARSEvent();
+    DARSEvent c = new DARSEvent();
+    c.eventType = EventType.IN_SEND_MSG;
+    c.NewMessage = m;
+    c.sourceId = sourceId;
+    c.destinationId = destinationId;
+    
+    return c;
   }
 
   public static DARSEvent inSimSpeed(int newSpeed) {
