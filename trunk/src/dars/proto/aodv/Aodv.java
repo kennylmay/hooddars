@@ -35,7 +35,7 @@ public class Aodv implements Node {
                                                    * NET_DIAMETER;
   public static final int PATH_DISCOVERY_TIME  = 2 * NET_TRAVERSAL_TIME;
   public static final int DELETE_PERIOD        = 5;
-  
+
   /**
    * How often to send Hello Messages.
    * 
@@ -48,15 +48,13 @@ public class Aodv implements Node {
    */
   public static final int HELLO_INTERVAL       = 25;                        // Ticks
   public static final int ALLOWED_HELLO_LOSS   = 2;
-  
-  
+
   // KRESSS - I am unsure if the constants listed below are needed for our
   // implementation.
   public static final int ACTIVE_ROUTE_TIMEOUT = 3000;                      // Milliseconds
-  //public static final int HELLO_INTERVAL       = 1000;                      // Milliseconds
+  // public static final int HELLO_INTERVAL = 1000; // Milliseconds
   // public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
 
-  
   public static final int LOCAL_ADD_TTL        = 2;
 
   public static final int RREQ_RETRIES         = 2;
@@ -183,11 +181,14 @@ public class Aodv implements Node {
    * 
    * @author kresss
    * 
-   * @param message The message the is being received from the network.
+   * @param message
+   *          The message the is being received from the network.
    */
   private void receiveMessage(Message message) {
 
-    
+    OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+        + " Received the following message text: " + message.message));
+
   }
 
   /**
@@ -413,30 +414,27 @@ public class Aodv implements Node {
    * Send a route ack message as defined by RFC 3561 Section 5.4
    * 
    * @author kresss
-
    */
   void sendRREPACK() {
 
   }
-  
+
   /**
    * Send a Hello Message (Special RREQ)
    * 
-   * This function will broadcast a hello message if it is time. 
+   * This function will broadcast a hello message if it is time.
    * 
    * @author kresss
    */
   void sendHello() {
-    
+
     /**
      * RREP Message Format
      * 
      * TYPE|FLAGS|HOPCOUNT|DESTID|DESTSEQ|ORIGID|LIFETIME
      * 
      */
-    
-    
-    
+
     /**
      * Message object that will be passed to SendRawMessage.
      */
@@ -456,36 +454,41 @@ public class Aodv implements Node {
     int MsgDestSeqNum = this.LastSeqNum;
     String MsgOrigID = this.att.id;
     int MsgLifetime = ALLOWED_HELLO_LOSS * HELLO_INTERVAL;
-    
+
     /**
      * The node should only send out a Hello Message every Hello_Interval ticks.
-     * If it is not time to send a new hello message yet then return with out sending a message.
+     * If it is not time to send a new hello message yet then return with out
+     * sending a message.
      */
     if ((HelloSentAt + HELLO_INTERVAL) > this.CurrentTick) {
       return;
     }
-    
-    // TODO: Maybe need to add in some checking of the RouteTable for active routes if there is a need to comply with RFC 3561 Section 6.9 Paragraph 1 Sentence 2.
-    
+
+    // TODO: Maybe need to add in some checking of the RouteTable for active
+    // routes if there is a need to comply with RFC 3561 Section 6.9 Paragraph 1
+    // Sentence 2.
+
     /**
      * Build the message string that will be sent to the other nodes.
      */
-    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
-    
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID
+        + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+
     /**
-     * Save the current time as the time of the last hello message that was sent.
+     * Save the current time as the time of the last hello message that was
+     * sent.
      */
     HelloSentAt = this.CurrentTick;
-    
+
     Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
-    
+
     /**
      * Place the message into the txQueue.
      */
     sendMessage(Msg);
-    
+
     OutputHandler.dispatch(DARSEvent.outDebug(MsgStr));
-    
+
   }
 
   /**
@@ -516,7 +519,8 @@ public class Aodv implements Node {
    * 
    * @author mayk
    * 
-   * @param atts The new attributes for the node.
+   * @param atts
+   *          The new attributes for the node.
    */
   public void setAttributes(NodeAttributes atts) {
     this.att = new NodeAttributes(atts);
@@ -535,20 +539,18 @@ public class Aodv implements Node {
      * Increment the CurrentTick for this time quantum.
      */
     CurrentTick++;
-    
-    OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + "Received clocktick."));
-    
+
+    OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+        + "Received clocktick."));
+
     /**
      * Receive and process each message on the Receive Queue.
      */
     while (!rxQueue.isEmpty()) {
       receiveMessage(rxQueue.remove());
     }
-    
+
     sendHello();
-    
-    
-    
 
     // TODO: Need to determine what is needed for a cycle in a node.
   }
@@ -593,18 +595,18 @@ public class Aodv implements Node {
    * 
    * Queue of messages that are waiting to be transmitted into the network.
    */
-  private Queue<Message>      txQueue = new LinkedList<Message>();
+  private Queue<Message>              txQueue     = new LinkedList<Message>();
 
   /**
    * Receive Queue
    * 
    * Queue of messages that have been received from the network.
    */
-  private Queue<Message>      rxQueue =  new LinkedList<Message>();
-  
+  private Queue<Message>              rxQueue     = new LinkedList<Message>();
+
   /**
    * Last Tick That A Hello Message Was Sent At
    */
-  private int HelloSentAt = 0;
+  private int                         HelloSentAt = 0;
 
 }
