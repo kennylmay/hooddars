@@ -128,7 +128,7 @@ public class DARSEvent {
     return e;
   }
   
-  static DARSEvent inSendMsg(Message m, String sourceId, String destinationId) {
+  public static DARSEvent inSendMsg(Message m, String sourceId, String destinationId) {
     DARSEvent c = new DARSEvent();
     c.eventType = EventType.IN_SEND_MSG;
     c.NewMessage = m;
