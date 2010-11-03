@@ -38,10 +38,8 @@ public class DARSMain {
     // simulation, where it can view node attributes
     g.setNodeInspector(s.getNodeStore());
     
-    
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
-    InputHandler.dispatch(DARSEvent.inStartSim());
     
   }
 

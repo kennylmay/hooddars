@@ -68,7 +68,7 @@ public class DARSEvent {
     return e;
   }
   
-  static DARSEvent inStopSim() {
+  public static DARSEvent inStopSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_STOP_SIM;
     return e;
@@ -80,7 +80,7 @@ public class DARSEvent {
     return e;
   }
   
-  static DARSEvent inPauseSim() {
+  public static DARSEvent inPauseSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_PAUSE_SIM;
     return e;
@@ -118,7 +118,7 @@ public class DARSEvent {
     return e;
   }
 
-  static DARSEvent inEditNode(String id, NodeAttributes n) {
+  public static DARSEvent inEditNode(String id, NodeAttributes n) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_EDIT_NODE;
     e.nodeId = id;
@@ -126,7 +126,7 @@ public class DARSEvent {
     e.nodeY = n.y;
     return e;
   }
-
+  
   static DARSEvent inSendMsg(Message m, String sourceId, String destinationId) {
     // stub
     return new DARSEvent();
@@ -180,8 +180,13 @@ public class DARSEvent {
   }
 
   public static DARSEvent outEditNode(String id, NodeAttributes n) {
-    // stub
-    return new DARSEvent();
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_EDIT_NODE;
+    e.nodeId = id;
+    e.nodeX = n.x;
+    e.nodeY = n.y;
+    e.nodeRange = n.range;
+    return e;
   }
 
   static DARSEvent outNodeInform(String sourceID, String informationalMessage) {

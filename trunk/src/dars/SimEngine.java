@@ -146,8 +146,6 @@ public class SimEngine implements InputConsumer {
           e.printStackTrace();
         }
       }
-      
-     
     }
   }
 
@@ -253,9 +251,12 @@ public class SimEngine implements InputConsumer {
         store.deleteNode(e.nodeId);
         OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
       } else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE) {
-        store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
-        OutputHandler.dispatch(DARSEvent.outEditNode(e.nodeId, store
-            .getNodeAttributes(e.nodeId)));
+     // Get the current attributes of the node
+        NodeAttributes na = store.getNodeAttributes(e.nodeId);
+        na.range = e.nodeRange;
+        store.setNodeAttributes(e.nodeId, na);
+        OutputHandler.dispatch(DARSEvent.outEditNode(e.nodeId, na));
+        
       } else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
 
         // Get the current attributes of the node

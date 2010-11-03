@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import javax.swing.border.Border;
 
+import dars.InputHandler;
 import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.event.DARSEvent;
@@ -26,57 +27,72 @@ public class GUI extends JFrame implements OutputConsumer {
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
   private SimArea            simArea             = new SimArea();
 
-  private JPanel menuPanel = new JPanel();
-  
-  // Creating the menu bar and all of its elements
-  private JMenuBar menuBar = new JMenuBar(); 
-  private JMenu simMenu = new JMenu("Simulation");
-  private JMenu newMenu = new JMenu("New");
-  private JMenuItem saveMenu = new JMenuItem("Save");
-  private JMenuItem aodvMenu = new JMenuItem("AODV");
-  private JMenuItem dsdvMenu = new JMenuItem("DSDV");
-  private JMenuItem clearMenu = new JMenuItem("Clear");
-  private JMenuItem exitMenu = new JMenuItem("Exit");
-  private JMenu importMenu = new JMenu("Import");
-  private JMenuItem setupMenu = new JMenuItem("Setup");
-  private JMenuItem replayMenu = new JMenuItem("Replay");
-  private JMenu helpMenu = new JMenu("Help");
-  private JMenuItem webMenu = new JMenuItem("Web Reference");
-  
-  // If someone knows a better way to align this stuff please feel free.
-  private JLabel simTypeLabel = new JLabel("Simulation Type: ");
-  JLabel typeLabel = new JLabel("AODV");
-  
-  private JPanel buttonArea  = new JPanel();
-  private JButton playButton = new JButton("Play");
-  private JButton pauseButton = new JButton("Pause");
-  private JButton stopButton = new JButton("Stop");
-  
-  private JPanel speedArea = new JPanel();
-  private JPanel simTypeArea = new JPanel();
-  
-  // Labels slider bar for the speed adjustment
-  private JLabel speedLabel = new JLabel("Speed");
-  private ImageIcon minusIcon = new ImageIcon("img/minus.png");
-  private JLabel slowerLabel = new JLabel(minusIcon);
-  private JSlider slideBar = new JSlider();
-  private ImageIcon plusIcon = new ImageIcon("img/plus.png");
-  private JLabel fasterLabel = new JLabel(plusIcon);
-  
-  
-  public GUI() {
-    
-   
+  private JPanel             menuPanel           = new JPanel();
 
-    aodvMenu.addActionListener(
-      new ActionListener(){
-        public void actionPerformed(ActionEvent e) {
-          typeLabel.setText("AODV");
-        }
-      });
-    
-    
-    
+  // Creating the menu bar and all of its elements
+  private JMenuBar           menuBar             = new JMenuBar();
+  private JMenu              simMenu             = new JMenu("Simulation");
+  private JMenu              newMenu             = new JMenu("New");
+  private JMenuItem          saveMenu            = new JMenuItem("Save");
+  private JMenuItem          aodvMenu            = new JMenuItem("AODV");
+  private JMenuItem          dsdvMenu            = new JMenuItem("DSDV");
+  private JMenuItem          clearMenu           = new JMenuItem("Clear");
+  private JMenuItem          exitMenu            = new JMenuItem("Exit");
+  private JMenu              importMenu          = new JMenu("Import");
+  private JMenuItem          setupMenu           = new JMenuItem("Setup");
+  private JMenuItem          replayMenu          = new JMenuItem("Replay");
+  private JMenu              helpMenu            = new JMenu("Help");
+  private JMenuItem          webMenu             = new JMenuItem(
+                                                     "Web Reference");
+
+  // If someone knows a better way to align this stuff please feel free.
+  private JLabel             simTypeLabel        = new JLabel(
+                                                     "Simulation Type: ");
+  JLabel                     typeLabel           = new JLabel("NONE");
+
+  private JPanel             buttonArea          = new JPanel();
+  private JButton            playButton          = new JButton("Play");
+  private JButton            pauseButton         = new JButton("Pause");
+  private JButton            stopButton          = new JButton("Stop");
+
+  private JPanel             speedArea           = new JPanel();
+  private JPanel             simTypeArea         = new JPanel();
+
+  // Labels slider bar for the speed adjustment
+  private JLabel             speedLabel          = new JLabel("Speed");
+  private ImageIcon          minusIcon           = new ImageIcon(
+                                                     "img/minus.png");
+  private JLabel             slowerLabel         = new JLabel(minusIcon);
+  private JSlider            slideBar            = new JSlider();
+  private ImageIcon          plusIcon            = new ImageIcon("img/plus.png");
+  private JLabel             fasterLabel         = new JLabel(plusIcon);
+
+  public GUI() {
+
+    aodvMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        typeLabel.setText("AODV");
+      }
+    });
+
+    playButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inStartSim());
+      }
+    });
+
+    pauseButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inPauseSim());
+      }
+    });
+
+    stopButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inStopSim());
+      }
+    });
+
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -147,7 +163,7 @@ public class GUI extends JFrame implements OutputConsumer {
         (int) (windowSize.height * .8)));
     nodeAttributesPanel.setPreferredSize(new Dimension(
         (int) (windowSize.width * .2), (int) (windowSize.height)));
-   
+
     pack();
 
   }
@@ -176,9 +192,9 @@ public class GUI extends JFrame implements OutputConsumer {
   }
 
   public void setNodeInspector(NodeInspector ni) {
-    //Give it to the nodeAttributesArea instance
+    // Give it to the nodeAttributesArea instance
     nodeAttributesArea.setNodeInspector(ni);
-    
+
   }
 
   private class ThreadSafeConsumer implements Runnable {
@@ -187,31 +203,32 @@ public class GUI extends JFrame implements OutputConsumer {
     public void run() {
       switch (e.eventType) {
       case OUT_ADD_NODE:
-        //Add the node
+        // Add the node
         simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
         nodeAttributesArea.nodeAdded(e.nodeId);
       case OUT_MOVE_NODE:
-        //Move the nodenodeSelectorComboBox
+        // Move the nodenodeSelectorComboBox
         simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
         break;
       case OUT_EDIT_NODE:
-        //Refresh the node attributes panel
+        // Refresh the node attributes panel
+        simArea.setNodeRange(e.nodeId, e.nodeRange);
         nodeAttributesArea.setNode(e.nodeId);
         break;
-      
+
       case OUT_DEL_NODE:
-        //Remove the node
+        // Remove the node
         simArea.deleteNode(e.nodeId);
         nodeAttributesArea.nodeDeleted(e.nodeId);
         break;
-        
+
       case OUT_DEBUG:
         logArea.appendLog("DEBUG: " + e.informationalMessage);
         break;
       case OUT_ERROR:
         logArea.appendLog("ERROR: " + e.informationalMessage);
         break;
-        
+
       }
     }
   }
@@ -220,24 +237,23 @@ public class GUI extends JFrame implements OutputConsumer {
     // schedule the event to be processed later so as to not disturb the gui's
     // event thread
     ThreadSafeConsumer c = new ThreadSafeConsumer();
-    
-    /// Copy the event to the thread safe consumer instance
+
+    // / Copy the event to the thread safe consumer instance
     c.e = e;
-    
-    //Invoke it later; This will push the runnable instance onto the 
-    //Java Event Dispatching thread 
+
+    // Invoke it later; This will push the runnable instance onto the
+    // Java Event Dispatching thread
     SwingUtilities.invokeLater(c);
 
   }
 
-
   private void initMenuBar() {
-    
+
     menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
-    
+
     // Add the web help menu to the menu bar
     helpMenu.add(webMenu);
-    
+
     // Add elements to the sim menu and their sub menus
     simMenu.add(newMenu);
     newMenu.add(aodvMenu);
@@ -251,19 +267,18 @@ public class GUI extends JFrame implements OutputConsumer {
 
     menuBar.add(simMenu);
     menuBar.add(helpMenu);
-    
+
     // Add the simulation type menu lables
     simTypeArea.add(simTypeLabel);
     simTypeArea.add(typeLabel);
     menuPanel.add(simTypeArea);
-    
-    
+
     // Add the Play, pause, and stop buttons
     buttonArea.add(playButton);
     buttonArea.add(pauseButton);
     buttonArea.add(stopButton);
     menuPanel.add(buttonArea);
-    
+
     // Add the slider bar, set its properties and values.
     speedArea.add(speedLabel);
     speedArea.add(slowerLabel);
@@ -274,12 +289,10 @@ public class GUI extends JFrame implements OutputConsumer {
     slideBar.setValue(5);
     speedArea.add(fasterLabel);
     menuPanel.add(speedArea);
-    
+
     menuPanel.setOpaque(false);
-    add(menuPanel,BorderLayout.NORTH);
+    add(menuPanel, BorderLayout.NORTH);
     this.setJMenuBar(menuBar);
   }
-  
-  
-}
 
+}
