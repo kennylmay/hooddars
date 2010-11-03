@@ -15,10 +15,10 @@ public class DARSEvent {
   private static String newline = System.getProperty("line.separator");
   public enum EventType {
     // Input event types
-    IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_EDIT_NODE, IN_SEND_MSG, IN_SIM_SPEED, 
+    IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SEND_MSG, IN_SIM_SPEED, 
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL,
     // Output event types
-    OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_EDIT_NODE, OUT_NODE_DATA_RECEIVED, 
+    OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_NODE_DATA_RECEIVED, 
     OUT_NODE_INFORM, OUT_DEBUG, OUT_ERROR, OUT_INFORM, OUT_START_SIM, OUT_PAUSE_SIM,
     OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED
   };
@@ -119,12 +119,11 @@ public class DARSEvent {
     return e;
   }
 
-  public static DARSEvent inEditNode(String id, NodeAttributes n) {
+  public static DARSEvent inSetNodeRange(String id, int newRange) {
     DARSEvent e = new DARSEvent();
-    e.eventType = EventType.IN_EDIT_NODE;
+    e.eventType = EventType.IN_SET_NODE_RANGE;
     e.nodeId = id;
-    e.nodeX = n.x;
-    e.nodeY = n.y;
+    e.nodeRange = newRange;
     return e;
   }
   
@@ -185,13 +184,11 @@ public class DARSEvent {
     return d;
   }
 
-  public static DARSEvent outEditNode(String id, NodeAttributes n) {
+  public static DARSEvent outSetNodeRange(String id, int newRange) {
     DARSEvent e = new DARSEvent();
-    e.eventType = EventType.OUT_EDIT_NODE;
+    e.eventType = EventType.OUT_SET_NODE_RANGE;
     e.nodeId = id;
-    e.nodeX = n.x;
-    e.nodeY = n.y;
-    e.nodeRange = n.range;
+    e.nodeRange = newRange;
     return e;
   }
 

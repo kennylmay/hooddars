@@ -527,6 +527,25 @@ public class Aodv implements Node {
   }
 
   /**
+   *  Implements the setXY function that is defined in the Node class.
+   *  
+   *  Sets the X and Y coordinate for this node.
+   */
+  public void setXY(int x, int y) {
+    this.att.x = x;
+    this.att.y = y;
+  }
+  
+  /**
+   * Implements the setRange function that is defined in the Node class.
+   * 
+   * Sets the range of this node.
+   */
+  public void setRange(int range) {
+    this.att.range = range;
+  }
+  
+  /**
    * Process an iteration of this node.
    * 
    * This will do all the processing for a node's time interval.

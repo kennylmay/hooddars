@@ -210,7 +210,7 @@ public class GUI extends JFrame implements OutputConsumer {
         // Move the nodenodeSelectorComboBox
         simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
         break;
-      case OUT_EDIT_NODE:
+      case OUT_SET_NODE_RANGE:
         // Refresh the node attributes panel
         simArea.setNodeRange(e.nodeId, e.nodeRange);
         nodeAttributesArea.setNode(e.nodeId);
