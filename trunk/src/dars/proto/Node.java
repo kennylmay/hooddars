@@ -54,6 +54,21 @@ public abstract interface Node {
   void setAttributes(NodeAttributes atts);
 
   /**
+   * Sets the X and Y coordinates of the node.
+   * @param x The new x coordinate.
+   * @param y The new y coordinate.
+   */
+  void setXY(int x, int y);
+  
+  /**
+   * Sets the range of the node.
+   * 
+   * @param newRange
+   */
+  void setRange(int range);
+  
+  
+  /**
    * Process an iteration of this node.
    * 
    * This will do all the processing for a node's time interval.

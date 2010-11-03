@@ -250,27 +250,24 @@ public class SimEngine implements InputConsumer {
       } else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE) {
         store.deleteNode(e.nodeId);
         OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
-      } else if (e.eventType == DARSEvent.EventType.IN_EDIT_NODE) {
-     // Get the current attributes of the node
-        NodeAttributes na = store.getNodeAttributes(e.nodeId);
-        na.range = e.nodeRange;
-        store.setNodeAttributes(e.nodeId, na);
-        OutputHandler.dispatch(DARSEvent.outEditNode(e.nodeId, na));
+      } else if (e.eventType == DARSEvent.EventType.IN_SET_NODE_RANGE) {
+        // Get the node
+        Node n = store.getNode(e.nodeId);
+        
+        // Set the new range
+        n.setRange(e.nodeRange);
+        OutputHandler.dispatch(DARSEvent.outSetNodeRange(e.nodeId, e.nodeRange));
         
       } else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
 
-        // Get the current attributes of the node
-        NodeAttributes na = store.getNodeAttributes(e.nodeId);
-
-        // Set the new x and y
-        na.x = e.nodeX;
-        na.y = e.nodeY;
-
-        // Set the new attributes
-        store.setNodeAttributes(e.nodeId, e.getNodeAttributes());
-
+        // Get the node
+        Node n = store.getNode(e.nodeId);
+        
+        // Set the new coords
+        n.setXY(e.nodeX, e.nodeY);
+        
         // Dispatch the moved event
-        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, na.x, na.y));
+        OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, e.nodeX, e.nodeY));
       }
     } // / Exit critical area
   }

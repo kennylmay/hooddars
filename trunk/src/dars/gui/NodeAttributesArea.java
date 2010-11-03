@@ -83,9 +83,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeRangeSpinner.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent ie) {
         String id = nodeSelectorComboBox.getSelectedItem().toString();
-        NodeAttributes att = getAttributes(id);
-        att.range = (Integer) nodeRangeSpinner.getValue();
-        InputHandler.dispatch(DARSEvent.inEditNode(id, att));
+        InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox.getSelectedItem().toString(),
+          (Integer) nodeRangeSpinner.getValue()));
       }
     });
   }

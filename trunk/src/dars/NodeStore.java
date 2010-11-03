@@ -28,10 +28,10 @@ public NodeAttributes getNodeAttributes(String nodeId) {
    return node.getAttributes();
 }
 
-// Sets attributes for a given node
-public void setNodeAttributes(String nodeId, NodeAttributes nodeAttributes) {
-   Node node = store.get(nodeId);
-   node.setAttributes(nodeAttributes);
+
+public Node getNode(String nodeId) {
+  return store.get(nodeId);
+  
 }
 
 /**
@@ -66,34 +66,5 @@ public Iterator<Node> getNodes() {
    return store.values().iterator();
 }
 
-/**
- * Function will return a node based on its index.
- * 
- * This function will return a node based on its index in the HashMap. This
- * function operates on the vector as if it is NOT zero indexed.
- * 
- * @author kennylmay
- * 
- * @param int index
- * 
- * @return Template T
- */
-public Node getNodeByIndex(int index) {
-   return (store.get(index));
-}
-
-/**
- * Function will return the number of nodes.
- * 
- * This function will return the number of nodes in the NodeStore.
- * 
- * @author kennylmay
- * 
- * @param
- */
-public int getNumberOfNodes() {
-   // /Add one because the Vector is zero indexed.
-   return store.size() + 1;
-}
 
 }
