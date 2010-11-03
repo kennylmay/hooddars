@@ -198,9 +198,7 @@ class NodeActionHandler implements GNodeListener{
     
     assert(node != null);
     
-    
     node.setRange(newRange);
-    
     
   }
   

@@ -131,6 +131,7 @@ public class GNode extends JPanel {
 
   public void setRange(int range) {
     this.range = range;
+    rangeIndicator.resize();
   }
 
   public int getRange() {
@@ -472,6 +473,16 @@ public class GNode extends JPanel {
 
     public void setCenter(Point p) {
       setLocation(p.x - parent_.getRange(), p.y - parent_.getRange());
+    }
+    
+    public void resize() {
+      //resize this panel to accomodate the new range
+      int range = parent_.getRange();
+      setSize(new Dimension(new Dimension(range * 2, range * 2)));
+      
+      //reset the location
+      setCenter(parent_.getCenter());
+     
     }
 
   }
