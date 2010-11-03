@@ -31,7 +31,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   private JTextField nodeYField           = new JTextField(4);
   private JSpinner   nodeRangeSpinner     = new JSpinner(
                                               new SpinnerNumberModel(300, 0,
-                                                  1000, 1));
+                                                  1000, 20));
 
   public NodeAttributesArea() {
     // Use a box layout inside a border layout, with an internal flow layout at
