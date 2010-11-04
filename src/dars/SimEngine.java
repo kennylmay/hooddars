@@ -1,5 +1,6 @@
 package dars;
 
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -393,7 +394,9 @@ public class SimEngine implements InputConsumer {
   private boolean canCommuincate(String Id1, String Id2) {
     NodeAttributes att1 = store.getNodeAttributes(Id1);
     NodeAttributes att2 = store.getNodeAttributes(Id2);
-    double distance = Point2D.distanceSq(att1.x, att1.y, att2.x, att2.y);
+    Point point1 = new Point(att1.x, att1.y);
+    
+    double distance = point1.distance(att2.x, att2.y);
     if (distance > att1.range || distance > att2.range) {
       return false;
     } else
