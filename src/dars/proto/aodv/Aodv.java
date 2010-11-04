@@ -562,6 +562,8 @@ public class Aodv implements Node {
         /**
          * Update the Sequence Number and Lifetime if it is newer.
          */
+        // TODO: I DON'T THINK THIS WORKS...The node's sequence numbers are not
+        // getting updated correctly.
         if (DestEntry.getSeqNum() < MsgDestSeqNum) {
           DestEntry.setSeqNum(MsgDestSeqNum);
           DestEntry.setLifetime(this.CurrentTick + MY_ROUTE_TIMEOUT);
@@ -582,6 +584,8 @@ public class Aodv implements Node {
         DestEntry = new RouteEntry(MsgDestID, MsgDestSeqNum,
             RouteEntry.StateFlags.VALID, MsgHopCount, MsgDestID,
             this.CurrentTick + MY_ROUTE_TIMEOUT);
+
+        RouteTable.put(MsgDestID, DestEntry);
 
         OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + " Added "
             + MsgDestID + " to its RouteTable"));
