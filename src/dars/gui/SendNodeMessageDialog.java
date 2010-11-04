@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import dars.Message;
 import dars.event.DARSEvent;
+import dars.proto.Node;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -60,6 +61,7 @@ class Dialogbox1 extends JFrame implements ActionListener{
  // private String button22 = "Enter the Message";
 
   private JTextArea theText;
+  private int String;
    public Dialogbox1()
    { setSize(WIDTH , HEIGHT );
    setTitle("MEssage Box");
@@ -86,6 +88,7 @@ class Dialogbox1 extends JFrame implements ActionListener{
    textpanel.add(theText);
    contentPane.add(textpanel,BorderLayout.CENTER);
    }
+   
   public void actionPerformed(ActionEvent e){
     String actionCommand = e.getActionCommand();
     if(actionCommand.equals("Ok"))
@@ -94,8 +97,30 @@ class Dialogbox1 extends JFrame implements ActionListener{
       
          
     }
+  public void ComboBoxDemo() {
+    
+    Container contentPane = getContentPane();
+    contentPane.setLayout(new BorderLayout());
+
+    
+
+    //Create the combo box, select the nodeId.
+    
+    JComboBox nodeList = new JComboBox();
+    Node node = null;
+    nodeList.setSelectedItem(node.getAttributes().id);
+    nodeList.addActionListener(this);
+
+
+  
   }
+  public void actionPerformed1(ActionEvent e) {
+    JComboBox cb = (JComboBox)e.getSource();
+    String nodeList = (String)cb.getSelectedItem();
+   
 
 
+}
 
+}
   
