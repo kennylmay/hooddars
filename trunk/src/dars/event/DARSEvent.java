@@ -19,7 +19,7 @@ public class DARSEvent {
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL,
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_NODE_DATA_RECEIVED, 
-    OUT_NODE_INFORM, OUT_DEBUG, OUT_ERROR, OUT_INFORM, OUT_START_SIM, OUT_PAUSE_SIM,
+    OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_DEBUG, OUT_ERROR, OUT_INFORM, OUT_START_SIM, OUT_PAUSE_SIM,
     OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED
   };
 
@@ -29,6 +29,7 @@ public class DARSEvent {
   public String         destinationId;
   public String         payload;
   public String         informationalMessage;
+  public String         transmittedMessage;
   public int            newSimSpeed;
   public int            nodeX;
   public int            nodeY;
@@ -186,6 +187,15 @@ public class DARSEvent {
     e.eventType = EventType.OUT_SET_NODE_RANGE;
     e.nodeId = id;
     e.nodeRange = newRange;
+    return e;
+  }
+  
+  public static DARSEvent outMsgTransmitted(Message msg){
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_MSG_TRANSMITTED;
+    e.sourceId = msg.originId;
+    e.destinationId = msg.destinationId;
+    e.transmittedMessage = msg.message;
     return e;
   }
 
