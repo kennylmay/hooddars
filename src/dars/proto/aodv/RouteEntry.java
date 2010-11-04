@@ -31,18 +31,16 @@ public class RouteEntry {
    * @param state
    * @param hopCount
    * @param nextHopIP
-   * @param precursorIPs
    * @param lifetime
    */
   public RouteEntry(String destIP, int seqNum, StateFlags state, int hopCount,
-      String nextHopIP, String[] precursorIPs, long lifetime) {
+      String nextHopIP, long lifetime) {
     super();
     DestIP = destIP;
     SeqNum = seqNum;
     State = state;
     HopCount = hopCount;
     NextHopIP = nextHopIP;
-    PrecursorIPs = precursorIPs;
     Lifetime = lifetime;
   }
 

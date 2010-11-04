@@ -35,6 +35,10 @@ public class Aodv implements Node {
                                                    * NET_DIAMETER;
   public static final int PATH_DISCOVERY_TIME  = 2 * NET_TRAVERSAL_TIME;
   public static final int DELETE_PERIOD        = 5;
+  public static final int ALLOWED_HELLO_LOSS   = 2;
+
+  public static final int ACTIVE_ROUTE_TIMEOUT = 75;
+  public static final int MY_ROUTE_TIMEOUT     = 2 * ACTIVE_ROUTE_TIMEOUT;
 
   /**
    * How often to send Hello Messages.
@@ -47,11 +51,10 @@ public class Aodv implements Node {
    * 
    */
   public static final int HELLO_INTERVAL       = 25;                        // Ticks
-  public static final int ALLOWED_HELLO_LOSS   = 2;
 
   // KRESSS - I am unsure if the constants listed below are needed for our
   // implementation.
-  public static final int ACTIVE_ROUTE_TIMEOUT = 3000;                      // Milliseconds
+  // public static final int ACTIVE_ROUTE_TIMEOUT = 3000; // Milliseconds
   // public static final int HELLO_INTERVAL = 1000; // Milliseconds
   // public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
 
@@ -69,7 +72,6 @@ public class Aodv implements Node {
 
   public static final int BLACKLIST_TIMEOUT    = RREQ_RETRIES
                                                    * NET_TRAVERSAL_TIME;
-  public static final int MY_ROUTE_TIMEOUT     = 2 * ACTIVE_ROUTE_TIMEOUT;
   public static final int NEXT_HOP_WAIT        = NODE_TRAVERSAL_TIME + 10;
 
   // Ring Traversal Time is dependent on TTL_VALUE.
@@ -169,7 +171,7 @@ public class Aodv implements Node {
       OutputHandler
           .dispatch(DARSEvent
               .outError(this.att.id
-                  + " Failed to successfully receive message due to a full receive queue."));
+                  + " Failed to successfully queue message to be sent due to a full transmit queue."));
     }
   }
 
@@ -188,6 +190,43 @@ public class Aodv implements Node {
 
     OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
         + " Received the following message text: " + message.message));
+
+    String MsgType;
+
+    /**
+     * Check to see if this node sent the message. If it did then ignore the
+     * message.
+     */
+    if (message.originId.equals(this.att.id)) {
+      return;
+    }
+
+    /**
+     * Get the message type.
+     * 
+     * Message type is always the first token in the message string. Split on
+     * the '|' and get the first item in the resultant Array of Strings.
+     */
+    MsgType = message.message.split("\\|")[0];
+
+    // TODO: Replace this terrible list of if statements with a switch statement
+    // once Java 7 is released. Java 7 supposedly has the ability to switch on
+    // strings.
+
+    if (MsgType.equals("RREQ")) {
+      receiveRREQ(message);
+      return;
+    }
+
+    if (MsgType.equals("NARRATIVE")) {
+      receiveNarrative(message);
+      return;
+    }
+
+    if (MsgType.equals("RREP")) {
+      receiveRREP(message);
+      return;
+    }
 
   }
 
@@ -300,9 +339,15 @@ public class Aodv implements Node {
    * 
    * @author kresss
    * 
-   * @param
+   * @param message
+   *          The Route Request message that was received.
    */
-  void receiveRREQ() {
+  void receiveRREQ(Message message) {
+    /*
+     * Break message string down into pieces. Check if the requested destination
+     * node is in our RouteTable YES - Send RouteReply RREP, NO - Decrement TTL
+     * and Forward on.
+     */
 
   }
 
@@ -388,7 +433,7 @@ public class Aodv implements Node {
      */
     while (RouteTableIter.hasNext()) {
       TempRouteEntry = RouteTableIter.next();
-      if (TempRouteEntry.getNextHopIP() == DestNodeID) {
+      if (TempRouteEntry.getNextHopIP().equals(DestNodeID)) {
         TempRouteEntry.setState(RouteEntry.StateFlags.REPAIRABLE);
         TempRouteEntry
             .setLifetime(TempRouteEntry.getLifetime() + DELETE_PERIOD);
@@ -409,6 +454,18 @@ public class Aodv implements Node {
   }
 
   /**
+   * Receive a Route Error Message.
+   * 
+   * @author kresss
+   * 
+   * @param message
+   *          The Route Error Message that was received.
+   */
+  void receiveRERR(Message message) {
+
+  }
+
+  /**
    * Send Route Acknowledgment Message.
    * 
    * Send a route ack message as defined by RFC 3561 Section 5.4
@@ -416,6 +473,125 @@ public class Aodv implements Node {
    * @author kresss
    */
   void sendRREPACK() {
+    // TODO: Don't think RREP ACK messages will be needed for the initial
+    // implementation of DARS. RREP ACK's are requested if there is an
+    // expectation of unidirectional links. Not so much in the problem domain
+    // for initial releases of DARS.
+  }
+
+  /**
+   * Send a Route Reply Message
+   * 
+   * @author kresss
+   */
+  void sendRREP() {
+
+  }
+
+  /**
+   * Receive a Route Reply Message
+   * 
+   * @author kresss
+   */
+  void receiveRREP(Message message) {
+
+    /**
+     * RREP Message Format
+     * 
+     * TYPE|FLAGS|HOPCOUNT|DESTID|DESTSEQ|ORIGID|LIFETIME
+     * 
+     */
+
+    /**
+     * Message Fields
+     */
+    String MsgFlags;
+    int MsgHopCount;
+    String MsgDestID;
+    int MsgDestSeqNum;
+    String MsgOrigID;
+    int MsgLifetime;
+
+    /**
+     * Route Table Entry used to add and modify the entries in the Route Table.
+     */
+    RouteEntry DestEntry;
+
+    /**
+     * Array to hold Message Fields
+     */
+    String MsgArray[];
+
+    /**
+     * Split Message into fields based on '|' delimiters and store in MsgArray.
+     */
+    MsgArray = message.message.split("\\|");
+
+    /**
+     * Store message fields into local variables. Yes this is not really needed
+     * but I (SAK) think it makes the code more readable.
+     * 
+     * Note: Skip MsgArray[0] - Message Type.
+     */
+    MsgFlags = MsgArray[1];
+    MsgHopCount = Integer.parseInt(MsgArray[2]);
+    MsgDestID = MsgArray[3];
+    MsgDestSeqNum = Integer.parseInt(MsgArray[4]);
+    MsgOrigID = MsgArray[5];
+    MsgLifetime = Integer.parseInt(MsgArray[6]);
+
+    /**
+     * Special case for Hello Message.
+     * 
+     * If Destination ID and Original ID are Equal then this is a Hello Message.
+     */
+    if (MsgDestID.equals(MsgOrigID)) {
+      /**
+       * Check to see if the node sending the hello message is in our Route
+       * Table.
+       */
+      if (this.RouteTable.containsKey(MsgDestID)) {
+        /**
+         * The sending node is in the receiving node's Route Table.
+         */
+
+        /**
+         * Get the DestID's existing Route Table Entry.
+         */
+        DestEntry = RouteTable.get(MsgDestID);
+        /**
+         * Update the Sequence Number and Lifetime if it is newer.
+         */
+        if (DestEntry.getSeqNum() < MsgDestSeqNum) {
+          DestEntry.setSeqNum(MsgDestSeqNum);
+          DestEntry.setLifetime(this.CurrentTick + MY_ROUTE_TIMEOUT);
+
+          /**
+           * Put the updated Route Entry back into the Route Table.
+           */
+          RouteTable.put(MsgDestID, DestEntry);
+
+          OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + " Updated "
+              + MsgDestID + " in its RouteTable"));
+        }
+
+      } else {
+        /**
+         * The sending node is NOT in the receiving node's Route Table. Add it.
+         */
+        DestEntry = new RouteEntry(MsgDestID, MsgDestSeqNum,
+            RouteEntry.StateFlags.VALID, MsgHopCount, MsgDestID,
+            this.CurrentTick + MY_ROUTE_TIMEOUT);
+
+        OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + " Added "
+            + MsgDestID + " to its RouteTable"));
+      }
+
+      /**
+       * Fully processed the hello message.
+       */
+      return;
+    }
 
   }
 
@@ -492,6 +668,25 @@ public class Aodv implements Node {
   }
 
   /**
+   * Send a Narrative message.
+   */
+  void sendNarrative() {
+    // TODO: Figure out how this is going to be given to the node from the GUI.
+  }
+
+  /**
+   * Receive Narrative Message.
+   * 
+   * @author kresss
+   * 
+   * @param message
+   *          Narrative message received from network.
+   */
+  void receiveNarrative(Message message) {
+
+  }
+
+  /**
    * Implements the getAttributes function that is defined in the Node Class.
    * 
    * This function will return the attributes that are defined in the Node
@@ -527,15 +722,15 @@ public class Aodv implements Node {
   }
 
   /**
-   *  Implements the setXY function that is defined in the Node class.
-   *  
-   *  Sets the X and Y coordinate for this node.
+   * Implements the setXY function that is defined in the Node class.
+   * 
+   * Sets the X and Y coordinate for this node.
    */
   public void setXY(int x, int y) {
     this.att.x = x;
     this.att.y = y;
   }
-  
+
   /**
    * Implements the setRange function that is defined in the Node class.
    * 
@@ -544,7 +739,7 @@ public class Aodv implements Node {
   public void setRange(int range) {
     this.att.range = range;
   }
-  
+
   /**
    * Process an iteration of this node.
    * 
