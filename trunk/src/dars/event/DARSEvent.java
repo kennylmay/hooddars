@@ -93,7 +93,7 @@ public class DARSEvent {
     return e;
   }
   
-  static DARSEvent inResumeSim() {
+  public static DARSEvent inResumeSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_RESUME_SIM;
     return e;

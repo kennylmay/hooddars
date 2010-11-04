@@ -52,6 +52,7 @@ public class GUI extends JFrame implements OutputConsumer {
 
   private JPanel             buttonArea          = new JPanel();
   private JButton            playButton          = new JButton("Play");
+  private JButton            resumeButton        = new JButton("Resume");
   private JButton            pauseButton         = new JButton("Pause");
   private JButton            stopButton          = new JButton("Stop");
 
@@ -72,6 +73,9 @@ public class GUI extends JFrame implements OutputConsumer {
     aodvMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         typeLabel.setText("AODV");
+        playButton.setEnabled(true);
+        stopButton.setEnabled(true);
+        pauseButton.setEnabled(true);
       }
     });
 
@@ -90,9 +94,15 @@ public class GUI extends JFrame implements OutputConsumer {
     stopButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
-      }
+      }    
     });
 
+    resumeButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inResumeSim());
+      }
+    });
+    
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -208,10 +218,12 @@ public class GUI extends JFrame implements OutputConsumer {
         // Add the node
         simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
         nodeAttributesArea.nodeAdded(e.nodeId);
+ 
       case OUT_MOVE_NODE:
         // Move the nodenodeSelectorComboBox
         simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
         break;
+        
       case OUT_SET_NODE_RANGE:
         // Refresh the node attributes panel
         simArea.setNodeRange(e.nodeId, e.nodeRange);
@@ -235,7 +247,30 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_ERROR:
         logArea.appendLog("ERROR: " + e.informationalMessage);
         break;
-
+        
+      case OUT_START_SIM:
+        playButton.setEnabled(false);
+        pauseButton.setEnabled(true);
+        stopButton.setEnabled(true);
+        break;
+       
+      case OUT_STOP_SIM:
+        stopButton.setEnabled(false);
+        playButton.setEnabled(false);
+        pauseButton.setEnabled(false);
+        break;
+        
+      case OUT_PAUSE_SIM:
+        playButton.setEnabled(false);
+        stopButton.setEnabled(false);
+        pauseButton.setVisible(false);
+        resumeButton.setVisible(true);
+        break;
+       
+      case OUT_RESUME_SIM:
+        stopButton.setEnabled(true);
+        pauseButton.setVisible(true);
+        resumeButton.setVisible(false);
       }
     }
   }
@@ -283,7 +318,12 @@ public class GUI extends JFrame implements OutputConsumer {
     // Add the Play, pause, and stop buttons
     buttonArea.add(playButton);
     buttonArea.add(pauseButton);
+    buttonArea.add(resumeButton);
     buttonArea.add(stopButton);
+    resumeButton.setVisible(false);
+    playButton.setEnabled(false);
+    stopButton.setEnabled(false);
+    pauseButton.setEnabled(false);
     menuPanel.add(buttonArea);
 
     // Add the slider bar, set its properties and values.
