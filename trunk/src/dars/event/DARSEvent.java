@@ -33,7 +33,6 @@ public class DARSEvent {
   public int            nodeX;
   public int            nodeY;
   public int            nodeRange;
-  public Message         NewMessage;
   
   public NodeAttributes getNodeAttributes() {
     NodeAttributes n = new NodeAttributes();
@@ -49,9 +48,9 @@ public class DARSEvent {
     nodeY = n.y;
     nodeRange = n.range;
     nodeId = n.id;
-    
   }
 
+  
   // Hide the default constructor. DARSEvents can only be made through the
   // supplied functions that follow.
   private DARSEvent() {
@@ -130,10 +129,8 @@ public class DARSEvent {
   public static DARSEvent inSendMsg(Message m, String sourceId, String destinationId) {
     DARSEvent c = new DARSEvent();
     c.eventType = EventType.IN_SEND_MSG;
-    c.NewMessage = m;
     c.sourceId = sourceId;
     c.destinationId = destinationId;
-    
     return c;
   }
 
