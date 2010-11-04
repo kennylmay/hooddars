@@ -69,9 +69,7 @@ public class SimEngine implements InputConsumer {
    * @param
    */
   void pauseSimulation() {
-    if (paused == false) {
       paused = true;
-    }
   }
 
   /**
@@ -84,9 +82,7 @@ public class SimEngine implements InputConsumer {
    * @param
    */
   void resumeSimulation() {
-    if (paused == true) {
       paused = false;
-    }
   }
 
   /**
@@ -213,32 +209,45 @@ public class SimEngine implements InputConsumer {
    */
   @Override
   public void consumeInput(DARSEvent e) {
+    Node n;
+    
     // Enter critical area
     synchronized (lock) {
-      if (e.eventType == DARSEvent.EventType.IN_START_SIM) {
+      switch(e.eventType){
+      case IN_START_SIM :
         runSimulation();
         OutputHandler.dispatch(DARSEvent.outStartSim());
-      } else if (e.eventType == DARSEvent.EventType.IN_STOP_SIM) {
+        break;
+      
+      case IN_STOP_SIM:
         stopSimulation();
         OutputHandler.dispatch(DARSEvent.outStopSim());
-      } else if (e.eventType == DARSEvent.EventType.IN_PAUSE_SIM) {
+        break;
+        
+      case IN_PAUSE_SIM:
         pauseSimulation();
         OutputHandler.dispatch(DARSEvent.outPauseSim());
-      } else if (e.eventType == DARSEvent.EventType.IN_RESUME_SIM) {
+        break;
+        
+      case IN_RESUME_SIM:
         resumeSimulation();
         OutputHandler.dispatch(DARSEvent.outResumeSim());
-      } else if (e.eventType == DARSEvent.EventType.IN_SIM_SPEED) {
+        break;
+        
+      case IN_SIM_SPEED:
         WAIT_TIME = e.newSimSpeed;
         OutputHandler.dispatch(DARSEvent.outSimSpeed(WAIT_TIME));
-      } else if (e.eventType == DARSEvent.EventType.IN_ADD_NODE) {
-        // Get the node attributes for this input event
+        break;
+        
+      case IN_ADD_NODE:
+     // Get the node attributes for this input event
         NodeAttributes ni = e.getNodeAttributes();
 
         // Assign an ID to the node
         ni.id = assignNodeId();
 
         // Make a new network node with these attributes
-        Node n = makeNetworkNode(ni);
+        n = makeNetworkNode(ni);
 
         // Add it to the node store
         store.addNode(n);
@@ -246,28 +255,33 @@ public class SimEngine implements InputConsumer {
         // Dispatch an output event indicating a new node has entered
         // the network.
         OutputHandler.dispatch(DARSEvent.outAddNode(ni));
-
-      } else if (e.eventType == DARSEvent.EventType.IN_DEL_NODE) {
+      	break;
+      	
+      case IN_DEL_NODE:
         store.deleteNode(e.nodeId);
         OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
-      } else if (e.eventType == DARSEvent.EventType.IN_SET_NODE_RANGE) {
+        break;
+        
+      case IN_SET_NODE_RANGE:
         // Get the node
-        Node n = store.getNode(e.nodeId);
+        n = store.getNode(e.nodeId);
         
         // Set the new range
         n.setRange(e.nodeRange);
         OutputHandler.dispatch(DARSEvent.outSetNodeRange(e.nodeId, e.nodeRange));
+        break;
         
-      } else if (e.eventType == DARSEvent.EventType.IN_MOVE_NODE) {
-
+      case IN_MOVE_NODE:
         // Get the node
-        Node n = store.getNode(e.nodeId);
+        n = store.getNode(e.nodeId);
         
         // Set the new coords
         n.setXY(e.nodeX, e.nodeY);
         
         // Dispatch the moved event
         OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, e.nodeX, e.nodeY));
+        break;
+        
       }
     } // / Exit critical area
   }
