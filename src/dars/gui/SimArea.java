@@ -223,16 +223,25 @@ class NodeActionHandler implements GNodeListener{
   }
 
 
-//////////////////////////Data
+  public void traceMessage(String fromId, String toId) {
+    
+    GNode a = getGNode(fromId);
+    GNode b = getGNode(toId);
+
+    if(a == null || b == null) return;
+    
+    connMap.addConn(a,b);
+  }
+  
+  //////////////////////////Data
 
 
 
   private TreeMap<String, GNode> gnodemap = new TreeMap<String, GNode>();
 
-  private Connections connMap;
+  private Connections connMap = new Connections(this);
 
-  //Testing purposes only
-  private char c ='A';
+
 
   
   //Inner classes

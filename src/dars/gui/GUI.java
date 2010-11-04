@@ -147,6 +147,8 @@ public class GUI extends JFrame implements OutputConsumer {
 
     // Show everything
     this.setVisible(true);
+    
+
   }
 
   private void setSizes() {
@@ -216,6 +218,11 @@ public class GUI extends JFrame implements OutputConsumer {
         nodeAttributesArea.setNode(e.nodeId);
         break;
 
+      case OUT_MSG_TRANSMITTED:
+        //Animate the event
+        simArea.traceMessage(e.sourceId, e.destinationId);
+        break;
+        
       case OUT_DEL_NODE:
         // Remove the node
         simArea.deleteNode(e.nodeId);

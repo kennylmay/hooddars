@@ -24,6 +24,8 @@ public class LogArea extends javax.swing.JPanel {
   public void appendLog(String log) {
     textArea.append(log);
     textArea.append(newline);
+    textArea.setCaretPosition(textArea.getDocument().getLength());
+
   }
   
 
