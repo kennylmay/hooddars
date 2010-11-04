@@ -163,14 +163,14 @@ public class SimEngine implements InputConsumer {
           if (node == null)
             continue;
           // Only allow the nodes in range to hear the broadcast.
-          if (canCommuincate(message.originId, node.getAttributes().id)) {
+          if (canCommunicate(message.originId, node.getAttributes().id)) {
             node.messageToNode(message);
           }
         }
         // Else if the messageQueue is not a broadcast try to send it to the
         // destination id.
       } else {
-        if (canCommuincate(message.originId, message.destinationId)) {
+        if (canCommunicate(message.originId, message.destinationId)) {
           node.messageToNode(message);
         }
       }
@@ -391,7 +391,7 @@ public class SimEngine implements InputConsumer {
    * 
    * @return boolean
    */
-  private boolean canCommuincate(String Id1, String Id2) {
+  private boolean canCommunicate(String Id1, String Id2) {
     NodeAttributes att1 = store.getNodeAttributes(Id1);
     NodeAttributes att2 = store.getNodeAttributes(Id2);
     Point point1 = new Point(att1.x, att1.y);
