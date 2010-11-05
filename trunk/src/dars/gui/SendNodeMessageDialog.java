@@ -6,6 +6,7 @@ package dars.gui;
 import java.util.ArrayList;
 import javax.swing.*;
 
+import dars.InputHandler;
 import dars.Message;
 import dars.event.DARSEvent;
 import dars.proto.Node;
@@ -92,9 +93,9 @@ class Dialogbox1 extends JFrame implements ActionListener{
   public void actionPerformed(ActionEvent e){
     String actionCommand = e.getActionCommand();
     if(actionCommand.equals("Ok"))
-      DARSEvent.inSendMsg(m, sourceId, destinationId);
+      InputHandler.dispatch(DARSEvent.inSendMsg(m, sourceId, destinationId));
     else if (actionCommand.equals("Cancel"));
-      
+       
          
     }
   public void ComboBoxDemo() {
