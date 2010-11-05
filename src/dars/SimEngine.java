@@ -163,7 +163,7 @@ public class SimEngine implements InputConsumer {
           if (node == null)
             continue;
           // Only allow the nodes in range to hear the broadcast.
-          if (canCommunicate(message.originId, node.getAttributes().id)) {
+          if (canCommunicate(message.originId, node.getAttributes().id) && message.originId != node.getAttributes().id) {
             node.messageToNode(message);
           }
         }
