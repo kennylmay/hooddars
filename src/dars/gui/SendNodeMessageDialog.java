@@ -47,81 +47,63 @@ public class SendNodeMessageDialog {
   
    }
 
-class Dialogbox1 extends JFrame implements ActionListener{
-  /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-  public static final int WIDTH = 600;
-  public static final int Height =400;
-  public static final int Lines =30;
-  public static final int CHAR_PER_LINE = 20;
-  public static String sourceId;
-  public static Message m;
-  public static String destinationId;
- // private String button22 = "Enter the Message";
+ 
+  
+  class box   
+  {   
+      public box()   
+      {     
+          JFrame frame = new JFrame("Send Message to a Node");
+          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          
+          JTextArea area = new JTextArea("",5,6);
+          
+          
+          frame.setSize(400,300);   
+          JPanel northP = new JPanel();   
+          JPanel southP = new JPanel(); 
+          JPanel centerP = new JPanel();
+          Dimension panelD = new Dimension(50,30);
+          JButton button1 = new JButton("OK");
+          JButton button2 = new JButton("Cancel");
+          panelD.setSize(60,40);
 
-  private JTextArea theText;
-  private int String;
-   public Dialogbox1()
-   { setSize(WIDTH , HEIGHT );
-   setTitle("MEssage Box");
-   JFrame frame = new JFrame();
-   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-   Container contentPane = getContentPane();
-   contentPane.setLayout(new BorderLayout());
-   JPanel buttonpanel = new JPanel();
-   buttonpanel.setBackground(Color.WHITE);
-   buttonpanel.setLayout(new FlowLayout());
-   JButton button1 = new JButton("OK");
-   button1.addActionListener(this);
-   buttonpanel.add(button1);
-    JButton button2 = new JButton("Cancel");
-    button2.addActionListener(this);
-    buttonpanel.add(button2);
-   contentPane.add(buttonpanel, BorderLayout.SOUTH);
-   JPanel textpanel = new JPanel();
-   // JLabel textpane = new JLabel("Enter the Message");
-   // textpane.add(textpane,BorderLayout.WEST);
-   textpanel.setBackground(Color.gray);
-   theText = new JTextArea(Lines, CHAR_PER_LINE);
-   theText.setBackground(Color.WHITE);
-   textpanel.add(theText);
-   contentPane.add(textpanel,BorderLayout.CENTER);
-   }
-   
+          northP.setPreferredSize(panelD);   
+          northP.setMaximumSize(panelD);   
+          southP.setPreferredSize(panelD);   
+          southP.setMaximumSize(panelD);   
+          centerP.setPreferredSize(panelD);   
+          centerP.setMaximumSize(panelD); 
+          JTextArea textArea = new JTextArea("",20, 30);
+          JLabel label2 = new JLabel("Enter your Message Here : ");
+
+          centerP.add(label2);
+          southP.add(button1); 
+          southP.add(button2);
+          centerP.add(textArea); 
+          
+          
+          
+          Container c = frame.getContentPane();   
+          c.add(northP,"North");   
+          c.add(southP,"South");  
+          c.add(centerP,"Center");
+          
+          frame.show();   
+         
+
+          
+
+          
+      }   
   public void actionPerformed(ActionEvent e){
-    String actionCommand = e.getActionCommand();
-    if(actionCommand.equals("Ok"))
-      InputHandler.dispatch(DARSEvent.inSendMsg(m, sourceId, destinationId));
-    else if (actionCommand.equals("Cancel"));
+        String actionCommand = e.getActionCommand();
+  //  if(actionCommand.equals("Ok"))
+     
+  //  InputHandler.dispatch(DARSEvent.inSendMsg(text,sourceId ,destinationId ));
+  //  else if (actionCommand.equals("Cancel"));
        
          
     }
-  public void ComboBoxDemo() {
-    
-    Container contentPane = getContentPane();
-    contentPane.setLayout(new BorderLayout());
-
-    
-
-    //Create the combo box, select the nodeId.
-    
-    JComboBox nodeList = new JComboBox();
-    Node node = null;
-    nodeList.setSelectedItem(node.getAttributes().id);
-    nodeList.addActionListener(this);
-
-
-  
   }
-  public void actionPerformed1(ActionEvent e) {
-    JComboBox cb = (JComboBox)e.getSource();
-    String nodeList = (String)cb.getSelectedItem();
-   
-
-
-}
-
-}
   
