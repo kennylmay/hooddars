@@ -3,9 +3,13 @@ package dars.gui;
 import java.awt.Graphics;
 import java.util.*;
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.Timer;
 
-public class Connections extends JPanel {
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Connections {
 
   /**
    * 
@@ -14,64 +18,122 @@ public class Connections extends JPanel {
 
 
   Connections(JLayeredPane p) {
-    //Set this size, position
-    this.setSize(new Dimension(1,1));
-    this.setLocation(new Point(0,0));  
-    this.jlp_ = p;
-
- 
-    //Add this JPanel, move it to the back. 
-    //This will allow us to draw behind existing elements.
-    p.add(this);
-    p.moveToBack(this);
-
-    //Setup connStore
-    connStore = new HashSet<HashSet<GNode>>();
 
   }
-  @Override
-  public void paintComponent(Graphics g) {
-    //System.out.println("painting");
-    //reset the size bounds; size of window may have changed
-    this.setSize(new Dimension(jlp_.getWidth(),jlp_.getHeight())); 
-    Iterator<HashSet<GNode> > i = connStore.iterator();
-    while(i.hasNext()) {
-      HashSet<GNode> s = i.next();
-      
-      Iterator<GNode> ii = s.iterator();
-      //make sure that we have TWO elements in the set
-      assert(s.size() == 2);
-      GNode A = ii.next();
-      GNode B = ii.next();
-      
-      int x1,y1,x2,y2;
-      Point p = A.getCenter();
-      x1 = p.x; y1 = p.y;
-      p = B.getCenter();
-      x2 = p.x; y2 = p.y;
 
-      g.drawLine(x1,y1,x2,y2);
+  public void draw(Graphics g) {
+
+    //reset the size bounds; size of window may have changed
+    //this.setSize(new Dimension(jlp_.getWidth(),jlp_.getHeight()));
+    
+    Iterator<Connection> i = connStore.iterator();
+    while(i.hasNext()) {
+
+      Connection c = i.next();
+      //Draw a line from fromNode to
+      int x1,x2,y1,y2;
+      x1 = c.fromNode.getCenter().x;
+      y1 = c.fromNode.getCenter().y;
+      x2 = c.toNode.getCenter().x;
+      y2 = c.toNode.getCenter().y;
+      
+      
+      Animator.drawDirectedPath(g,x1,y1,x2,y2);
+      
       
     }
 
   }
+  
+  static class Animator {
+    static int counter = 1;
+    static final int countMax = 60;
+    
+    static void drawDirectedPath(Graphics g, int x1, int y1, int x2, int y2) {
+      
+      
+      g.drawLine(x1,y1,x2,y2);
+      double stepX =  (double)(x1-x2) / countMax;
+      double stepY =  (double)(y1-y2) / countMax;
+      
+      
+      Point a = new Point(x1,y1);
+      Point b = new Point(x2,y2);
+      
+     
+      g.fillRect(x1 - (int)( stepX * counter),
+                 y1 - (int)( stepY * counter),
+                 10,10);
+      counter++;
+      if(counter == countMax) {
+        counter = 1;
+      }
+    }
+  }
 
-  public void addConn(GNode A, GNode B) {
-    HashSet<GNode> ns = new HashSet<GNode>();
-    ns.add(A);
-    ns.add(B);
-    connStore.add(ns);
+  public void traceMsg(GNode A, GNode B, int lifetime) {
+    Connection c = new Connection(A,B);
+    removeConn(c);
+    connStore.add(c);
+    ActionListener destroyer = new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        
+      }
+    };
+    
+    Timer t = new Timer(lifetime, new Destroyer(c));
+    t.setRepeats(false);
+    t.setInitialDelay(lifetime);
+    t.start();
   }
  
-  public void delConn(GNode A, GNode B) {
+  public class Destroyer implements ActionListener{
 
+    Connection c;
+    public Destroyer(Connection c) {
+      this.c = c;
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      removeConn(c);
+    }
   }
+  
+  class Connection {
+    GNode fromNode;
+    GNode toNode;
+    
+    Connection(GNode fromNode, GNode toNode) {
+      this.fromNode = fromNode;
+      this.toNode = toNode;
+    }
+
+    public boolean equals(Object b) {
+      Connection B = (Connection)b;
+      if(fromNode != B.fromNode) return false;
+      if(toNode != B.toNode) return false;
+      return true;
+    }
+  }
+  
+
    
-  public void dropConn(GNode n) {
+  public void dropConns(GNode n) {
 
   }
+  
+  public void removeConn(Connection c) {
+    for(Connection conn : connStore) {
+      if(conn.equals(c)) {
+        connStore.remove(conn);
+        return;
+      }
+    }
+    
+  }
 
-
+  
     /**
    * Draws an arrow on the given Graphics2D context
    * @param g The Graphics2D context to draw on
@@ -126,5 +188,5 @@ public class Connections extends JPanel {
   private JLayeredPane jlp_; 
 
   
-  private HashSet< HashSet<GNode>> connStore;
+  private ArrayList<Connection> connStore = new ArrayList<Connection>();
 }

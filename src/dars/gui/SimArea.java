@@ -7,8 +7,10 @@ import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
 
+import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.*;
+import javax.swing.Timer;
 
 
 
@@ -27,8 +29,17 @@ public class SimArea extends JLayeredPane {
     addMouseListener(new PopClickListener());
    
     setVisible(true);
- 
-
+  
+    connMap = new Connections(this);
+    
+    
+    ActionListener repainter = new ActionListener() {
+      public void actionPerformed(ActionEvent e){
+        repaint();   
+      }
+    };
+    Timer t = new Timer(100,repainter);
+    t.start();
   }
 
   public void setNodeInspector(NodeInspector nodeInspector) {
@@ -193,6 +204,15 @@ class NodeActionHandler implements GNodeListener{
     this.repaint();
   }
 
+  public void paintComponent(Graphics g) {
+    connMap.draw(g);
+    
+    for(GNode n : gnodemap.values()) {
+      g.fillRect(n.getX(), n.getY(), 2, 2);
+      
+    }
+  }
+  
   public void setNodeRange(String nodeId, int newRange) {
     //Get the gnode from the gnode map
     GNode node = getGNode(nodeId);
@@ -231,7 +251,8 @@ class NodeActionHandler implements GNodeListener{
 
     if(a == null || b == null) return;
     
-    connMap.addConn(a,b);
+    connMap.traceMsg(a,b, 10000);
+    
   }
   
   //////////////////////////Data
@@ -240,7 +261,7 @@ class NodeActionHandler implements GNodeListener{
 
   private TreeMap<String, GNode> gnodemap = new TreeMap<String, GNode>();
 
-  private Connections connMap = new Connections(this);
+  private Connections connMap;
 
 
 

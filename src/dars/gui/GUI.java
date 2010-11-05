@@ -10,7 +10,6 @@ import dars.InputHandler;
 import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.event.DARSEvent;
-import dars.gui.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -156,17 +155,15 @@ public class GUI extends JFrame implements OutputConsumer {
     // setup the borders
     setBorders();
 
-    // setup the preferred sizes later
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        setSizes();
-      }
-    });
+    // setup the sizes of the panels
+    setSizes();
+
 
     // Show everything
     this.setVisible(true);
     
-
+      
+   
   }
 
   private void setSizes() {

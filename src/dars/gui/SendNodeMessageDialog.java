@@ -9,8 +9,6 @@ import javax.swing.*;
 import dars.InputHandler;
 import dars.Message;
 import dars.event.DARSEvent;
-import dars.proto.Node;
-
 import java.awt.*;
 import java.awt.event.*;
 /**

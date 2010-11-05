@@ -476,7 +476,7 @@ public class GNode extends JPanel {
     }
     
     public void resize() {
-      //resize this panel to accomodate the new range
+      //resize this panel to accommodate the new range
       int range = parent_.getRange();
       setSize(new Dimension(new Dimension(range * 2, range * 2)));
       
@@ -485,7 +485,9 @@ public class GNode extends JPanel {
      
     }
 
-  }
 
+  }
+  
   private int range;
+  
 }
