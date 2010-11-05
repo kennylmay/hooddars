@@ -30,6 +30,10 @@ public class Connections {
     while(i.hasNext()) {
 
       Connection c = i.next();
+      if(c.shouldDie) {
+        i.remove();
+        continue;
+      }
       //Draw a line from fromNode to
       int x1,x2,y1,y2;
       x1 = c.fromNode.getCenter().x;
@@ -75,12 +79,6 @@ public class Connections {
     Connection c = new Connection(A,B);
     removeConn(c);
     connStore.add(c);
-    ActionListener destroyer = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        
-      }
-    };
     
     Timer t = new Timer(lifetime, new Destroyer(c));
     t.setRepeats(false);
@@ -103,7 +101,7 @@ public class Connections {
   class Connection {
     GNode fromNode;
     GNode toNode;
-    
+    volatile boolean shouldDie = false;
     Connection(GNode fromNode, GNode toNode) {
       this.fromNode = fromNode;
       this.toNode = toNode;
@@ -120,13 +118,17 @@ public class Connections {
 
    
   public void dropConns(GNode n) {
-
+    for(Connection conn : connStore) {
+      if(conn.fromNode == n || conn.toNode == n) {
+        conn.shouldDie = true;
+      }
+    }    
   }
   
   public void removeConn(Connection c) {
     for(Connection conn : connStore) {
       if(conn.equals(c)) {
-        connStore.remove(conn);
+        conn.shouldDie = true;
         return;
       }
     }

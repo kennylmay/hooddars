@@ -178,7 +178,10 @@ class NodeActionHandler implements GNodeListener{
     assert(gnode != null);
  
     //move the x y coords
-     gnode.setXY(x,y); 
+     gnode.setXY(x,y);
+     
+    //drop any connections in the conn map
+     connMap.dropConns(gnode);
   }
 
   
@@ -251,7 +254,7 @@ class NodeActionHandler implements GNodeListener{
 
     if(a == null || b == null) return;
     
-    connMap.traceMsg(a,b, 10000);
+    connMap.traceMsg(a,b, 5000);
     
   }
   
