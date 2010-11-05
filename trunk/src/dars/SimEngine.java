@@ -10,22 +10,24 @@ import dars.event.DARSEvent;
 import dars.proto.*;
 import dars.proto.aodv.Aodv;
 import java.lang.Thread;
+import java.math.BigInteger;
 
 /**
  * @author Kenny
  * 
  */
-public class SimEngine implements InputConsumer {
+public class SimEngine implements InputConsumer, SimulationTimeKeeper {
   /**
    * Time to wait for an iteration.
    */
-  private int              WAIT_TIME    = 10;
-  private boolean          KILL_THREAD  = false;
-  NodeStore                store        = new NodeStore();
-  Queue<Message>           messageQueue = new LinkedList<Message>();        
-  MessageRelay             thread       = new MessageRelay();
-  static public Object     lock         = new Object();
-  private volatile boolean paused;
+  private int                 WAIT_TIME    = 10;
+  private boolean             KILL_THREAD  = false;
+  NodeStore                   store        = new NodeStore();
+  Queue<Message>              messageQueue = new LinkedList<Message>();
+  MessageRelay                thread       = new MessageRelay();
+  static public Object        lock         = new Object();
+  private volatile boolean    paused;
+  private volatile BigInteger simTime      = BigInteger.ZERO;
 
   /**
    * Function that will start a simulation
@@ -41,6 +43,12 @@ public class SimEngine implements InputConsumer {
       thread.start();
     }
   }
+  
+  @Override
+  public BigInteger getTime() {
+    return new BigInteger(simTime.toString());
+  }
+  
 
   /**
    * Function that sets the timer speed
@@ -149,6 +157,8 @@ public class SimEngine implements InputConsumer {
     Node node = null;
     Message message = null;
     Iterator<Node> i;
+    //Increment sim time
+    simTime.add(BigInteger.ONE);
     
     // If there are messages in the messageQueue try to attempt delivery.
     while (messageQueue.isEmpty() == false) {

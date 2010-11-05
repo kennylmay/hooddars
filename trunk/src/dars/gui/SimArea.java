@@ -202,6 +202,9 @@ class NodeActionHandler implements GNodeListener{
     //cleanup the gnode itself
     gnode.cleanup();
     
+    //drop any connections it might have
+    connMap.dropConns(gnode);
+    
     gnode = null;
     this.invalidate();
     this.repaint();
