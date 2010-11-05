@@ -4,7 +4,6 @@
 package dars;
 
 import logger.Logger;
-import dars.event.DARSEvent;
 import dars.gui.GUI;
 
 /**
@@ -40,6 +39,9 @@ public class DARSMain {
     
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
+    
+    
+    
     
   }
 

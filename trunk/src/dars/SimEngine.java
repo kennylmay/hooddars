@@ -1,7 +1,6 @@
 package dars;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -165,13 +164,17 @@ public class SimEngine implements InputConsumer {
           // Only allow the nodes in range to hear the broadcast.
           if (canCommunicate(message.originId, node.getAttributes().id) && message.originId != node.getAttributes().id) {
             node.messageToNode(message);
+            OutputHandler.dispatch(DARSEvent.outMsgTransmitted(
+                message.originId, node.getAttributes().id, message.message));
           }
         }
         // Else if the messageQueue is not a broadcast try to send it to the
         // destination id.
       } else {
         if (canCommunicate(message.originId, message.destinationId)) {
-          node.messageToNode(message);
+          //Generate a node msg event
+          OutputHandler.dispatch(DARSEvent.outMsgTransmitted(
+              message.originId, message.destinationId, message.message));
         }
       }
     }

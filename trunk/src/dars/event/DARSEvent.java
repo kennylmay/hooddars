@@ -189,12 +189,12 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent outMsgTransmitted(Message msg){
+  public static DARSEvent outMsgTransmitted(String sourceId, String destId, String message) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_MSG_TRANSMITTED;
-    e.sourceId = msg.originId;
-    e.destinationId = msg.destinationId;
-    e.transmittedMessage = msg.message;
+    e.sourceId = sourceId;
+    e.destinationId = destId;
+    e.transmittedMessage = message;
     return e;
   }
 

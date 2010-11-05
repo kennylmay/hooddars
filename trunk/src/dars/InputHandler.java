@@ -5,7 +5,6 @@ package dars;
 
 import java.util.ArrayList;
 
-import logger.Logger;
 import dars.event.DARSEvent;
 
 /**

@@ -4,8 +4,6 @@
 package dars;
 
 import dars.proto.*;
-import dars.proto.aodv.Aodv;
-
 import java.util.HashMap;
 import java.util.Iterator;
 

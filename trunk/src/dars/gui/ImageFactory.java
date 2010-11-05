@@ -1,7 +1,6 @@
 package dars.gui;
 import java.awt.image.*;
 import java.awt.Font;
-import java.awt.font.*;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.awt.*;
