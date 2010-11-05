@@ -27,7 +27,6 @@ public class DARSEvent {
   public String         nodeId;
   public String         sourceId;
   public String         destinationId;
-  public String         payload;
   public String         informationalMessage;
   public String         transmittedMessage;
   public int            newSimSpeed;
