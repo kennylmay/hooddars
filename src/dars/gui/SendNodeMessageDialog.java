@@ -41,18 +41,19 @@ public class SendNodeMessageDialog {
 
 
 }
-  public static void inSendMsg(Message m, String sourceId, String destinationId)
-  {
-    }
-  
+ 
    }
 
  
   
   class box   
   {   
+      private String sourceId;
+      private Message m;
+      private String destinationId;
       public box()   
       {     
+      
           JFrame frame = new JFrame("Send Message to a Node");
           frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
           
@@ -90,18 +91,15 @@ public class SendNodeMessageDialog {
           c.add(centerP,"Center");
           
           frame.show();   
-         
-
-          
-
-          
+       
+                  
       }   
   public void actionPerformed(ActionEvent e){
         String actionCommand = e.getActionCommand();
-  //  if(actionCommand.equals("Ok"))
+  if(actionCommand.equals("Ok"))
      
-  //  InputHandler.dispatch(DARSEvent.inSendMsg(text,sourceId ,destinationId ));
-  //  else if (actionCommand.equals("Cancel"));
+   InputHandler.dispatch(DARSEvent.inSendMsg(m,sourceId ,destinationId ));
+   else if (actionCommand.equals("Cancel"));
        
          
     }
