@@ -3,6 +3,8 @@ package dars.gui;
 import javax.swing.*;
 
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import dars.InputHandler;
 import dars.NodeInspector;
@@ -100,6 +102,12 @@ public class GUI extends JFrame implements OutputConsumer {
     resumeButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inResumeSim());
+      }
+    });
+    
+    slideBar.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent arg0) {
+        InputHandler.dispatch(DARSEvent.inSimSpeed(slideBar.getValue()));
       }
     });
     
@@ -229,7 +237,7 @@ public class GUI extends JFrame implements OutputConsumer {
         simArea.setNodeRange(e.nodeId, e.nodeRange);
         nodeAttributesArea.setNode(e.nodeId);
         break;
-
+        
       case OUT_MSG_TRANSMITTED:
         //Animate the event
         simArea.traceMessage(e.sourceId, e.destinationId);
@@ -328,13 +336,13 @@ public class GUI extends JFrame implements OutputConsumer {
 
     // Add the slider bar, set its properties and values.
     speedArea.add(speedLabel);
-    speedArea.add(slowerLabel);
+    speedArea.add(fasterLabel);
     speedArea.add(slideBar);
     slideBar.setSnapToTicks(true);
-    slideBar.setMinimum(0);
-    slideBar.setMaximum(10);
+    slideBar.setMinimum(1);
+    slideBar.setMaximum(20);
     slideBar.setValue(5);
-    speedArea.add(fasterLabel);
+    speedArea.add(slowerLabel);
     menuPanel.add(speedArea);
 
     menuPanel.setOpaque(false);
