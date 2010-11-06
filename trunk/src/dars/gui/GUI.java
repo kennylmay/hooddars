@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 import dars.InputHandler;
 import dars.NodeInspector;
@@ -103,9 +103,6 @@ public class GUI extends JFrame implements OutputConsumer {
     saveMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "Log Files", "log");
-        chooser.setFileFilter(filter);
         int returnVal = chooser.showSaveDialog(getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
@@ -145,9 +142,6 @@ public class GUI extends JFrame implements OutputConsumer {
     setupMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "Log Files", "log");
-        chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
           /// Some call to load the simulation setup
@@ -158,9 +152,6 @@ public class GUI extends JFrame implements OutputConsumer {
     replayMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "Log Files", "log");
-        chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
           /// Some Call to Load the simulation replay
