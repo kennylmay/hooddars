@@ -196,11 +196,13 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_STOP_SIM:
         //Notify the menu that the sim has stopped
         menuArea.simStopped();
+        simArea.simStopped();
         break;
 
       case OUT_PAUSE_SIM:
         //Notify the menu the the sim has paused
         menuArea.simPaused();
+        simArea.simPaused();
         break;
 
       case OUT_RESUME_SIM:

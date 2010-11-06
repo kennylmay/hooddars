@@ -33,8 +33,6 @@ public class SimArea extends JLayeredPane {
    
     setVisible(true);
   
-    connMap = new Connections(this);
-    
     
     ActionListener repainter = new ActionListener() {
       public void actionPerformed(ActionEvent e){
@@ -214,7 +212,7 @@ class NodeActionHandler implements GNodeListener{
   }
 
   public void paintComponent(Graphics g) {
-    g.setColor(Color.RED);
+  
     connMap.draw(g);
     
     super.paintComponent(g);
@@ -268,7 +266,7 @@ class NodeActionHandler implements GNodeListener{
 
   private TreeMap<String, GNode> gnodemap = new TreeMap<String, GNode>();
 
-  private Connections connMap;
+  private Connections connMap = new Connections();
 
 
 
@@ -436,4 +434,13 @@ class NodeActionHandler implements GNodeListener{
     }
   }
   
+  public void simPaused() {
+    //Drop all message animations
+    connMap.dropAll();
+  }
+  
+  public void simStopped() {
+    //Drop all message animations
+    connMap.dropAll();
+  }
 } 
