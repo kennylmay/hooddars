@@ -311,6 +311,15 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         OutputHandler.dispatch(DARSEvent.outMoveNode(e.nodeId, e.nodeX, e.nodeY));
         break;
         
+      case IN_INSERT_MESSAGE:
+        // Get the node
+        n = store.getNode(e.sourceId);
+        n.newNarrativeMessage(e.sourceId, e.destinationId, e.transmittedMessage);
+       
+        // Dispatch the insert message event
+        OutputHandler.dispatch(DARSEvent.outInsertMessage());
+        break;
+        
       }
     } // / Exit critical area
   }
