@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dars.InputHandler;
 import dars.NodeInspector;
@@ -13,6 +14,11 @@ import dars.event.DARSEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class GUI extends JFrame implements OutputConsumer {
 
@@ -74,9 +80,89 @@ public class GUI extends JFrame implements OutputConsumer {
     aodvMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         typeLabel.setText("AODV");
+        InputHandler.dispatch(DARSEvent.inClearSim());
         playButton.setEnabled(true);
         stopButton.setEnabled(true);
         pauseButton.setEnabled(true);
+        simArea.setLocked(false);
+      }
+    });
+
+    dsdvMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        typeLabel.setText("DSDV");
+      }
+    });
+
+    clearMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inClearSim());
+      }
+    });
+
+    saveMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Log Files", "log");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showSaveDialog(getParent());
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+          // Define the new files to be saved.
+          File logFile = new File("darslog.tmp");
+          File saveFile = new File(chooser.getSelectedFile().getPath()+".log");
+
+          // Initialize the file readers and writers
+          FileReader in = null;
+          FileWriter out = null;
+
+          // Try to open each file
+          try {
+            int c;
+            in = new FileReader(logFile);
+            out = new FileWriter(saveFile);
+            // Write each line of the first file to the file chosen.
+            while ((c = in.read()) != -1) {
+              out.write(c);
+            }
+            
+            // Close both files.
+            in.close();
+            out.close();
+
+          } catch (FileNotFoundException e1) {
+            JOptionPane.showMessageDialog(getParent(),
+                "Log file could not be saved at"
+                    + chooser.getSelectedFile().getPath());
+          } catch (IOException e1) {
+            e1.printStackTrace();
+          }
+        }
+      }
+    });
+
+    setupMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+
+      }
+    });
+
+    replayMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        
+      }
+    });
+
+    exitMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        
+      }
+    });
+
+    helpMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+
       }
     });
 
@@ -95,7 +181,7 @@ public class GUI extends JFrame implements OutputConsumer {
     stopButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
-      }    
+      }
     });
 
     resumeButton.addActionListener(new ActionListener() {
@@ -103,13 +189,13 @@ public class GUI extends JFrame implements OutputConsumer {
         InputHandler.dispatch(DARSEvent.inResumeSim());
       }
     });
-    
+
     slideBar.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent arg0) {
         InputHandler.dispatch(DARSEvent.inSimSpeed(slideBar.getValue()));
       }
     });
-    
+
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -158,12 +244,9 @@ public class GUI extends JFrame implements OutputConsumer {
     // setup the sizes of the panels
     setSizes();
 
-
     // Show everything
     this.setVisible(true);
-    
-      
-   
+
   }
 
   private void setSizes() {
@@ -223,23 +306,23 @@ public class GUI extends JFrame implements OutputConsumer {
         // Add the node
         simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
         nodeAttributesArea.nodeAdded(e.nodeId);
- 
+
       case OUT_MOVE_NODE:
         // Move the nodenodeSelectorComboBox
         simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
         break;
-        
+
       case OUT_SET_NODE_RANGE:
         // Refresh the node attributes panel
         simArea.setNodeRange(e.nodeId, e.nodeRange);
         nodeAttributesArea.setNode(e.nodeId);
         break;
-        
+
       case OUT_MSG_TRANSMITTED:
-        //Animate the event
+        // Animate the event
         simArea.traceMessage(e.sourceId, e.destinationId);
         break;
-        
+
       case OUT_DEL_NODE:
         // Remove the node
         simArea.deleteNode(e.nodeId);
@@ -252,30 +335,35 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_ERROR:
         logArea.appendLog("ERROR: " + e.informationalMessage);
         break;
-        
+
       case OUT_START_SIM:
         playButton.setEnabled(false);
         pauseButton.setEnabled(true);
         stopButton.setEnabled(true);
         break;
-       
+
       case OUT_STOP_SIM:
         stopButton.setEnabled(false);
         playButton.setEnabled(false);
         pauseButton.setEnabled(false);
         break;
-        
+
       case OUT_PAUSE_SIM:
         playButton.setEnabled(false);
         stopButton.setEnabled(false);
         pauseButton.setVisible(false);
         resumeButton.setVisible(true);
         break;
-       
+
       case OUT_RESUME_SIM:
         stopButton.setEnabled(true);
         pauseButton.setVisible(true);
         resumeButton.setVisible(false);
+        break;
+
+      case OUT_CLEAR_SIM:
+        break;
+
       }
     }
   }

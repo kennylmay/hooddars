@@ -21,6 +21,7 @@ public class SimArea extends JLayeredPane {
    */
   private static final long serialVersionUID = 1L;
 
+  private boolean locked = true;
 
 ///////////////////////////////Constructor
   public SimArea() {
@@ -278,12 +279,12 @@ class NodeActionHandler implements GNodeListener{
   class AddNodePopup extends JPopupMenu implements ActionListener {
     /**
      * 
-     */
+     */  
     private static final long serialVersionUID = 1L;
     JMenuItem anItem1;
     JMenuItem anItem2;
     int x, y;
-    public AddNodePopup(){
+    public AddNodePopup(){  
       anItem1 = new JMenuItem("Add a new node");
       anItem2 = new JMenuItem("Something else");
       anItem1.addActionListener(this);
@@ -321,7 +322,7 @@ class NodeActionHandler implements GNodeListener{
       delete_item.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              deleteNodeReq(gnode.getId());
+               deleteNodeReq(gnode.getId());
            }      
       });
       
@@ -346,6 +347,10 @@ class NodeActionHandler implements GNodeListener{
     @Override
     public void mousePressed(MouseEvent e){
       if (e.isPopupTrigger()) {
+        // If the Sim Area is locked just return.
+        if (locked == true)
+          return;
+        
         doPop(e);
       }
     }
@@ -353,12 +358,20 @@ class NodeActionHandler implements GNodeListener{
     @Override
     public void mouseReleased(MouseEvent e){
       if (e.isPopupTrigger()) {
+        // If the Sim Area is locked just return.
+        if (locked == true)
+          return;
+        
         doPop(e);
       }
     }
 
     private void doPop(MouseEvent e){
-      //Show the "Add Node" menu.
+      // If the Sim Area is locked just return.
+      if (locked == true)
+        return;
+      
+     //Show the "Add Node" menu.
       AddNodePopup menu = new AddNodePopup();
       menu.x = e.getX();
       menu.y = e.getY();
@@ -373,6 +386,7 @@ class NodeActionHandler implements GNodeListener{
   public String getSimType() {
      return "AODV";
   }
+  
   public void selectNode(String nodeId){
     GNode g = getGNode(nodeId);
     if (g == null){
@@ -381,5 +395,28 @@ class NodeActionHandler implements GNodeListener{
       g.select();
     }
       
+  }
+
+  /**
+   * This function will allow the GUI to sort of "deactivate" the
+   * the signal handlers.
+   * 
+   * @author kennlmay
+   * 
+   * @param locked the state of the simulation
+   */
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }
+
+  /**
+   * You can use this function to determine the state of the sim area.
+   * 
+   * @author kennylmay
+   * 
+   * @return the locked
+   */
+  public boolean isLocked() {
+    return locked;
   }
 } 

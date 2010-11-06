@@ -71,6 +71,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // Node combobox action handler
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
+        if (nodeSelectorComboBox.getSelectedItem() == null){
+          return;
+        }
         simArea.selectNode(nodeSelectorComboBox.getSelectedItem().toString());
       }
     });

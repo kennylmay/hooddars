@@ -285,6 +285,21 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         OutputHandler.dispatch(DARSEvent.outSetNodeRange(e.nodeId, e.nodeRange));
         break;
         
+      case IN_CLEAR_SIM:
+        Node node = null;
+        Iterator<Node> i = store.getNodes();
+        
+        while(i.hasNext() == true) {
+          node = i.next();
+          i.remove();
+          if (node == null){
+            continue;
+          }
+          InputHandler.dispatch(DARSEvent.inDeleteNode(node.getAttributes().id));
+        }
+        OutputHandler.dispatch(DARSEvent.outClearSim());
+        break;
+        
       case IN_MOVE_NODE:
         // Get the node
         n = store.getNode(e.nodeId);
