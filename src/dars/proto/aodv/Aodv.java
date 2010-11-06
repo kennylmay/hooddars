@@ -826,4 +826,10 @@ public class Aodv implements Node {
    */
   private int                         HelloSentAt = 0;
 
+  @Override
+  public void newNarrativeMessage(String sourceId, String desinationId, String messageText) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }
