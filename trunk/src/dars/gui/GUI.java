@@ -144,13 +144,27 @@ public class GUI extends JFrame implements OutputConsumer {
 
     setupMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Log Files", "log");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(getParent());
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          /// Some call to load the simulation setup
+        }
       }
     });
 
     replayMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Log Files", "log");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(getParent());
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          /// Some Call to Load the simulation replay
+        }
       }
     });
 
@@ -162,7 +176,7 @@ public class GUI extends JFrame implements OutputConsumer {
 
     helpMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-
+      
       }
     });
 
