@@ -34,172 +34,16 @@ public class GUI extends JFrame implements OutputConsumer {
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
   private SimArea            simArea             = new SimArea();
 
-  private JPanel             menuPanel           = new JPanel();
+  private DARSAppMenu        menuArea            = new DARSAppMenu();
 
-  // Creating the menu bar and all of its elements
-  private JMenuBar           menuBar             = new JMenuBar();
-  private JMenu              simMenu             = new JMenu("Simulation");
-  private JMenu              newMenu             = new JMenu("New");
-  private JMenuItem          saveMenu            = new JMenuItem("Save");
-  private JMenuItem          aodvMenu            = new JMenuItem("AODV");
-  private JMenuItem          dsdvMenu            = new JMenuItem("DSDV");
-  private JMenuItem          clearMenu           = new JMenuItem("Clear");
-  private JMenuItem          exitMenu            = new JMenuItem("Exit");
-  private JMenu              importMenu          = new JMenu("Import");
-  private JMenuItem          setupMenu           = new JMenuItem("Setup");
-  private JMenuItem          replayMenu          = new JMenuItem("Replay");
-  private JMenu              helpMenu            = new JMenu("Help");
-  private JMenuItem          webMenu             = new JMenuItem(
-                                                     "Web Reference");
+  
 
-  // If someone knows a better way to align this stuff please feel free.
-  private JLabel             simTypeLabel        = new JLabel(
-                                                     "Simulation Type: ");
-  JLabel                     typeLabel           = new JLabel("NONE");
-
-  private JPanel             buttonArea          = new JPanel();
-  private JButton            playButton          = new JButton("Play");
-  private JButton            resumeButton        = new JButton("Resume");
-  private JButton            pauseButton         = new JButton("Pause");
-  private JButton            stopButton          = new JButton("Stop");
-
-  private JPanel             speedArea           = new JPanel();
-  private JPanel             simTypeArea         = new JPanel();
-
-  // Labels slider bar for the speed adjustment
-  private JLabel             speedLabel          = new JLabel("Speed");
-  private ImageIcon          minusIcon           = new ImageIcon(
-                                                     "img/minus.png");
-  private JLabel             slowerLabel         = new JLabel(minusIcon);
-  private JSlider            slideBar            = new JSlider();
-  private ImageIcon          plusIcon            = new ImageIcon("img/plus.png");
-  private JLabel             fasterLabel         = new JLabel(plusIcon);
 
   public GUI() {
 
-    aodvMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        typeLabel.setText("AODV");
-        InputHandler.dispatch(DARSEvent.inClearSim());
-        playButton.setEnabled(true);
-        stopButton.setEnabled(true);
-        pauseButton.setEnabled(true);
-        simArea.setLocked(false);
-      }
-    });
 
-    dsdvMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        typeLabel.setText("DSDV");
-      }
-    });
 
-    clearMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inClearSim());
-      }
-    });
-
-    saveMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        int returnVal = chooser.showSaveDialog(getParent());
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-          // Define the new files to be saved.
-          File logFile = new File("darslog.tmp");
-          File saveFile = new File(chooser.getSelectedFile().getPath()+".log");
-
-          // Initialize the file readers and writers
-          FileReader in = null;
-          FileWriter out = null;
-
-          // Try to open each file
-          try {
-            int c;
-            in = new FileReader(logFile);
-            out = new FileWriter(saveFile);
-            // Write each line of the first file to the file chosen.
-            while ((c = in.read()) != -1) {
-              out.write(c);
-            }
-            
-            // Close both files.
-            in.close();
-            out.close();
-
-          } catch (FileNotFoundException e1) {
-            JOptionPane.showMessageDialog(getParent(),
-                "Log file could not be saved at"
-                    + chooser.getSelectedFile().getPath());
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          }
-        }
-      }
-    });
-
-    setupMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        int returnVal = chooser.showOpenDialog(getParent());
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-          /// Some call to load the simulation setup
-        }
-      }
-    });
-
-    replayMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        int returnVal = chooser.showOpenDialog(getParent());
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-          /// Some Call to Load the simulation replay
-        }
-      }
-    });
-
-    exitMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        
-      }
-    });
-
-    helpMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-      
-      }
-    });
-
-    playButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inStartSim());
-      }
-    });
-
-    pauseButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inPauseSim());
-      }
-    });
-
-    stopButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inStopSim());
-      }
-    });
-
-    resumeButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inResumeSim());
-      }
-    });
-
-    slideBar.addChangeListener(new ChangeListener() {
-      public void stateChanged(ChangeEvent arg0) {
-        InputHandler.dispatch(DARSEvent.inSimSpeed(slideBar.getValue()));
-      }
-    });
+   
 
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -215,7 +59,10 @@ public class GUI extends JFrame implements OutputConsumer {
      */
     // Add a center panel, this will serve us merely in a layout capacity.
     JPanel subpanel = new JPanel();
-    initMenuBar();
+    
+    //attach the menu area. 
+    attachMenus();
+    
     this.add(subpanel, BorderLayout.CENTER);
 
     // Add the east panel.
@@ -342,32 +189,37 @@ public class GUI extends JFrame implements OutputConsumer {
         break;
 
       case OUT_START_SIM:
-        playButton.setEnabled(false);
-        pauseButton.setEnabled(true);
-        stopButton.setEnabled(true);
+        //Notify the menu that a sim has started
+        menuArea.simStarted();
         break;
 
       case OUT_STOP_SIM:
-        stopButton.setEnabled(false);
-        playButton.setEnabled(false);
-        pauseButton.setEnabled(false);
+        //Notify the menu that the sim has stopped
+        menuArea.simStopped();
         break;
 
       case OUT_PAUSE_SIM:
-        playButton.setEnabled(false);
-        stopButton.setEnabled(false);
-        pauseButton.setVisible(false);
-        resumeButton.setVisible(true);
+        //Notify the menu the the sim has paused
+        menuArea.simPaused();
         break;
 
       case OUT_RESUME_SIM:
-        stopButton.setEnabled(true);
-        pauseButton.setVisible(true);
-        resumeButton.setVisible(false);
+        //Notify the menu that the sim has resumed
+        menuArea.simResumed();
         break;
 
       case OUT_CLEAR_SIM:
+        //Clear the sim area.
+        simArea.clear();
+        
         break;
+     
+      case OUT_NEW_SIM:
+        //Clear the sim area.
+        simArea.clear();
+        
+        //Unlock the sim area
+        simArea.setLocked(false);
 
       }
     }
@@ -387,57 +239,9 @@ public class GUI extends JFrame implements OutputConsumer {
 
   }
 
-  private void initMenuBar() {
-
-    menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
-
-    // Add the web help menu to the menu bar
-    helpMenu.add(webMenu);
-
-    // Add elements to the sim menu and their sub menus
-    simMenu.add(newMenu);
-    newMenu.add(aodvMenu);
-    newMenu.add(dsdvMenu);
-    simMenu.add(saveMenu);
-    simMenu.add(importMenu);
-    importMenu.add(setupMenu);
-    importMenu.add(replayMenu);
-    simMenu.add(clearMenu);
-    simMenu.add(exitMenu);
-
-    menuBar.add(simMenu);
-    menuBar.add(helpMenu);
-
-    // Add the simulation type menu lables
-    simTypeArea.add(simTypeLabel);
-    simTypeArea.add(typeLabel);
-    menuPanel.add(simTypeArea);
-
-    // Add the Play, pause, and stop buttons
-    buttonArea.add(playButton);
-    buttonArea.add(pauseButton);
-    buttonArea.add(resumeButton);
-    buttonArea.add(stopButton);
-    resumeButton.setVisible(false);
-    playButton.setEnabled(false);
-    stopButton.setEnabled(false);
-    pauseButton.setEnabled(false);
-    menuPanel.add(buttonArea);
-
-    // Add the slider bar, set its properties and values.
-    speedArea.add(speedLabel);
-    speedArea.add(fasterLabel);
-    speedArea.add(slideBar);
-    slideBar.setSnapToTicks(true);
-    slideBar.setMinimum(1);
-    slideBar.setMaximum(20);
-    slideBar.setValue(5);
-    speedArea.add(slowerLabel);
-    menuPanel.add(speedArea);
-
-    menuPanel.setOpaque(false);
-    add(menuPanel, BorderLayout.NORTH);
-    this.setJMenuBar(menuBar);
+  private void attachMenus() {
+    add(menuArea.getActionPanel(), BorderLayout.NORTH);
+    this.setJMenuBar(menuArea.getMenuBar());
   }
 
 }

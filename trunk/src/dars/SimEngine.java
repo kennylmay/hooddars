@@ -286,18 +286,28 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         break;
         
       case IN_CLEAR_SIM:
-        Node node = null;
-        Iterator<Node> i = store.getNodes();
+        // remove all nodes from the node Store
+        store.clear();
         
-        while(i.hasNext() == true) {
-          node = i.next();
-          i.remove();
-          if (node == null){
-            continue;
-          }
-          InputHandler.dispatch(DARSEvent.inDeleteNode(node.getAttributes().id));
-        }
+        //Indicate to output consumers that the simulation
+        //has been cleared.
         OutputHandler.dispatch(DARSEvent.outClearSim());
+        break;
+        
+      case IN_NEW_SIM:
+        //Clear out node store
+        store.clear();
+
+        //Reset the node ID assigning sequence
+        this.currId = 0;
+        
+        //Set the sim type
+        setSimType(e.simType);
+        
+        //Indicate to output consumers that 
+        //a new sim has begun
+        OutputHandler.dispatch(
+            DARSEvent.outNewSim(e.simType));
         break;
         
       case IN_MOVE_NODE:
@@ -324,24 +334,20 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
     } // / Exit critical area
   }
 
-  public enum NodeType {
-    AODV, DSDV
-  };
+  private DARSEvent.SimType simType = DARSEvent.SimType.AODV;
 
-  private NodeType nodeType = NodeType.AODV;
-
-  public NodeType getNodeType() {
-    return nodeType;
+  public DARSEvent.SimType getSimType() {
+    return simType;
   }
 
-  public void setNodeType(NodeType nt) {
-    nodeType = nt;
+  public void setSimType(DARSEvent.SimType st) {
+    simType = st;
   }
 
   public Node makeNetworkNode(NodeAttributes na) {
     // Make the network node based on what type of node is set
     Node n = null;
-    switch (getNodeType()) {
+    switch (getSimType()) {
     case AODV:
       n = new Aodv();
       break;

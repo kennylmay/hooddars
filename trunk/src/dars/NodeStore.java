@@ -26,6 +26,10 @@ public NodeAttributes getNodeAttributes(String nodeId) {
    return node.getAttributes();
 }
 
+public void clear() {
+   store.clear();
+}
+
 
 public Node getNode(String nodeId) {
   return store.get(nodeId);
