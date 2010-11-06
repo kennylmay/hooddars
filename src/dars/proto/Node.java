@@ -38,6 +38,17 @@ public abstract interface Node {
   void messageToNode(Message message);
 
   /**
+   * Send a narrative message from one node to another.
+   * 
+   * Narrative messages are messages that the user inits.
+   * 
+   * @author kresss
+   * 
+   * @param message
+   */
+  void newNarrativeMessage(Message message);
+  
+  /**
    * Returns the Node's attributes
    * 
    * @return NodeAttributes
