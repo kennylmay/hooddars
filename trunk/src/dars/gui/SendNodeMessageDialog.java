@@ -98,7 +98,7 @@ public class SendNodeMessageDialog {
      
    InputHandler.dispatch(DARSEvent.inSendMsg(m,sourceId ,destinationId ));
    else if (actionCommand.equals("Cancel"));
-       
+   
          
     }
   }
