@@ -16,11 +16,12 @@ public class DARSEvent {
   public enum EventType {
     // Input event types
     IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SEND_MSG, IN_SIM_SPEED, 
-    IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL, IN_CLEAR_SIM,
+    IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL, IN_CLEAR_SIM, 
+    IN_INSERT_MESSAGE,
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_NODE_DATA_RECEIVED, 
     OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_DEBUG, OUT_ERROR, OUT_INFORM, OUT_START_SIM, OUT_PAUSE_SIM,
-    OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED, OUT_CLEAR_SIM
+    OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED, OUT_CLEAR_SIM, OUT_INSERT_MESSAGE
   };
 
   public EventType      eventType;
@@ -56,6 +57,21 @@ public class DARSEvent {
   private DARSEvent() {
   };
 
+  public static DARSEvent inInsertMessage(Message message) {
+    DARSEvent e = new DARSEvent();
+    e.transmittedMessage = message.message;
+    e.sourceId = message.originId;
+    e.destinationId = message.destinationId;
+    e.eventType = EventType.IN_INSERT_MESSAGE;
+    return e;
+  }
+  
+  public static DARSEvent outInsertMessage() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_INSERT_MESSAGE;
+    return e;
+  }
+  
   public static DARSEvent inClearSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_CLEAR_SIM;

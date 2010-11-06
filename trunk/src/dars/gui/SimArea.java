@@ -3,6 +3,7 @@ package dars.gui;
 import javax.swing.*;
 
 import dars.InputHandler;
+import dars.Message;
 import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
@@ -330,8 +331,11 @@ class NodeActionHandler implements GNodeListener{
       msg_item.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+              /// JUST A TEST STUB
+              Message mess = new Message(gnode.getId(), "B", "TEST MESSAGE" );
+              InputHandler.dispatch(DARSEvent.inInsertMessage(mess));
               SendNodeMessageDialog.run(
-                  gnode.getId(), new ArrayList<String>(gnodemap.keySet()));  
+                  gnode.getId(), new ArrayList<String>(gnodemap.keySet())); 
             }    
      });
       add(edit_item);
