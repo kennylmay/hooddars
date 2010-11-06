@@ -17,13 +17,15 @@ public class DARSEvent {
     // Input event types
     IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SEND_MSG, IN_SIM_SPEED, 
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL, IN_CLEAR_SIM, 
-    IN_INSERT_MESSAGE,
+    IN_NEW_SIM, IN_INSERT_MESSAGE,
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_NODE_DATA_RECEIVED, 
     OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_DEBUG, OUT_ERROR, OUT_INFORM, OUT_START_SIM, OUT_PAUSE_SIM,
-    OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED, OUT_CLEAR_SIM, OUT_INSERT_MESSAGE
+    OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED, OUT_CLEAR_SIM, OUT_NEW_SIM, OUT_INSERT_MESSAGE
   };
 
+  public enum SimType { AODV, DSDV };
+  
   public EventType      eventType;
   public String         nodeId;
   public String         sourceId;
@@ -34,6 +36,7 @@ public class DARSEvent {
   public int            nodeX;
   public int            nodeY;
   public int            nodeRange;
+  public SimType        simType;
   
   public NodeAttributes getNodeAttributes() {
     NodeAttributes n = new NodeAttributes();
@@ -78,6 +81,13 @@ public class DARSEvent {
     return e;
   }
   
+  public static DARSEvent inNewSim(SimType st) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_NEW_SIM;
+    e.simType = st;
+    return e;
+  }
+  
   public static DARSEvent outClearSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_CLEAR_SIM;
@@ -105,6 +115,13 @@ public class DARSEvent {
   public static DARSEvent outStopSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_STOP_SIM;
+    return e;
+  }
+  
+  public static DARSEvent outNewSim(SimType st) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_NEW_SIM;
+    e.simType   = st;
     return e;
   }
   

@@ -8,6 +8,7 @@ import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.*;
@@ -213,12 +214,10 @@ class NodeActionHandler implements GNodeListener{
   }
 
   public void paintComponent(Graphics g) {
+    g.setColor(Color.RED);
     connMap.draw(g);
     
-    for(GNode n : gnodemap.values()) {
-      g.fillRect(n.getX(), n.getY(), 2, 2);
-      
-    }
+    super.paintComponent(g);
   }
   
   public void setNodeRange(String nodeId, int newRange) {
@@ -423,4 +422,18 @@ class NodeActionHandler implements GNodeListener{
   public boolean isLocked() {
     return locked;
   }
+  
+  public void clear() {
+    ArrayList<String> nodeIds = new ArrayList<String>();
+    for(GNode n : gnodemap.values()) {
+      //Accumulate every node id
+      nodeIds.add(n.getId());
+    }
+   
+    //Remove every node
+    for(String id : nodeIds) {
+      deleteNode(id); 
+    }
+  }
+  
 } 
