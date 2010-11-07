@@ -22,7 +22,7 @@ public class DARSEvent {
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_NODE_DATA_RECEIVED, 
     OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_NODE_BROADCAST, OUT_DEBUG, OUT_ERROR, OUT_INFORM, 
     OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED, OUT_CLEAR_SIM, 
-    OUT_NEW_SIM, OUT_INSERT_MESSAGE
+    OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_MSG_RECEIVED
   };
 
   public enum SimType { AODV, DSDV };
@@ -232,6 +232,15 @@ public class DARSEvent {
     e.eventType = EventType.OUT_SET_NODE_RANGE;
     e.nodeId = id;
     e.nodeRange = newRange;
+    return e;
+  }
+  
+  public static DARSEvent outMsgRecieved(String sourceId, String destId, String message) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_MSG_RECEIVED;
+    e.sourceId = sourceId;
+    e.destinationId = destId;
+    e.transmittedMessage = message;
     return e;
   }
   
