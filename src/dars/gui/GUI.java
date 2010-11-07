@@ -136,10 +136,11 @@ public class GUI extends JFrame implements OutputConsumer {
     // The node attributes panel needs to listen for node changes (mouse overs,
     // selects, etc)
     simArea.addNodeListener(nodeAttributesArea);
-
-    // The node attributes panel needs be able to augment the sim area
+   
+    // The node attributes panel and DARSAppMenu needs be able to augment the sim area
     // (selecting a new node, etc)
     nodeAttributesArea.setSimArea(simArea);
+    menuArea.setSimArea(simArea);
 
   }
 
