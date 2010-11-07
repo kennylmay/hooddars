@@ -2,6 +2,8 @@ package dars.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -84,6 +86,55 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         String id = nodeSelectorComboBox.getSelectedItem().toString();
         InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox.getSelectedItem().toString(),
           (Integer) nodeRangeSpinner.getValue()));
+      }
+    });
+    
+    // X Text Box Single Handler connected to the "Enter"
+    nodeXField.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        // Get the ID off of the Combo Box
+        String id = nodeSelectorComboBox.getSelectedItem().toString();
+        // Get the current node data and save it off so that it can be 
+        // used in case of an invalid entry being entered.
+        NodeAttributes att = getAttributes(id);
+        int X = att.x;
+        int Y = att.y;
+        if (id == null)
+          return;
+        try{
+          // Attempt to convert the string to an int if it fails
+          // the user messed up and we use the original attributes.
+          X = Integer.parseInt(nodeXField.getText());
+          Y = Integer.parseInt(nodeYField.getText());
+        }catch (NumberFormatException nfe) {
+          return;
+        }        
+        // Dispatch the signal
+        InputHandler.dispatch(DARSEvent.inMoveNode(id, X, Y));
+      }
+    });
+    
+    nodeYField.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        // Get the ID off of the Combo Box
+        String id = nodeSelectorComboBox.getSelectedItem().toString();
+        // Get the current node data and save it off so that it can be 
+        // used in case of an invalid entry being entered.
+        NodeAttributes att = getAttributes(id);
+        int X = att.x;
+        int Y = att.y;
+        if (id == null)
+          return;
+        try{
+          // Attempt to convert the string to an int if it fails
+          // the user messed up and we use the original attributes
+          X = Integer.parseInt(nodeXField.getText());
+          Y = Integer.parseInt(nodeYField.getText());
+        }catch (NumberFormatException nfe) {
+          return;
+        }        
+        // Dispatch the signal
+        InputHandler.dispatch(DARSEvent.inMoveNode(id, X, Y));
       }
     });
   }
