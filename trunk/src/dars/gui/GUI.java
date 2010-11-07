@@ -175,6 +175,11 @@ public class GUI extends JFrame implements OutputConsumer {
         simArea.traceMessage(e.sourceId, e.destinationId);
         break;
 
+      case OUT_NODE_BROADCAST:
+        // Animate the event
+        simArea.nodeBroadcast(e.nodeId);
+        break;
+        
       case OUT_DEL_NODE:
         // Remove the node
         simArea.deleteNode(e.nodeId);
