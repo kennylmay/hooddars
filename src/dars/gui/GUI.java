@@ -159,6 +159,11 @@ public class GUI extends JFrame implements OutputConsumer {
         // Add the node
         simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
         nodeAttributesArea.nodeAdded(e.nodeId);
+        
+        //select the node
+        simArea.selectNode(e.nodeId);
+        nodeAttributesArea.selectNodeById(e.nodeId);
+        break;
 
       case OUT_MOVE_NODE:
         // Move the nodenodeSelectorComboBox
