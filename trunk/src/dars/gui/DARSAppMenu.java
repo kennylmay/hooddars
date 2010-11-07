@@ -1,5 +1,6 @@
 package dars.gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -36,6 +37,7 @@ public class DARSAppMenu  {
   private JMenuItem          clearMenu           = new JMenuItem("Clear");
   private JMenuItem          exitMenu            = new JMenuItem("Exit");
   private JMenu              importMenu          = new JMenu("Import");
+  private JMenuItem          randomizeMenu           = new JMenuItem("Randomize");
   private JMenuItem          setupMenu           = new JMenuItem("Setup");
   private JMenuItem          replayMenu          = new JMenuItem("Replay");
   private JMenu              helpMenu            = new JMenu("Help");
@@ -64,7 +66,8 @@ public class DARSAppMenu  {
   private ImageIcon          plusIcon            = new ImageIcon("img/plus.png");
   private JLabel             fasterLabel         = new JLabel(plusIcon);
   private JPanel             menuPanel           = new JPanel();
-  
+  private SimArea            simArea;
+
   public DARSAppMenu() {
     aodvMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -146,6 +149,16 @@ public class DARSAppMenu  {
         }
       }
     });
+    
+    randomizeMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Dimension dim = simArea.getSize();
+        double X = dim.getWidth();
+        double Y = dim.getHeight();
+   //     JOptionPane.showInputDialog(getParent(), )
+ 
+      }
+    });
 
     exitMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -199,6 +212,7 @@ public class DARSAppMenu  {
     newMenu.add(aodvMenu);
     newMenu.add(dsdvMenu);
     simMenu.add(saveMenu);
+    simMenu.add(randomizeMenu);
     simMenu.add(importMenu);
     importMenu.add(setupMenu);
     importMenu.add(replayMenu);
@@ -272,5 +286,8 @@ public class DARSAppMenu  {
     return menuPanel;
   }
   
+  public void setSimArea(SimArea simArea) {
+    this.simArea = simArea;
+  }
   
 }
