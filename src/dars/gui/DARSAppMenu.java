@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -20,10 +21,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import dars.InputHandler;
+import dars.NodeAttributes;
 import dars.event.DARSEvent;
 
 public class DARSAppMenu  {
@@ -76,6 +79,7 @@ public class DARSAppMenu  {
         playButton.setEnabled(true);
         stopButton.setEnabled(true);
         pauseButton.setEnabled(true);
+        randomizeMenu.setEnabled(true);
       }
     });
     
@@ -153,22 +157,37 @@ public class DARSAppMenu  {
     randomizeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Dimension dim = simArea.getSize();
+        Random r = new Random();
+        NodeAttributes att = new NodeAttributes();
         double X = dim.getWidth();
         double Y = dim.getHeight();
-   //     JOptionPane.showInputDialog(getParent(), )
- 
-      }
+        int numberOfNodes = 0;
+        String input = JOptionPane.showInputDialog(null, "How many nodes would you like to randomly add?");
+        
+        try{
+          numberOfNodes = Integer.parseInt(input);
+        }catch (NumberFormatException nfe) {
+          return;
+        }  
+      
+        for (int i = 1; i <= numberOfNodes; i++){
+          att.range = r.nextInt(1000);
+          att.x = r.nextInt((int)X);
+          att.y = r.nextInt((int)Y);
+          InputHandler.dispatch(DARSEvent.inAddNode(att));
+        }
+       }
+      
     });
 
     exitMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        
       }
     });
 
     helpMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-      
+        
       }
     });
 
@@ -212,6 +231,7 @@ public class DARSAppMenu  {
     newMenu.add(aodvMenu);
     newMenu.add(dsdvMenu);
     simMenu.add(saveMenu);
+    randomizeMenu.setEnabled(false);
     simMenu.add(randomizeMenu);
     simMenu.add(importMenu);
     importMenu.add(setupMenu);
@@ -256,7 +276,7 @@ public class DARSAppMenu  {
   public void simStarted() {
     playButton.setEnabled(false);
     pauseButton.setEnabled(true);
-    stopButton.setEnabled(true);
+    stopButton.setEnabled(true);   
   }
   
   public void simStopped() {
@@ -276,6 +296,7 @@ public class DARSAppMenu  {
     stopButton.setEnabled(true);
     pauseButton.setVisible(true);
     resumeButton.setVisible(false);
+    randomizeMenu.setEnabled(false);
   }
   
   public JMenuBar getMenuBar() {
