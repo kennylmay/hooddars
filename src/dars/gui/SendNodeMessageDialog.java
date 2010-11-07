@@ -67,7 +67,7 @@ public class SendNodeMessageDialog
       public void actionPerformed(ActionEvent e)
       {
         m = textArea.getText();
-        InputHandler.dispatch(DARSEvent.inSendMsg(m,sourceId ,destinationId ));
+        //InputHandler.dispatch(DARSEvent.inSendMsg(m,sourceId ,destinationId ));
         returnval = true;
         frame.dispose();
       }

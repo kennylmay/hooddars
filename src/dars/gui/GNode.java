@@ -81,6 +81,9 @@ public class GNode extends JPanel {
     this.listeners.remove(l);
   }
 
+  public void broadcast() {
+    rangeIndicator.fireBroadcast();
+  }
   // Select
   public void select() {
     // unselect the currently selected node
@@ -427,7 +430,7 @@ public class GNode extends JPanel {
 	     */
     private static final long serialVersionUID = 1L;
     private GNode             parent_;
-
+    private BroadcastAnimation  broadcastAnimation = new BroadcastAnimation();
     RangeIndicator(GNode parent) {
       // Copy in attributes
       parent_ = parent;
@@ -452,6 +455,62 @@ public class GNode extends JPanel {
       this.isFilled = filled;
     }
 
+    public void fireBroadcast() {
+      broadcastAnimation.start();
+    }
+    
+    class BroadcastAnimation implements ActionListener  {
+      
+      Timer animationTimer;
+      BroadcastAnimation() {
+        animationTimer = new Timer(30, this);
+      }
+
+      void start() {
+        curStep = 1;         
+        animationTimer.start();
+      }
+      
+       final int totalSteps = 10;
+       int curStep = 11;
+
+       
+       public void animate(Graphics g) {
+         System.out.println("animating");
+         Graphics2D g2 = (Graphics2D) g;
+         // Draw the graphic
+         int dimX, dimY;
+         dimX = parent_.getRange() * 2;
+         dimY = dimX;
+         
+         
+         Point center = new Point(dimX/2, dimY/2);
+         int bCastRadius =  (int) (parent_.getRange() * ((double)curStep / (double)totalSteps));
+         Point bCastOrigin = new Point(center.x - bCastRadius, center.y - bCastRadius);
+         
+         
+         g2.setColor(Color.GREEN);
+         //draw a 3 pixel circle
+         g2.drawOval(bCastOrigin.x, bCastOrigin.y, bCastRadius*2, bCastRadius*2); 
+         g2.drawOval(bCastOrigin.x+1, bCastOrigin.y+1, bCastRadius*2, bCastRadius*2); 
+         g2.drawOval(bCastOrigin.x+2, bCastOrigin.y+2, bCastRadius*2, bCastRadius*2);
+       }
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        if(curStep > totalSteps) {
+          animationTimer.stop();
+          return;
+        }
+        //issue a repaint request
+        repaint();
+        curStep++;
+      }
+      
+      public boolean isActive() {
+        return (curStep <= totalSteps);
+      }
+    }
+    
     private boolean isFilled;
 
     @Override
@@ -462,6 +521,10 @@ public class GNode extends JPanel {
       // Draw the graphic
       g2.setColor(Color.BLACK);
       g2.drawOval(0, 0, parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
+      
+      if(broadcastAnimation.isActive()) {
+        broadcastAnimation.animate(g);
+      }
 
       if (isFilled) {
         g2.setColor(new Color(20, 20, 0, 20));

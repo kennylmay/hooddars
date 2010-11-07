@@ -249,6 +249,12 @@ class NodeActionHandler implements GNodeListener{
   }
 
 
+  public void nodeBroadcast(String nodeId) {
+    GNode n = getGNode(nodeId);
+    if(n == null) return;
+    n.broadcast();
+  }
+  
   public void traceMessage(String fromId, String toId) {
     
     GNode a = getGNode(fromId);
@@ -330,10 +336,10 @@ class NodeActionHandler implements GNodeListener{
             public void actionPerformed(ActionEvent e) {
               /// JUST A TEST STUB
               Message mess = new Message(gnode.getId(), "B", "TEST MESSAGE" );
-              InputHandler.dispatch(DARSEvent.inInsertMessage(mess));
-              SendNodeMessageDialog.run(
-                  gnode.getId(), new ArrayList<String>(gnodemap.keySet())); 
-            }    
+          //    InputHandler.dispatch(DARSEvent.inInsertMessage(mess));
+        //      SendNodeMessageDialog.run(
+       //           gnode.getId(), new ArrayList<String>(gnodemap.keySet())); 
+           }    
      });
       add(edit_item);
       add(delete_item);
