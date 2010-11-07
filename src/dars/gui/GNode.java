@@ -84,6 +84,7 @@ public class GNode extends JPanel {
   public void broadcast() {
     rangeIndicator.fireBroadcast();
   }
+
   // Select
   public void select() {
     // unselect the currently selected node
@@ -428,9 +429,10 @@ public class GNode extends JPanel {
     /**
 	     * 
 	     */
-    private static final long serialVersionUID = 1L;
-    private GNode             parent_;
-    private BroadcastAnimation  broadcastAnimation = new BroadcastAnimation();
+    private static final long  serialVersionUID   = 1L;
+    private GNode              parent_;
+    private BroadcastAnimation broadcastAnimation = new BroadcastAnimation();
+
     RangeIndicator(GNode parent) {
       // Copy in attributes
       parent_ = parent;
@@ -458,59 +460,62 @@ public class GNode extends JPanel {
     public void fireBroadcast() {
       broadcastAnimation.start();
     }
-    
-    class BroadcastAnimation implements ActionListener  {
-      
+
+    class BroadcastAnimation implements ActionListener {
+
       Timer animationTimer;
+
       BroadcastAnimation() {
         animationTimer = new Timer(30, this);
       }
 
       void start() {
-        curStep = 1;         
+        curStep = 1;
         animationTimer.start();
       }
-      
-       final int totalSteps = 10;
-       int curStep = 11;
 
-       
-       public void animate(Graphics g) {
-         System.out.println("animating");
-         Graphics2D g2 = (Graphics2D) g;
-         // Draw the graphic
-         int dimX, dimY;
-         dimX = parent_.getRange() * 2;
-         dimY = dimX;
-         
-         
-         Point center = new Point(dimX/2, dimY/2);
-         int bCastRadius =  (int) (parent_.getRange() * ((double)curStep / (double)totalSteps));
-         Point bCastOrigin = new Point(center.x - bCastRadius, center.y - bCastRadius);
-         
-         
-         g2.setColor(Color.GREEN);
-         //draw a 3 pixel circle
-         g2.drawOval(bCastOrigin.x, bCastOrigin.y, bCastRadius*2, bCastRadius*2); 
-         g2.drawOval(bCastOrigin.x+1, bCastOrigin.y+1, bCastRadius*2, bCastRadius*2); 
-         g2.drawOval(bCastOrigin.x+2, bCastOrigin.y+2, bCastRadius*2, bCastRadius*2);
-       }
+      final int totalSteps = 30;
+      int       curStep    = totalSteps + 1;
+
+      public void animate(Graphics g) {
+        //System.out.println("animating");
+        Graphics2D g2 = (Graphics2D) g;
+        // Draw the graphic
+        int dimX, dimY;
+        dimX = parent_.getRange() * 2;
+        dimY = dimX;
+
+        Point center = new Point(dimX / 2, dimY / 2);
+        int bCastRadius = (int) (parent_.getRange() * ((double) curStep / (double) totalSteps));
+        Point bCastOrigin = new Point(center.x - bCastRadius, center.y
+            - bCastRadius);
+
+        g2.setColor(Color.GREEN);
+        // draw a 3 pixel circle
+        g2.drawOval(bCastOrigin.x, bCastOrigin.y, bCastRadius * 2,
+            bCastRadius * 2);
+        g2.drawOval(bCastOrigin.x + 1, bCastOrigin.y + 1, bCastRadius * 2,
+            bCastRadius * 2);
+        g2.drawOval(bCastOrigin.x + 2, bCastOrigin.y + 2, bCastRadius * 2,
+            bCastRadius * 2);
+      }
+
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        if(curStep > totalSteps) {
+        if (curStep > totalSteps) {
           animationTimer.stop();
           return;
         }
-        //issue a repaint request
+        // issue a repaint request
         repaint();
         curStep++;
       }
-      
+
       public boolean isActive() {
         return (curStep <= totalSteps);
       }
     }
-    
+
     private boolean isFilled;
 
     @Override
@@ -521,8 +526,8 @@ public class GNode extends JPanel {
       // Draw the graphic
       g2.setColor(Color.BLACK);
       g2.drawOval(0, 0, parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
-      
-      if(broadcastAnimation.isActive()) {
+
+      if (broadcastAnimation.isActive()) {
         broadcastAnimation.animate(g);
       }
 
@@ -537,20 +542,19 @@ public class GNode extends JPanel {
     public void setCenter(Point p) {
       setLocation(p.x - parent_.getRange(), p.y - parent_.getRange());
     }
-    
+
     public void resize() {
-      //resize this panel to accommodate the new range
+      // resize this panel to accommodate the new range
       int range = parent_.getRange();
       setSize(new Dimension(new Dimension(range * 2, range * 2)));
-      
-      //reset the location
+
+      // reset the location
       setCenter(parent_.getCenter());
-     
+
     }
 
-
   }
-  
+
   private int range;
-  
+
 }
