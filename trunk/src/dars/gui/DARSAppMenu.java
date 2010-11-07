@@ -167,6 +167,7 @@ public class DARSAppMenu  {
         try{
           numberOfNodes = Integer.parseInt(input);
         }catch (NumberFormatException nfe) {
+          JOptionPane.showMessageDialog(null, "Invalide Entry, Numeric Only.");
           return;
         }  
       
