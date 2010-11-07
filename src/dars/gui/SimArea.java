@@ -336,7 +336,7 @@ class NodeActionHandler implements GNodeListener{
             public void actionPerformed(ActionEvent e) {
               /// JUST A TEST STUB
               Message mess = new Message(gnode.getId(), "B", "TEST MESSAGE" );
-          //    InputHandler.dispatch(DARSEvent.inInsertMessage(mess));
+              InputHandler.dispatch(DARSEvent.inInsertMessage(mess));
         //      SendNodeMessageDialog.run(
        //           gnode.getId(), new ArrayList<String>(gnodemap.keySet())); 
            }    
