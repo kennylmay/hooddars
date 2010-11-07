@@ -217,5 +217,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   }
 
+  public void selectNodeById(String id) {
+    setAttributes(getAttributes(id));
+  }
   private NodeInspector nodeInspector;
 }
