@@ -31,6 +31,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
                                               new SpinnerNumberModel(300, 0,
                                                   1000, 20));
 
+  private boolean blockChangeEvents = false;
+  
   public NodeAttributesArea() {
     // Use a box layout inside a border layout, with an internal flow layout at
     // each vertical item.
@@ -80,9 +82,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       }
     });
    
+    
     // Range spin button action handler
     nodeRangeSpinner.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent ie) {
+        if(blockChangeEvents)
+          return;
         InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox.getSelectedItem().toString(),
           (Integer) nodeRangeSpinner.getValue()));
       }
@@ -203,10 +208,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   }
 
   private void setAttributes(NodeAttributes n) {
+    blockChangeEvents = true;
     nodeSelectorComboBox.setSelectedItem(n.id);
     nodeXField.setText(Integer.toString(n.x));
     nodeYField.setText(Integer.toString(n.y));
     nodeRangeSpinner.setValue(n.range);
+    blockChangeEvents = false;
   }
 
   public void setNodeInspector(NodeInspector ni) {
