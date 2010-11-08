@@ -190,6 +190,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         // destination id.
       } else {
         if (canCommunicate(message.originId, message.destinationId)) {
+          // SAK - Send the message to the destination node.
+          store.getNode(message.destinationId).messageToNode(message);
           //Generate a node msg event
           //NOTE, 
           //I'm not sure if this is the best place for this call to take place. Maybe it

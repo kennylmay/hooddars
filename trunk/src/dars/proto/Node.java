@@ -44,9 +44,11 @@ public abstract interface Node {
    * 
    * @author kresss
    * 
-   * @param message
+   * @param sourceID
+   * @param destinationID
+   * @param messageText
    */
-  void newNarrativeMessage(String sourceId, String desinationId, String messageText);
+  void newNarrativeMessage(String sourceID, String desinationID, String messageText);
   
   /**
    * Returns the Node's attributes

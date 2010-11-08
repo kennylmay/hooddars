@@ -25,6 +25,45 @@ import dars.event.DARSEvent;
 public class Aodv implements Node {
 
   /**
+   * Private Types that are needed for AODV
+   */
+
+  /**
+   * Entry Class for the Message Wait Queue
+   * 
+   * @author kresss
+   * 
+   */
+  private class WaitQueueEntry {
+
+    String SourceID;     // TODO: SourceID may not be needed for this entry
+    // type.
+    String DestinationID;
+    String MsgString;
+    int    TimeToLive;
+
+    /**
+     * Constructor with all fields defined.
+     * 
+     * @author kresss
+     * 
+     * @param sourceID
+     * @param destinationID
+     * @param msgString
+     * @param timeToLive
+     */
+    WaitQueueEntry(String sourceID, String destinationID, String msgString,
+        int timeToLive) {
+      super();
+      SourceID = sourceID;
+      DestinationID = destinationID;
+      MsgString = msgString;
+      TimeToLive = timeToLive;
+    }
+
+  }
+
+  /**
    * Constants needed by the AODV Protocol
    */
   public static final int TTL_START            = 5;
@@ -147,6 +186,126 @@ public class Aodv implements Node {
 
   }
 
+  /**
+   * Send a narrative message from one node to another.
+   * 
+   * Narrative messages are messages that the user inits.
+   * 
+   * @author kresss
+   * 
+   * @param srcID
+   * @param destID
+   * @param messageText
+   */
+  public void newNarrativeMessage(String srcID, String destID,
+      String messageText) {
+
+    /**
+     * NARR Message Format
+     * 
+     * TYPE|FLAGS|TTL|DESTID|ORIGID|TEXT
+     * 
+     */
+
+    /**
+     * The message that will be sent.
+     */
+    Message Msg;
+
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+
+    /**
+     * Message Properties
+     */
+    String MsgType = "NARR";
+    String MsgFlags = "";
+    int MsgTTL = 0;
+    String MsgOrigID = srcID;
+    String MsgDestID = destID;
+
+    /**
+     * Route Table Entry used to get the destination ID info in our Route Table.
+     */
+    RouteEntry DestEntry;
+
+    /**
+     * Check to make sure that the sourceID is this node.
+     */
+    if (!this.att.id.equals(srcID)) {
+      // TODO: NEED A CORRECT ERROR EVENT HERE.
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + " Tried to create a new Narrative Message but the source ID was "
+          + srcID));
+    }
+
+    /**
+     * Build the Message String.
+     * 
+     * This is independent of which logic path is chosen below.
+     */
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID + '|'
+        + MsgOrigID + '|' + messageText;
+
+    /**
+     * Check to see if the destination node ID is in our Route Table.
+     */
+    if (RouteTable.containsKey(destID)) {
+      /**
+       * Get the Route Entry.
+       */
+      DestEntry = RouteTable.get(destID);
+      /**
+       * The destination is in our RouteTable. Make sure that the route is valid
+       * and not too old.
+       */
+      if ((DestEntry.getState() == RouteEntry.StateFlags.VALID)
+          && (DestEntry.getLifetime() >= this.CurrentTick)) {
+        /**
+         * Create the message and send it.
+         */
+        Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
+        sendMessage(Msg);
+
+        OutputHandler.dispatch(DARSEvent.outDebug(MsgStr));
+        /**
+         * Done processing this request.
+         */
+        return;
+
+      } else {
+        /**
+         * The route is stale. Repair it.
+         * 
+         * During this time the message will need to be 'queued' on some kind of
+         * internal message buffer.
+         */
+        // TODO : NEED REPAIR ACTION
+      }
+
+    } else {
+      /**
+       * Do not have a route to the destination node. Need to perform a Route
+       * Request.
+       */
+      sendRREQ(MsgDestID);
+      /**
+       * Add the message into the wait queue. Already did the work to build the
+       * message so we use the message string. We only need the destination ID
+       * for the next iteration to figure out of we have a good route to send
+       * to.
+       */
+      addMessageToWaitQueue(MsgOrigID, MsgDestID, MsgStr);
+
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + " Wants to send to " + MsgDestID + " but has no Route."));
+
+    }
+
+  }
+
   /*
    * Functions that extend the org.dars.proto.node interface to make it unique
    * to aodv.
@@ -217,7 +376,7 @@ public class Aodv implements Node {
       return;
     }
 
-    if (MsgType.equals("NARRATIVE")) {
+    if (MsgType.equals("NARR")) {
       receiveNarrative(message);
       return;
     }
@@ -287,6 +446,7 @@ public class Aodv implements Node {
        */
       DestRouteEntry = new RouteEntry(MsgDestID, StateFlags.RREQSENT,
           CurrentTick + PATH_DISCOVERY_TIME);
+      this.RouteTable.put(MsgDestID, DestRouteEntry);
     } else {
       /**
        * There is already a RouteEntry in the RouteTable, but we are still
@@ -303,8 +463,10 @@ public class Aodv implements Node {
       } else {
         // TODO: There could be other possible StateFlags conditions at this
         // point.
-        System.out.println("TODO: sendRREQ: StateFlags = "
-            + DestRouteEntry.getState().toString());
+        OutputHandler.dispatch(DARSEvent
+            .outDebug("TODO: sendRREQ: StateFlags = "
+                + DestRouteEntry.getState().toString()));
+
       }
 
     }
@@ -347,6 +509,117 @@ public class Aodv implements Node {
      * node is in our RouteTable YES - Send RouteReply RREP, NO - Decrement TTL
      * and Forward on.
      */
+
+    /**
+     * RREQ Message Format
+     * 
+     * TYPE|FLAGS|TTL|RREQID|DESTID|DESTSEQNUM|SRCID|SRCSEQNUM
+     * 
+     */
+
+    /**
+     * Message Properties
+     */
+    String MsgType;
+    String MsgFlags;
+    int MsgTTL;
+    int MsgRREQID;
+    String MsgDestID;
+    int MsgDestSeqNum;
+    String MsgSrcID;
+    int MsgSrcSeqNum;
+
+    /**
+     * Route Table Entry used to look up the entries in the Route Table.
+     */
+    RouteEntry DestEntry;
+
+    /**
+     * Array to hold Message Fields
+     */
+    String MsgArray[];
+
+    /**
+     * Split Message into fields based on '|' delimiters and store in MsgArray.
+     */
+    MsgArray = message.message.split("\\|");
+
+    /**
+     * Store message fields into local variables. Yes this is not really needed
+     * but I (SAK) think it makes the code more readable.
+     */
+    MsgType = MsgArray[0];
+    MsgFlags = MsgArray[1];
+    MsgTTL = Integer.parseInt(MsgArray[2]);
+    MsgRREQID = Integer.parseInt(MsgArray[3]);
+    MsgDestID = MsgArray[4];
+    MsgDestSeqNum = Integer.parseInt(MsgArray[5]);
+    MsgSrcID = MsgArray[6];
+    MsgSrcSeqNum = Integer.parseInt(MsgArray[7]);
+
+    /**
+     * Check to see if we have already processed this RREQID.
+     * 
+     * This happens because our neighbor may re-broadcast the RREQ. We don't
+     * want to create a loop. That would be bad MMMKay.
+     */
+    if (this.RREQHistory.containsKey(MsgSrcID)) {
+      if (this.RREQHistory.get(MsgSrcID) >= MsgRREQID) {
+        /**
+         * The RREQ is old. Ignore it.
+         */
+        OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+            + "Dropped message due to old RREQID. Message String: "
+            + message.message));
+        return;
+      }
+    } else {
+      this.RREQHistory.put(MsgSrcID, MsgRREQID);
+    }
+
+    /**
+     * First add the sending node into our Route Table if it is not already
+     * there.
+     * 
+     * RFC 3561 Section 6.5 Paragraph 1
+     */
+    DestEntry = RouteTable.get(message.originId);
+    if (DestEntry == null) {
+      DestEntry = new RouteEntry(message.originId, 0,
+          RouteEntry.StateFlags.VALID, 1, message.originId, this.CurrentTick
+              + MY_ROUTE_TIMEOUT);
+      RouteTable.put(message.originId, DestEntry);
+    }
+
+    /**
+     * If this node is the desired Destination Node we can service this RREQ.
+     */
+    if (this.att.id.equals(MsgDestID)) {
+      sendRREP(MsgDestID, MsgSrcID, message.originId);
+    }
+
+    // TODO: THE RESTOF THIS FUNCTION IS VERY VERY QUESTIONABLE!!!!!!
+    /**
+     * Check to see if the desired Destination ID is in this nodes Route Table.
+     */
+    if (RouteTable.containsKey(MsgDestID)) {
+      /**
+       * This node has knowledge of the desired destination node, but still need
+       * to check more parameters before sending a RREP.
+       * 
+       * Get the Route Entry for the destination ID.
+       */
+      DestEntry = RouteTable.get(MsgDestID);
+
+      /**
+       * If the Route Entry is marked valid and the TTL is not passed then send
+       * a RREP.
+       */
+      if ((DestEntry.getState() == RouteEntry.StateFlags.VALID)
+          && (DestEntry.getLifetime() >= this.CurrentTick)) {
+
+      }
+    }
 
   }
 
@@ -482,9 +755,87 @@ public class Aodv implements Node {
    * Send a Route Reply Message
    * 
    * @author kresss
+   * 
+   * @param DestNodeID
+   *          The node that the RREQ was made for.
+   * @param RequesterID
+   *          The node that originated the RREQ.
+   * @param SenderID
+   *          The node that this node received the RREQ from.
    */
-  void sendRREP() {
+  void sendRREP(String DestNodeID, String RequesterID, String SenderID) {
 
+    /**
+     * RREP Message Format
+     * 
+     * TYPE|FLAGS|HOPCOUNT|DESTID|DESTSEQ|ORIGID|LIFETIME
+     * 
+     */
+
+    /**
+     * Message object that will be passed to SendRawMessage.
+     */
+    Message Msg;
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+    /**
+     * Message Fields
+     */
+    String MsgType = "RREP";
+    String MsgFlags = "";
+    int MsgHopCount;
+    String MsgDestID = DestNodeID;
+    int MsgDestSeqNum;
+    String MsgOrigID = RequesterID;
+    int MsgLifetime;
+
+    /**
+     * If this node is the desired Destination Node just send the reply no need
+     * to update a Precursors list.
+     */
+    if (this.att.id.equals(MsgDestID)) {
+
+      /**
+       * Zero Hops to get to here.
+       */
+      MsgHopCount = 0;
+      /**
+       * Increment our Last Sequence Number and pass it back.
+       */
+      MsgDestSeqNum = ++this.LastSeqNum;
+      /**
+       * LifeTime should be the normal Route LifeTime. This is different if
+       * below when we look up an actual entry in the Route Table.
+       * 
+       * Note that this value is given in 'Ticks' but is an interval and does
+       * not have a reference to this nodes current tick count.
+       */
+      MsgLifetime = MY_ROUTE_TIMEOUT;
+
+      /**
+       * Build Message Sting and Send.
+       */
+      MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID
+          + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+
+      Msg = new Message(SenderID, this.att.id, MsgStr);
+
+      /**
+       * Place the message into the txQueue.
+       */
+      sendMessage(Msg);
+
+      /**
+       * Done processing this control flow.
+       */
+      return;
+    }
+
+    OutputHandler
+        .dispatch(DARSEvent
+            .outDebug("Still need to finish implementing the reset of RREP. Sigh."));
   }
 
   /**
@@ -561,10 +912,9 @@ public class Aodv implements Node {
         /**
          * Update the Sequence Number and Lifetime if it is newer.
          */
-        // TODO: I DON'T THINK THIS WORKS...The node's sequence numbers are not
-        // getting updated correctly.
         if (DestEntry.getSeqNum() < MsgDestSeqNum) {
           DestEntry.setSeqNum(MsgDestSeqNum);
+          DestEntry.setState(RouteEntry.StateFlags.VALID);
           DestEntry.setLifetime(this.CurrentTick + MY_ROUTE_TIMEOUT);
 
           /**
@@ -579,10 +929,17 @@ public class Aodv implements Node {
       } else {
         /**
          * The sending node is NOT in the receiving node's Route Table. Add it.
+         * 
+         * The parameters for the RouteEntry are fairly straight forward except
+         * for Hop Count and Lifetime.
+         * 
+         * Hop Count is the Message Hop Count + 1 for the hop that the message
+         * took to get to this node. Lifetime is sent to us as an interval so
+         * add it to our current tick count.
          */
         DestEntry = new RouteEntry(MsgDestID, MsgDestSeqNum,
-            RouteEntry.StateFlags.VALID, MsgHopCount, MsgDestID,
-            this.CurrentTick + MY_ROUTE_TIMEOUT);
+            RouteEntry.StateFlags.VALID, MsgHopCount + 1, MsgDestID,
+            this.CurrentTick + MsgLifetime);
 
         RouteTable.put(MsgDestID, DestEntry);
 
@@ -594,6 +951,56 @@ public class Aodv implements Node {
        * Fully processed the hello message.
        */
       return;
+    }
+
+    /**
+     * Process a normal RREP
+     */
+
+    /**
+     * If we sent the RREQ then update our Route Table.
+     */
+    if (MsgOrigID.equals(this.att.id)) {
+      if (this.RouteTable.containsKey(MsgDestID)) {
+        /**
+         * Get the DestID's existing Route Table Entry.
+         */
+        DestEntry = RouteTable.get(MsgDestID);
+        /**
+         * Update the Route Attributes.
+         */
+        if (DestEntry.getSeqNum() < MsgDestSeqNum) {
+          DestEntry.setSeqNum(MsgDestSeqNum);
+          DestEntry.setState(RouteEntry.StateFlags.VALID);
+          DestEntry.setHopCount(MsgHopCount + 1);
+          DestEntry.setNextHopIP(message.originId);
+          DestEntry.setLifetime(this.CurrentTick + MsgLifetime);
+
+          /**
+           * Put the updated Route Entry back into the Route Table.
+           */
+          RouteTable.put(MsgDestID, DestEntry);
+
+          OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + " Updated "
+              + MsgDestID + " in its RouteTable"));
+        }
+
+      } else {
+        /**
+         * The RREQ that was sent out to generate this is really old. Drop the
+         * message?
+         */
+      }
+
+    } else {
+      /**
+       * Forward on the RREP
+       * 
+       * Maybe update our Route Table. RFC 3561 Section 6.5 Things get crazy.
+       */
+
+      // TODO: Need to implement RREP Forwarding
+
     }
 
   }
@@ -687,6 +1094,224 @@ public class Aodv implements Node {
    */
   void receiveNarrative(Message message) {
 
+    /**
+     * NARR Message Format
+     * 
+     * TYPE|FLAGS|TTL|DESTID|ORIGID|TEXT
+     * 
+     */
+
+    /**
+     * The message that will be sent if the message needs forwarded.
+     */
+    Message Msg;
+
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+
+    /**
+     * Message Properties
+     */
+    String MsgType;
+    String MsgFlags;
+    int MsgTTL;
+    String MsgOrigID;
+    String MsgDestID;
+    String MsgText;
+
+    /**
+     * Route Table Entry used to get the destination ID info in our Route Table.
+     */
+    RouteEntry DestEntry;
+
+    /**
+     * Array to hold Message Fields
+     */
+    String MsgArray[];
+
+    /**
+     * Split Message into fields based on '|' delimiters and store in MsgArray.
+     */
+    MsgArray = message.message.split("\\|");
+
+    /**
+     * Store message fields into local variables. Yes this is not really needed
+     * but I (SAK) think it makes the code more readable.
+     * 
+     * Note: Skip MsgArray[0] - Message Type.
+     */
+    MsgType = MsgArray[0];
+    MsgFlags = MsgArray[1];
+    MsgTTL = Integer.parseInt(MsgArray[2]);
+    MsgDestID = MsgArray[3];
+    MsgOrigID = MsgArray[4];
+    MsgText = MsgArray[5];
+
+    /**
+     * Check to see if this node is the final destination of the message. If it
+     * is great if not we need to forward it.
+     */
+    if (this.att.id.equals(MsgDestID)) {
+      /**
+       * The message has reached its final destination. Consider it delivered.
+       */
+      OutputHandler.dispatch(DARSEvent.outMsgRecieved(MsgOrigID, MsgDestID,
+          MsgText));
+      // TODO: Remove this debug out.
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + " Received Narrative Message: " + MsgText));
+      return;
+    }
+
+    /**
+     * Need to forward the message on.
+     */
+
+    /**
+     * Check to see if the destination node ID is in our Route Table.
+     */
+    if (RouteTable.containsKey(MsgDestID)) {
+      /**
+       * Get the Route Entry.
+       */
+      DestEntry = RouteTable.get(MsgDestID);
+      /**
+       * The destination is in our RouteTable. Make sure that the route is valid
+       * and not too old.
+       */
+      if ((DestEntry.getState() == RouteEntry.StateFlags.VALID)
+          && (DestEntry.getLifetime() >= this.CurrentTick)) {
+        /**
+         * Create the message and send it.
+         */
+        MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID
+            + '|' + MsgOrigID + '|' + MsgText;
+
+        Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
+
+        sendMessage(Msg);
+
+        OutputHandler.dispatch(DARSEvent.outDebug(MsgStr));
+        /**
+         * Done processing this request.
+         */
+        return;
+
+      } else {
+        /**
+         * The route is stale. Repair it.
+         * 
+         * During this time the message will need to be 'queued' on some kind of
+         * internal message buffer.
+         */
+        // TODO : NEED REPAIR ACTION
+      }
+
+    } else {
+      /**
+       * This node does not have a route to the desired destination and thus
+       * should not have been used in the route. ERROR.
+       */
+      // TODO: FIGURE OUT THIS CASE.
+
+    }
+
+  }
+
+  /**
+   * Add a message (normally a narrative) onto the wait queue for later
+   * processing.
+   * 
+   * @author kresss
+   * 
+   * @param srcID
+   * @param destID
+   * @param msgStr
+   */
+  private void addMessageToWaitQueue(String srcID, String destID, String msgStr) {
+
+    /**
+     * Create a new WaitQueueEntry with the message characteristics. Use the
+     * PATH_DISCOVERY_TIME as the amount of time that the message is valid for
+     * since the reason the message is nomrally placed onto the wait queue is
+     * because the node is waiting on getting a Route Reply back which can take
+     * a maximum of PATH_DISCOVERY_TIME to return.
+     */
+    WaitQueueEntry WaitEntry = new WaitQueueEntry(srcID, destID, msgStr,
+        this.CurrentTick + PATH_DISCOVERY_TIME);
+    try {
+      waitQueue.add(WaitEntry);
+    } catch (IllegalStateException exception) {
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + " Failed to successfully add a message to the wait queue."));
+    }
+
+  }
+
+  /**
+   * Check all message in the wait queue and see if we can send them.
+   * 
+   * @author kresss
+   */
+  private void processWaitQueue() {
+
+    /**
+     * Message object used to build the message that will be sent out.
+     */
+    Message Msg;
+    /**
+     * Route Table Entry for looking up Route Entries
+     */
+    RouteEntry DestEntry;
+    /**
+     * Wait Queue Entry used for worrking with the Wait Queue
+     */
+    WaitQueueEntry WaitEntry;
+    /**
+     * Iterator for walking through the Wait Queue
+     */
+    Iterator<WaitQueueEntry> WaitQueueIter;
+
+    WaitQueueIter = this.waitQueue.iterator();
+
+    while (WaitQueueIter.hasNext()) {
+      // TODO: Figure out why a Static Cast is needed here.
+      WaitEntry = WaitQueueIter.next();
+
+      /**
+       * Check to see if the message is still valid.
+       */
+      if (WaitEntry.TimeToLive < this.CurrentTick) {
+        OutputHandler
+            .dispatch(DARSEvent
+                .outError("Message lifetime expired while waiting for valid Route. Message: "
+                    + WaitEntry.MsgString));
+      }
+
+      /**
+       * Check the status of our Route Entry for the destination node of the
+       * message.
+       */
+      if (this.RouteTable.containsKey(WaitEntry.DestinationID)) {
+        DestEntry = this.RouteTable.get(WaitEntry.DestinationID);
+        if (DestEntry.getState() == RouteEntry.StateFlags.VALID) {
+          /**
+           * Have a valid route to the desired destination of this message so
+           * send it.
+           */
+          Msg = new Message(WaitEntry.DestinationID, WaitEntry.SourceID,
+              WaitEntry.MsgString);
+          sendMessage(Msg);
+
+          /**
+           * Clear the message off the wait queue.
+           */
+          WaitQueueIter.remove();
+        }
+      }
+    }
   }
 
   /**
@@ -757,6 +1382,7 @@ public class Aodv implements Node {
      */
     CurrentTick++;
 
+    // TODO: Take out this commented out debug statement.
     OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
         + "Received clocktick."));
 
@@ -767,6 +1393,14 @@ public class Aodv implements Node {
       receiveMessage(rxQueue.remove());
     }
 
+    /**
+     * Try to send messages that are waiting on RREPs.
+     */
+    processWaitQueue();
+
+    /**
+     * Send Hello Message if it is time.
+     */
     sendHello();
 
     // TODO: Need to determine what is needed for a cycle in a node.
@@ -822,14 +1456,25 @@ public class Aodv implements Node {
   private Queue<Message>              rxQueue     = new LinkedList<Message>();
 
   /**
+   * Wait Queue
+   * 
+   * Queue of message that can not be sent yet. Most likely waiting for a RREP.
+   */
+  private LinkedList<WaitQueueEntry>  waitQueue   = new LinkedList<WaitQueueEntry>();
+
+  /**
+   * Route Request History
+   * 
+   * This hash map is used to track the last known sequence number request for a
+   * given Destination ID.
+   * 
+   * HashMap <DestID, RREQID>
+   */
+  private HashMap<String, Integer>    RREQHistory = new HashMap<String, Integer>();
+
+  /**
    * Last Tick That A Hello Message Was Sent At
    */
   private int                         HelloSentAt = 0;
-
-  @Override
-  public void newNarrativeMessage(String sourceId, String desinationId, String messageText) {
-    // TODO Auto-generated method stub
-    
-  }
 
 }
