@@ -39,7 +39,7 @@ public class SimArea extends JLayeredPane {
         repaint();   
       }
     };
-    Timer t = new Timer(200,repainter);
+    Timer t = new Timer(100,repainter);
     t.start();
   }
 

@@ -353,7 +353,7 @@ public class GNode extends JPanel {
   static class BCastAnimator {
     static int            counter        = 11;
     static final int      countMax       = 32768;
-    static Timer          animationTimer = new Timer(200, new ActionListener() {
+    static Timer          animationTimer = new Timer(100, new ActionListener() {
                                            @Override
                                            public void actionPerformed(
                                                ActionEvent arg0) {
