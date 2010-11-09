@@ -1,10 +1,8 @@
 package dars.gui;
 
-import net.java.balloontip.*;
 import java.awt.*;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -47,11 +45,6 @@ public class GNode extends JPanel {
   private RangeIndicator rangeIndicator;
 
   public void cleanup() {
-    // unref the balloon tip
-    if (bt != null) {
-      bt.closeBalloon();
-      bt = null;
-    }
 
     if (rangeIndicator != null) {
       rangeIndicator.setVisible(false);
@@ -174,51 +167,6 @@ public class GNode extends JPanel {
     this.repaint();
   }
 
-  public void echo(String msg) {
-    // if balloon tip is not init, init it.
-    if (bt == null) {
-      initBalloonTip();
-
-    }
-
-    // Prepend the message to the balloon's text
-    bt_text.prepend(msg);
-
-    // Get the current time
-    BTLastUpdate = System.currentTimeMillis() / 1000L;
-
-    // Schedule a closeIfInactive call; This will close the tip if it is
-    // inactive
-    // for some amount of time.
-    javax.swing.Timer t = new Timer(2000, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        btCloseIfInactive();
-      }
-    });
-    t.setRepeats(false);
-    t.start();
-  }
-
-  private void initBalloonTip() {
-    // setup the balloon tip style
-    net.java.balloontip.styles.ModernBalloonStyle style = new net.java.balloontip.styles.ModernBalloonStyle(
-        10, 10, Color.WHITE, new Color(230, 230, 230), Color.BLUE);
-
-    bt_text.setColumns(16);
-    bt_text.setEditable(false);
-    DefaultCaret caret = (DefaultCaret) bt_text.getCaret();
-    caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-    bt_scroller = new JScrollPane(bt_text);
-    bt_scroller
-        .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-    bt = new BalloonTip(this, bt_scroller, style, true);
-    bt.setVisible(true);
-  }
-
-  private void btCloseIfInactive() {
-
-  }
-
   // ID of the node
   private String                      id_;
 
@@ -232,27 +180,11 @@ public class GNode extends JPanel {
 
   private DraggedGNode                draggedGNode;
 
-  private BufferedImage               img_         = null;
+  private BufferedImage               img_      = null;
 
-  private final Vector<GNodeListener> listeners    = new Vector<GNodeListener>();
+  private final Vector<GNodeListener> listeners = new Vector<GNodeListener>();
 
-  private BalloonTip                  bt           = null;
-
-  private BTTextArea                  bt_text      = new BTTextArea();
-
-  private JScrollPane                 bt_scroller;
-
-  private long                        BTLastUpdate = 0;
-
-  private boolean                     isClicked    = false;
-
-  // Inner classes
-  // //////////////////////////////////////////////////////////
-  private class BTTextArea extends JTextArea {
-    public void prepend(String msg) {
-      setText(msg + newline + getText());
-    }
-  }
+  private boolean                     isClicked = false;
 
   private class GNodeMouseListener extends MouseAdapter {
     @Override
@@ -267,8 +199,6 @@ public class GNode extends JPanel {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
 
         }
-        // layeredPane.repaint();
-        // layeredPane.invalidate();
         return;
       }
 
@@ -295,8 +225,6 @@ public class GNode extends JPanel {
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
         }
-        // layeredPane.repaint();
-        // layeredPane.invalidate();
 
         return;
       }
@@ -320,7 +248,6 @@ public class GNode extends JPanel {
       System.out.println("Moving node.");
       // Remove the dragged node.
       draggedGNode.cleanup();
-      // layeredPane.repaint();
       draggedGNode = null;
       isClicked = false;
     }
@@ -331,7 +258,6 @@ public class GNode extends JPanel {
       setEntered(true);
 
       // invalidate the parent container
-      // layeredPane.repaint();
 
       // Notify the handlers
       for (GNodeListener l : listeners) {
@@ -357,7 +283,6 @@ public class GNode extends JPanel {
 
       // If its a right click, return
       if (!isClicked) {
-        // layeredPane.repaint();
         return;
       }
 
@@ -409,7 +334,7 @@ public class GNode extends JPanel {
     public void moveXYOffset(int x, int y) {
       int xOffset = parent_.getX() + x - img_.getWidth(null) / 2;
       int yOffset = parent_.getY() + y - img_.getHeight(null) / 2;
-      setLocation(new Point(xOffset, yOffset));
+      setLocation(xOffset, yOffset);
     }
 
     public void cleanup() {
@@ -425,13 +350,56 @@ public class GNode extends JPanel {
 
   }
 
+  static class BCastAnimator {
+    static int            counter        = 11;
+    static final int      countMax       = 32768;
+    static Timer          animationTimer = new Timer(200, new ActionListener() {
+                                           @Override
+                                           public void actionPerformed(
+                                               ActionEvent arg0) {
+                                             BCastAnimator.counter++;
+                                             if (BCastAnimator.counter > BCastAnimator.countMax) {
+                                               BCastAnimator.counter = 0;
+                                             }
+                                           }
+                                         });
+
+    public static boolean isStarted;
+
+    static void start() {
+      isStarted = true;
+      animationTimer.start();
+    }
+
+    static final int totalSteps = 30;
+    static int       curStep    = 1;
+
+    public static void draw(Graphics g, RangeIndicator ri) {
+      // System.out.println("animating");
+      Graphics2D g2 = (Graphics2D) g;
+      // Draw the graphic
+      int dimX, dimY;
+      dimX = ri.parent_.getRange() * 2;
+      dimY = dimX;
+
+      int x = dimX / 2;
+      int y = dimY / 2;
+
+      int bCastRadius = (int) (ri.parent_.getRange() * ((double) ri.curStep() / (double) ri.totalSteps));
+      int bCastX = x - bCastRadius;
+      int bCastY = y - bCastRadius;
+
+      g2.setColor(Color.GREEN);
+      // draw a 3 pixel circle
+      g2.drawOval(bCastX, bCastY, bCastRadius * 2, bCastRadius * 2);
+      g2.drawOval(bCastX + 1, bCastY + 1, bCastRadius * 2, bCastRadius * 2 - 1);
+      g2.drawOval(bCastX + 2, bCastY + 2, bCastRadius * 2, bCastRadius * 2 - 2);
+    }
+  }
+
   private class RangeIndicator extends JPanel {
-    /**
-	     * 
-	     */
-    private static final long  serialVersionUID   = 1L;
-    private GNode              parent_;
-    private BroadcastAnimation broadcastAnimation = new BroadcastAnimation();
+    private static final long serialVersionUID = 1L;
+    private GNode             parent_;
 
     RangeIndicator(GNode parent) {
       // Copy in attributes
@@ -451,69 +419,14 @@ public class GNode extends JPanel {
       // set the center
       this.setCenter(parent_.getCenter());
 
-    }
-
-    public void setFill(boolean filled) {
-      this.isFilled = filled;
+      // Make sure the animation counter is running
+      if (!BCastAnimator.isStarted) {
+        BCastAnimator.start();
+      }
     }
 
     public void fireBroadcast() {
-      broadcastAnimation.start();
-    }
-
-    class BroadcastAnimation implements ActionListener {
-
-      Timer animationTimer;
-
-      BroadcastAnimation() {
-        animationTimer = new Timer(30, this);
-      }
-
-      void start() {
-        curStep = 1;
-        animationTimer.start();
-      }
-
-      final int totalSteps = 30;
-      int       curStep    = totalSteps + 1;
-
-      public void animate(Graphics g) {
-        //System.out.println("animating");
-        Graphics2D g2 = (Graphics2D) g;
-        // Draw the graphic
-        int dimX, dimY;
-        dimX = parent_.getRange() * 2;
-        dimY = dimX;
-
-        Point center = new Point(dimX / 2, dimY / 2);
-        int bCastRadius = (int) (parent_.getRange() * ((double) curStep / (double) totalSteps));
-        Point bCastOrigin = new Point(center.x - bCastRadius, center.y
-            - bCastRadius);
-
-        g2.setColor(Color.GREEN);
-        // draw a 3 pixel circle
-        g2.drawOval(bCastOrigin.x, bCastOrigin.y, bCastRadius * 2,
-            bCastRadius * 2);
-        g2.drawOval(bCastOrigin.x + 1, bCastOrigin.y + 1, bCastRadius * 2,
-            bCastRadius * 2);
-        g2.drawOval(bCastOrigin.x + 2, bCastOrigin.y + 2, bCastRadius * 2,
-            bCastRadius * 2);
-      }
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        if (curStep > totalSteps) {
-          animationTimer.stop();
-          return;
-        }
-        // issue a repaint request
-        repaint();
-        curStep++;
-      }
-
-      public boolean isActive() {
-        return (curStep <= totalSteps);
-      }
+      startStep = BCastAnimator.counter;
     }
 
     private boolean isFilled;
@@ -527,8 +440,8 @@ public class GNode extends JPanel {
       g2.setColor(Color.BLACK);
       g2.drawOval(0, 0, parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
 
-      if (broadcastAnimation.isActive()) {
-        broadcastAnimation.animate(g);
+      if (isActive()) {
+        BCastAnimator.draw(g, this);
       }
 
       if (isFilled) {
@@ -537,6 +450,17 @@ public class GNode extends JPanel {
             parent_.getRange() * 2 - 2);
       }
 
+    }
+
+    int startStep;
+    int totalSteps = 10;
+
+    public boolean isActive() {
+      return (BCastAnimator.counter - startStep < totalSteps && BCastAnimator.counter > startStep);
+    }
+
+    public int curStep() {
+      return BCastAnimator.counter - startStep;
     }
 
     public void setCenter(Point p) {

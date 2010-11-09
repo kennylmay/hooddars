@@ -1,11 +1,12 @@
 package dars.gui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.*;
-import javax.swing.*;
 import javax.swing.Timer;
 
-import java.awt.*;
+import dars.gui.Connections.Animator;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,61 +17,107 @@ public class Connections {
    */
   private static final long serialVersionUID = 1L;
 
+  public Connections() {
+    Animator.start();
+  }
+
   public void draw(Graphics g) {
 
     Iterator<Connection> i = connStore.iterator();
     while (i.hasNext()) {
 
       Connection c = i.next();
-      if (c.shouldDie) {
-        // stop the animation
-        c.animator.stop();
-
+      if (c.shouldDie()) {
         // remove it from the store
         i.remove();
         continue;
       }
 
       // draw the connection
-      c.animator.draw(g);
+      int x1, y1, x2, y2;
+      x1 = c.fromNode.getCenter().x;
+      y1 = c.fromNode.getCenter().y;
+      x2 = c.toNode.getCenter().x;
+      y2 = c.toNode.getCenter().y;
+      Animator.draw(g, x1, y1, x2, y2);
     }
 
   }
 
-  public void traceMsg(GNode A, GNode B, int lifetime) {
+  private ArrayList<Connection> connStore = new ArrayList<Connection>();
+
+  public void traceMsg(GNode A, GNode B) {
     Connection c = new Connection(A, B);
-    removeConn(c);
     connStore.add(c);
-    c.animator.start();
-    Timer t = new Timer(lifetime, new Destroyer(c));
-    t.setRepeats(false);
-    t.setInitialDelay(lifetime);
-    t.start();
   }
 
-  public class Destroyer implements ActionListener {
+  static class Animator {
+    static public int counter            = 1;
+    static final int  countMax           = 30;
+    static public int lifeTimeCounter    = 0;
+    static final int  lifeTimeCounterMax = 32768;
+    static Timer      timer              = new Timer(200, new ActionListener() {
 
-    Connection c;
+                                           public void actionPerformed(
+                                               ActionEvent arg0) {
+                                             // update the counters
+                                             Animator.counter++;
+                                             Animator.lifeTimeCounter++;
+                                             if (Animator.counter == countMax) {
+                                               Animator.counter = 1;
+                                             }
+                                             if (Animator.lifeTimeCounter == lifeTimeCounterMax) {
+                                               Animator.lifeTimeCounter = 0;
+                                             }
+                                           }
+                                         });
 
-    public Destroyer(Connection c) {
-      this.c = c;
+    static void start() {
+      timer.start();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      removeConn(c);
+    static void stop() {
+      timer.stop();
     }
+
+    static void draw(Graphics g, int x1, int y1, int x2, int y2) {
+
+      g.drawLine(x1, y1, x2, y2);
+      double stepX = (double) (x1 - x2) / countMax;
+      double stepY = (double) (y1 - y2) / countMax;
+
+      g.setColor(Color.BLUE);
+      g.fillRect(x1 - (int) (stepX * counter), y1 - (int) (stepY * counter), 3,
+          3);
+    }
+
   }
 
   class Connection {
-    GNode            fromNode;
-    GNode            toNode;
-    int              counter   = 1;
-    volatile boolean shouldDie = false;
+    GNode     fromNode;
+    GNode     toNode;
+    int       dieCount;
+    int       startCount;
+    boolean   marked2Die = false;
+    final int lifetime   = 20;
+
+    public boolean shouldDie() {
+      if (Animator.lifeTimeCounter >= dieCount
+          || Animator.lifeTimeCounter < startCount || marked2Die)
+        return true;
+      else
+        return false;
+    }
 
     Connection(GNode fromNode, GNode toNode) {
       this.fromNode = fromNode;
       this.toNode = toNode;
+      startCount = Animator.lifeTimeCounter;
+      dieCount = startCount + lifetime;
+      if (Animator.lifeTimeCounter + lifetime > Animator.lifeTimeCounterMax) {
+        dieCount = lifetime - Animator.lifeTimeCounterMax;
+      }
+
     }
 
     public boolean equals(Object b) {
@@ -82,58 +129,12 @@ public class Connections {
       return true;
     }
 
-    private Animator animator = new Animator();
-
-    class Animator implements ActionListener {
-      int       counter  = 1;
-      final int countMax = 30;
-      Timer     timer    = new Timer(100, this);
-
-      void start() {
-        timer.start();
-      }
-
-      void stop() {
-        timer.stop();
-      }
-
-      void draw(Graphics g) {
-
-        // Draw a line from fromNode to
-        int x1, x2, y1, y2;
-        x1 = fromNode.getCenter().x;
-        y1 = fromNode.getCenter().y;
-        x2 = toNode.getCenter().x;
-        y2 = toNode.getCenter().y;
-
-        g.drawLine(x1, y1, x2, y2);
-        double stepX = (double) (x1 - x2) / countMax;
-        double stepY = (double) (y1 - y2) / countMax;
-
-        Point a = new Point(x1, y1);
-        Point b = new Point(x2, y2);
-
-        g.fillRect(x1 - (int) (stepX * counter), y1 - (int) (stepY * counter),
-            10, 10);
-      }
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        // update the counter
-        counter++;
-
-        //System.out.println("updating..");
-        if (counter == countMax) {
-          counter = 1;
-        }
-      }
-    }
   }
 
   public void dropConns(GNode n) {
     for (Connection conn : connStore) {
       if (conn.fromNode == n || conn.toNode == n) {
-        conn.shouldDie = true;
+        conn.marked2Die = true;
       }
     }
   }
@@ -141,7 +142,7 @@ public class Connections {
   public void removeConn(Connection c) {
     for (Connection conn : connStore) {
       if (conn.equals(c)) {
-        conn.shouldDie = true;
+        conn.marked2Die = true;
         return;
       }
     }
@@ -150,10 +151,8 @@ public class Connections {
 
   public void dropAll() {
     for (Connection conn : connStore) {
-      conn.shouldDie = true;
+      conn.marked2Die = true;
     }
-
   }
 
-  private ArrayList<Connection> connStore = new ArrayList<Connection>();
 }

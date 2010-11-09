@@ -8,7 +8,6 @@ import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.*;
@@ -40,7 +39,7 @@ public class SimArea extends JLayeredPane {
         repaint();   
       }
     };
-    Timer t = new Timer(100,repainter);
+    Timer t = new Timer(200,repainter);
     t.start();
   }
 
@@ -263,7 +262,7 @@ class NodeActionHandler implements GNodeListener{
 
     if(a == null || b == null) return;
     
-    connMap.traceMsg(a,b, 5000);
+    connMap.traceMsg(a,b);
     
   }
   
@@ -436,6 +435,8 @@ class NodeActionHandler implements GNodeListener{
       deleteNode(id); 
     }
   }
+  
+  
   
   public void simPaused() {
     //Drop all message animations

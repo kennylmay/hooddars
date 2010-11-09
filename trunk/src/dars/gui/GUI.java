@@ -3,22 +3,10 @@ package dars.gui;
 import javax.swing.*;
 
 import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-
-import dars.InputHandler;
 import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.event.DARSEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class GUI extends JFrame implements OutputConsumer {
 

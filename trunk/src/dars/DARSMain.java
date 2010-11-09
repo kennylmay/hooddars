@@ -3,6 +3,7 @@
  */
 package dars;
 
+import console.Console;
 import logger.Logger;
 import dars.gui.GUI;
 
@@ -39,7 +40,7 @@ public class DARSMain {
     
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
-    
+    OutputHandler.addOutputConsumer(new Console());
     
     
     
