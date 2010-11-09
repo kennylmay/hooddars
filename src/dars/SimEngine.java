@@ -159,8 +159,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
     Node node = null;
     Message message = null;
     Iterator<Node> i;
-    //Increment sim time
-    simTime.add(BigInteger.ONE);
+
     
     // If there are messages in the messageQueue try to attempt delivery.
     while (messageQueue.isEmpty() == false) {
@@ -225,6 +224,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         messageQueue.add(message);
       }
     }
+    
+    //Increment sim time
+    simTime = simTime.add(BigInteger.ONE);
+    OutputHandler.dispatch(DARSEvent.OutQuantumElapsed());
   }
 
   /**

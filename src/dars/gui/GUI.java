@@ -187,6 +187,10 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_ERROR:
         logArea.appendLog("ERROR: " + e.informationalMessage);
         break;
+        
+      case OUT_QUANTUM_ELAPSED:
+        menuArea.quantumElapsed();
+        break;
 
       case OUT_START_SIM:
         //Notify the menu that a sim has started

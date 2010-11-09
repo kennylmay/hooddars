@@ -4,9 +4,11 @@
 package dars.event;
 
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 
 import dars.NodeAttributes;
 import dars.Message;
+import dars.SimulationTimeKeeper;
 
 /**
  * @author Mike
@@ -22,7 +24,7 @@ public class DARSEvent {
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_NODE_DATA_RECEIVED, 
     OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_NODE_BROADCAST, OUT_DEBUG, OUT_ERROR, OUT_INFORM, 
     OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED, OUT_CLEAR_SIM, 
-    OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_MSG_RECEIVED
+    OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_MSG_RECEIVED, OUT_QUANTUM_ELAPSED
   };
 
   public enum SimType { AODV, DSDV };
@@ -38,6 +40,9 @@ public class DARSEvent {
   public int            nodeY;
   public int            nodeRange;
   public SimType        simType;
+  public BigInteger     currentQuantum;
+  
+  
   
   public NodeAttributes getNodeAttributes() {
     NodeAttributes n = new NodeAttributes();
@@ -48,6 +53,7 @@ public class DARSEvent {
     return n;
   }
   
+  
   public void setNodeAttributes(NodeAttributes n) {
     nodeX = n.x;
     nodeY = n.y;
@@ -55,11 +61,20 @@ public class DARSEvent {
     nodeId = n.id;
   }
 
+
+  private static SimulationTimeKeeper simTimeKeeper;
+  public static void setSimTimeKeeper(SimulationTimeKeeper s) {
+    simTimeKeeper = s;
+  }
   
   // Hide the default constructor. DARSEvents can only be made through the
   // supplied functions that follow.
   private DARSEvent() {
-  };
+    //If the time keeper is set, view the current time from it.
+    if(simTimeKeeper != null) {
+      currentQuantum = simTimeKeeper.getTime();
+    }
+  }
 
   public static DARSEvent inInsertMessage(Message message) {
     DARSEvent e = new DARSEvent();
@@ -203,6 +218,7 @@ public class DARSEvent {
     return e;
   }
 
+  
   public static DARSEvent outAddNode(NodeAttributes n) {
     DARSEvent d = new DARSEvent();
     d.eventType = EventType.OUT_ADD_NODE;
@@ -291,6 +307,11 @@ public class DARSEvent {
     return new DARSEvent();
   }
 
+  public static DARSEvent OutQuantumElapsed() {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_QUANTUM_ELAPSED;
+    return e;
+  }
   // extracts a log entry from this event.
   public String getLogString() {
 

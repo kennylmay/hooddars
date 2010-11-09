@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Random;
 
 import javax.swing.BoxLayout;
@@ -70,7 +71,11 @@ public class DARSAppMenu  {
   private JLabel             fasterLabel         = new JLabel(plusIcon);
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
-
+  private JPanel         quantumsElapsedArea     = new JPanel();
+  private JLabel         qauntumsElapsedLabel    = new JLabel();
+  
+  
+  
   public DARSAppMenu() {
     aodvMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -259,6 +264,10 @@ public class DARSAppMenu  {
     pauseButton.setEnabled(false);
     menuPanel.add(buttonArea);
 
+    // Add the quantums elapsed area
+    quantumsElapsedArea.add(new JLabel("  Quantums Elapsed: "));
+    quantumsElapsedArea.add(qauntumsElapsedLabel);
+    
     // Add the slider bar, set its properties and values.
     speedArea.add(speedLabel);
     speedArea.add(fasterLabel);
@@ -268,8 +277,9 @@ public class DARSAppMenu  {
     slideBar.setMaximum(20);
     slideBar.setValue(5);
     speedArea.add(slowerLabel);
+    speedArea.add(quantumsElapsedArea);
     menuPanel.add(speedArea);
-
+    
     menuPanel.setOpaque(false);
     
   }
@@ -310,6 +320,13 @@ public class DARSAppMenu  {
   
   public void setSimArea(SimArea simArea) {
     this.simArea = simArea;
+  }
+  
+  private BigInteger quantums = BigInteger.ZERO;
+  
+  public void quantumElapsed() {
+    quantums = quantums.add(BigInteger.ONE);
+    qauntumsElapsedLabel.setText(quantums.toString());
   }
   
 }
