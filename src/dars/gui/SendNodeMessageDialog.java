@@ -34,6 +34,7 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
     private JButton cancelButton = new JButton("Cancel");
     private JLabel sourcelabel = new JLabel("Source Node:");
     private JLabel destLabel = new JLabel("Destination Node:");
+    private JLabel messageLabel = new JLabel("Message:");
     private JLabel nodeLabel;
     private JTextArea message = new JTextArea();
     private JComboBox nodeBox;
@@ -67,6 +68,7 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
         message.setColumns(20);
         message.setLineWrap(true);
         message.setAutoscrolls(true);
+        message.setText("Sample Message");
 
         // Add our components to the GridLayout style panel
         nodeInfoPanel.add(sourcelabel);
@@ -81,9 +83,10 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
         compound = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
         
         // Give the border to the message box component
-        messagePanel.setBorder(compound);
+        message.setBorder(compound);
              
         // Add the component to the message Panel
+        messagePanel.add(messageLabel, BorderLayout.NORTH);
         messagePanel.add(message, BorderLayout.CENTER);
         
         // Add the buttons to the buttons panel
@@ -110,14 +113,21 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
             // Get our source and destinations nodes
             String destination = (String) nodeBox.getSelectedItem();
             String source = sourceNode;
+            String messageText =  message.getText();
             
             // If they are equal warn the user and return
             if (source == destination){
-              JOptionPane.showMessageDialog(Panel, "Source and Destination cannot match");
+              JOptionPane.showMessageDialog(Panel, "Source and Destination cannot match.");
+              return;
+            }
+            
+            // If the message box is blank throw and error
+            if (messageText.length() == 0){
+              JOptionPane.showMessageDialog(Panel, "Must specifiy a message.");
               return;
             }
             // If they are different construct the message and send the input signal
-            Message mess = new Message(destination, source, message.getText());
+            Message mess = new Message(destination, source, messageText);
             InputHandler.dispatch(DARSEvent.inInsertMessage(mess));
             
             // Close the frame
