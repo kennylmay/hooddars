@@ -848,6 +848,11 @@ public class Aodv implements Node {
      */
 
     /**
+     * Destination Route Entry 
+     */
+    RouteEntry DestEntry;
+    
+    /**
      * Message object that will be passed to sendMessage.
      */
     Message Msg;
@@ -908,9 +913,46 @@ public class Aodv implements Node {
       return;
     }
 
-    OutputHandler
-        .dispatch(DARSEvent
-            .outDebug("Still need to finish implementing the reset of RREP. Sigh."));
+    /**
+     * Find the Destination Node in our Route Table and reply with our Route.
+     */
+    
+    if (!this.RouteTable.containsKey(DestNodeID)) {
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + " Tried to send a RREP for a node that it "
+          + "did not have a valid Route For."));
+      
+      /**
+       * This node can not send a RREP for the Destination needed so drop the
+       * message.
+       */
+      return;
+    }
+    
+    DestEntry = this.RouteTable.get(DestNodeID);
+    
+    /**
+     * Set the message properties that were not known at initialization. 
+     * 
+     * Must convert Lifetime into an interval instead of being node dependent.
+     */
+    MsgHopCount = DestEntry.getHopCount();
+    MsgDestSeqNum = DestEntry.getSeqNum();
+    MsgLifetime = DestEntry.getLifetime() - this.CurrentTick;
+      
+    /**
+     * Build Message Sting and Send.
+     */
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID
+        + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+
+    Msg = new Message(SenderID, this.att.id, MsgStr);
+
+    /**
+     * Place the message into the txQueue.
+     */
+    sendMessage(Msg);
+
   }
 
   /**
@@ -1053,7 +1095,7 @@ public class Aodv implements Node {
         /**
          * Update the Route Attributes.
          */
-        if (DestEntry.getSeqNum() < MsgDestSeqNum) {
+        if (DestEntry.getSeqNum() <= MsgDestSeqNum) {
           DestEntry.setSeqNum(MsgDestSeqNum);
           DestEntry.setState(RouteEntry.StateFlags.VALID);
           DestEntry.setHopCount(MsgHopCount);
