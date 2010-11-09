@@ -301,8 +301,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         break;
         
       case IN_CLEAR_SIM:
-        // remove all nodes from the node Store
-        store.clear();
+        //Clear the simulation
+        clearSim();
         
         //Indicate to output consumers that the simulation
         //has been cleared.
@@ -310,11 +310,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         break;
         
       case IN_NEW_SIM:
-        //Clear out node store
-        store.clear();
-
-        //Reset the node ID assigning sequence
-        this.currId = 0;
+        //Clear the simulation
+        clearSim();
         
         //Set the sim type
         setSimType(e.simType);
@@ -459,5 +456,16 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
       return false;
     } else
       return true;
+  }
+  
+  private void clearSim() {
+    // remove all nodes from the node Store
+    store.clear(); 
+    
+    //remove all messages from the queue
+    messageQueue.clear();
+
+    //Reset the node ID assigning sequence
+    this.currId = 0;
   }
 }
