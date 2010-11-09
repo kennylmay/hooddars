@@ -403,12 +403,12 @@ public class Aodv implements Node {
     /**
      * RREQ Message Format
      * 
-     * TYPE|FLAGS|TTL|RREQID|DESTID|DESTSEQNUM|SRCID|SRCSEQNUM
+     * TYPE|FLAGS|TTL|HOPCOUNT|RREQID|DESTID|DESTSEQNUM|SRCID|SRCSEQNUM
      * 
      */
 
     /**
-     * Message object that will be passed to SendRawMessage.
+     * Message object that will be passed to sendMessage.
      */
     Message Msg;
     /**
@@ -422,6 +422,7 @@ public class Aodv implements Node {
     String MsgType = "RREQ";
     String MsgFlags = "";
     int MsgTTL = TTL_START;
+    int MsgHopCount = 0;
     int MsgRREQID = ++this.LastRREQID;
     String MsgDestID = DestNodeID;
     int MsgDestSeqNum; // Must look this up in the RouteTable.
@@ -484,8 +485,9 @@ public class Aodv implements Node {
     /**
      * Build the actual message string.
      */
-    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgRREQID + '|'
-        + MsgDestID + '|' + MsgDestSeqNum + '|' + MsgSrcID + '|' + MsgSrcSeqNum;
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgHopCount + '|'
+        + MsgRREQID + '|' + MsgDestID + '|' + MsgDestSeqNum + '|' + MsgSrcID
+        + '|' + MsgSrcSeqNum;
 
     Msg = new Message(Message.BCAST_STRING, MsgSrcID, MsgStr);
 
@@ -513,9 +515,19 @@ public class Aodv implements Node {
     /**
      * RREQ Message Format
      * 
-     * TYPE|FLAGS|TTL|RREQID|DESTID|DESTSEQNUM|SRCID|SRCSEQNUM
+     * TYPE|FLAGS|TTL|HOPCOUNT|RREQID|DESTID|DESTSEQNUM|SRCID|SRCSEQNUM
      * 
      */
+
+    /**
+     * Message object that will be passed to sendMessage if the RREQ needs
+     * forwarded.
+     */
+    Message Msg;
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
 
     /**
      * Message Properties
@@ -523,6 +535,7 @@ public class Aodv implements Node {
     String MsgType;
     String MsgFlags;
     int MsgTTL;
+    int MsgHopCount;
     int MsgRREQID;
     String MsgDestID;
     int MsgDestSeqNum;
@@ -551,11 +564,28 @@ public class Aodv implements Node {
     MsgType = MsgArray[0];
     MsgFlags = MsgArray[1];
     MsgTTL = Integer.parseInt(MsgArray[2]);
-    MsgRREQID = Integer.parseInt(MsgArray[3]);
-    MsgDestID = MsgArray[4];
-    MsgDestSeqNum = Integer.parseInt(MsgArray[5]);
-    MsgSrcID = MsgArray[6];
-    MsgSrcSeqNum = Integer.parseInt(MsgArray[7]);
+    MsgHopCount = Integer.parseInt(MsgArray[3]);
+    MsgRREQID = Integer.parseInt(MsgArray[4]);
+    MsgDestID = MsgArray[5];
+    MsgDestSeqNum = Integer.parseInt(MsgArray[6]);
+    MsgSrcID = MsgArray[7];
+    MsgSrcSeqNum = Integer.parseInt(MsgArray[8]);
+
+    /**
+     * Check to see if this node is the originator of the RREQ.
+     * 
+     * This happens when a neighbor node re-broadcasts the RREQ and it creates a
+     * rather interesting loop.
+     */
+    if (MsgSrcID.equals(this.att.id)) {
+      /**
+       * Don't process your own RREQ.
+       */
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + "Dropped message due to it being its own RREQ. Message String: "
+          + message.message));
+      return;
+    }
 
     /**
      * Check to see if we have already processed this RREQID.
@@ -569,7 +599,7 @@ public class Aodv implements Node {
          * The RREQ is old. Ignore it.
          */
         OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
-            + "Dropped message due to old RREQID. Message String: "
+            + " Dropped message due to old RREQID. Message String: "
             + message.message));
         return;
       }
@@ -592,10 +622,32 @@ public class Aodv implements Node {
     }
 
     /**
+     * If this node does not have a Route to the originator of the RREQ add the
+     * Originator to the Route Table otherwise update the Originators Route
+     * Entry.
+     */
+    DestEntry = RouteTable.get(MsgSrcID);
+    if (DestEntry == null) {
+      DestEntry = new RouteEntry(MsgSrcID, MsgSrcSeqNum,
+          RouteEntry.StateFlags.VALID, MsgHopCount, message.originId,
+          this.CurrentTick + MY_ROUTE_TIMEOUT);
+      RouteTable.put(MsgSrcID, DestEntry);
+    } else {
+      /**
+       * Update the Originator's Route Entry information if needed.
+       */
+      // TODO: SETH DO THIS SOON!!!
+    }
+
+    /**
      * If this node is the desired Destination Node we can service this RREQ.
      */
     if (this.att.id.equals(MsgDestID)) {
       sendRREP(MsgDestID, MsgSrcID, message.originId);
+      /**
+       * This RREQ has bee handled.
+       */
+      return;
     }
 
     // TODO: THE RESTOF THIS FUNCTION IS VERY VERY QUESTIONABLE!!!!!!
@@ -613,13 +665,36 @@ public class Aodv implements Node {
 
       /**
        * If the Route Entry is marked valid and the TTL is not passed then send
-       * a RREP.
+       * a RREP. Otherwise continue on and forward the RREQ. If all goes well
+       * this node will get updated an updated route when it forwards back the
+       * RREP.
        */
       if ((DestEntry.getState() == RouteEntry.StateFlags.VALID)
           && (DestEntry.getLifetime() >= this.CurrentTick)) {
-
+        sendRREP(MsgDestID, MsgSrcID, message.originId);
+        return;
       }
     }
+
+    /**
+     * This node can not service this RREQ directly. Forward on the RREQ into
+     * the network.
+     * 
+     * Build and send an updated RREQ message.
+     */
+
+    /**
+     * Reduce the Messages TTL by 1 since this node has processed it.
+     */
+    MsgTTL--;
+
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgHopCount + '|'
+        + MsgRREQID + '|' + MsgDestID + '|' + MsgDestSeqNum + '|' + MsgSrcID
+        + '|' + MsgSrcSeqNum;
+
+    Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
+
+    sendMessage(Msg);
 
   }
 
@@ -646,7 +721,7 @@ public class Aodv implements Node {
      */
 
     /**
-     * Message object that will be passed to SendRawMessage.
+     * Message object that will be passed to sendMessage.
      */
     Message Msg;
     /**
@@ -773,7 +848,7 @@ public class Aodv implements Node {
      */
 
     /**
-     * Message object that will be passed to SendRawMessage.
+     * Message object that will be passed to sendMessage.
      */
     Message Msg;
     /**
@@ -851,10 +926,19 @@ public class Aodv implements Node {
      * TYPE|FLAGS|HOPCOUNT|DESTID|DESTSEQ|ORIGID|LIFETIME
      * 
      */
-
+    /**
+     * Message object that will be passed to sendMessage. For forwarding on the
+     * RREP.
+     */
+    Message Msg;
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
     /**
      * Message Fields
      */
+    String MsgType;
     String MsgFlags;
     int MsgHopCount;
     String MsgDestID;
@@ -880,11 +964,14 @@ public class Aodv implements Node {
     /**
      * Store message fields into local variables. Yes this is not really needed
      * but I (SAK) think it makes the code more readable.
-     * 
-     * Note: Skip MsgArray[0] - Message Type.
      */
+    MsgType = MsgArray[0];
     MsgFlags = MsgArray[1];
-    MsgHopCount = Integer.parseInt(MsgArray[2]);
+    /**
+     * Add 1 to the Hop Count for the hop that it took for the message to get to
+     * this node.
+     */
+    MsgHopCount = Integer.parseInt(MsgArray[2]) + 1;
     MsgDestID = MsgArray[3];
     MsgDestSeqNum = Integer.parseInt(MsgArray[4]);
     MsgOrigID = MsgArray[5];
@@ -908,7 +995,7 @@ public class Aodv implements Node {
         /**
          * Get the DestID's existing Route Table Entry.
          */
-        DestEntry = RouteTable.get(MsgDestID);
+        DestEntry = this.RouteTable.get(MsgDestID);
         /**
          * Update the Sequence Number and Lifetime if it is newer.
          */
@@ -920,7 +1007,7 @@ public class Aodv implements Node {
           /**
            * Put the updated Route Entry back into the Route Table.
            */
-          RouteTable.put(MsgDestID, DestEntry);
+          this.RouteTable.put(MsgDestID, DestEntry);
 
           OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + " Updated "
               + MsgDestID + " in its RouteTable"));
@@ -931,17 +1018,14 @@ public class Aodv implements Node {
          * The sending node is NOT in the receiving node's Route Table. Add it.
          * 
          * The parameters for the RouteEntry are fairly straight forward except
-         * for Hop Count and Lifetime.
-         * 
-         * Hop Count is the Message Hop Count + 1 for the hop that the message
-         * took to get to this node. Lifetime is sent to us as an interval so
-         * add it to our current tick count.
+         * for Lifetime. Lifetime is sent to us as an interval so add it to our
+         * current tick count.
          */
         DestEntry = new RouteEntry(MsgDestID, MsgDestSeqNum,
-            RouteEntry.StateFlags.VALID, MsgHopCount + 1, MsgDestID,
+            RouteEntry.StateFlags.VALID, MsgHopCount, MsgDestID,
             this.CurrentTick + MsgLifetime);
 
-        RouteTable.put(MsgDestID, DestEntry);
+        this.RouteTable.put(MsgDestID, DestEntry);
 
         OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + " Added "
             + MsgDestID + " to its RouteTable"));
@@ -965,21 +1049,21 @@ public class Aodv implements Node {
         /**
          * Get the DestID's existing Route Table Entry.
          */
-        DestEntry = RouteTable.get(MsgDestID);
+        DestEntry = this.RouteTable.get(MsgDestID);
         /**
          * Update the Route Attributes.
          */
         if (DestEntry.getSeqNum() < MsgDestSeqNum) {
           DestEntry.setSeqNum(MsgDestSeqNum);
           DestEntry.setState(RouteEntry.StateFlags.VALID);
-          DestEntry.setHopCount(MsgHopCount + 1);
+          DestEntry.setHopCount(MsgHopCount);
           DestEntry.setNextHopIP(message.originId);
           DestEntry.setLifetime(this.CurrentTick + MsgLifetime);
 
           /**
            * Put the updated Route Entry back into the Route Table.
            */
-          RouteTable.put(MsgDestID, DestEntry);
+          this.RouteTable.put(MsgDestID, DestEntry);
 
           OutputHandler.dispatch(DARSEvent.outDebug(this.att.id + " Updated "
               + MsgDestID + " in its RouteTable"));
@@ -990,19 +1074,109 @@ public class Aodv implements Node {
          * The RREQ that was sent out to generate this is really old. Drop the
          * message?
          */
+        // TODO: What is the right thing to do here?
+        OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+            + " Received a RREP to a REALLY old RREQ.  Dropping."));
       }
 
-    } else {
       /**
-       * Forward on the RREP
-       * 
-       * Maybe update our Route Table. RFC 3561 Section 6.5 Things get crazy.
+       * This node originated the RREQ that resulted in this RREP. No need to
+       * forward it on so we are done processing this message.
        */
-
-      // TODO: Need to implement RREP Forwarding
+      return;
 
     }
 
+    /**
+     * Forward on the RREP
+     * 
+     * Update our Route Table. RFC 3561 Section 6.5 Things get crazy.
+     */
+
+    /**
+     * Lookup the DestID of the RREP in our Route Table. If we do not already
+     * have an entry create an entry, otherwise we have to make some decisions.
+     */
+    if (!this.RouteTable.containsKey(MsgDestID)) {
+      /**
+       * Create the Destination's Route Entry with all of the information from
+       * the message and put it into this node's Route Table..
+       */
+      DestEntry = new RouteEntry(MsgDestID, MsgDestSeqNum,
+          RouteEntry.StateFlags.VALID, MsgHopCount, message.originId,
+          this.CurrentTick + MsgLifetime);
+
+      this.RouteTable.put(MsgDestID, DestEntry);
+    } else {
+      /**
+       * Check to see if this RREP has 'better' information than what is in our
+       * Route Entry. 'Better' gets rather complicated.
+       */
+
+      /**
+       * Get the DestID's existing Route Table Entry.
+       */
+      DestEntry = this.RouteTable.get(MsgDestID);
+
+      /**
+       * If our route is not VALID take all of the message's info. This may be a
+       * little over simplified from the RFC, but Meh. For now.
+       */
+      if (DestEntry.getState() != RouteEntry.StateFlags.VALID) {
+        DestEntry.setSeqNum(MsgDestSeqNum);
+        DestEntry.setState(RouteEntry.StateFlags.VALID);
+        DestEntry.setHopCount(MsgHopCount);
+        DestEntry.setNextHopIP(message.originId);
+        DestEntry.setLifetime(this.CurrentTick + MsgLifetime);
+
+        this.RouteTable.put(MsgDestID, DestEntry);
+      } else {
+        /**
+         * If the messages Destination sequence number is as new or newer (>=)
+         * than ours and our hop count is >= the messages then update our info.
+         * Else ours is better. We will still forward the other. Most likely we
+         * already replied to the original RREQ, but don't change this RREP.
+         */
+        if ((MsgDestSeqNum >= DestEntry.getSeqNum())
+            && (DestEntry.getHopCount() >= MsgHopCount)) {
+          /**
+           * Update the Route Attributes.
+           */
+          DestEntry.setSeqNum(MsgDestSeqNum);
+          DestEntry.setHopCount(MsgHopCount);
+          DestEntry.setNextHopIP(message.originId);
+          DestEntry.setLifetime(this.CurrentTick + MsgLifetime);
+          this.RouteTable.put(MsgDestID, DestEntry);
+        }
+      }
+    }
+
+    /**
+     * Build the RREP Message Sting and Forward on the message. This message
+     * should be the same as this node received except for an increased hop
+     * count.
+     */
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID
+        + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+
+    /**
+     * Lookup the origin of original RREQ so that we can decide how to forward
+     * on this RREP. If we don't have a route just Broadcast it? Not sure how
+     * that would happen.
+     */
+    if (this.RouteTable.containsKey(MsgOrigID)) {
+      Msg = new Message(this.RouteTable.get(MsgOrigID).getNextHopIP(),
+          this.att.id, MsgStr);
+    } else {
+      Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + "Forwarding on RREP as a broadcast.  Look into this cast."));
+    }
+
+    /**
+     * Place the message into the txQueue.
+     */
+    sendMessage(Msg);
   }
 
   /**
@@ -1022,7 +1196,7 @@ public class Aodv implements Node {
      */
 
     /**
-     * Message object that will be passed to SendRawMessage.
+     * Message object that will be passed to sendMessage.
      */
     Message Msg;
     /**
@@ -1193,7 +1367,8 @@ public class Aodv implements Node {
 
         sendMessage(Msg);
 
-        OutputHandler.dispatch(DARSEvent.outDebug(MsgStr));
+        OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+            + " Forwarded Narrative Message: " + MsgStr));
         /**
          * Done processing this request.
          */
@@ -1266,7 +1441,7 @@ public class Aodv implements Node {
      */
     RouteEntry DestEntry;
     /**
-     * Wait Queue Entry used for worrking with the Wait Queue
+     * Wait Queue Entry used for working with the Wait Queue
      */
     WaitQueueEntry WaitEntry;
     /**
@@ -1301,7 +1476,7 @@ public class Aodv implements Node {
            * Have a valid route to the desired destination of this message so
            * send it.
            */
-          Msg = new Message(WaitEntry.DestinationID, WaitEntry.SourceID,
+          Msg = new Message(DestEntry.getNextHopIP(), WaitEntry.SourceID,
               WaitEntry.MsgString);
           sendMessage(Msg);
 
@@ -1383,8 +1558,8 @@ public class Aodv implements Node {
     CurrentTick++;
 
     // TODO: Take out this commented out debug statement.
-    OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
-        + "Received clocktick."));
+    //OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+    //    + " Received clocktick."));
 
     /**
      * Receive and process each message on the Receive Queue.
