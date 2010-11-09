@@ -141,6 +141,7 @@ public class GUI extends JFrame implements OutputConsumer {
     // (selecting a new node, etc)
     nodeAttributesArea.setSimArea(simArea);
     menuArea.setSimArea(simArea);
+    simArea.setNodeAttributesArea(nodeAttributesArea);
 
   }
 
