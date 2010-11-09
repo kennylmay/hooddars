@@ -53,10 +53,10 @@ public class Connections {
 
   static class Animator {
     static public int counter            = 1;
-    static final int  countMax           = 30;
+    static final int  countMax           = 20;
     static public int lifeTimeCounter    = 0;
     static final int  lifeTimeCounterMax = 32768;
-    static Timer      timer              = new Timer(200, new ActionListener() {
+    static Timer      timer              = new Timer(100, new ActionListener() {
 
                                            public void actionPerformed(
                                                ActionEvent arg0) {
@@ -99,7 +99,7 @@ public class Connections {
     int       dieCount;
     int       startCount;
     boolean   marked2Die = false;
-    final int lifetime   = 20;
+    final int lifetime   = 30;
 
     public boolean shouldDie() {
       if (Animator.lifeTimeCounter >= dieCount
