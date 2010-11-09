@@ -53,7 +53,8 @@ public class GNode extends JPanel {
     }
 
   }
-
+ 
+  private Rectangle r = new Rectangle();
   @Override
   public void paintComponent(Graphics g) {
 
@@ -61,7 +62,8 @@ public class GNode extends JPanel {
     g.drawImage(img_, 0, 0, null);
 
     // Draw the node id onto the graphic
-    ImageFactory.drawNodeID(g, id_, new Rectangle(9, 4, 17, 12));
+    r.setRect(9, 4, 17, 12);
+    ImageFactory.drawNodeID(g, id_, r);
 
   }
 

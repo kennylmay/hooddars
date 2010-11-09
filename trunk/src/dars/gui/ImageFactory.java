@@ -118,6 +118,8 @@ public class ImageFactory {
     return dest;
   }
 
+  
+  static Font f = new Font("arial", Font.PLAIN, 12);
   //Function that draws a letter directly onto a buffered image
   static public void drawNodeID(Graphics g1, String id, Rectangle r){
     //get the center
@@ -125,8 +127,8 @@ public class ImageFactory {
    
     g.drawRect(r.x,r.y,r.width,r.height);
     
-    g.setColor(new Color(0,0,0,255));
-    Font f = new Font("arial", Font.PLAIN, 12);
+    g.setColor(Color.BLACK);
+   
     g.setFont(f);
     FontMetrics fm = g.getFontMetrics();
     g.drawString(id, 
