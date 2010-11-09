@@ -223,6 +223,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   public void setNode(String nodeId) {
 
   }
+  
+  public JComboBox getNodeBox(){
+    return nodeSelectorComboBox;
+  }
 
   public void selectNodeById(String id) {
     setAttributes(getAttributes(id));
