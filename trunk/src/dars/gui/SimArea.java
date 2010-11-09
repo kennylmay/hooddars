@@ -383,7 +383,7 @@ class NodeActionHandler implements GNodeListener{
   }
 
   public int getDefaultRange() {
-    return 50;
+    return 100;
   }
 
   public String getSimType() {
