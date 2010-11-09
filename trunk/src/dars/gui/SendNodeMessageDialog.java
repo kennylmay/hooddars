@@ -5,6 +5,7 @@ package dars.gui;
 
 import javax.swing.JDialog; 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -22,6 +23,7 @@ import dars.Message;
 import dars.event.DARSEvent;
 
 import java.awt.event.ActionEvent;
+import java.util.Vector;
 
 public class SendNodeMessageDialog extends JDialog implements ActionListener {
     /**
@@ -37,7 +39,7 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
     private JLabel messageLabel = new JLabel("Message:");
     private JLabel nodeLabel;
     private JTextArea message = new JTextArea();
-    private JComboBox nodeBox;
+    private JComboBox nodeBox = new JComboBox();
     private String sourceNode;
     
     // Layouts for the Panels
@@ -53,10 +55,12 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
     private JPanel messagePanel = new JPanel(messageLayout);
 
     
-    public SendNodeMessageDialog(JFrame frame, String SourceID, JComboBox comboBox){
+    public SendNodeMessageDialog(JFrame frame, String SourceID, Vector<String> nodeList){
         super(frame,true);
-        // Save the combobox provided into our local copy
-        nodeBox = comboBox;
+        // Add each node in the ComboBox from the node list
+        for (int i = 0; i < nodeList.size(); i++){
+          nodeBox.addItem(nodeList.get(i));
+        }
         // Save the source id
         sourceNode = SourceID;
         nodeLabel = new JLabel(SourceID);

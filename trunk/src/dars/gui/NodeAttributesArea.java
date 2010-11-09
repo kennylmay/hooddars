@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -32,6 +33,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
                                                   1000, 20));
 
   private boolean blockChangeEvents = false;
+  private Vector<String> nodeList = new Vector();
   
   public NodeAttributesArea() {
     // Use a box layout inside a border layout, with an internal flow layout at
@@ -175,10 +177,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   public void nodeAdded(String nodeId) {
     nodeSelectorComboBox.addItem(nodeId);
+    nodeList.add(nodeId);
   }
 
   public void nodeDeleted(String nodeId) {
     nodeSelectorComboBox.removeItem(nodeId);
+    nodeList.remove(nodeId);
   }
 
   @Override
@@ -224,10 +228,17 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   }
   
-  public JComboBox getNodeBox(){
-    return nodeSelectorComboBox;
+  public Vector<String> getNodeList(){
+    return nodeList;
   }
 
+  public void clear(){
+    nodeSelectorComboBox.removeAllItems();
+    nodeXField.setText("");
+    nodeYField.setText("");
+    nodeList.clear();
+  }
+  
   public void selectNodeById(String id) {
     setAttributes(getAttributes(id));
   }
