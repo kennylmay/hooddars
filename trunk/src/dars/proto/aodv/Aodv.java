@@ -67,7 +67,7 @@ public class Aodv implements Node {
    * Constants needed by the AODV Protocol
    */
   public static final int TTL_START            = 5;
-  public static final int NET_DIAMETER         = 35;
+  public static final int NET_DIAMETER         = 2 * TTL_START;
   public static final int NODE_TRAVERSAL_TIME  = 2;
   public static final int NET_TRAVERSAL_TIME   = 2 * NODE_TRAVERSAL_TIME
                                                    * NET_DIAMETER;
@@ -283,6 +283,7 @@ public class Aodv implements Node {
          * internal message buffer.
          */
         // TODO : NEED REPAIR ACTION
+        OutputHandler.dispatch(DARSEvent.outDebug("NARRATIVE MESSAGE STALE ROUTE REPAIR NOT IMPLEMENTED"));
       }
 
     } else {
@@ -636,7 +637,38 @@ public class Aodv implements Node {
       /**
        * Update the Originator's Route Entry information if needed.
        */
-      // TODO: SETH DO THIS SOON!!!
+
+      /**
+       * If our route is not VALID take all of the message's info. This may be a
+       * little over simplified from the RFC, but Meh. For now.
+       */
+      if (DestEntry.getState() != RouteEntry.StateFlags.VALID) {
+        DestEntry.setSeqNum(MsgSrcSeqNum);
+        DestEntry.setState(RouteEntry.StateFlags.VALID);
+        DestEntry.setHopCount(MsgHopCount);
+        DestEntry.setNextHopIP(message.originId);
+        DestEntry.setLifetime(this.CurrentTick + MY_ROUTE_TIMEOUT);
+
+        this.RouteTable.put(MsgSrcID, DestEntry);
+      } else {
+        /**
+         * If the messages Originator sequence number is as new or newer (>=)
+         * than ours and our hop count is >= the messages then update our info.
+         * Else ours is better.
+         */
+        if ((MsgSrcSeqNum >= DestEntry.getSeqNum())
+            && (DestEntry.getHopCount() >= MsgHopCount)) {
+          /**
+           * Update the Route Attributes.
+           */
+          DestEntry.setSeqNum(MsgSrcSeqNum);
+          DestEntry.setHopCount(MsgHopCount);
+          DestEntry.setNextHopIP(message.originId);
+          DestEntry.setLifetime(this.CurrentTick + MY_ROUTE_TIMEOUT);
+
+          this.RouteTable.put(MsgSrcID, DestEntry);
+        }
+      }
     }
 
     /**
@@ -650,7 +682,6 @@ public class Aodv implements Node {
       return;
     }
 
-    // TODO: THE RESTOF THIS FUNCTION IS VERY VERY QUESTIONABLE!!!!!!
     /**
      * Check to see if the desired Destination ID is in this nodes Route Table.
      */
@@ -692,10 +723,19 @@ public class Aodv implements Node {
         + MsgRREQID + '|' + MsgDestID + '|' + MsgDestSeqNum + '|' + MsgSrcID
         + '|' + MsgSrcSeqNum;
 
-    Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
+    /**
+     * As long as the message has TTL forward it.
+     */
+    if (MsgTTL > 0) {
+      Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
+      sendMessage(Msg);
+    } else {
+      // TODO: Remove this code block it is for testing only? The building of
+      // MsgStr above can then be moved inside the If to save some CPU time.
 
-    sendMessage(Msg);
-
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + "Dropped RREQ.  TTL Expired. MsgStr: " + MsgStr));
+    }
   }
 
   /**
@@ -1452,7 +1492,7 @@ public class Aodv implements Node {
     /**
      * Create a new WaitQueueEntry with the message characteristics. Use the
      * PATH_DISCOVERY_TIME as the amount of time that the message is valid for
-     * since the reason the message is nomrally placed onto the wait queue is
+     * since the reason the message is normally placed onto the wait queue is
      * because the node is waiting on getting a Route Reply back which can take
      * a maximum of PATH_DISCOVERY_TIME to return.
      */
@@ -1505,6 +1545,7 @@ public class Aodv implements Node {
             .dispatch(DARSEvent
                 .outError("Message lifetime expired while waiting for valid Route. Message: "
                     + WaitEntry.MsgString));
+        WaitQueueIter.remove();
       }
 
       /**
