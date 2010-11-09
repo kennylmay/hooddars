@@ -333,8 +333,8 @@ class NodeActionHandler implements GNodeListener{
       msg_item = new JMenuItem("Send Message");
       msg_item.addActionListener(
           new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-             new SendNodeMessageDialog(null, gnode.getId(), nodeAttributesArea.getNodeBox());
+            public void actionPerformed(ActionEvent e) {            
+             new SendNodeMessageDialog(null, gnode.getId(), nodeAttributesArea.getNodeList());
             }    
      });
       add(edit_item);

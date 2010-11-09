@@ -46,12 +46,12 @@ public class LogArea extends javax.swing.JPanel {
 
   private void configureTextArea(JTextArea ta) {
     //not editable
-    ta.setEditable(false);
-    
-
-
-    
+    ta.setEditable(false); 
   
+  }
+  
+  public void clear(){
+    textArea.setText("");
   }
   
   //Add a text area
