@@ -5,6 +5,7 @@ package dars;
 
 import console.Console;
 import logger.Logger;
+import dars.event.DARSEvent;
 import dars.gui.GUI;
 
 /**
@@ -26,6 +27,9 @@ public class DARSMain {
     // Instantiate the simulator engine
     SimEngine s = new SimEngine();
 
+    // Make the time keeping component of the simulator engine viewable to DARSEvents
+    DARSEvent.setSimTimeKeeper( (SimulationTimeKeeper) s);
+      
     // Name the simulator engine as an input consumer
     // TODO: Have the simulator engine class implement the InputConsumer
     // interface.
