@@ -40,6 +40,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
    */
   void runSimulation() {
     if (thread.isAlive() == false) {
+      thread = new MessageRelay();
       thread.start();
     }
   }
