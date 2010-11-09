@@ -24,6 +24,7 @@ public class SimArea extends JLayeredPane {
   private static final long serialVersionUID = 1L;
 
   private boolean locked = true;
+  private NodeAttributesArea nodeAttributesArea;
 
 ///////////////////////////////Constructor
   public SimArea() {
@@ -334,12 +335,8 @@ class NodeActionHandler implements GNodeListener{
       msg_item.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              /// JUST A TEST STUB
-              Message mess = new Message(gnode.getId(), "B", "TEST MESSAGE" );
-              InputHandler.dispatch(DARSEvent.inInsertMessage(mess));
-        //      SendNodeMessageDialog.run(
-       //           gnode.getId(), new ArrayList<String>(gnodemap.keySet())); 
-           }    
+             new SendNodeMessageDialog(null, gnode.getId(), nodeAttributesArea.getNodeBox());
+            }    
      });
       add(edit_item);
       add(delete_item);
@@ -449,4 +446,9 @@ class NodeActionHandler implements GNodeListener{
     //Drop all message animations
     connMap.dropAll();
   }
+
+  public void setNodeAttributesArea(NodeAttributesArea nodeAttributesArea) {
+    this.nodeAttributesArea = nodeAttributesArea;
+  }
+ 
 } 
