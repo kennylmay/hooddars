@@ -15,7 +15,7 @@ public class RouteEntry {
    * @param state
    * @param lifetime
    */
-  public RouteEntry(String destIP, StateFlags state, long lifetime) {
+  public RouteEntry(String destIP, StateFlags state, int lifetime) {
     super();
     DestIP = destIP;
     State = state;
@@ -34,7 +34,7 @@ public class RouteEntry {
    * @param lifetime
    */
   public RouteEntry(String destIP, int seqNum, StateFlags state, int hopCount,
-      String nextHopIP, long lifetime) {
+      String nextHopIP, int lifetime) {
     super();
     DestIP = destIP;
     SeqNum = seqNum;
@@ -137,7 +137,7 @@ public class RouteEntry {
   /**
    * @return the lifetime
    */
-  public long getLifetime() {
+  public int getLifetime() {
     return Lifetime;
   }
 
@@ -145,7 +145,7 @@ public class RouteEntry {
    * @param lifetime
    *          the lifetime to set
    */
-  public void setLifetime(long lifetime) {
+  public void setLifetime(int lifetime) {
     Lifetime = lifetime;
   }
 
@@ -217,6 +217,6 @@ public class RouteEntry {
   /**
    * Time, in milliseconds for which this entry is to be considered valid.
    */
-  private long       Lifetime;
+  private int       Lifetime;
 
 }
