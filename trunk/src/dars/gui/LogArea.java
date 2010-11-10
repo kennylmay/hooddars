@@ -4,6 +4,8 @@
 package dars.gui;
 
 import java.awt.BorderLayout;
+import java.math.BigInteger;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -18,8 +20,8 @@ public class LogArea extends javax.swing.JPanel {
    */
   private static final long serialVersionUID = 1L;
   public static String newline = System.getProperty("line.separator");
-  public void appendLog(String log) {
-    textArea.append(log);
+  public void appendLog(String log, BigInteger quantum) {
+    textArea.append("Q " + quantum + " : " + log); 
     textArea.append(newline);
     textArea.setCaretPosition(textArea.getDocument().getLength());
 
