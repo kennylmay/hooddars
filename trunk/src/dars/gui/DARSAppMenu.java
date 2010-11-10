@@ -71,8 +71,8 @@ public class DARSAppMenu  {
   private JLabel             fasterLabel         = new JLabel(plusIcon);
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
-  private JPanel         quantumsElapsedArea     = new JPanel();
-  private JLabel         qauntumsElapsedLabel    = new JLabel();
+  private JPanel         currentQuantumArea     = new JPanel();
+  private JLabel         currentQuantumLabel     = new JLabel();
   
   
   
@@ -116,8 +116,8 @@ public class DARSAppMenu  {
     menuPanel.add(buttonArea);
 
     // Add the quantums elapsed area
-    quantumsElapsedArea.add(new JLabel("  Quantums Elapsed: "));
-    quantumsElapsedArea.add(qauntumsElapsedLabel);
+    currentQuantumArea.add(new JLabel("  Current Quantum: "));
+    currentQuantumArea.add(currentQuantumLabel);
     
     // Add the slider bar, set its properties and values.
     speedArea.add(speedLabel);
@@ -128,7 +128,7 @@ public class DARSAppMenu  {
     slideBar.setMaximum(20);
     slideBar.setValue(5);
     speedArea.add(slowerLabel);
-    speedArea.add(quantumsElapsedArea);
+    speedArea.add(currentQuantumArea);
     menuPanel.add(speedArea);
     
     menuPanel.setOpaque(false);
@@ -293,12 +293,19 @@ public class DARSAppMenu  {
     pauseButton.setEnabled(true);
     stopButton.setEnabled(true);   
     
+    
 
   }
  
   public void newSim() {
     //Disable the New menu item
     newMenu.setEnabled(false);
+    
+    //Zero out the current quantum
+    quantums = BigInteger.ZERO;
+    currentQuantumLabel.setText(quantums.toString());
+    
+    
   }
   
   public void simStopped() {
@@ -341,7 +348,7 @@ public class DARSAppMenu  {
   
   public void quantumElapsed() {
     quantums = quantums.add(BigInteger.ONE);
-    qauntumsElapsedLabel.setText(quantums.toString());
+    currentQuantumLabel.setText(quantums.toString());
   }
   
 }
