@@ -57,10 +57,11 @@ public class ImageFactory {
     return ghostedNodeImg_;
   }
 
+  static private ImageFactory instance = new ImageFactory();
   static private void init() {
     //initalize images
     try {
-      nodeImg_ = ImageIO.read(new File("img/node.png"));
+      nodeImg_ = ImageIO.read(instance.getClass().getResource("/node.png"));
       hoveredNodeImg_  = getHoverImg(nodeImg_);
       selectedNodeImg_ = getSelectedImg(nodeImg_);
       ghostedNodeImg_ =  getTransparentImg(nodeImg_, 0.5f);
