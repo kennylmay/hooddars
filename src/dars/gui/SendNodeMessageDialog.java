@@ -59,7 +59,10 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
         super(frame,true);
         // Add each node in the ComboBox from the node list
         for (int i = 0; i < nodeList.size(); i++){
-          nodeBox.addItem(nodeList.get(i));
+          if(nodeList.get(i) != SourceID) //excluding the source node from the dropdown list
+          {
+            nodeBox.addItem(nodeList.get(i));
+          }
         }
         // Save the source id
         sourceNode = SourceID;
