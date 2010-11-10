@@ -437,6 +437,12 @@ class NodeActionHandler implements GNodeListener{
   }
   
   
+  public void setSimSpeed(int speed) {
+    //propagate the speed setting down to animation sub systems
+    Connections.Animator.setSimSpeed(speed);
+    GNode.BCastAnimator.setSimSpeed(speed);
+    
+  }
   
   public void simPaused() {
     //Drop all message animations
