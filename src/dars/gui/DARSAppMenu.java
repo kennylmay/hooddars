@@ -63,11 +63,10 @@ public class DARSAppMenu  {
 
   // Labels slider bar for the speed adjustment
   private JLabel             speedLabel          = new JLabel("Speed");
-  private ImageIcon          minusIcon           = new ImageIcon(
-                                                     "img/minus.png");
+  private ImageIcon          minusIcon           = new ImageIcon(getClass().getResource("/minus.png"));
   private JLabel             slowerLabel         = new JLabel(minusIcon);
   private JSlider            slideBar            = new JSlider();
-  private ImageIcon          plusIcon            = new ImageIcon("img/plus.png");
+  private ImageIcon          plusIcon            = new ImageIcon(getClass().getResource("/plus.png"));
   private JLabel             fasterLabel         = new JLabel(plusIcon);
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
