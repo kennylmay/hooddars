@@ -26,6 +26,8 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import logger.Parser;
+
 import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.event.DARSEvent;
@@ -202,9 +204,19 @@ public class DARSAppMenu  {
         int returnVal = chooser.showOpenDialog(menuBar.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
           /// Some call to load the simulation setup
+           String name = chooser.getSelectedFile().getPath();
+           System.out.println("loading simulation");
+           Parser.parse(name);
         }
       }
     });
+    
+    /*setupMenu.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {            
+          ImportLogDialog.getFileName();
+          }    
+   });*/
 
     replayMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
