@@ -148,7 +148,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
           }
         }
         try {
-          sleepAtLeast(WAIT_TIME);
+          Thread.sleep(WAIT_TIME);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -477,15 +477,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
     
   }
   
-  public void sleepAtLeast(long millis) throws InterruptedException {
-    long t0 = System.currentTimeMillis();
-    long millisLeft = millis;
-    while (millisLeft > 0) {
-      Thread.sleep(millisLeft);
-      long t1 = System.currentTimeMillis();
-      millisLeft = millis - (t1 - t0);
-    }
-  }
 
   
 }
