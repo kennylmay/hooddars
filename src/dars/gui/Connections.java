@@ -3,25 +3,45 @@ package dars.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.*;
+
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import dars.gui.Connections.Animator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerListener;
 
-public class Connections {
+public class Connections extends JPanel implements ComponentListener {
 
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
 
-  public Connections() {
+  private static Connections getInstance() {
+    return inst;
+  }
+  private static Connections inst;
+  public Connections(JLayeredPane parent) {
+    inst = this;
+    parent.add(this, JLayeredPane.DEFAULT_LAYER);
+    parent.addComponentListener(this);
+    setOpaque(false);
+    setLocation(0,0);
     Animator.start();
   }
 
-  public void draw(Graphics g) {
+  @Override
+  public boolean isOptimizedDrawingEnabled() {
+    return true;
+  }
+  
+  public void paintComponent(Graphics g) {
 
     Iterator<Connection> i = connStore.iterator();
     while (i.hasNext()) {
@@ -69,6 +89,8 @@ public class Connections {
                                              if (Animator.lifeTimeCounter == lifeTimeCounterMax) {
                                                Animator.lifeTimeCounter = 0;
                                              }
+                                             //repaint the connections panel
+                                               Connections.getInstance().repaint();
                                            }
                                          });
 
@@ -80,6 +102,8 @@ public class Connections {
       timer.stop();
     }
 
+
+    
     static void draw(Graphics g, int x1, int y1, int x2, int y2) {
 
       g.drawLine(x1, y1, x2, y2);
@@ -158,6 +182,35 @@ public class Connections {
     for (Connection conn : connStore) {
       conn.marked2Die = true;
     }
+  }
+
+  public void updateSize() {
+   System.out.println("size updated.");
+   this.setSize(getParent().getSize()); 
+  }
+  
+  @Override 
+  public void componentHidden(ComponentEvent arg0) {
+    updateSize();
+    
+  }
+
+  @Override
+  public void componentMoved(ComponentEvent arg0) {
+    updateSize();
+    
+  }
+
+  @Override
+  public void componentResized(ComponentEvent arg0) {
+    updateSize();
+    
+  }
+
+  @Override
+  public void componentShown(ComponentEvent arg0) {
+    updateSize();
+    
   }
 
 }

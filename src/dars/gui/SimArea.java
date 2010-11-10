@@ -32,15 +32,7 @@ public class SimArea extends JLayeredPane {
     addMouseListener(new PopClickListener());
    
     setVisible(true);
-  
     
-    ActionListener repainter = new ActionListener() {
-      public void actionPerformed(ActionEvent e){
-        repaint();   
-      }
-    };
-    Timer t = new Timer(100,repainter);
-    t.start();
   }
 
   public void setNodeInspector(NodeInspector nodeInspector) {
@@ -211,12 +203,6 @@ class NodeActionHandler implements GNodeListener{
     this.repaint();
   }
 
-  public void paintComponent(Graphics g) {
-  
-    connMap.draw(g);
-    
-    super.paintComponent(g);
-  }
   
   public void setNodeRange(String nodeId, int newRange) {
     //Get the gnode from the gnode map
@@ -272,7 +258,7 @@ class NodeActionHandler implements GNodeListener{
 
   private TreeMap<String, GNode> gnodemap = new TreeMap<String, GNode>();
 
-  private Connections connMap = new Connections();
+  private Connections connMap = new Connections(this);
 
 
 
