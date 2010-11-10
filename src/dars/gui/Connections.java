@@ -59,15 +59,15 @@ public class Connections extends JPanel implements ComponentListener {
       y1 = c.fromNode.getCenter().y;
       x2 = c.toNode.getCenter().x;
       y2 = c.toNode.getCenter().y;
-      Animator.draw(g, x1, y1, x2, y2);
+      Animator.draw(g, c.color, x1, y1, x2, y2);
     }
 
   }
 
-  private ArrayList<Connection> connStore = new ArrayList<Connection>();
+  private List<Connection> connStore = new LinkedList<Connection>();
 
-  public void traceMsg(GNode A, GNode B) {
-    Connection c = new Connection(A, B);
+  public void traceMsg(GNode A, GNode B, Color color) {
+    Connection c = new Connection(A, B, color);
     connStore.add(c);
   }
 
@@ -104,13 +104,13 @@ public class Connections extends JPanel implements ComponentListener {
 
 
     
-    static void draw(Graphics g, int x1, int y1, int x2, int y2) {
+    static void draw(Graphics g, Color c,int x1, int y1, int x2, int y2) {
 
+      g.setColor(c);
       g.drawLine(x1, y1, x2, y2);
       double stepX = (double) (x1 - x2) / countMax;
       double stepY = (double) (y1 - y2) / countMax;
 
-      g.setColor(Color.BLUE);
       g.fillRect(x1 - (int) (stepX * counter), y1 - (int) (stepY * counter), 3,
           3);
     }
@@ -119,7 +119,7 @@ public class Connections extends JPanel implements ComponentListener {
     private static int simSpeed;
     public static void setSimSpeed(int speed) {
       //There's no science here, I've just been guesstimating to arrive at this multiplier.
-      Animator.lifetime = speed * 4 + 10;
+      Animator.lifetime = speed * 4 + 15;
     }
   }
 
@@ -129,7 +129,7 @@ public class Connections extends JPanel implements ComponentListener {
     int       dieCount;
     int       startCount;
     boolean   marked2Die = false;
-
+    Color     color;
     public boolean shouldDie() {
       if (Animator.lifeTimeCounter >= dieCount
           || Animator.lifeTimeCounter < startCount || marked2Die)
@@ -138,9 +138,10 @@ public class Connections extends JPanel implements ComponentListener {
         return false;
     }
 
-    Connection(GNode fromNode, GNode toNode) {
+    Connection(GNode fromNode, GNode toNode, Color color) {
       this.fromNode = fromNode;
       this.toNode = toNode;
+      this.color = color;
       startCount = Animator.lifeTimeCounter;
       dieCount = startCount + Animator.lifetime;
       if (Animator.lifeTimeCounter + Animator.lifetime > Animator.lifeTimeCounterMax) {

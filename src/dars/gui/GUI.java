@@ -167,7 +167,7 @@ public class GUI extends JFrame implements OutputConsumer {
 
       case OUT_MSG_TRANSMITTED:
         // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId);
+          simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE);
         break;
 
       case OUT_NODE_BROADCAST:

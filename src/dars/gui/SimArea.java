@@ -8,6 +8,7 @@ import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.*;
@@ -241,14 +242,14 @@ class NodeActionHandler implements GNodeListener{
     n.broadcast();
   }
   
-  public void traceMessage(String fromId, String toId) {
+  public void traceMessage(String fromId, String toId, Color color) {
     
     GNode a = getGNode(fromId);
     GNode b = getGNode(toId);
 
     if(a == null || b == null) return;
     
-    connMap.traceMsg(a,b);
+    connMap.traceMsg(a,b,color);
     
   }
   
