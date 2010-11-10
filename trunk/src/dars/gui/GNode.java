@@ -352,7 +352,7 @@ public class GNode extends JPanel {
 
   }
 
-  static class BCastAnimator {
+  public static class BCastAnimator {
     static int            counter        = 11;
     static final int      countMax       = 32768;
     static Timer          animationTimer = new Timer(100, new ActionListener() {
@@ -396,6 +396,11 @@ public class GNode extends JPanel {
       g2.drawOval(bCastX, bCastY, bCastRadius * 2, bCastRadius * 2);
       g2.drawOval(bCastX + 1, bCastY + 1, bCastRadius * 2, bCastRadius * 2 - 1);
       g2.drawOval(bCastX + 2, bCastY + 2, bCastRadius * 2, bCastRadius * 2 - 2);
+    }
+
+    private static int simSpeed;
+    public static void setSimSpeed(int speed) {
+      BCastAnimator.simSpeed = speed;
     }
   }
 

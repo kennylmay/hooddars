@@ -91,6 +91,12 @@ public class Connections {
           3);
     }
 
+    static int lifetime;
+    private static int simSpeed;
+    public static void setSimSpeed(int speed) {
+      //There's no science here, I've just been guesstimating to arrive at this multiplier.
+      Animator.lifetime = speed * 4 + 10;
+    }
   }
 
   class Connection {
@@ -99,7 +105,6 @@ public class Connections {
     int       dieCount;
     int       startCount;
     boolean   marked2Die = false;
-    final int lifetime   = 30;
 
     public boolean shouldDie() {
       if (Animator.lifeTimeCounter >= dieCount
@@ -113,9 +118,9 @@ public class Connections {
       this.fromNode = fromNode;
       this.toNode = toNode;
       startCount = Animator.lifeTimeCounter;
-      dieCount = startCount + lifetime;
-      if (Animator.lifeTimeCounter + lifetime > Animator.lifeTimeCounterMax) {
-        dieCount = lifetime - Animator.lifeTimeCounterMax;
+      dieCount = startCount + Animator.lifetime;
+      if (Animator.lifeTimeCounter + Animator.lifetime > Animator.lifeTimeCounterMax) {
+        dieCount = Animator.lifetime - Animator.lifeTimeCounterMax;
       }
 
     }

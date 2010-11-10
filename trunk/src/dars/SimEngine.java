@@ -42,7 +42,9 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
     if (thread.isAlive() == false) {
       KILL_THREAD = false;
       thread = new MessageRelay();
+      simTime = BigInteger.ZERO;
       thread.start();
+      
     }
   }
   
@@ -146,7 +148,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
           }
         }
         try {
-          Thread.sleep(WAIT_TIME);
+          sleepAtLeast(WAIT_TIME);
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -268,6 +270,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         
       case IN_SIM_SPEED:
         WAIT_TIME = e.newSimSpeed;
+        System.out.println(e.newSimSpeed);
         OutputHandler.dispatch(DARSEvent.outSimSpeed(WAIT_TIME));
         break;
         
@@ -470,5 +473,19 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
 
     //Reset the node ID assigning sequence
     this.currId = 0;
+    
+    
   }
+  
+  public void sleepAtLeast(long millis) throws InterruptedException {
+    long t0 = System.currentTimeMillis();
+    long millisLeft = millis;
+    while (millisLeft > 0) {
+      Thread.sleep(millisLeft);
+      long t1 = System.currentTimeMillis();
+      millisLeft = millis - (t1 - t0);
+    }
+  }
+
+  
 }

@@ -192,6 +192,10 @@ public class GUI extends JFrame implements OutputConsumer {
         menuArea.quantumElapsed();
         break;
 
+      case OUT_SIM_SPEED: 
+        simArea.setSimSpeed(e.newSimSpeed);
+        break;
+        
       case OUT_START_SIM:
         //Notify the menu that a sim has started
         menuArea.simStarted();
@@ -228,6 +232,9 @@ public class GUI extends JFrame implements OutputConsumer {
         
         //Unlock the sim area
         simArea.setLocked(false);
+        
+        //Let the menu area know that a new sim has been created
+        menuArea.newSim();
 
       }
     }

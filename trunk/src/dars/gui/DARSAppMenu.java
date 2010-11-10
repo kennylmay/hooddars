@@ -77,9 +77,67 @@ public class DARSAppMenu  {
   
   
   public DARSAppMenu() {
+
+    menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
+
+    // Add the web help menu to the menu bar
+    helpMenu.add(webMenu);
+
+    // Add elements to the sim menu and their sub menus
+    simMenu.add(newMenu);
+    newMenu.add(aodvMenu);
+    newMenu.add(dsdvMenu);
+    simMenu.add(saveMenu);
+    randomizeMenu.setEnabled(false);
+    simMenu.add(randomizeMenu);
+    simMenu.add(importMenu);
+    importMenu.add(setupMenu);
+    importMenu.add(replayMenu);
+    simMenu.add(clearMenu);
+    simMenu.add(exitMenu);
+
+    menuBar.add(simMenu);
+    menuBar.add(helpMenu);
+
+    // Add the simulation type menu lables
+    simTypeArea.add(simTypeLabel);
+    simTypeArea.add(typeLabel);
+    menuPanel.add(simTypeArea);
+
+    // Add the Play, pause, and stop buttons
+    buttonArea.add(playButton);
+    buttonArea.add(pauseButton);
+    buttonArea.add(resumeButton);
+    buttonArea.add(stopButton);
+    resumeButton.setVisible(false);
+    playButton.setEnabled(false);
+    stopButton.setEnabled(false);
+    pauseButton.setEnabled(false);
+    menuPanel.add(buttonArea);
+
+    // Add the quantums elapsed area
+    quantumsElapsedArea.add(new JLabel("  Quantums Elapsed: "));
+    quantumsElapsedArea.add(qauntumsElapsedLabel);
+    
+    // Add the slider bar, set its properties and values.
+    speedArea.add(speedLabel);
+    speedArea.add(fasterLabel);
+    speedArea.add(slideBar);
+    slideBar.setSnapToTicks(true);
+    slideBar.setMinimum(1);
+    slideBar.setMaximum(20);
+    slideBar.setValue(5);
+    speedArea.add(slowerLabel);
+    speedArea.add(quantumsElapsedArea);
+    menuPanel.add(speedArea);
+    
+    menuPanel.setOpaque(false);
+ 
     aodvMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         typeLabel.setText("AODV");
+        //Need to define the speed.
+        InputHandler.dispatch(DARSEvent.inSimSpeed(slideBar.getValue()));
         InputHandler.dispatch(DARSEvent.inNewSim(DARSEvent.SimType.AODV));
         playButton.setEnabled(true);
         stopButton.setEnabled(true);
@@ -227,73 +285,29 @@ public class DARSAppMenu  {
       }
     });
     
-    menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
-
-    // Add the web help menu to the menu bar
-    helpMenu.add(webMenu);
-
-    // Add elements to the sim menu and their sub menus
-    simMenu.add(newMenu);
-    newMenu.add(aodvMenu);
-    newMenu.add(dsdvMenu);
-    simMenu.add(saveMenu);
-    randomizeMenu.setEnabled(false);
-    simMenu.add(randomizeMenu);
-    simMenu.add(importMenu);
-    importMenu.add(setupMenu);
-    importMenu.add(replayMenu);
-    simMenu.add(clearMenu);
-    simMenu.add(exitMenu);
-
-    menuBar.add(simMenu);
-    menuBar.add(helpMenu);
-
-    // Add the simulation type menu lables
-    simTypeArea.add(simTypeLabel);
-    simTypeArea.add(typeLabel);
-    menuPanel.add(simTypeArea);
-
-    // Add the Play, pause, and stop buttons
-    buttonArea.add(playButton);
-    buttonArea.add(pauseButton);
-    buttonArea.add(resumeButton);
-    buttonArea.add(stopButton);
-    resumeButton.setVisible(false);
-    playButton.setEnabled(false);
-    stopButton.setEnabled(false);
-    pauseButton.setEnabled(false);
-    menuPanel.add(buttonArea);
-
-    // Add the quantums elapsed area
-    quantumsElapsedArea.add(new JLabel("  Quantums Elapsed: "));
-    quantumsElapsedArea.add(qauntumsElapsedLabel);
-    
-    // Add the slider bar, set its properties and values.
-    speedArea.add(speedLabel);
-    speedArea.add(fasterLabel);
-    speedArea.add(slideBar);
-    slideBar.setSnapToTicks(true);
-    slideBar.setMinimum(1);
-    slideBar.setMaximum(20);
-    slideBar.setValue(5);
-    speedArea.add(slowerLabel);
-    speedArea.add(quantumsElapsedArea);
-    menuPanel.add(speedArea);
-    
-    menuPanel.setOpaque(false);
-    
   }
   
   public void simStarted() {
+    //Disable the play button, enable the pause/stop buttons
     playButton.setEnabled(false);
     pauseButton.setEnabled(true);
     stopButton.setEnabled(true);   
+    
+
+  }
+ 
+  public void newSim() {
+    //Disable the New menu item
+    newMenu.setEnabled(false);
   }
   
   public void simStopped() {
     stopButton.setEnabled(false);
     playButton.setEnabled(false);
     pauseButton.setEnabled(false);
+    
+    //Enable the New menu item
+    newMenu.setEnabled(true);
   }
   
   public void simPaused() {
@@ -322,6 +336,7 @@ public class DARSAppMenu  {
     this.simArea = simArea;
   }
   
+ 
   private BigInteger quantums = BigInteger.ZERO;
   
   public void quantumElapsed() {
