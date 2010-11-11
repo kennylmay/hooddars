@@ -25,6 +25,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import logger.Parser;
 
@@ -162,6 +163,9 @@ public class DARSAppMenu  {
     saveMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(       
+            "Log Files", "log");        
+            chooser.setFileFilter(filter);  
         int returnVal = chooser.showSaveDialog(menuBar.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
@@ -201,6 +205,9 @@ public class DARSAppMenu  {
     setupMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(       
+            "Log Files", "log");
+            chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(menuBar.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
           /// Some call to load the simulation setup
@@ -221,6 +228,9 @@ public class DARSAppMenu  {
     replayMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(       
+            "Log Files", "log");
+            chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(menuBar.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
           /// Some Call to Load the simulation replay
