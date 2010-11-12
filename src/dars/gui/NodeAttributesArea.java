@@ -6,26 +6,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
+import dars.proto.aodv.NodeDialog;
 
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
@@ -38,7 +36,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   private JButton        nodeAttributesButton = new JButton("Attributes");
 
   private boolean        blockChangeEvents    = false;
-  private Vector<String> nodeList             = new Vector();
+  private Vector<String> nodeList             = new Vector<String>();
+  private HashMap<String, NodeDialog> openNodeDialogs = new HashMap<String, NodeDialog>();
 
   public NodeAttributesArea() {
     // Use a box layout inside a border layout, with an internal flow layout at
@@ -152,20 +151,15 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
     nodeAttributesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-     //   JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
-      //      .getSelectedItem().toString());
-     //   dialog.setVisible(true);
-       new GetNodeDialog(null, "A", 5);
+        NodeDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
+           .getSelectedItem().toString());
+        dialog.setVisible(true);     
+        openNodeDialogs.put(nodeSelectorComboBox.getSelectedItem().toString(), dialog); 
       }
     });
   }
 
   private void setPreferredWidth(int i) {
-    // TODO Auto-generated method stub
-
-  }
-
-  private void setWidth(int i) {
     // TODO Auto-generated method stub
 
   }
@@ -252,11 +246,26 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeXField.setText("");
     nodeYField.setText("");
     nodeList.clear();
+    openNodeDialogs.clear();
   }
 
   public void selectNodeById(String id) {
     setAttributes(getAttributes(id));
   }
 
+  public void updateNodeDialogs(){
+    String nodeId;
+    NodeDialog dialog;
+    Iterator<String> iter = openNodeDialogs.keySet().iterator();
+    while (iter.hasNext()){
+       nodeId = iter.next();
+       dialog = openNodeDialogs.get(nodeId);
+      if (dialog.isVisible() == false){
+        openNodeDialogs.remove(nodeId);
+        continue;
+      }
+      nodeInspector.updateNodeDialog(nodeId, dialog);
+    }    
+  }
   private NodeInspector nodeInspector;
 }

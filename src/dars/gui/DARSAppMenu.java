@@ -223,7 +223,7 @@ public class DARSAppMenu  {
           /// Some call to load the simulation setup
            String name = chooser.getSelectedFile().getPath();
            System.out.println("loading simulation");
-           Parser.parse(name);
+        //   Parser.parse(name);
         }
       }
     });
