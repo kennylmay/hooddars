@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -154,8 +155,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
      //   JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
       //      .getSelectedItem().toString());
      //   dialog.setVisible(true);
-       new GetNodeDialog(null, nodeSelectorComboBox.getSelectedItem().toString(), 5);
-        
+       new GetNodeDialog(null, "A", 5);
       }
     });
   }
