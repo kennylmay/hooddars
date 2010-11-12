@@ -56,7 +56,7 @@ public class GUI extends JFrame implements OutputConsumer {
     // Add the east panel.
     nodeAttributesPanel.setLayout(new BorderLayout());
     nodeAttributesPanel.add(nodeAttributesArea, BorderLayout.CENTER);
-    this.add(nodeAttributesPanel, BorderLayout.EAST);
+    
 
     /*
      * Elaborate upon the layout of the subpanel. Do this: ______________ | | |
@@ -73,6 +73,7 @@ public class GUI extends JFrame implements OutputConsumer {
     // Add the Status log panel to the bottom part.
     logPanel.setLayout(new BorderLayout());
     logPanel.add(logArea, BorderLayout.CENTER);
+    logPanel.add(nodeAttributesPanel, BorderLayout.EAST);
     subpanel.add(logPanel, BorderLayout.SOUTH);
 
     // initialize communication paths between the gui objects
@@ -99,10 +100,10 @@ public class GUI extends JFrame implements OutputConsumer {
     this.setPreferredSize(windowSize);
     logPanel.setPreferredSize(new Dimension((int) (windowSize.width * .8),
         (int) (windowSize.height * .2)));
-    simPanel.setPreferredSize(new Dimension((int) (windowSize.width * .8),
+    simPanel.setPreferredSize(new Dimension((int) (windowSize.width),
         (int) (windowSize.height * .8)));
     nodeAttributesPanel.setPreferredSize(new Dimension(
-        (int) (windowSize.width * .2), (int) (windowSize.height)));
+        (int) (windowSize.width * .2), (int) (windowSize.height * .2)));
 
     pack();
 

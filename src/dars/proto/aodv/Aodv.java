@@ -9,6 +9,8 @@ import java.util.Queue;
 import java.util.NoSuchElementException;
 import java.lang.IllegalStateException;
 
+import javax.swing.JDialog;
+
 import dars.NodeAttributes;
 import dars.OutputHandler;
 import dars.proto.Node;
@@ -1734,5 +1736,17 @@ public class Aodv implements Node {
    * Last Tick That A Hello Message Was Sent At
    */
   private int                         HelloSentAt = 0;
+
+  @Override
+  public JDialog getNodeDialog() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void updateNodeDialog(JDialog dialog) {
+    // TODO Auto-generated method stub
+    
+  }
 
 }
