@@ -242,11 +242,12 @@ class NodeActionHandler implements GNodeListener{
     int usedFPS;
     if (newFPS < maxFPS && newFPS > minFPS)
       usedFPS = newFPS;
-    else if (newFPS < minFPS) {
+    else if (newFPS <= minFPS) {
       usedFPS = minFPS;
     } else
       usedFPS = maxFPS;
 
+    System.out.println("setting fps=" + usedFPS);
     
     animations.setFPS(usedFPS);
   }
