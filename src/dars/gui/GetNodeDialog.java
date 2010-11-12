@@ -49,17 +49,21 @@ public class GetNodeDialog extends JDialog
   
     public GetNodeDialog(JFrame frame, String SourceId, int timeTick)
     {
-      
+     super(frame,true);
     sourceNode = SourceId;
     sourceLabel = new JLabel(SourceId);
+    
     nodeMessage.setRows(20);
     nodeMessage.setColumns(30);
     nodeMessage.setLineWrap(true);
     nodeMessage.setAutoscrolls(true);
     nodeMessage.setText("");
+    
     timeofNode = timeTick;
     TimeLabel= new JTextField(timeTick);
+    TimeLabel.setEditable(false);
     
+    getContentPane().add(Panel);
     
     //Adding to the Grid
     
