@@ -87,10 +87,6 @@ public class GNode extends JPanel {
     }
 
     this.repaint();
-    // show the range indicator
-    // rangeIndicator.setFill(true);
-
-    // layeredPane.repaint();
   }
 
   // Unselect
@@ -100,9 +96,6 @@ public class GNode extends JPanel {
     GNode.SelectedNode = null;
     this.img_ = ImageFactory.getNodeImg();
 
-    // hide the range indicator
-    // rangeIndicator.setFill(false);
-    // layeredPane.repaint();
     this.repaint();
 
   }
@@ -123,9 +116,11 @@ public class GNode extends JPanel {
     return this.id_;
   }
 
+  private static Point p = new Point();
   public Point getCenter() {
-    return new Point(getX() + img_.getWidth() / 2, getY() + img_.getHeight()
-        / 2);
+    p.x = getX() + img_.getWidth() / 2;
+    p.y =  getY() + img_.getHeight();
+    return p;
   }
 
   private void setEntered(boolean entered) {

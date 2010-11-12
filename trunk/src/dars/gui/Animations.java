@@ -69,7 +69,6 @@ public class Animations extends JPanel implements ComponentListener,
 
   public void paintComponent(Graphics g) {
 
-    System.out.println("painting..");
     // Draw the message tracing animation
     Iterator<Connection> i = connStore.iterator();
     while (i.hasNext()) {
