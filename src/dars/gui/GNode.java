@@ -119,7 +119,7 @@ public class GNode extends JPanel {
   private static Point p = new Point();
   public Point getCenter() {
     p.x = getX() + img_.getWidth() / 2;
-    p.y =  getY() + img_.getHeight();
+    p.y =  getY() + img_.getHeight() / 2;
     return p;
   }
 

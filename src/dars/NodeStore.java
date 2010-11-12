@@ -4,7 +4,7 @@
 package dars;
 
 import dars.proto.*;
-import dars.proto.aodv.NodeDialog;
+import dars.proto.aodv.AodvDialog;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,12 +72,12 @@ public Iterator<Node> getNodes() {
    return store.values().iterator();
 }
 
-public NodeDialog getNodeDialog(String nodeId) {
+public JDialog getNodeDialog(String nodeId) {
   Node node = store.get(nodeId);
   return node.getNodeDialog();
 }
 
-public void updateNodeDialog(String nodeId, NodeDialog dialog) {
+public void updateNodeDialog(String nodeId, JDialog dialog) {
   Node node = store.get(nodeId);
   node.updateNodeDialog(dialog);
 }

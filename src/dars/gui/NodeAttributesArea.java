@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -23,7 +24,7 @@ import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
-import dars.proto.aodv.NodeDialog;
+import dars.proto.aodv.AodvDialog;
 
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
@@ -37,7 +38,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   private boolean        blockChangeEvents    = false;
   private Vector<String> nodeList             = new Vector<String>();
-  private HashMap<String, NodeDialog> openNodeDialogs = new HashMap<String, NodeDialog>();
+  private HashMap<String, JDialog> openNodeDialogs = new HashMap<String, JDialog>();
 
   public NodeAttributesArea() {
     // Use a box layout inside a border layout, with an internal flow layout at
@@ -151,7 +152,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
     nodeAttributesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        NodeDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
+        JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
            .getSelectedItem().toString());
         dialog.setVisible(true);     
         openNodeDialogs.put(nodeSelectorComboBox.getSelectedItem().toString(), dialog); 
@@ -255,7 +256,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   public void updateNodeDialogs(){
     String nodeId;
-    NodeDialog dialog;
+    JDialog dialog;
     Iterator<String> iter = openNodeDialogs.keySet().iterator();
     while (iter.hasNext()){
        nodeId = iter.next();

@@ -15,7 +15,7 @@ import javax.swing.border.Border;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class NodeDialog extends JDialog {
+public class AodvDialog extends JDialog {
   private static final long serialVersionUID      = 1L;
   private JLabel            sourceNodeLabel       = new JLabel("Source Node:");
   private JLabel            currentNodeTick       = new JLabel("Clock Ticks:");
@@ -42,7 +42,7 @@ public class NodeDialog extends JDialog {
                                                       nodeRouteTableLayout);
   private JScrollPane         scroller;
 
-  public NodeDialog(JFrame frame, String SourceId, int timeTick, HashMap<String, RouteEntry> routeTable) {
+  public AodvDialog(JFrame frame, String SourceId, int timeTick, HashMap<String, RouteEntry> routeTable) {
     super(frame, true);
 
     sourceLabel = new JLabel(SourceId);
