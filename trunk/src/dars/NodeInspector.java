@@ -1,6 +1,8 @@
 package dars;
 
-import dars.proto.aodv.NodeDialog;
+import javax.swing.JDialog;
+
+import dars.proto.aodv.AodvDialog;
 
 //This interface exposes a way for a user interface 
 //to view the attributes of a given node. The node
@@ -8,7 +10,7 @@ import dars.proto.aodv.NodeDialog;
 public interface NodeInspector {
   public NodeAttributes getNodeAttributes(String nodeId);
   
-  public NodeDialog getNodeDialog(String nodeId);
+  public JDialog getNodeDialog(String nodeId);
   
-  public void updateNodeDialog(String nodeId, NodeDialog dialog);
+  public void updateNodeDialog(String nodeId, JDialog dialog);
 }

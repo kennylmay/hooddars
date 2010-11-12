@@ -3,9 +3,11 @@
  */
 package dars.proto;
 
+import javax.swing.JDialog;
+
 import dars.NodeAttributes;
 import dars.Message;
-import dars.proto.aodv.NodeDialog;
+import dars.proto.aodv.AodvDialog;
 
 /**
  * Base Class for all protocol specific node types.
@@ -99,7 +101,7 @@ public abstract interface Node {
    * 
    * @author kennylmay
    */
-  NodeDialog getNodeDialog();
+  JDialog getNodeDialog();
   
   /**
    * Update the dialog with information that is showed to the GUI.
@@ -109,6 +111,6 @@ public abstract interface Node {
    * 
    * @author kennylmay
    */
-  void updateNodeDialog(NodeDialog dialog);
+  void updateNodeDialog(JDialog dialog);
 
 }

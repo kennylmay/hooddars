@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.lang.IllegalStateException;
 
+import javax.swing.JDialog;
+
 import dars.NodeAttributes;
 import dars.OutputHandler;
 import dars.proto.Node;
@@ -1781,9 +1783,9 @@ public class Aodv implements Node {
    * @return JDialog
    * 
    */
-  public NodeDialog getNodeDialog() { 
-    NodeDialog dialog = new NodeDialog(null, this.att.id, this.CurrentTick, this.RouteTable);  
-    return dialog;
+  public JDialog getNodeDialog() { 
+    AodvDialog dialog = new AodvDialog(null, this.att.id, this.CurrentTick, this.RouteTable);  
+    return (JDialog)dialog;
   }
 
   /**
@@ -1797,8 +1799,11 @@ public class Aodv implements Node {
    * @return void
    * 
    */
-  public void updateNodeDialog(NodeDialog dialog) {
-      dialog.updateInformation(this.CurrentTick, this.RouteTable);
+  public void updateNodeDialog(JDialog dialog) {
+      //Cast the JDialog into our type
+      AodvDialog aodvDlg = (AodvDialog)dialog;
+      aodvDlg.updateInformation(this.CurrentTick, this.RouteTable);
   }
+
 
 }
