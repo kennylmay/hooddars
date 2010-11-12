@@ -3,6 +3,8 @@
  */
 package dars.proto;
 
+import javax.swing.JDialog;
+
 import dars.NodeAttributes;
 import dars.Message;
 
@@ -89,5 +91,15 @@ public abstract interface Node {
    * @author kresss
    */
   void clockTick();
+  
+  /**
+   * Return a JDialog that will be displayed by the GUI.
+   * 
+   * Each protocol must define this function so that the
+   * GUI can inspect the nodes information.
+   * 
+   * @author kennylmay
+   */
+  JDialog getNodeDialog();
 
 }
