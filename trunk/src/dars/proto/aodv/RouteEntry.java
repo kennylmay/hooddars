@@ -1,5 +1,7 @@
 package dars.proto.aodv;
 
+import java.util.HashSet;
+
 /**
  * AODV Node Routing Table Entry
  * 
@@ -122,7 +124,7 @@ public class RouteEntry {
   /**
    * @return the precursorIPs
    */
-  public String[] getPrecursorIPs() {
+  public HashSet<String> getPrecursorIPs() {
     return PrecursorIPs;
   }
 
@@ -130,7 +132,7 @@ public class RouteEntry {
    * @param precursorIPs
    *          the precursorIPs to set
    */
-  public void setPrecursorIPs(String[] precursorIPs) {
+  public void setPrecursorIPs(HashSet<String> precursorIPs) {
     PrecursorIPs = precursorIPs;
   }
 
@@ -213,7 +215,8 @@ public class RouteEntry {
    * List of "Precursor" Node's IP Addresses. Simply put this is a list of Nodes
    * that need to be notified if this route breaks.
    */
-  private String     PrecursorIPs[];
+  private HashSet<String> PrecursorIPs;
+  
   /**
    * Time, in milliseconds for which this entry is to be considered valid.
    */
