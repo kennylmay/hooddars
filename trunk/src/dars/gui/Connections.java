@@ -36,11 +36,6 @@ public class Connections extends JPanel implements ComponentListener {
     Animator.start();
   }
 
-  @Override
-  public boolean isOptimizedDrawingEnabled() {
-    return true;
-  }
-  
   public void paintComponent(Graphics g) {
 
     Iterator<Connection> i = connStore.iterator();
