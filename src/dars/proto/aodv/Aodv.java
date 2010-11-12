@@ -8,17 +8,7 @@ import java.util.HashSet;
 
 // Exceptions
 import java.util.NoSuchElementException;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.lang.IllegalStateException;
-
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
 
 import dars.NodeAttributes;
 import dars.OutputHandler;
