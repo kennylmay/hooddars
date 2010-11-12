@@ -28,7 +28,7 @@ public class GetNodeDialog extends JDialog
   private JLabel sourceNodeLabel = new JLabel("Source Node:");
   private JLabel currentNodeTick = new JLabel("Clock Ticks");
   private JLabel nodeInfo = new JLabel("Node Information:");
-  private JTextArea nodeMessage;
+  private JTextArea nodeMessage = new JTextArea();
   private JLabel sourceLabel;
   private String sourceNode;
   private JTextField TimeLabel;
