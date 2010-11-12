@@ -9,8 +9,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.border.Border;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,6 +40,7 @@ public class NodeDialog extends JDialog {
   private JPanel            nodeTimePanel         = new JPanel(nodeTimeLayout);
   private JPanel            routePanel            = new JPanel(
                                                       nodeRouteTableLayout);
+  private JScrollPane         scroller;
 
   public NodeDialog(JFrame frame, String SourceId, int timeTick, HashMap<String, RouteEntry> routeTable) {
     super(frame, true);
@@ -50,7 +51,6 @@ public class NodeDialog extends JDialog {
     nodeRouteTable.setRows(20);
     nodeRouteTable.setColumns(40);
     nodeRouteTable.setLineWrap(true);
-    nodeRouteTable.setAutoscrolls(true);
     nodeRouteTable.setEditable(false);
 
     // Set the time tick label options
@@ -58,7 +58,7 @@ public class NodeDialog extends JDialog {
     TimeLabel = new JLabel(timeTickString);
    
     getContentPane().add(Panel);
-
+   
     // Creating borders
     Border raisedBevel, loweredBevel, compound;
     raisedBevel = BorderFactory.createRaisedBevelBorder();
@@ -71,7 +71,10 @@ public class NodeDialog extends JDialog {
     // Add the component to the message Panel
     routePanel.add(nodeInfo, BorderLayout.NORTH);
     routePanel.add(nodeRouteTable, BorderLayout.CENTER);
-
+           
+    // Add the text area to the scroller
+    scroller = new JScrollPane(nodeRouteTable);
+    
     // Add component to the node time information panel
     nodeTimePanel.add(TimeLabel, BorderLayout.EAST);
     nodeTimePanel.add(currentNodeTick, BorderLayout.WEST);
@@ -83,10 +86,11 @@ public class NodeDialog extends JDialog {
     // Adding to the Grid
     nodeInfoPanel.add(nodeSourcePanel);
     nodeInfoPanel.add(nodeTimePanel);
+    nodeInfoPanel.add(nodeInfo);
 
     // Add all the individual panels to the main panel
     Panel.add(nodeInfoPanel, BorderLayout.NORTH);
-    Panel.add(routePanel, BorderLayout.CENTER);
+    Panel.add(scroller, BorderLayout.CENTER);
   
     nodeRouteTable.setText(formatRouteTable(routeTable));
 
@@ -108,6 +112,7 @@ public class NodeDialog extends JDialog {
     String sourId;
     RouteEntry entry;
     String routeTableText = "DESTINATION\tHOP COUNT\tNEXT HOP\tSTATE\tSEQ #\n";
+    routeTableText += "_______________________________________________________\n";
 
     while(iter.hasNext()){
       sourId = iter.next();
