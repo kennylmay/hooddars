@@ -6,8 +6,10 @@ package dars.event;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 
+import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.Message;
+import dars.OutputHandler;
 import dars.SimulationTimeKeeper;
 
 /**
@@ -17,7 +19,7 @@ public class DARSEvent {
   private static String newline = System.getProperty("line.separator");
   public enum EventType {
     // Input event types
-    IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SEND_MSG, IN_SIM_SPEED, 
+    IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SIM_SPEED, 
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL, IN_CLEAR_SIM, 
     IN_NEW_SIM, IN_INSERT_MESSAGE,
     // Output event types
@@ -187,13 +189,6 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent inSendMsg(Message m, String sourceId, String destinationId) {
-    DARSEvent c = new DARSEvent();
-    c.eventType = EventType.IN_SEND_MSG;
-    c.sourceId = sourceId;
-    c.destinationId = destinationId;
-    return c;
-  }
 
   public static DARSEvent inSimSpeed(int newSpeed) {
     DARSEvent e = new DARSEvent();
@@ -365,9 +360,59 @@ public class DARSEvent {
     return ret;
   }
 
-  public DARSEvent parseLogString(String str) {
+  private static EventType getEventTypeFromString(String str) {
+    // use reflection to get each field
+    Class<DARSEvent> c = DARSEvent.class;
+    Field[] fields = c.getFields();
+    Class<DARSEvent.EventType> eType =  (Class<DARSEvent.EventType>) fields[0].getType();
+    EventType[] eTypes =  eType.getEnumConstants();
+    for(EventType e : eTypes) {
+      if(e.toString().equals(str)) return e;  
+    }
+    return null;
+  }
+    
+    
+  
+  public static DARSEvent parseLogString(String lineEvent) {
+    DARSEvent e = new DARSEvent();
+    try
+    {
+      String[] details = lineEvent.split(",");
 
-    // stub
+      if(details[0] != null)
+      {
+        e.eventType = getEventTypeFromString(details[0]);
+      }
+      e.nodeId = details[1];
+      e.sourceId = details[2];
+      e.destinationId = details[3];
+      e.informationalMessage = details[4];
+      e.transmittedMessage = details[5];
+      e.newSimSpeed = Integer.parseInt(details[6]);
+      e.nodeX = Integer.parseInt(details[7]);
+      e.nodeY = Integer.parseInt(details[8]);
+      e.nodeRange = Integer.parseInt(details[9]);
+      if(details[10]!= null)
+      {
+        if(details[10].equals("AODV"))
+        {
+          e.simType = SimType.AODV;
+        }
+        else if (details[10].equals("DSDV"))
+        {
+          e.simType = SimType.DSDV;
+        }
+      }
+      e.currentQuantum = new BigInteger(details[11]);
+      
+      
+      
+    }
+    catch (Exception ex){
+      ex.printStackTrace();
+    }
+
     return null;
   }
 
