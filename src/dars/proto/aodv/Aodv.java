@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.HashSet;
 
 // Exceptions
 import java.util.NoSuchElementException;
@@ -38,7 +39,7 @@ public class Aodv implements Node {
    */
   private class WaitQueueEntry {
 
-    String SourceID;     // TODO: SourceID may not be needed for this entry
+    String SourceID;
     // type.
     String DestinationID;
     String MsgString;
@@ -893,6 +894,10 @@ public class Aodv implements Node {
      * Destination Route Entry 
      */
     RouteEntry DestEntry;
+    /**
+     * Temporary Precursors list for updating the Route Entry's List. 
+     */
+    HashSet<String> PrecList;
     
     /**
      * Message object that will be passed to sendMessage.
@@ -974,6 +979,18 @@ public class Aodv implements Node {
     DestEntry = this.RouteTable.get(DestNodeID);
     
     /**
+     * Update the Route Entry's precursor's list to contain the destination node
+     * that this RREP is being sent to as well as the next hop of this RREP.
+     * 
+     * MsgOrigID = The Original Creator of the RREQ.
+     * SenderID = The Node that sent us the RREQ. 
+     */
+    PrecList = DestEntry.getPrecursorIPs();
+    PrecList.add(MsgOrigID);
+    PrecList.add(SenderID);
+    DestEntry.setPrecursorIPs(PrecList);
+    
+    /**
      * Set the message properties that were not known at initialization. 
      * 
      * Must convert Lifetime into an interval instead of being node dependent.
@@ -1034,6 +1051,10 @@ public class Aodv implements Node {
      * Route Table Entry used to add and modify the entries in the Route Table.
      */
     RouteEntry DestEntry;
+    /**
+     * Temporary Precursors list for updating the Route Entry's List. 
+     */
+    HashSet<String> PrecList;
 
     /**
      * Array to hold Message Fields
@@ -1233,6 +1254,19 @@ public class Aodv implements Node {
           this.RouteTable.put(MsgDestID, DestEntry);
         }
       }
+      
+      /**
+       * Update the Route Entry's precursor's list to contain the destination node
+       * that this RREP is being sent to as well as the next hop of this RREP.
+       * 
+       * MsgOrigID = The Original Creator of the RREQ.
+       * SenderID = The Node that sent us the RREQ. 
+       */
+      PrecList = DestEntry.getPrecursorIPs();
+      PrecList.add(MsgOrigID);
+      PrecList.add(this.RouteTable.get(MsgOrigID).getNextHopIP());
+      DestEntry.setPrecursorIPs(PrecList);
+      
     }
 
     /**
