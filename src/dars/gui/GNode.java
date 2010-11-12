@@ -39,18 +39,10 @@ public class GNode extends JPanel {
     addMouseListener(new GNodeMouseListener());
     addMouseMotionListener(new GNodeMouseMotionListener());
 
-    rangeIndicator = new RangeIndicator(this);
   }
 
-  private RangeIndicator rangeIndicator;
 
   public void cleanup() {
-
-    if (rangeIndicator != null) {
-      rangeIndicator.setVisible(false);
-      layeredPane.remove(rangeIndicator);
-      rangeIndicator = null;
-    }
 
   }
  
@@ -76,9 +68,6 @@ public class GNode extends JPanel {
     this.listeners.remove(l);
   }
 
-  public void broadcast() {
-    rangeIndicator.fireBroadcast();
-  }
 
   // Select
   public void select() {
@@ -121,16 +110,6 @@ public class GNode extends JPanel {
   public void setXY(int x, int y) {
     // Set the new location of the canvas
     setLocation(new Point(x, y));
-
-    // If we have a range indicator, update that too
-    if (rangeIndicator != null) {
-      rangeIndicator.setCenter(getCenter());
-    }
-  }
-
-  public void setRange(int range) {
-    this.range = range;
-    rangeIndicator.resize();
   }
 
   public int getRange() {
@@ -352,139 +331,6 @@ public class GNode extends JPanel {
 
   }
 
-  public static class BCastAnimator {
-    static int            counter        = 11;
-    static final int      countMax       = 32768;
-    static Timer          animationTimer = new Timer(100, new ActionListener() {
-                                           @Override
-                                           public void actionPerformed(
-                                               ActionEvent arg0) {
-                                             BCastAnimator.counter++;
-                                             if (BCastAnimator.counter > BCastAnimator.countMax) {
-                                               BCastAnimator.counter = 0;
-                                             }
-                                           }
-                                         });
-
-    public static boolean isStarted;
-
-    static void start() {
-      isStarted = true;
-      animationTimer.start();
-    }
-
-    static final int totalSteps = 30;
-    static int       curStep    = 1;
-
-    public static void draw(Graphics g, RangeIndicator ri) {
-      // System.out.println("animating");
-      Graphics2D g2 = (Graphics2D) g;
-      // Draw the graphic
-      int dimX, dimY;
-      dimX = ri.parent_.getRange() * 2;
-      dimY = dimX;
-
-      int x = dimX / 2;
-      int y = dimY / 2;
-
-      int bCastRadius = (int) (ri.parent_.getRange() * ((double) ri.curStep() / (double) ri.totalSteps));
-      int bCastX = x - bCastRadius;
-      int bCastY = y - bCastRadius;
-
-      g2.setColor(Color.GREEN);
-      // draw a 3 pixel circle
-      g2.drawOval(bCastX, bCastY, bCastRadius * 2, bCastRadius * 2);
-      g2.drawOval(bCastX + 1, bCastY + 1, bCastRadius * 2, bCastRadius * 2 - 1);
-      g2.drawOval(bCastX + 2, bCastY + 2, bCastRadius * 2, bCastRadius * 2 - 2);
-    }
-
-    private static int simSpeed;
-    public static void setSimSpeed(int speed) {
-      BCastAnimator.simSpeed = speed;
-    }
-  }
-
-  private class RangeIndicator extends JPanel {
-    private static final long serialVersionUID = 1L;
-    private GNode             parent_;
-
-    RangeIndicator(GNode parent) {
-      // Copy in attributes
-      parent_ = parent;
-
-      // Add this canvas to the parental container at the lowest layer
-      parent.layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
-
-      // System.out.println("Creating new range indicator");
-      // get the range of the parent node
-      setOpaque(false);
-      int range = parent_.getRange();
-
-      // set the size accordingly
-      setSize(new Dimension(range * 2, range * 2));
-
-      // set the center
-      this.setCenter(parent_.getCenter());
-
-      // Make sure the animation counter is running
-      if (!BCastAnimator.isStarted) {
-        BCastAnimator.start();
-      }
-    }
-
-    public void fireBroadcast() {
-      startStep = BCastAnimator.counter;
-    }
-
-    private boolean isFilled;
-
-    @Override
-    public void paintComponent(Graphics g) {
-
-      // System.out.println("painting ranger");
-      Graphics2D g2 = (Graphics2D) g;
-      // Draw the graphic
-      g2.setColor(Color.BLACK);
-      g2.drawOval(0, 0, parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
-
-      if (isActive()) {
-        BCastAnimator.draw(g, this);
-      }
-
-      if (isFilled) {
-        g2.setColor(new Color(20, 20, 0, 20));
-        g2.fillOval(0, 0, parent_.getRange() * 2 - 2,
-            parent_.getRange() * 2 - 2);
-      }
-
-    }
-
-    int startStep;
-    int totalSteps = 10;
-
-    public boolean isActive() {
-      return (BCastAnimator.counter - startStep < totalSteps && BCastAnimator.counter > startStep);
-    }
-
-    public int curStep() {
-      return BCastAnimator.counter - startStep;
-    }
-
-    public void setCenter(Point p) {
-      setLocation(p.x - parent_.getRange(), p.y - parent_.getRange());
-    }
-
-    public void resize() {
-      // resize this panel to accommodate the new range
-      int range = parent_.getRange();
-      setSize(new Dimension(new Dimension(range * 2, range * 2)));
-
-      // reset the location
-      setCenter(parent_.getCenter());
-
-    }
-
-  }
 
   private int range;
 

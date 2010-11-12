@@ -34,6 +34,7 @@ public class SimArea extends JLayeredPane {
    
     setVisible(true);
     
+    animations.start();
   }
 
   public void setNodeInspector(NodeInspector nodeInspector) {
@@ -174,8 +175,6 @@ class NodeActionHandler implements GNodeListener{
     //move the x y coords
      gnode.setXY(x,y);
      
-    //drop any connections in the conn map
-     connMap.dropConns(gnode);
   }
 
   
@@ -196,25 +195,15 @@ class NodeActionHandler implements GNodeListener{
     //cleanup the gnode itself
     gnode.cleanup();
     
+    
     //drop any connections it might have
-    connMap.dropConns(gnode);
+    animations.removeRangeIndicator(gnode);    
     
     gnode = null;
     this.invalidate();
     this.repaint();
   }
 
-  
-  public void setNodeRange(String nodeId, int newRange) {
-    //Get the gnode from the gnode map
-    GNode node = getGNode(nodeId);
-    
-    assert(node != null);
-    
-    node.setRange(newRange);
-    
-  }
-  
   
   //This function adds a node to the GUI. It's assumed that the node now exists in the simulator.  
   public void addNewNode(int x, int y, int range, String id) {
@@ -231,15 +220,18 @@ class NodeActionHandler implements GNodeListener{
     node.addListener(new NodeActionHandler());
  
     
+    //Add a range indicator
+    animations.addRangeIndicator(node);
    
 
   }
 
+  private Animations animations = new Animations(this);
 
   public void nodeBroadcast(String nodeId) {
     GNode n = getGNode(nodeId);
     if(n == null) return;
-    n.broadcast();
+    animations.nodeBroadcast(n);
   }
   
   public void traceMessage(String fromId, String toId, Color color) {
@@ -249,7 +241,7 @@ class NodeActionHandler implements GNodeListener{
 
     if(a == null || b == null) return;
     
-    connMap.traceMsg(a,b,color);
+    animations.traceMessage(a,b,color);
     
   }
   
@@ -259,7 +251,6 @@ class NodeActionHandler implements GNodeListener{
 
   private TreeMap<String, GNode> gnodemap = new TreeMap<String, GNode>();
 
-  private Connections connMap = new Connections(this);
 
 
 
@@ -426,19 +417,18 @@ class NodeActionHandler implements GNodeListener{
   
   public void setSimSpeed(int speed) {
     //propagate the speed setting down to animation sub systems
-    Connections.Animator.setSimSpeed(speed);
-    GNode.BCastAnimator.setSimSpeed(speed);
+    Animations.setSimSpeed(speed);
     
   }
   
   public void simPaused() {
     //Drop all message animations
-    connMap.dropAll();
+    animations.dropAll();
   }
   
   public void simStopped() {
     //Drop all message animations
-    connMap.dropAll();
+    animations.dropAll();
   }
 
   public void setNodeAttributesArea(NodeAttributesArea nodeAttributesArea) {
