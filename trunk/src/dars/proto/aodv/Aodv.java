@@ -8,9 +8,17 @@ import java.util.HashSet;
 
 // Exceptions
 import java.util.NoSuchElementException;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.lang.IllegalStateException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import dars.NodeAttributes;
 import dars.OutputHandler;
@@ -1771,16 +1779,36 @@ public class Aodv implements Node {
    */
   private int                         HelloSentAt = 0;
 
-  @Override
-  public JDialog getNodeDialog() {
-    // TODO Auto-generated method stub
-    return null;
+
+  /**
+   * getNodeDialog
+   * 
+   * This method will construct a JDialog from select node information
+   * to return back to the GUI to be displayed.
+   * 
+   * @param void
+   * 
+   * @return JDialog
+   * 
+   */
+  public NodeDialog getNodeDialog() { 
+    NodeDialog dialog = new NodeDialog(null, this.att.id, this.CurrentTick, this.RouteTable);  
+    return dialog;
   }
 
-  @Override
-  public void updateNodeDialog(JDialog dialog) {
-    // TODO Auto-generated method stub
-    
+  /**
+   * updateNodeDialog
+   * 
+   * This method will update an already constructed JDialog box
+   * that is already being displayed by the GUI.
+   * 
+   * @param JDialog
+   * 
+   * @return void
+   * 
+   */
+  public void updateNodeDialog(NodeDialog dialog) {
+      dialog.updateInformation(this.CurrentTick, this.RouteTable);
   }
 
 }

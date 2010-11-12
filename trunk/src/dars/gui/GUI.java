@@ -193,6 +193,7 @@ public class GUI extends JFrame implements OutputConsumer {
         
       case OUT_QUANTUM_ELAPSED:
         menuArea.quantumElapsed();
+        nodeAttributesArea.updateNodeDialogs();
         break;
 
       case OUT_SIM_SPEED: 
