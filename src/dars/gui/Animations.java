@@ -63,7 +63,8 @@ public class Animations extends JPanel implements ComponentListener,
   }
 
   public void setFPS(int fps) {
-
+    repaintTimer.setDelay(1000/fps); 
+    System.out.println(fps);
   }
 
   LinkedList<Connection>         connStore = new LinkedList<Connection>();
@@ -107,7 +108,7 @@ public class Animations extends JPanel implements ComponentListener,
     }
   }
 
-  private Timer animationTimer = new Timer(100, new ActionListener() {
+  private Timer animationTimer = new Timer(33, new ActionListener() {
                                  public void actionPerformed(ActionEvent e) {
                                    anicount++;
                                  }
@@ -118,18 +119,18 @@ public class Animations extends JPanel implements ComponentListener,
   public static void setSimSpeed(int speed) {
     // There's no science here, I've just been guesstimating to arrive at this
     // multiplier.
-    connLifeTime = speed * 4 + 15;
+    connLifeTime = speed * 4 + 30;
   }
 
   static void drawConn(Graphics g, Color c, int x1, int y1, int x2, int y2) {
 
     g.setColor(c);
     g.drawLine(x1, y1, x2, y2);
-    double stepX = (double) (x1 - x2) / 20;
-    double stepY = (double) (y1 - y2) / 20;
+    double stepX = (double) (x1 - x2) / 60;
+    double stepY = (double) (y1 - y2) / 60;
 
-    g.fillRect(x1 - (int) (stepX * (anicount % 20)), y1
-        - (int) (stepY * (anicount % 20)), 3, 3);
+    g.fillRect(x1 - (int) (stepX * (anicount % 60)), y1
+        - (int) (stepY * (anicount % 60)), 3, 3);
   }
 
   @Override
@@ -261,7 +262,7 @@ public class Animations extends JPanel implements ComponentListener,
     }
 
     int startStep;
-    int totalSteps = 10;
+    int totalSteps = 30;
 
     public boolean isActive() {
       return (Animations.anicount - startStep < totalSteps && Animations.anicount > startStep);
