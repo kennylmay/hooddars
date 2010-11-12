@@ -199,11 +199,21 @@ class NodeActionHandler implements GNodeListener{
     //drop any connections it might have
     animations.removeRangeIndicator(gnode);    
     
+    
     gnode = null;
+    
+    reassessFPS();
     this.invalidate();
     this.repaint();
   }
 
+  public void setNodeRange(String id, int range) {
+    GNode g = getGNode(id);
+    if(g==null) return;
+    
+    g.setRange(range);
+    
+  }
   
   //This function adds a node to the GUI. It's assumed that the node now exists in the simulator.  
   public void addNewNode(int x, int y, int range, String id) {
@@ -224,8 +234,28 @@ class NodeActionHandler implements GNodeListener{
     animations.addRangeIndicator(node);
    
 
+
+    reassessFPS();
+
   }
 
+  private void reassessFPS() {
+    // reassess the FPS
+    int maxFPS = 100;
+    int newFPS = (1000 / gnodemap.size());
+    int minFPS = 1;
+    int usedFPS;
+    if (newFPS < maxFPS && newFPS > minFPS)
+      usedFPS = newFPS;
+    else if (newFPS < minFPS) {
+      usedFPS = minFPS;
+    } else
+      usedFPS = maxFPS;
+
+    
+    animations.setFPS(usedFPS);
+  }
+  
   private Animations animations = new Animations(this);
 
   public void nodeBroadcast(String nodeId) {

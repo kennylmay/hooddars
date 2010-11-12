@@ -153,6 +153,8 @@ public class GUI extends JFrame implements OutputConsumer {
         //select the node
         simArea.selectNode(e.nodeId);
         nodeAttributesArea.selectNodeById(e.nodeId);
+        
+        
         break;
 
       case OUT_MOVE_NODE:
@@ -163,6 +165,7 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_SET_NODE_RANGE:
         // Refresh the node attributes panel
         nodeAttributesArea.setNode(e.nodeId);
+        simArea.setNodeRange(e.nodeId, e.nodeRange);
         break;
 
       case OUT_MSG_TRANSMITTED:
