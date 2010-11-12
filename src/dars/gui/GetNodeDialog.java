@@ -96,6 +96,7 @@ public class GetNodeDialog extends JDialog
     
     // Add all the individual panels to the main panel
     Panel.add(nodeInfoPanel, BorderLayout.NORTH);
+    Panel.add(nodeTimePanel,BorderLayout.NORTH);
     Panel.add(messagePanel,BorderLayout.CENTER); 
     Panel.add(buttonPanel, BorderLayout.SOUTH);
     
