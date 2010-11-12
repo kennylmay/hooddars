@@ -1,7 +1,5 @@
 package dars;
 
-import javax.swing.JDialog;
-
 import dars.proto.aodv.NodeDialog;
 
 //This interface exposes a way for a user interface 

@@ -3,18 +3,13 @@ package dars.gui;
 import javax.swing.*;
 
 import dars.InputHandler;
-import dars.Message;
 import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.*;
-import javax.swing.Timer;
-
-
 
 public class SimArea extends JLayeredPane {
 
