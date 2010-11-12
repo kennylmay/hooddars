@@ -5,6 +5,7 @@ package logger;
 
 import java.io.*;
 
+import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.OutputHandler;
 import dars.event.DARSEvent;
@@ -15,7 +16,63 @@ import dars.event.DARSEvent;
  */
 public class Parser 
 {
-    public static void parse(String logFileLocation) 
+  
+  public static void parseSetup(String logFileLocation) {
+    
+    
+    
+    //Read every line
+    //DARSEvent e = DARSEvent.parseLogStr(str);
+      //if Q = 0 and event is input type
+         //dispatch it
+    
+  }
+  
+  public static void parseReplay(String logFileLocation) {
+    DARSEvent d;
+  ///Read in log file
+    try {
+      //use buffering, reading one line at a time
+      //FileReader always assumes default encoding is OK!
+      FileReader LogFile = new FileReader(logFileLocation);
+      BufferedReader input =  new BufferedReader(LogFile);
+      try {
+        String line = ""; 
+        int lineNumber = 1;
+        //go through lines
+        while ((line = input.readLine()) != null){
+          //if incorrect format, throw exception
+          if(lineNumber == 1)
+          {
+            if(line.equals(DARSEvent.getLogHeader()))
+            {
+              System.out.println("Error reading file");
+              throw new Exception("Error: The CSV file is either corrupt or is in an incompatible format. Line # " + lineNumber);
+            }
+          }
+          else
+          {
+           //Parse and dispatch the log's dars events
+            d = DARSEvent.parseLogString(line);
+            InputHandler.dispatch(d);
+          }
+          //increment line number
+          lineNumber++;
+        }
+      }
+      finally {
+        input.close();
+      }
+    }
+    catch (Exception ex){
+      ex.printStackTrace();
+    }
+    
+    
+    
+  }
+  
+    /*public static void parse(String logFileLocation) 
     {
     ///Read in log file
       try {
@@ -31,7 +88,7 @@ public class Parser
             String[] details = line.split(",");
 
             //if incorrect format, throw exception
-            if(details.length != 10)
+            if(details.length != 12)
             {
               System.out.println("Error reading file");
               //throw new Exception("Error: The CSV file is either corrupt or is in an incompatible format. Line # " + lineNumber);
@@ -40,7 +97,7 @@ public class Parser
             if(lineNumber > 1) //skipping the header line
             {   //Parse and dispatch the log's dars events
               dispatchEvent(details);
-              waiting(1); //waiting 1 second between each event.
+              //waiting(1); //waiting 1 second between each event.
             }
             //increment line number
             lineNumber++;
@@ -55,7 +112,7 @@ public class Parser
       }
       
     
-    } 
+    } */
     static void dispatchEvent(String[] lineEvent) {
       //lineEvents array = eventType,nodeId,sourceId,destinationId,payload,informationalMessage,newSimSpeed,nodeX,nodeY,nodeRange
       try
@@ -66,8 +123,8 @@ public class Parser
           //waiting(1); //waiting 1 second between each event.
           NodeAttributes newNode = new NodeAttributes();
           newNode.id = lineEvent[1];
-          newNode.x = Integer.parseInt(lineEvent[7]);
-          newNode.y = Integer.parseInt(lineEvent[8]);
+          newNode.x = Integer.parseInt(lineEvent[7]); //node x
+          newNode.y = Integer.parseInt(lineEvent[8]); //node y
           newNode.range = Integer.parseInt(lineEvent[9]);
           
           OutputHandler.dispatch(DARSEvent.outAddNode(newNode));
