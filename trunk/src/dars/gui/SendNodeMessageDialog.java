@@ -5,7 +5,6 @@ package dars.gui;
 
 import javax.swing.JDialog; 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
