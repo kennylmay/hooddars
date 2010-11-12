@@ -9,7 +9,9 @@ import java.awt.event.ItemListener;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -25,16 +27,17 @@ import dars.event.DARSEvent;
 
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
-  private JComboBox  nodeSelectorComboBox = new JComboBox();
-  private JTextField nodeXField           = new JTextField(4);
-  private JTextField nodeYField           = new JTextField(4);
-  private JSpinner   nodeRangeSpinner     = new JSpinner(
-                                              new SpinnerNumberModel(300, 0,
-                                                  1000, 20));
+  private JComboBox      nodeSelectorComboBox = new JComboBox();
+  private JTextField     nodeXField           = new JTextField(4);
+  private JTextField     nodeYField           = new JTextField(4);
+  private JSpinner       nodeRangeSpinner     = new JSpinner(
+                                                  new SpinnerNumberModel(300,
+                                                      0, 1000, 20));
+  private JButton        nodeAttributesButton = new JButton("Attributes");
 
-  private boolean blockChangeEvents = false;
-  private Vector<String> nodeList = new Vector();
-  
+  private boolean        blockChangeEvents    = false;
+  private Vector<String> nodeList             = new Vector();
+
   public NodeAttributesArea() {
     // Use a box layout inside a border layout, with an internal flow layout at
     // each vertical item.
@@ -53,6 +56,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
     c.add(new JLabel("Node ID:"));
     c.add(nodeSelectorComboBox);
+    c.add(nodeAttributesButton);
     box.add(c);
 
     // setup the node x and y field
@@ -77,70 +81,79 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // Node combobox action handler
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
-        if (nodeSelectorComboBox.getSelectedItem() == null){
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
         simArea.selectNode(nodeSelectorComboBox.getSelectedItem().toString());
       }
     });
-   
-    
+
     // Range spin button action handler
     nodeRangeSpinner.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent ie) {
-        if(blockChangeEvents)
+        if (blockChangeEvents)
           return;
-        InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox.getSelectedItem().toString(),
-          (Integer) nodeRangeSpinner.getValue()));
+        InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox
+            .getSelectedItem().toString(), (Integer) nodeRangeSpinner
+            .getValue()));
       }
     });
-    
+
     // X Text Box Single Handler connected to the "Enter"
     nodeXField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         // Get the ID off of the Combo Box
         String id = nodeSelectorComboBox.getSelectedItem().toString();
-        // Get the current node data and save it off so that it can be 
+        // Get the current node data and save it off so that it can be
         // used in case of an invalid entry being entered.
         NodeAttributes att = getAttributes(id);
         int X = att.x;
         int Y = att.y;
         if (id == null)
           return;
-        try{
+        try {
           // Attempt to convert the string to an int if it fails
           // the user messed up and we use the original attributes.
           X = Integer.parseInt(nodeXField.getText());
           Y = Integer.parseInt(nodeYField.getText());
-        }catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
           return;
-        }        
+        }
         // Dispatch the signal
         InputHandler.dispatch(DARSEvent.inMoveNode(id, X, Y));
       }
     });
-    
+
     nodeYField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         // Get the ID off of the Combo Box
         String id = nodeSelectorComboBox.getSelectedItem().toString();
-        // Get the current node data and save it off so that it can be 
+        // Get the current node data and save it off so that it can be
         // used in case of an invalid entry being entered.
         NodeAttributes att = getAttributes(id);
         int X = att.x;
         int Y = att.y;
         if (id == null)
           return;
-        try{
+        try {
           // Attempt to convert the string to an int if it fails
           // the user messed up and we use the original attributes
           X = Integer.parseInt(nodeXField.getText());
           Y = Integer.parseInt(nodeYField.getText());
-        }catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
           return;
-        }        
+        }
         // Dispatch the signal
         InputHandler.dispatch(DARSEvent.inMoveNode(id, X, Y));
+      }
+    });
+
+    nodeAttributesButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+     //   JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
+      //      .getSelectedItem().toString());
+     //   dialog.setVisible(true);
+        
       }
     });
   }
@@ -227,20 +240,21 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   public void setNode(String nodeId) {
 
   }
-  
-  public Vector<String> getNodeList(){
+
+  public Vector<String> getNodeList() {
     return nodeList;
   }
 
-  public void clear(){
+  public void clear() {
     nodeSelectorComboBox.removeAllItems();
     nodeXField.setText("");
     nodeYField.setText("");
     nodeList.clear();
   }
-  
+
   public void selectNodeById(String id) {
     setAttributes(getAttributes(id));
   }
+
   private NodeInspector nodeInspector;
 }

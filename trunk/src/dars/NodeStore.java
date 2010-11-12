@@ -7,6 +7,8 @@ import dars.proto.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.JDialog;
+
 /**
  * @author Kenny
  * 
@@ -67,5 +69,19 @@ public void deleteNode(String id) {
 public Iterator<Node> getNodes() {
    return store.values().iterator();
 }
+
+@Override
+public JDialog getNodeDialog(String nodeId) {
+  Node node = store.remove(nodeId);
+  return node.getNodeDialog();
+}
+
+@Override
+public void updateNodeDialog(String nodeId, JDialog dialog) {
+  Node node = store.remove(nodeId);
+  node.updateNodeDialog(dialog);
+}
+
+
 
 }

@@ -101,5 +101,15 @@ public abstract interface Node {
    * @author kennylmay
    */
   JDialog getNodeDialog();
+  
+  /**
+   * Update the dialog with information that is showed to the GUI.
+   * 
+   * Each protocol must define this function so that the
+   * GUI can inspect the nodes information.
+   * 
+   * @author kennylmay
+   */
+  void updateNodeDialog(JDialog dialog);
 
 }

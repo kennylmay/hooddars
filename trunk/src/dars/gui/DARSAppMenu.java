@@ -173,10 +173,20 @@ public class DARSAppMenu  {
           File logFile = new File("darslog.tmp");
           File saveFile = new File(chooser.getSelectedFile().getPath()+".log");
 
+          // Check to see if we will overwrite the file
+          if (saveFile.exists()){
+          int overwrite = JOptionPane.showConfirmDialog(null, "File already exists, do you want to overwrite?");
+            if (overwrite == JOptionPane.CANCEL_OPTION ||
+                overwrite == JOptionPane.CLOSED_OPTION ||
+                overwrite == JOptionPane.NO_OPTION){
+                return;
+            }
+          }
+          
           // Initialize the file readers and writers
           FileReader in = null;
           FileWriter out = null;
-
+           
           // Try to open each file
           try {
             int c;
