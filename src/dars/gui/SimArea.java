@@ -170,6 +170,9 @@ class NodeActionHandler implements GNodeListener{
     //move the x y coords
      gnode.setXY(x,y);
      
+    //drop any connections this node might have
+     animations.dropConns(gnode);
+     
   }
 
   
@@ -193,7 +196,7 @@ class NodeActionHandler implements GNodeListener{
     
     //drop any connections it might have
     animations.removeRangeIndicator(gnode);    
-    
+    animations.dropConns(gnode);
     
     gnode = null;
     
