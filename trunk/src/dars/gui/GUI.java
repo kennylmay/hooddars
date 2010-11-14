@@ -152,18 +152,21 @@ public class GUI extends JFrame implements OutputConsumer {
         
         //select the node
         simArea.selectNode(e.nodeId);
-        nodeAttributesArea.selectNodeById(e.nodeId);          
+        nodeAttributesArea.selectNodeById(e.nodeId);   
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_MOVE_NODE:
         // Move the nodenodeSelectorComboBox
         simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_SET_NODE_RANGE:
         // Refresh the node attributes panel
         nodeAttributesArea.setNode(e.nodeId);
         simArea.setNodeRange(e.nodeId, e.nodeRange);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
     
       case OUT_MSG_RECEIVED:
@@ -177,17 +180,20 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_MSG_TRANSMITTED:
         // Animate the event
           simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE);
+          logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_NODE_BROADCAST:
         // Animate the event
         simArea.nodeBroadcast(e.nodeId);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
         
       case OUT_DEL_NODE:
         // Remove the node
         simArea.deleteNode(e.nodeId);
         nodeAttributesArea.nodeDeleted(e.nodeId);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_DEBUG:
@@ -204,28 +210,33 @@ public class GUI extends JFrame implements OutputConsumer {
 
       case OUT_SIM_SPEED: 
         simArea.setSimSpeed(e.newSimSpeed);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
         
       case OUT_START_SIM:
         //Notify the menu that a sim has started
         menuArea.simStarted();
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_STOP_SIM:
         //Notify the menu that the sim has stopped
         menuArea.simStopped();
         simArea.simStopped();
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_PAUSE_SIM:
         //Notify the menu the the sim has paused
         menuArea.simPaused();
         simArea.simPaused();
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_RESUME_SIM:
         //Notify the menu that the sim has resumed
         menuArea.simResumed();
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_CLEAR_SIM:
@@ -233,7 +244,7 @@ public class GUI extends JFrame implements OutputConsumer {
         nodeAttributesArea.clear();
         simArea.clear();
         logArea.clear();
-        
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
      
       case OUT_NEW_SIM:
@@ -245,6 +256,7 @@ public class GUI extends JFrame implements OutputConsumer {
         
         //Let the menu area know that a new sim has been created
         menuArea.newSim();
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
 
       }
     }
