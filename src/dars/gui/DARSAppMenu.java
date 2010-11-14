@@ -161,6 +161,7 @@ public class DARSAppMenu  {
 
     clearMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inStopSim());
         InputHandler.dispatch(DARSEvent.inClearSim());
       }
     });
