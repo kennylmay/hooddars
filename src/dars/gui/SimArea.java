@@ -240,7 +240,10 @@ class NodeActionHandler implements GNodeListener{
   private void reassessFPS() {
     // reassess the FPS
     int maxFPS = 100;
-    int newFPS = (1000 / gnodemap.size());
+    int newFPS = 0;
+    if (gnodemap.size() != 0){
+      newFPS = (1000 / gnodemap.size());
+    }
     int minFPS = 1;
     int usedFPS;
     if (newFPS < maxFPS && newFPS > minFPS)
