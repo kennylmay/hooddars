@@ -453,13 +453,13 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
    * 
    * @return boolean
    */
-  private boolean canCommunicate(String Id1, String Id2) {
-    NodeAttributes att1 = store.getNodeAttributes(Id1);
-    NodeAttributes att2 = store.getNodeAttributes(Id2);
-    Point point1 = new Point(att1.x, att1.y);
+  private boolean canCommunicate(String OriginID, String DestinationID) {
+    NodeAttributes originAtt = store.getNodeAttributes(OriginID);
+    NodeAttributes destinationAtt = store.getNodeAttributes(DestinationID);
+    Point point1 = new Point(originAtt.x, originAtt.y);
     
-    double distance = point1.distance(att2.x, att2.y);
-    if (distance > att1.range || distance > att2.range) {
+    double distance = point1.distance(destinationAtt.x, destinationAtt.y);
+    if (distance > originAtt.range) {
       return false;
     } else
       return true;
