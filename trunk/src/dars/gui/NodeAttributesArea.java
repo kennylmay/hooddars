@@ -247,6 +247,17 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeXField.setText("");
     nodeYField.setText("");
     nodeList.clear();
+    
+    String nodeId;
+    JDialog dialog;
+    Iterator<String> iter = openNodeDialogs.keySet().iterator();
+    while (iter.hasNext()){
+       nodeId = iter.next();
+       dialog = openNodeDialogs.get(nodeId);
+      if (dialog.isVisible() == true){
+        dialog.setVisible(false);
+      }
+    }    
     openNodeDialogs.clear();
   }
 
