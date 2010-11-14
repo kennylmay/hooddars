@@ -152,9 +152,7 @@ public class GUI extends JFrame implements OutputConsumer {
         
         //select the node
         simArea.selectNode(e.nodeId);
-        nodeAttributesArea.selectNodeById(e.nodeId);
-        
-        
+        nodeAttributesArea.selectNodeById(e.nodeId);          
         break;
 
       case OUT_MOVE_NODE:
@@ -167,7 +165,15 @@ public class GUI extends JFrame implements OutputConsumer {
         nodeAttributesArea.setNode(e.nodeId);
         simArea.setNodeRange(e.nodeId, e.nodeRange);
         break;
-
+    
+      case OUT_MSG_RECEIVED:
+        // Refresh the node attributes panel
+        JOptionPane.showMessageDialog(null, "Successful Message Transmission!\n" +
+                                            "Source Node: "+ e.sourceId + "\n" + 
+                                            "Destination Node: " + e.destinationId + "\n" +
+                                            "Message: " + e.transmittedMessage);
+        break;
+   
       case OUT_MSG_TRANSMITTED:
         // Animate the event
           simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE);
