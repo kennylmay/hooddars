@@ -194,7 +194,7 @@ public class RouteEntry {
   /**
    * Destination IP Address for the Destination Node
    */
-  private String     DestIP;
+  private String     DestIP = "";
   /**
    * Destination Sequence Number
    */
@@ -210,7 +210,7 @@ public class RouteEntry {
   /**
    * IP Address of the Next Hop Node on the path to the Destination Node.
    */
-  private String     NextHopIP;
+  private String     NextHopIP = "";
   /**
    * List of "Precursor" Node's IP Addresses. Simply put this is a list of Nodes
    * that need to be notified if this route breaks.

@@ -837,7 +837,9 @@ public class Aodv implements Node {
         /**
          * Check to see if our Route is affected.
          */
-        if (DestEntry.getSeqNum() == DestSeqNum) {
+        if ((DestEntry.getNextHopIP().equals(message.originId))
+            && (DestEntry.getSeqNum() == DestSeqNum)
+            && (DestEntry.getState() == RouteEntry.StateFlags.VALID)) {
           sendRERR(DestID);
         }
       }
