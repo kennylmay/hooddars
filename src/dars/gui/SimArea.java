@@ -300,10 +300,8 @@ class NodeActionHandler implements GNodeListener{
     int x, y;
     public AddNodePopup(){  
       anItem1 = new JMenuItem("Add a new node");
-      anItem2 = new JMenuItem("Something else");
       anItem1.addActionListener(this);
       add(anItem1);
-      add(anItem2);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -317,21 +315,12 @@ class NodeActionHandler implements GNodeListener{
      * 
      */
     private static final long serialVersionUID = 1L;
-    JMenuItem edit_item;
     JMenuItem delete_item;
     JMenuItem msg_item;
     GNode gnode;
     TreeMap<String, GNode> gnodemap;
     
-    public EditNodePopup(){
-      edit_item = new JMenuItem("Edit node");
-      edit_item.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              //edit node action goes here
-           }      
-      });
-    
+    public EditNodePopup(){    
       delete_item = new JMenuItem("Delete node");
       delete_item.addActionListener(
           new ActionListener() {
@@ -347,7 +336,6 @@ class NodeActionHandler implements GNodeListener{
              new SendNodeMessageDialog(null, gnode.getId(), nodeAttributesArea.getNodeList());
             }    
      });
-      add(edit_item);
       add(delete_item);
       add(msg_item);
     }
