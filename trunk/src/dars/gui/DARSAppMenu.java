@@ -14,6 +14,7 @@ import java.util.Random;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -59,6 +60,8 @@ public class DARSAppMenu  {
   private JButton            resumeButton        = new JButton("Resume");
   private JButton            pauseButton         = new JButton("Pause");
   private JButton            stopButton          = new JButton("Stop");
+  
+  private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
 
   private JPanel             speedArea           = new JPanel();
   private JPanel             simTypeArea         = new JPanel();
@@ -72,6 +75,7 @@ public class DARSAppMenu  {
   private JLabel             fasterLabel         = new JLabel(plusIcon);
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
+  private LogArea            logArea;
   private JPanel         currentQuantumArea     = new JPanel();
   private JLabel         currentQuantumLabel     = new JLabel();
   
@@ -89,6 +93,7 @@ public class DARSAppMenu  {
     newMenu.add(aodvMenu);
     newMenu.add(dsdvMenu);
     simMenu.add(saveMenu);
+    simMenu.add(debugCheckBox);
     randomizeMenu.setEnabled(false);
     simMenu.add(randomizeMenu);
     simMenu.add(importMenu);
@@ -114,8 +119,9 @@ public class DARSAppMenu  {
     playButton.setEnabled(false);
     stopButton.setEnabled(false);
     pauseButton.setEnabled(false);
+    
     menuPanel.add(buttonArea);
-
+    
     // Add the quantums elapsed area
     currentQuantumArea.add(new JLabel("  Current Quantum: "));
     currentQuantumArea.add(currentQuantumLabel);
@@ -211,6 +217,12 @@ public class DARSAppMenu  {
       }
     });
 
+    debugCheckBox.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent arg0) {
+        logArea.setDEBUG(debugCheckBox.getState());
+      }      
+    });
+    
     setupMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
@@ -222,7 +234,7 @@ public class DARSAppMenu  {
           /// Some call to load the simulation setup
            String name = chooser.getSelectedFile().getPath();
            System.out.println("loading simulation");
-        //   Parser.parse(name);
+           Parser.parseReplay(name);
         }
       }
     });
@@ -373,6 +385,9 @@ public class DARSAppMenu  {
     this.simArea = simArea;
   }
   
+  public void setLogArea(LogArea logArea){
+    this.logArea = logArea;
+  }  
  
   private BigInteger quantums = BigInteger.ZERO;
   
