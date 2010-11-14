@@ -130,8 +130,8 @@ public class GUI extends JFrame implements OutputConsumer {
     // (selecting a new node, etc)
     nodeAttributesArea.setSimArea(simArea);
     menuArea.setSimArea(simArea);
+    menuArea.setLogArea(logArea);
     simArea.setNodeAttributesArea(nodeAttributesArea);
-
   }
 
   public void setNodeInspector(NodeInspector ni) {
