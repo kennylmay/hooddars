@@ -18,6 +18,7 @@ import dars.proto.Node;
 import dars.Message;
 import dars.proto.aodv.RouteEntry.StateFlags;
 import dars.event.DARSEvent;
+import dars.proto.aodv.WaitQueueEntry;
 
 /**
  * AODV Node Class.
@@ -30,41 +31,6 @@ public class Aodv implements Node {
   /**
    * Private Types that are needed for AODV
    */
-
-  /**
-   * Entry Class for the Message Wait Queue
-   * 
-   * @author kresss
-   * 
-   */
-  private class WaitQueueEntry {
-
-    String SourceID;
-    // type.
-    String DestinationID;
-    String MsgString;
-    int    TimeToLive;
-
-    /**
-     * Constructor with all fields defined.
-     * 
-     * @author kresss
-     * 
-     * @param sourceID
-     * @param destinationID
-     * @param msgString
-     * @param timeToLive
-     */
-    WaitQueueEntry(String sourceID, String destinationID, String msgString,
-        int timeToLive) {
-      super();
-      SourceID = sourceID;
-      DestinationID = destinationID;
-      MsgString = msgString;
-      TimeToLive = timeToLive;
-    }
-
-  }
 
   /**
    * Constants needed by the AODV Protocol
@@ -92,45 +58,6 @@ public class Aodv implements Node {
    * 
    */
   public static final int HELLO_INTERVAL       = 25;                        // Ticks
-
-  // KRESSS - I am unsure if the constants listed below are needed for our
-  // implementation.
-  // public static final int ACTIVE_ROUTE_TIMEOUT = 3000; // Milliseconds
-  // public static final int HELLO_INTERVAL = 1000; // Milliseconds
-  // public static final int NODE_TRAVERSAL_TIME = 40; // Milliseconds
-
-  public static final int LOCAL_ADD_TTL        = 2;
-
-  public static final int RREQ_RETRIES         = 2;
-  public static final int RREQ_RATELIMIT       = 10;
-  public static final int TIMEOUT_BUFFER       = 2;
-  // public static final int TTL_START = 1;
-  public static final int TTL_INCREMENT        = 2;
-  public static final int TTL_THRESHOLD        = 7;
-  public static final int RERR_RATELIMIT       = 10;
-
-  public static final int MAX_REPAIR_TTL       = (int) (0.3 * NET_DIAMETER);
-
-  public static final int BLACKLIST_TIMEOUT    = RREQ_RETRIES
-                                                   * NET_TRAVERSAL_TIME;
-  public static final int NEXT_HOP_WAIT        = NODE_TRAVERSAL_TIME + 10;
-
-  // Ring Traversal Time is dependent on TTL_VALUE.
-  // Again I find myself not knowing what to do.
-  // public static final int RING_TRAVERSAL_TIME = 2 * NODE_TRAVERSAL_TIME
-  // * (TTL_VALUE + TIMEOUT_BUFFER);
-
-  /**
-   * DELETE_PERIOD = K * max (ACTIVE_ROUTE_TIMEOUT, HELLO_INTERVAL) (K = 5 is
-   * recommended).
-   */
-  // public static final int DELETE_PERIOD = 5 * ACTIVE_ROUTE_TIMEOUT;
-
-  // Don't think that MIN_REPAIR_TTL will really be needed.
-  // public static final int MIN_REPAIR_TTL = ??
-
-  // Don't think that TTL_VALUE is really a constant.
-  // public static final int TTL_VALUE = ??
 
   /*
    * Functions that define the org.dars.proto.node interface.
@@ -238,7 +165,6 @@ public class Aodv implements Node {
      * Check to make sure that the sourceID is this node.
      */
     if (!this.att.id.equals(srcID)) {
-      // TODO: NEED A CORRECT ERROR EVENT HERE.
       OutputHandler.dispatch(DARSEvent.outError(this.att.id
           + " Tried to create a new Narrative Message but the source ID was "
           + srcID));
@@ -282,11 +208,10 @@ public class Aodv implements Node {
         /**
          * The route is stale. Repair it.
          * 
-         * During this time the message will need to be 'queued' on some kind of
-         * internal message buffer.
+         * During this time the message will need to be placed on the WaitQueue.
          */
-        // TODO : NEED REPAIR ACTION
-        OutputHandler.dispatch(DARSEvent.outDebug("NARRATIVE MESSAGE STALE ROUTE REPAIR NOT IMPLEMENTED"));
+        sendRREQ(MsgDestID);
+        addMessageToWaitQueue(MsgOrigID, MsgDestID, MsgStr);
       }
 
     } else {
@@ -389,6 +314,11 @@ public class Aodv implements Node {
       receiveRREP(message);
       return;
     }
+    
+    if (MsgType.equals("RERR")) {
+      receiveRERR(message);
+      return;
+    }
 
   }
 
@@ -457,21 +387,28 @@ public class Aodv implements Node {
        * There is already a RouteEntry in the RouteTable, but we are still
        * processing a RREQ. WHY?
        */
-      if (DestRouteEntry.getState() == StateFlags.RREQSENT) {
+      if ((DestRouteEntry.getState() == StateFlags.RREQSENT)
+          || DestRouteEntry.getState() == StateFlags.REPAIRING) {
         if (DestRouteEntry.getLifetime() > CurrentTick) {
           /**
            * A RREQ has already been sent for this node but a response has not
            * yet been received. Do not send another RREQ.
            */
           return;
+        } else {
+          /**
+           * The last RREQ Failed. Send another.
+           */
+          DestRouteEntry.setState(RouteEntry.StateFlags.RREQSENT);
+          DestRouteEntry.setLifetime(this.CurrentTick + PATH_DISCOVERY_TIME);
+          this.RouteTable.put(MsgDestID, DestRouteEntry);
         }
       } else {
-        // TODO: There could be other possible StateFlags conditions at this
-        // point.
-        OutputHandler.dispatch(DARSEvent
-            .outDebug("TODO: sendRREQ: StateFlags = "
-                + DestRouteEntry.getState().toString()));
 
+        DestRouteEntry.setState(RouteEntry.StateFlags.REPAIRING);
+        DestRouteEntry.setLifetime(this.CurrentTick + PATH_DISCOVERY_TIME);
+
+        this.RouteTable.put(MsgDestID, DestRouteEntry);
       }
 
     }
@@ -754,7 +691,7 @@ public class Aodv implements Node {
    * @param DestNodeID
    *          The Destination Node ID for the node that is no longer reachable.
    */
-  void sendREER(String DestNodeID) {
+  void sendRERR(String DestNodeID) {
 
     /**
      * RERR Message Format
@@ -853,6 +790,59 @@ public class Aodv implements Node {
    */
   void receiveRERR(Message message) {
 
+    /**
+     * RERR Message Format
+     * 
+     * TYPE|FLAGS|DESTCOUNT|DESTID1|DESTSEQID1|...|DESTIDX|DESTSEQX
+     * 
+     */
+
+    /**
+     * Message Properties
+     */
+    int DestPairCount;
+
+    String DestID;
+    int DestSeqNum;
+
+    /**
+     * Route Table Entry used to add and modify the entries in the Route Table.
+     */
+    RouteEntry DestEntry;
+
+    /**
+     * Array to hold Message Fields
+     */
+    String MsgArray[];
+
+    /**
+     * Split Message into fields based on '|' delimiters and store in MsgArray.
+     */
+    MsgArray = message.message.split("\\|");
+    /**
+     * Store message fields into local variables.
+     */
+    DestPairCount = Integer.parseInt(MsgArray[2]);
+
+    /**
+     * Process the list of affected Destinations
+     */
+    for (int i = 0; i < DestPairCount; i++) {
+      DestID = MsgArray[3 + (i * 2)];
+      DestSeqNum = Integer.parseInt(MsgArray[3 + (i * 2) + 1]);
+
+      if (this.RouteTable.containsKey(DestID)) {
+        DestEntry = this.RouteTable.get(DestID);
+
+        /**
+         * Check to see if our Route is affected.
+         */
+        if (DestEntry.getSeqNum() == DestSeqNum) {
+          sendRERR(DestID);
+        }
+      }
+    }
+
   }
 
   /**
@@ -891,14 +881,14 @@ public class Aodv implements Node {
      */
 
     /**
-     * Destination Route Entry 
+     * Destination Route Entry
      */
     RouteEntry DestEntry;
     /**
-     * Temporary Precursors list for updating the Route Entry's List. 
+     * Temporary Precursors list for updating the Route Entry's List.
      */
     HashSet<String> PrecList;
-    
+
     /**
      * Message object that will be passed to sendMessage.
      */
@@ -963,42 +953,43 @@ public class Aodv implements Node {
     /**
      * Find the Destination Node in our Route Table and reply with our Route.
      */
-    
+
     if (!this.RouteTable.containsKey(DestNodeID)) {
       OutputHandler.dispatch(DARSEvent.outError(this.att.id
           + " Tried to send a RREP for a node that it "
           + "did not have a valid Route For."));
-      
+
       /**
        * This node can not send a RREP for the Destination needed so drop the
        * message.
        */
       return;
     }
-    
+
     DestEntry = this.RouteTable.get(DestNodeID);
-    
+
     /**
      * Update the Route Entry's precursor's list to contain the destination node
      * that this RREP is being sent to as well as the next hop of this RREP.
      * 
-     * MsgOrigID = The Original Creator of the RREQ.
-     * SenderID = The Node that sent us the RREQ. 
+     * MsgOrigID = The Original Creator of the RREQ. 
+     * SenderID = The Node that sent us the RREQ.
      */
     PrecList = DestEntry.getPrecursorIPs();
+
     PrecList.add(MsgOrigID);
     PrecList.add(SenderID);
     DestEntry.setPrecursorIPs(PrecList);
-    
+
     /**
-     * Set the message properties that were not known at initialization. 
+     * Set the message properties that were not known at initialization.
      * 
      * Must convert Lifetime into an interval instead of being node dependent.
      */
     MsgHopCount = DestEntry.getHopCount();
     MsgDestSeqNum = DestEntry.getSeqNum();
     MsgLifetime = DestEntry.getLifetime() - this.CurrentTick;
-      
+
     /**
      * Build Message Sting and Send.
      */
@@ -1052,7 +1043,7 @@ public class Aodv implements Node {
      */
     RouteEntry DestEntry;
     /**
-     * Temporary Precursors list for updating the Route Entry's List. 
+     * Temporary Precursors list for updating the Route Entry's List.
      */
     HashSet<String> PrecList;
 
@@ -1179,7 +1170,6 @@ public class Aodv implements Node {
          * The RREQ that was sent out to generate this is really old. Drop the
          * message?
          */
-        // TODO: What is the right thing to do here?
         OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
             + " Received a RREP to a REALLY old RREQ.  Dropping."));
       }
@@ -1254,19 +1244,20 @@ public class Aodv implements Node {
           this.RouteTable.put(MsgDestID, DestEntry);
         }
       }
-      
+
       /**
-       * Update the Route Entry's precursor's list to contain the destination node
-       * that this RREP is being sent to as well as the next hop of this RREP.
+       * Update the Route Entry's precursor's list to contain the destination
+       * node that this RREP is being sent to as well as the next hop of this
+       * RREP.
        * 
-       * MsgOrigID = The Original Creator of the RREQ.
-       * SenderID = The Node that sent us the RREQ. 
+       * MsgOrigID = The Original Creator of the RREQ. SenderID = The Node that
+       * sent us the RREQ.
        */
       PrecList = DestEntry.getPrecursorIPs();
       PrecList.add(MsgOrigID);
       PrecList.add(this.RouteTable.get(MsgOrigID).getNextHopIP());
       DestEntry.setPrecursorIPs(PrecList);
-      
+
     }
 
     /**
@@ -1342,10 +1333,6 @@ public class Aodv implements Node {
       return;
     }
 
-    // TODO: Maybe need to add in some checking of the RouteTable for active
-    // routes if there is a need to comply with RFC 3561 Section 6.9 Paragraph 1
-    // Sentence 2.
-
     /**
      * Build the message string that will be sent to the other nodes.
      */
@@ -1367,13 +1354,6 @@ public class Aodv implements Node {
 
     OutputHandler.dispatch(DARSEvent.outDebug(MsgStr));
 
-  }
-
-  /**
-   * Send a Narrative message.
-   */
-  void sendNarrative() {
-    // TODO: Figure out how this is going to be given to the node from the GUI.
   }
 
   /**
@@ -1451,9 +1431,6 @@ public class Aodv implements Node {
        */
       OutputHandler.dispatch(DARSEvent.outMsgRecieved(MsgOrigID, MsgDestID,
           MsgText));
-      // TODO: Remove this debug out.
-      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
-          + " Received Narrative Message: " + MsgText));
       return;
     }
 
@@ -1469,20 +1446,24 @@ public class Aodv implements Node {
        * Get the Route Entry.
        */
       DestEntry = RouteTable.get(MsgDestID);
+
+      /**
+       * Create the message string that will be sent.
+       */
+      MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID + '|'
+          + MsgOrigID + '|' + MsgText;
+
       /**
        * The destination is in our RouteTable. Make sure that the route is valid
        * and not too old.
        */
       if ((DestEntry.getState() == RouteEntry.StateFlags.VALID)
           && (DestEntry.getLifetime() >= this.CurrentTick)) {
+
         /**
-         * Create the message and send it.
+         * Create the message to be sent.
          */
-        MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID
-            + '|' + MsgOrigID + '|' + MsgText;
-
         Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
-
         sendMessage(Msg);
 
         OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
@@ -1496,10 +1477,11 @@ public class Aodv implements Node {
         /**
          * The route is stale. Repair it.
          * 
-         * During this time the message will need to be 'queued' on some kind of
-         * internal message buffer.
+         * During this time the message will need to be 'queued' on the
+         * WaitQueue.
          */
-        // TODO : NEED REPAIR ACTION
+        sendRREQ(MsgDestID);
+        addMessageToWaitQueue(MsgOrigID, MsgDestID, MsgStr);
       }
 
     } else {
@@ -1507,8 +1489,9 @@ public class Aodv implements Node {
        * This node does not have a route to the desired destination and thus
        * should not have been used in the route. ERROR.
        */
-      // TODO: FIGURE OUT THIS CASE.
-
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + "Received a narrative message for " + MsgDestID
+          + " but has no route to the destination.  Dropping message."));
     }
 
   }
@@ -1570,13 +1553,15 @@ public class Aodv implements Node {
     WaitQueueIter = this.waitQueue.iterator();
 
     while (WaitQueueIter.hasNext()) {
-      // TODO: Figure out why a Static Cast is needed here.
       WaitEntry = WaitQueueIter.next();
 
       /**
        * Check to see if the message is still valid.
        */
       if (WaitEntry.TimeToLive < this.CurrentTick) {
+        // TODO: If this node is not the Originator or the message send an error
+        // back to the originator. ??
+
         OutputHandler
             .dispatch(DARSEvent
                 .outError("Message lifetime expired while waiting for valid Route. Message: "
@@ -1595,7 +1580,7 @@ public class Aodv implements Node {
            * Have a valid route to the desired destination of this message so
            * send it.
            */
-          Msg = new Message(DestEntry.getNextHopIP(), WaitEntry.SourceID,
+          Msg = new Message(DestEntry.getNextHopIP(), this.att.id,
               WaitEntry.MsgString);
           sendMessage(Msg);
 
@@ -1603,6 +1588,56 @@ public class Aodv implements Node {
            * Clear the message off the wait queue.
            */
           WaitQueueIter.remove();
+        }
+      }
+    }
+  }
+
+  /**
+   * Check all routes in the Route Table for stale routes.
+   * 
+   * @author kresss
+   */
+  private void checkRouteTable() {
+
+    /**
+     * Iterator and RouteEntry for going through the values in the RouteTable.
+     */
+    Iterator<RouteEntry> RouteTableIter;
+    RouteEntry TempRouteEntry;
+
+    /**
+     * Get Iterator for RouteTable and then traverse it.
+     */
+    RouteTableIter = this.RouteTable.values().iterator();
+
+    /**
+     * Check each route entry's Lifetime and State.
+     */
+    while (RouteTableIter.hasNext()) {
+      TempRouteEntry = RouteTableIter.next();
+
+      /**
+       * See if the lifetime of a route has expired.
+       */
+      if (TempRouteEntry.getLifetime() <= this.CurrentTick) {
+        /**
+         * The lifetime has expired, so based on the current State of the route
+         * determine the next action.
+         */
+
+        /**
+         * For Routes marked as VALID, Expire them. All other states are a
+         * result of this node being in a waiting position for this route. The
+         * outside stimulus has not occurred with in the time out so remove the
+         * route entry.
+         */
+        if (TempRouteEntry.getState() == RouteEntry.StateFlags.VALID) {
+          TempRouteEntry.setState(RouteEntry.StateFlags.EXPIRED);
+          TempRouteEntry.setLifetime(this.CurrentTick + DELETE_PERIOD);
+          sendRERR(TempRouteEntry.getDestIP());
+        } else {
+          RouteTableIter.remove();
         }
       }
     }
@@ -1676,10 +1711,6 @@ public class Aodv implements Node {
      */
     CurrentTick++;
 
-    // TODO: Take out this commented out debug statement.
-    //OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
-    //    + " Received clocktick."));
-
     /**
      * Receive and process each message on the Receive Queue.
      */
@@ -1697,7 +1728,7 @@ public class Aodv implements Node {
      */
     sendHello();
 
-    // TODO: Need to determine what is needed for a cycle in a node.
+    checkRouteTable();
   }
 
   /**
@@ -1711,7 +1742,7 @@ public class Aodv implements Node {
    * The RREQ ID must be unique to each route request sent out by a node. It is
    * incremented immediately before a route request is generated.
    */
-  private int                         LastRREQID  = 0;
+  private int                         LastRREQID  = 1;
 
   /**
    * Node Sequence Number
@@ -1720,7 +1751,7 @@ public class Aodv implements Node {
    * control messages(RREQ, RREP, RERR) for a node. It is incremented
    * immediately before a protocol control message is generated.
    */
-  private int                         LastSeqNum  = 0;
+  private int                         LastSeqNum  = 1;
 
   /**
    * Route Table
@@ -1771,28 +1802,28 @@ public class Aodv implements Node {
    */
   private int                         HelloSentAt = 0;
 
-
   /**
    * getNodeDialog
    * 
-   * This method will construct a JDialog from select node information
-   * to return back to the GUI to be displayed.
+   * This method will construct a JDialog from select node information to return
+   * back to the GUI to be displayed.
    * 
    * @param void
    * 
    * @return JDialog
    * 
    */
-  public JDialog getNodeDialog() { 
-    AodvDialog dialog = new AodvDialog(null, this.att.id, this.CurrentTick, this.RouteTable);  
-    return (JDialog)dialog;
+  public JDialog getNodeDialog() {
+    AodvDialog dialog = new AodvDialog(null, this.att.id, this.CurrentTick,
+        this.RouteTable);
+    return (JDialog) dialog;
   }
 
   /**
    * updateNodeDialog
    * 
-   * This method will update an already constructed JDialog box
-   * that is already being displayed by the GUI.
+   * This method will update an already constructed JDialog box that is already
+   * being displayed by the GUI.
    * 
    * @param JDialog
    * 
@@ -1800,10 +1831,9 @@ public class Aodv implements Node {
    * 
    */
   public void updateNodeDialog(JDialog dialog) {
-      //Cast the JDialog into our type
-      AodvDialog aodvDlg = (AodvDialog)dialog;
-      aodvDlg.updateInformation(this.CurrentTick, this.RouteTable);
+    // Cast the JDialog into our type
+    AodvDialog aodvDlg = (AodvDialog) dialog;
+    aodvDlg.updateInformation(this.CurrentTick, this.RouteTable);
   }
-
 
 }

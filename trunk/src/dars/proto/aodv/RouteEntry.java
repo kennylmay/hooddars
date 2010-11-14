@@ -215,7 +215,7 @@ public class RouteEntry {
    * List of "Precursor" Node's IP Addresses. Simply put this is a list of Nodes
    * that need to be notified if this route breaks.
    */
-  private HashSet<String> PrecursorIPs;
+  private HashSet<String> PrecursorIPs = new HashSet<String>();
   
   /**
    * Time, in milliseconds for which this entry is to be considered valid.
