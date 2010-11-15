@@ -31,8 +31,6 @@ public class DARSMain {
     DARSEvent.setSimTimeKeeper( (SimulationTimeKeeper) s);
       
     // Name the simulator engine as an input consumer
-    // TODO: Have the simulator engine class implement the InputConsumer
-    // interface.
      InputHandler.addInputConsumer(s);
 
     // Instantiate the gui
