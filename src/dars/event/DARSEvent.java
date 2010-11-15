@@ -400,7 +400,7 @@ public class DARSEvent {
       String[] details = lineEvent.split(",");
 
       if(details[0] != null)
-      {
+      { 
         e.eventType = getEventTypeFromString(details[0]);
       }
       e.nodeId = details[1];
@@ -412,6 +412,7 @@ public class DARSEvent {
       e.nodeX = Integer.parseInt(details[7]);
       e.nodeY = Integer.parseInt(details[8]);
       e.nodeRange = Integer.parseInt(details[9]);
+      
       if(details[10]!= null)
       {
         if(details[10].equals("AODV"))
@@ -425,14 +426,12 @@ public class DARSEvent {
       }
       e.currentQuantum = new BigInteger(details[11]);
       
-      
-      
     }
     catch (Exception ex){
       ex.printStackTrace();
     }
 
-    return null;
+    return e;
   }
 
 }
