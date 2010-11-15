@@ -242,7 +242,7 @@ class NodeActionHandler implements GNodeListener{
     int maxFPS = 100;
     int newFPS = 0;
     if (gnodemap.size() != 0){
-      newFPS = (1000 / gnodemap.size() * 2);
+      newFPS = (1000 / gnodemap.size());
     }
     int minFPS = 1;
     int usedFPS;
