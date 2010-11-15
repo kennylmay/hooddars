@@ -152,6 +152,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
     nodeAttributesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
+        if (nodeSelectorComboBox.getSelectedItem() == null){
+          return;
+        }
         JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
            .getSelectedItem().toString());
         dialog.setVisible(true);     
