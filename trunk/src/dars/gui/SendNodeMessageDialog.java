@@ -52,10 +52,11 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
     private JPanel nodeInfoPanel = new JPanel(nodeInfoLayout);
     private JPanel buttonPanel = new JPanel(buttonLayout);
     private JPanel messagePanel = new JPanel(messageLayout);
-
+    
     
     public SendNodeMessageDialog(JFrame frame, String SourceID, Vector<String> nodeList){
-        super(frame,true);
+        super(frame,"DARS - Send a Message");
+     
         // Add each node in the ComboBox from the node list
         for (int i = 0; i < nodeList.size(); i++){
           if(nodeList.get(i) != SourceID) //excluding the source node from the dropdown list
