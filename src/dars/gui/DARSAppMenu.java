@@ -240,7 +240,7 @@ public class DARSAppMenu  {
         }  
       
         for (int i = 1; i <= numberOfNodes; i++){
-          att.range = r.nextInt(400);
+          att.range = r.nextInt(400) + 50; // Min range of 50
           att.x = r.nextInt((int)X);
           att.y = r.nextInt((int)Y);
           InputHandler.dispatch(DARSEvent.inAddNode(att));

@@ -488,7 +488,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     
     
   }
-  
+  // Fulfills the "Node Inspector" contract.
   public JDialog getNodeDialog(String nodeId) {
     synchronized (lock) {
       Node node = store.getNode(nodeId);
@@ -498,7 +498,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       return node.getNodeDialog();
     }
   }
-
+  // Fulfills the "Node Inspector" contract.
   public void updateNodeDialog(String nodeId, JDialog dialog) {
     synchronized (lock) {
 
