@@ -189,6 +189,10 @@ public class DARSAppMenu  {
         int returnVal = chooser.showOpenDialog(menuBar.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
           /// Some call to load the simulation setup
+        //-----clear simulation first---------
+          InputHandler.dispatch(DARSEvent.inStopSim());
+          InputHandler.dispatch(DARSEvent.inClearSim());
+          //----------------------end clearing simulation--
            String name = chooser.getSelectedFile().getPath();
            System.out.println("loading simulation");
            Parser.parseReplay(name);
@@ -196,13 +200,6 @@ public class DARSAppMenu  {
       }
     });
     
-    /*setupMenu.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {            
-          ImportLogDialog.getFileName();
-          }    
-   });*/
-
     replayMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
