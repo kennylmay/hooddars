@@ -29,7 +29,7 @@ public class GUI extends JFrame implements OutputConsumer {
 
 
   public GUI() {
-
+    super("DAR Simulation Version 1.0");
 
 
    
@@ -48,7 +48,7 @@ public class GUI extends JFrame implements OutputConsumer {
      */
     // Add a center panel, this will serve us merely in a layout capacity.
     JPanel subpanel = new JPanel();
-    
+   
     //attach the menu area. 
     attachMenus();
     
