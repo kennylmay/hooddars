@@ -193,6 +193,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   public void nodeDeleted(String nodeId) {
     nodeSelectorComboBox.removeItem(nodeId);
     nodeList.remove(nodeId);
+    JDialog jd = openNodeDialogs.get(nodeId);
+    if(jd == null ) {
+      return;
+    }
+    openNodeDialogs.remove(nodeId);
+    jd.dispose();    
   }
 
   @Override
