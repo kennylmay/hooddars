@@ -63,6 +63,7 @@ public class DARSAppMenu  {
   private JButton            stopButton          = new JButton("Stop");
   
   private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
+  private JCheckBoxMenuItem  graphicsCheckBox    = new JCheckBoxMenuItem("Graphics Enabled");
 
   private JPanel             speedArea           = new JPanel();
   private JPanel             simTypeArea         = new JPanel();
@@ -95,6 +96,8 @@ public class DARSAppMenu  {
     newMenu.add(dsdvMenu);
     simMenu.add(saveMenu);
     simMenu.add(debugCheckBox);
+    simMenu.add(graphicsCheckBox);
+    graphicsCheckBox.setState(true);
     randomizeMenu.setEnabled(false);
     simMenu.add(randomizeMenu);
     simMenu.add(importMenu);
@@ -178,6 +181,12 @@ public class DARSAppMenu  {
       public void actionPerformed(ActionEvent arg0) {
         logArea.setDEBUG(debugCheckBox.getState());
       }      
+    });
+    
+    graphicsCheckBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        simArea.setGraphicsEnabled(graphicsCheckBox.getState());
+      }
     });
     
     setupMenu.addActionListener(new ActionListener() {
