@@ -31,6 +31,7 @@ import logger.Parser;
 
 import dars.InputHandler;
 import dars.NodeAttributes;
+import dars.Utilities;
 import dars.event.DARSEvent;
 
 public class DARSAppMenu  {
@@ -168,55 +169,10 @@ public class DARSAppMenu  {
 
     saveMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(       
-            "Log Files", "log");        
-            chooser.setFileFilter(filter);  
-        int returnVal = chooser.showSaveDialog(menuBar.getParent());
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-          // Define the new files to be saved.
-          File logFile = new File("darslog.tmp");
-          File saveFile = new File(chooser.getSelectedFile().getPath()+".log");
-
-          // Check to see if we will overwrite the file
-          if (saveFile.exists()){
-          int overwrite = JOptionPane.showConfirmDialog(null, "File already exists, do you want to overwrite?");
-            if (overwrite == JOptionPane.CANCEL_OPTION ||
-                overwrite == JOptionPane.CLOSED_OPTION ||
-                overwrite == JOptionPane.NO_OPTION){
-                return;
-            }
-          }
-          
-          // Initialize the file readers and writers
-          FileReader in = null;
-          FileWriter out = null;
-           
-          // Try to open each file
-          try {
-            int c;
-            in = new FileReader(logFile);
-            out = new FileWriter(saveFile);
-            // Write each line of the first file to the file chosen.
-            while ((c = in.read()) != -1) {
-              out.write(c);
-            }
-            
-            // Close both files.
-            in.close();
-            out.close();
-
-          } catch (FileNotFoundException e1) {
-            JOptionPane.showMessageDialog(menuBar.getParent(),
-                "Log file could not be saved at"
-                    + chooser.getSelectedFile().getPath());
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          }
-        }
+        Utilities.runSaveLogDialog(menuBar.getParent());
       }
     });
+    
 
     debugCheckBox.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent arg0) {

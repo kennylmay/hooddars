@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import dars.NodeInspector;
 import dars.OutputConsumer;
+import dars.Utilities;
 import dars.event.DARSEvent;
 import java.awt.*;
 
@@ -224,6 +225,15 @@ public class GUI extends JFrame implements OutputConsumer {
         menuArea.simStopped();
         simArea.simStopped();
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        
+        //Prompt the user to save the log
+        int ret = JOptionPane.showConfirmDialog(null,
+            "Simulation Completed. Would you like to save the log file?", 
+            "Simulation Completed.", JOptionPane.YES_NO_OPTION);
+        if(ret == JOptionPane.YES_OPTION) {
+          Utilities.runSaveLogDialog(simArea);
+        }
+            
         break;
 
       case OUT_PAUSE_SIM:
