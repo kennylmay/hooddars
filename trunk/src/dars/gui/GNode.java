@@ -100,6 +100,11 @@ public class GNode extends JPanel {
 
   }
 
+  public boolean isSelected() {
+    return (GNode.SelectedNode == this);
+  }
+  
+  
   public void setXY(int x, int y) {
     // Set the new location of the canvas
     setLocation(new Point(x, y));

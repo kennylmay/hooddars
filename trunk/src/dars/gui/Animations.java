@@ -235,7 +235,12 @@ public class Animations extends JPanel implements ComponentListener,
       // System.out.println("painting ranger");
       Graphics2D g2 = (Graphics2D) g;
       // Draw the graphic
-      g2.setColor(Color.BLACK);
+      if(parent_.isSelected()) {
+        g2.setColor(Color.BLUE);
+      }
+      else {
+        g2.setColor(Color.BLACK);
+      }
       g2.drawOval(parent_.getCenter().x - parent_.getRange(),
           parent_.getCenter().y - parent_.getRange(),
           parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
