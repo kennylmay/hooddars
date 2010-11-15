@@ -449,6 +449,10 @@ class NodeActionHandler implements GNodeListener{
   public void simStopped() {
     //Drop all message animations
     animations.dropAll();
+    
+    //lock the user interface
+    setLocked(true);
+    
   }
 
   public void setNodeAttributesArea(NodeAttributesArea nodeAttributesArea) {
