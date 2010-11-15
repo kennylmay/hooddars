@@ -237,6 +237,10 @@ class NodeActionHandler implements GNodeListener{
 
   }
 
+  private boolean graphicsEnabled = true;
+  public void setGraphicsEnabled(boolean isEnabled) {
+    this.graphicsEnabled = isEnabled;
+  }
   private void reassessFPS() {
     // reassess the FPS
     int maxFPS = 100;
@@ -261,6 +265,9 @@ class NodeActionHandler implements GNodeListener{
   private Animations animations = new Animations(this);
 
   public void nodeBroadcast(String nodeId) {
+    if(!graphicsEnabled) {
+      return;
+    }
     GNode n = getGNode(nodeId);
     if(n == null) return;
     animations.nodeBroadcast(n);
@@ -268,6 +275,9 @@ class NodeActionHandler implements GNodeListener{
   
   public void traceMessage(String fromId, String toId, Color color) {
     
+    if(!graphicsEnabled) {
+      return;
+    }
     GNode a = getGNode(fromId);
     GNode b = getGNode(toId);
 
