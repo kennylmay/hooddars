@@ -112,5 +112,22 @@ public abstract interface Node {
    * @author kennylmay
    */
   void updateNodeDialog(JDialog dialog);
+  
+  /**
+   * Return true if the nodes is listen only.
+   * 
+   * @author kresss
+   * 
+   * @return True/False based on the nodes Promiscuity
+   */
+  boolean isPromiscuous();
+  
+  
+  /**
+   * Set whether or not a node is listen only.
+   * 
+   * @param value
+   */
+  void setPromiscuity(boolean value);
 
 }
