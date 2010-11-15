@@ -470,7 +470,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     point1.y = originAtt.y;
     
     double distance = point1.distance(destinationAtt.x, destinationAtt.y);
-    if (distance > originAtt.range) {
+    if (distance > originAtt.range || distance > destinationAtt.range) {
       return false;
     } else
       return true;
