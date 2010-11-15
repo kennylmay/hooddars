@@ -24,6 +24,6 @@ public class Message {
     * 
     * @author kresss
     */
-   public static final String BCAST_STRING = "ALL";
+   public static final String BCAST_STRING = "BROADCAST";
    
 }
