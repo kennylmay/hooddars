@@ -183,8 +183,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
         i = store.getNodes();
         while(i.hasNext()) {
           node = i.next();
+          //if the node is null, it was deleted, continue
           if (node == null)
             continue;
+          
           // Only allow the nodes in range to hear the broadcast.
           if (canCommunicate(message.originId, node.getAttributes().id) && message.originId != node.getAttributes().id) {
             node.messageToNode(message);
@@ -453,10 +455,17 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
    * 
    * @return boolean
    */
-  private boolean canCommunicate(String OriginID, String DestinationID) {
+    private Point point1 = new Point();
+    private boolean canCommunicate(String OriginID, String DestinationID) {
     NodeAttributes originAtt = store.getNodeAttributes(OriginID);
     NodeAttributes destinationAtt = store.getNodeAttributes(DestinationID);
-    Point point1 = new Point(originAtt.x, originAtt.y);
+    
+    //Nodes that don't exist can't communicate; return false.
+    if(originAtt == null || destinationAtt == null ) {
+      return false;
+    }
+    point1.x = originAtt.x;
+    point1.y = originAtt.y;
     
     double distance = point1.distance(destinationAtt.x, destinationAtt.y);
     if (distance > originAtt.range) {
