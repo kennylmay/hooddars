@@ -15,12 +15,12 @@ import javax.swing.JDialog;
  * @author Kenny
  * 
  */
-public class NodeStore implements NodeInspector {
+public class NodeStore  {
 
 // Hash map of nodes.
 private HashMap<String, Node> store = new HashMap<String, Node>();
 
-// Fulfills the "Node Inspector" contract.
+
 public NodeAttributes getNodeAttributes(String nodeId) {
    Node node = store.get(nodeId);
    
@@ -72,14 +72,6 @@ public Iterator<Node> getNodes() {
    return store.values().iterator();
 }
 
-public JDialog getNodeDialog(String nodeId) {
-  Node node = store.get(nodeId);
-  return node.getNodeDialog();
-}
 
-public void updateNodeDialog(String nodeId, JDialog dialog) {
-  Node node = store.get(nodeId);
-  node.updateNodeDialog(dialog);
-}
 
 }

@@ -12,11 +12,13 @@ import dars.proto.aodv.Aodv;
 import java.lang.Thread;
 import java.math.BigInteger;
 
+import javax.swing.JDialog;
+
 /**
  * @author Kenny
  * 
  */
-public class SimEngine implements InputConsumer, SimulationTimeKeeper {
+public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspector {
   /**
    * Time to wait for an iteration.
    */
@@ -487,6 +489,37 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper {
     
   }
   
+  public JDialog getNodeDialog(String nodeId) {
+    synchronized (lock) {
+      Node node = store.getNode(nodeId);
+      if (node == null) {
+        return null;
+      }
+      return node.getNodeDialog();
+    }
+  }
 
-  
+  public void updateNodeDialog(String nodeId, JDialog dialog) {
+    synchronized (lock) {
+
+      Node node = store.getNode(nodeId);
+      if (node == null) {
+        return;
+      }
+      node.updateNodeDialog(dialog);
+    }
+  }
+
+  // Fulfills the "Node Inspector" contract.
+  public NodeAttributes getNodeAttributes(String nodeId) {
+    synchronized (lock) {
+      Node node = store.getNode(nodeId);
+
+      if (node == null) {
+        return null;
+      }
+      return node.getAttributes();
+    }
+  }
+
 }
