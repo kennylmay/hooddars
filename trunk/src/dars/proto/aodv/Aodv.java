@@ -57,7 +57,7 @@ public class Aodv implements Node {
    * traversal time in the RFC.
    * 
    */
-  public static final int HELLO_INTERVAL       = 25;                        // Ticks
+  public static final int HELLO_INTERVAL       = 25;                      // Ticks
 
   /*
    * Functions that define the org.dars.proto.node interface.
@@ -235,6 +235,28 @@ public class Aodv implements Node {
 
   }
 
+  /**
+   * Return true if the nodes is listen only.
+   * 
+   * @author kresss
+   * 
+   * @return True/False based on the nodes Promiscuity
+   */
+  public boolean isPromiscuous() {
+    return this.Promiscuous;
+  }
+
+  /**
+   * Set whether or not a node is listen only.
+   * 
+   * @author kresss
+   * 
+   * @param value
+   */
+  public void setPromiscuity(boolean value) {
+    this.Promiscuous = value;
+  }
+
   /*
    * Functions that extend the org.dars.proto.node interface to make it unique
    * to aodv.
@@ -252,13 +274,15 @@ public class Aodv implements Node {
    *          Message to be transmitted.
    */
   private void sendMessage(Message message) {
-    try {
-      txQueue.add(message);
-    } catch (IllegalStateException exception) {
-      OutputHandler
-          .dispatch(DARSEvent
-              .outError(this.att.id
-                  + " Failed to successfully queue message to be sent due to a full transmit queue."));
+    if (!this.Promiscuous) {
+      try {
+        txQueue.add(message);
+      } catch (IllegalStateException exception) {
+        OutputHandler
+            .dispatch(DARSEvent
+                .outError(this.att.id
+                    + " Failed to successfully queue message to be sent due to a full transmit queue."));
+      }
     }
   }
 
@@ -314,7 +338,7 @@ public class Aodv implements Node {
       receiveRREP(message);
       return;
     }
-    
+
     if (MsgType.equals("RERR")) {
       receiveRERR(message);
       return;
@@ -974,8 +998,8 @@ public class Aodv implements Node {
      * Update the Route Entry's precursor's list to contain the destination node
      * that this RREP is being sent to as well as the next hop of this RREP.
      * 
-     * MsgOrigID = The Original Creator of the RREQ. 
-     * SenderID = The Node that sent us the RREQ.
+     * MsgOrigID = The Original Creator of the RREQ. SenderID = The Node that
+     * sent us the RREQ.
      */
     PrecList = DestEntry.getPrecursorIPs();
 
@@ -1803,6 +1827,15 @@ public class Aodv implements Node {
    * Last Tick That A Hello Message Was Sent At
    */
   private int                         HelloSentAt = 0;
+
+  /**
+   * Current Promiscuous mode.
+   * 
+   * True - Send and Receive
+   * 
+   * False - Receive (Listen) Only
+   */
+  private boolean                     Promiscuous = false;
 
   /**
    * getNodeDialog

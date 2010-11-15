@@ -126,6 +126,8 @@ public abstract interface Node {
   /**
    * Set whether or not a node is listen only.
    * 
+   * @author kresss
+   * 
    * @param value
    */
   void setPromiscuity(boolean value);
