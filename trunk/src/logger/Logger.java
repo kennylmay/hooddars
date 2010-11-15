@@ -7,6 +7,7 @@ import dars.OutputConsumer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 
 import dars.event.DARSEvent;
 
@@ -28,8 +29,9 @@ public class Logger implements OutputConsumer, InputConsumer {
   public static String newline = System.getProperty("line.separator");
   public static void log(DARSEvent e){
 	  
+    
 	//if file handle is not init, do it
-    if(fstream == null) {
+    if(fstream == null ) {
       try {
         fstream = new FileWriter("darslog.tmp");
        } 
@@ -49,7 +51,6 @@ public class Logger implements OutputConsumer, InputConsumer {
    
     try {
 	  out.append(e.getLogString());
-      out.flush();
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -57,14 +58,50 @@ public class Logger implements OutputConsumer, InputConsumer {
 	
   }
  
-  public static void trunc() {
-	  
+  private void deleteLogFile() {
+    //Make sure the file handle is closed.
+    closeLogFile();
+    
+    //Delete the file
+    File tmp = new File("darslog.tmp");
+    tmp.delete();
+    
   }
   
+  private void closeLogFile() {
+    if(fstream != null) {
+      try {
+        if(out != null) { 
+          out.flush();
+        }
+        fstream.close();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    fstream = null;
+  }
+
   //Fulfills the DARSConsumer contract
   public void consumeOutput(DARSEvent e) {
-	//log the event
+    
+    //log the event
     Logger.log(e);
+    
+    switch(e.eventType) {
+    case OUT_NEW_SIM:
+      //Delete the log file if it exists.
+      deleteLogFile();
+      break;
+      
+    case OUT_STOP_SIM:
+      //Close the log file
+      closeLogFile();
+      break;
+    }
+    
+
   }
   
   public static Logger getInstance() {
