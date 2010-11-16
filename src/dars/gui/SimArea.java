@@ -87,10 +87,6 @@ class NodeActionHandler implements GNodeListener{
     edit_menu.gnodemap = gnodemap;
     edit_menu.show(n, x, y);
     
-    //propagate the signal to other listeners
-    for(GNodeListener g : nodeListeners){
-      g.nodePopupEvent(n,x,y);
-    }
 
   }
   
@@ -282,6 +278,7 @@ class NodeActionHandler implements GNodeListener{
     GNode a = getGNode(fromId);
     GNode b = getGNode(toId);
 
+    System.out.println("Attempting to trace msg from: " + fromId + " to " + toId);
     if(a == null || b == null) return;
     
     animations.traceMessage(a,b,color);
@@ -328,6 +325,7 @@ class NodeActionHandler implements GNodeListener{
     private static final long serialVersionUID = 1L;
     JMenuItem delete_item;
     JMenuItem msg_item;
+    JMenuItem view_item;
     GNode gnode;
     TreeMap<String, GNode> gnodemap;
     
@@ -346,9 +344,23 @@ class NodeActionHandler implements GNodeListener{
             public void actionPerformed(ActionEvent e) {            
              new SendNodeMessageDialog(null, gnode.getId(), nodeAttributesArea.getNodeList());
             }
-     });
+      });
+      
+      view_item = new JMenuItem("View attributes");
+      view_item.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              if(nodeAttributesArea != null) {
+                nodeAttributesArea.openNodeDialog(gnode.getId());
+              }
+            }
+          });
+          
+      
       add(delete_item);
       add(msg_item);
+      add(view_item);
+      
     }
  
    
