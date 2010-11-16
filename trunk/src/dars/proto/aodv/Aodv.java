@@ -295,6 +295,14 @@ public class Aodv implements Node {
        */
       MsgType = message.message.split("\\|")[0];
 
+
+      /**
+       * To make M's life easier. Fire a broadcast event.
+       */
+      if (message.destinationId.equals(Message.BCAST_STRING)) {
+        OutputHandler.dispatch(DARSEvent.outNodeBroadcast(this.att.id));
+      }
+      
       // TODO: Replace this terrible list of if statements with a switch
       // statement once Java 7 is released. Java 7 supposedly has the ability
       // to switch on strings.
@@ -320,13 +328,6 @@ public class Aodv implements Node {
       if (MsgType.equals("RERR")) {
         OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(this.att.id, message));
         return;
-      }
-
-      /**
-       * To make M's life easier. Fire a broadcast event.
-       */
-      if (message.destinationId.equals(Message.BCAST_STRING)) {
-        OutputHandler.dispatch(DARSEvent.outNodeBroadcast(this.att.id));
       }
     }
   }
