@@ -540,7 +540,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       if (node == null) {
         return false;
       }
-      System.out.println("node returned " + node.isPromiscuous());
       return node.isPromiscuous();
     }
   }
