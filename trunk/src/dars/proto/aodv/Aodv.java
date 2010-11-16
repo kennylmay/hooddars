@@ -303,22 +303,22 @@ public class Aodv implements Node {
        * Switch on the Message type to send the DARS in events.
        */
       if (MsgType.equals("RREQ")) {
-        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(message));
+        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(this.att.id, message));
         return;
       }
 
       if (MsgType.equals("NARR")) {
-        OutputHandler.dispatch(DARSEvent.outNarrMsgReceived(message));
+        OutputHandler.dispatch(DARSEvent.outNarrMsgTransmitted(this.att.id, message));
         return;
       }
 
       if (MsgType.equals("RREP")) {
-        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(message));
+        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(this.att.id, message));
         return;
       }
 
       if (MsgType.equals("RERR")) {
-        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(message));
+        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(this.att.id, message));
         return;
       }
     }
@@ -361,25 +361,25 @@ public class Aodv implements Node {
 
     if (MsgType.equals("RREQ")) {
       receiveRREQ(message);
-      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(message));
+      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(this.att.id, message));
       return;
     }
 
     if (MsgType.equals("NARR")) {
       receiveNarrative(message);
-      OutputHandler.dispatch(DARSEvent.outNarrMsgReceived(message));
+      OutputHandler.dispatch(DARSEvent.outNarrMsgReceived(this.att.id, message));
       return;
     }
 
     if (MsgType.equals("RREP")) {
       receiveRREP(message);
-      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(message));
+      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(this.att.id, message));
       return;
     }
 
     if (MsgType.equals("RERR")) {
       receiveRERR(message);
-      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(message));
+      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(this.att.id, message));
       return;
     }
 
