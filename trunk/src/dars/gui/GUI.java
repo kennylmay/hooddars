@@ -177,11 +177,17 @@ public class GUI extends JFrame implements OutputConsumer {
                                             "Destination Node: " + e.destinationId + "\n" +
                                             "Message: " + e.transmittedMessage);
         break;
-   
-      case OUT_MSG_TRANSMITTED:
+  
+      case OUT_NARRMSG_RECEIVED:
         // Animate the event
-          simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE);
-          logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        simArea.traceMessage(e.sourceId, e.destinationId, Color.RED);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        break;
+        
+      case OUT_CONTROLMSG_RECEIVED:
+        // Animate the event
+        simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_NODE_BROADCAST:
