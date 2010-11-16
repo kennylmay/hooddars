@@ -173,14 +173,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       message = messageQueue.poll();
 
       // If the message is a broadcast then try to send to everyone
-      if (message.destinationId == Message.BCAST_STRING) {
-        
-        //Generate a broadcast event
-        //NOTE, 
-        //I'm not sure if this is the best place for this call to take place. Maybe it
-        //should be at the node level. Feel free to move it. - Mike
-        OutputHandler.dispatch(DARSEvent.outNodeBroadcast(message.originId));
-        
+      if (message.destinationId == Message.BCAST_STRING) {  
         
         i = store.getNodes();
         while(i.hasNext()) {
@@ -192,8 +185,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           // Only allow the nodes in range to hear the broadcast.
           if (canCommunicate(message.originId, node.getAttributes().id) && message.originId != node.getAttributes().id) {
             node.messageToNode(message);
-            OutputHandler.dispatch(DARSEvent.outMsgTransmitted(
-                message.originId, node.getAttributes().id, message.message));
           }
         }
         // Else if the messageQueue is not a broadcast try to send it to the
@@ -202,12 +193,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         if (canCommunicate(message.originId, message.destinationId)) {
           // SAK - Send the message to the destination node.
           store.getNode(message.destinationId).messageToNode(message);
-          //Generate a node msg event
-          //NOTE, 
-          //I'm not sure if this is the best place for this call to take place. Maybe it
-          //should be at the node level. Feel free to move it. - Mike
-          OutputHandler.dispatch(DARSEvent.outMsgTransmitted(
-              message.originId, message.destinationId, message.message));
         }
       }
     }
