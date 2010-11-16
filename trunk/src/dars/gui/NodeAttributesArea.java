@@ -29,17 +29,20 @@ import dars.proto.aodv.AodvDialog;
 
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
-  private JComboBox      nodeSelectorComboBox = new JComboBox();
-  private JTextField     nodeXField           = new JTextField(4);
-  private JTextField     nodeYField           = new JTextField(4);
-  private JSpinner       nodeRangeSpinner     = new JSpinner(
-                                                  new SpinnerNumberModel(0,
-                                                      0, 1000, 20));
-  private JButton        nodeAttributesButton = new JButton("Attributes");
-  private JCheckBox   promiscuousModeCheckBox = new JCheckBox("Promiscous mode Enabled"); 
-  private boolean        blockChangeEvents    = false;
-  private Vector<String> nodeList             = new Vector<String>();
-  private HashMap<String, JDialog> openNodeDialogs = new HashMap<String, JDialog>();
+  private JComboBox                nodeSelectorComboBox    = new JComboBox();
+  private JTextField               nodeXField              = new JTextField(4);
+  private JTextField               nodeYField              = new JTextField(4);
+  private JSpinner                 nodeRangeSpinner        = new JSpinner(
+                                                               new SpinnerNumberModel(
+                                                                   0, 0, 1000,
+                                                                   20));
+  private JButton                  nodeAttributesButton    = new JButton(
+                                                               "Attributes");
+  private JCheckBox                promiscuousModeCheckBox = new JCheckBox(
+                                                               "Promiscous mode Enabled");
+  private boolean                  blockChangeEvents       = false;
+  private Vector<String>           nodeList                = new Vector<String>();
+  private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
 
   public NodeAttributesArea() {
     // Use a box layout inside a border layout, with an internal flow layout at
@@ -84,7 +87,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
     c.add(promiscuousModeCheckBox);
     box.add(c);
-    
+
     add(box, BorderLayout.NORTH);
     setLock(true);
     setVisible(true);
@@ -92,16 +95,17 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // Node combobox action handler
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
-        if(blockChangeEvents) {
+        if (blockChangeEvents) {
           return;
         }
-        
+
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           setLock(true);
           return;
         }
-          
-        setAttributes(getAttributes((nodeSelectorComboBox.getSelectedItem().toString())));
+
+        setAttributes(getAttributes((nodeSelectorComboBox.getSelectedItem()
+            .toString())));
         setLock(false);
         simArea.selectNode(nodeSelectorComboBox.getSelectedItem().toString());
       }
@@ -112,11 +116,11 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       public void stateChanged(ChangeEvent ie) {
         if (blockChangeEvents)
           return;
-        
-        if(nodeSelectorComboBox.getSelectedItem() == null) {
+
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
-        
+
         InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox
             .getSelectedItem().toString(), (Integer) nodeRangeSpinner
             .getValue()));
@@ -175,32 +179,33 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeAttributesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         // If the attributes button is clicked while nothing is selected return
-        if (nodeSelectorComboBox.getSelectedItem() == null){
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
         // If the node attributes window is already open return
-        if (openNodeDialogs.containsKey((nodeSelectorComboBox.getSelectedItem().toString()))){
+        if (openNodeDialogs.containsKey((nodeSelectorComboBox.getSelectedItem()
+            .toString()))) {
           return;
         }
         JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
-           .getSelectedItem().toString());
-        dialog.setVisible(true);     
-        openNodeDialogs.put(nodeSelectorComboBox.getSelectedItem().toString(), dialog); 
+            .getSelectedItem().toString());
+        dialog.setVisible(true);
+        openNodeDialogs.put(nodeSelectorComboBox.getSelectedItem().toString(),
+            dialog);
       }
     });
-    
+
     promiscuousModeCheckBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        if(nodeSelectorComboBox.getSelectedItem() == null) {
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
         InputHandler.dispatch(DARSEvent.inSetNodePromiscuity(
-            nodeSelectorComboBox.getSelectedItem().toString(), 
+            nodeSelectorComboBox.getSelectedItem().toString(),
             promiscuousModeCheckBox.isSelected()));
       }
     });
   }
-   
 
   private void setPreferredWidth(int i) {
     // TODO Auto-generated method stub
@@ -236,11 +241,11 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeSelectorComboBox.removeItem(nodeId);
     nodeList.remove(nodeId);
     JDialog jd = openNodeDialogs.get(nodeId);
-    if(jd == null ) {
+    if (jd == null) {
       return;
     }
     openNodeDialogs.remove(nodeId);
-    jd.dispose();    
+    jd.dispose();
   }
 
   @Override
@@ -261,7 +266,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     if (ni != null) {
       setAttributes(ni);
       nodeSelectorComboBox.setSelectedItem(gnode.getId());
-      
+
     }
   }
 
@@ -299,17 +304,17 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeList.clear();
     promiscuousModeCheckBox.setSelected(false);
     nodeRangeSpinner.setValue(0);
-    
+
     String nodeId;
     JDialog dialog;
     Iterator<String> iter = openNodeDialogs.keySet().iterator();
-    while (iter.hasNext()){
-       nodeId = iter.next();
-       dialog = openNodeDialogs.get(nodeId);
-      if (dialog.isVisible() == true){
+    while (iter.hasNext()) {
+      nodeId = iter.next();
+      dialog = openNodeDialogs.get(nodeId);
+      if (dialog.isVisible() == true) {
         dialog.setVisible(false);
       }
-    }    
+    }
     openNodeDialogs.clear();
   }
 
@@ -318,40 +323,50 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   }
 
   public void setLock(boolean isLocked) {
-    //lock every field
+    // lock every field
     nodeSelectorComboBox.setEnabled(!isLocked);
     nodeXField.setEnabled(!isLocked);
     nodeYField.setEnabled(!isLocked);
     nodeRangeSpinner.setEnabled(!isLocked);
     promiscuousModeCheckBox.setEnabled(!isLocked);
     nodeAttributesButton.setEnabled(!isLocked);
-    
+
   }
-  
+
   public void simPaused() {
-    
+
   }
-  
+
   public void simStopped() {
     clear();
     setLock(true);
   }
-  
-  
-  public void updateNodeDialogs(){
+
+  public void openNodeDialog(String nodeID) {
+    // If the node attributes window is already open return
+    if (openNodeDialogs.containsKey(nodeID)) {
+      return;
+    }
+    JDialog dialog = nodeInspector.getNodeDialog(nodeID);
+    dialog.setVisible(true);
+    openNodeDialogs.put(nodeID, dialog);
+  }
+
+  public void updateNodeDialogs() {
     String nodeId;
     JDialog dialog;
     Iterator<String> iter = openNodeDialogs.keySet().iterator();
-    while (iter.hasNext()){
-       nodeId = iter.next();
-       dialog = openNodeDialogs.get(nodeId);
-      if (dialog.isVisible() == false){
+    while (iter.hasNext()) {
+      nodeId = iter.next();
+      dialog = openNodeDialogs.get(nodeId);
+      if (dialog.isVisible() == false) {
         iter.remove();
         openNodeDialogs.remove(nodeId);
         continue;
       }
       nodeInspector.updateNodeDialog(nodeId, dialog);
-    }    
+    }
   }
+
   private NodeInspector nodeInspector;
 }
