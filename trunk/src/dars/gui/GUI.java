@@ -196,6 +196,7 @@ public class GUI extends JFrame implements OutputConsumer {
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
         
+        
       case OUT_DEL_NODE:
         // Remove the node
         simArea.deleteNode(e.nodeId);

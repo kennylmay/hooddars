@@ -364,8 +364,8 @@ public class DARSEvent {
   public static DARSEvent outControlMsgReceived(String sourceId, Message msg) {
     DARSEvent d = new DARSEvent();
     d.eventType = EventType.OUT_CONTROLMSG_RECEIVED;
-    d.sourceId = sourceId;
-    d.destinationId = msg.destinationId;
+    d.sourceId = msg.originId;
+    d.destinationId = sourceId;
     d.transmittedMessage = msg.message;
     d.informationalMessage = "Control message received: " + msg.message;
     return d;
@@ -374,8 +374,8 @@ public class DARSEvent {
   public static DARSEvent outNarrMsgReceived(String sourceId, Message msg) {
     DARSEvent d = new DARSEvent();
     d.eventType = EventType.OUT_NARRMSG_RECEIVED;
-    d.sourceId = sourceId;
-    d.destinationId = msg.destinationId;
+    d.sourceId = msg.originId;
+    d.destinationId = sourceId;
     d.transmittedMessage = msg.message;
     d.informationalMessage = "Narrative message received: " + msg.message;
     return d;
