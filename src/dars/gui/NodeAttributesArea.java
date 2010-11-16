@@ -174,7 +174,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
     nodeAttributesButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
+        // If the attributes button is clicked while nothing is selected return
         if (nodeSelectorComboBox.getSelectedItem() == null){
+          return;
+        }
+        // If the node attributes window is already open return
+        if (openNodeDialogs.containsKey((nodeSelectorComboBox.getSelectedItem().toString()))){
           return;
         }
         JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
