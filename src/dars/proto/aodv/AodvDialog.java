@@ -2,6 +2,7 @@
  */
 package dars.proto.aodv;
 
+import javax.jws.WebParam.Mode;
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -10,71 +11,75 @@ import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class AodvDialog extends JDialog {
-  private static final long serialVersionUID      = 1L;
-  private JLabel            sourceNodeLabel       = new JLabel("Source Node:");
-  private JLabel            currentNodeTick       = new JLabel("Clock Ticks:");
-  private JLabel            nodeInfo              = new JLabel(
-                                                      "Route Table:");
-  private JTextArea         nodeRouteTable        = new JTextArea();
+  private static final long serialVersionUID     = 1L;
+  private JLabel            sourceNodeLabel      = new JLabel("Source Node:");
+  private JLabel            currentNodeTick      = new JLabel("Clock Ticks:");
+  private JLabel            nodeInfo             = new JLabel("Route Table:");
   private JLabel            sourceLabel;
-  private JLabel           TimeLabel;
+  private JLabel            TimeLabel;
 
   // Creating the border layout
 
-  private BorderLayout      Layout                = new BorderLayout();
-  private GridLayout        nodeInfoLayout        = new GridLayout(3, 2);
-  private BorderLayout      nodeRouteTableLayout  = new BorderLayout();
-  private BorderLayout      nodeTimeLayout        = new BorderLayout();
-  private BorderLayout      nodeSouceLayout       = new BorderLayout();
+  private BorderLayout      Layout               = new BorderLayout();
+  private GridLayout        nodeInfoLayout       = new GridLayout(3, 2);
+  private BorderLayout      nodeRouteTableLayout = new BorderLayout();
+  private BorderLayout      nodeTimeLayout       = new BorderLayout();
+  private BorderLayout      nodeSouceLayout      = new BorderLayout();
 
   // creating panels
-  private JPanel            Panel                 = new JPanel(Layout);
-  private JPanel            nodeInfoPanel         = new JPanel(nodeInfoLayout);
-  private JPanel            nodeSourcePanel       = new JPanel(nodeSouceLayout);
-  private JPanel            nodeTimePanel         = new JPanel(nodeTimeLayout);
-  private JPanel            routePanel            = new JPanel(
-                                                      nodeRouteTableLayout);
-  private JScrollPane         scroller;
+  private JPanel            Panel                = new JPanel(Layout);
+  private JPanel            nodeInfoPanel        = new JPanel(nodeInfoLayout);
+  private JPanel            nodeSourcePanel      = new JPanel(nodeSouceLayout);
+  private JPanel            nodeTimePanel        = new JPanel(nodeTimeLayout);
+  private JPanel            routePanel           = new JPanel(
+                                                     nodeRouteTableLayout);
+  private JScrollPane       scroller;
 
-  public AodvDialog(JFrame frame, String SourceId, int timeTick, HashMap<String, RouteEntry> routeTable) {
+  DefaultTableModel         model                = new DefaultTableModel();
+
+  JTable nodeRouteTable = new JTable(model){  
+    private static final long serialVersionUID = 1L;
+
+    public boolean isCellEditable(int row, int column){  
+      return false;  
+    }  
+  };
+
+  public AodvDialog(JFrame frame, String SourceId, int timeTick,
+      HashMap<String, RouteEntry> routeTable) {
     super(frame, true);
+
+    // / Set the model columns
+    model.addColumn("DESTINATION");
+    model.addColumn("HOP COUNT");
+    model.addColumn("NEXT HOP");
+    model.addColumn("STATE");
+    model.addColumn("SEQ #");
 
     sourceLabel = new JLabel(SourceId);
 
-    // Set the route entry box options
-    nodeRouteTable.setRows(20);
-    nodeRouteTable.setColumns(40);
-    nodeRouteTable.setLineWrap(true);
-    nodeRouteTable.setEditable(false);
-
     // Set the time tick label options
-    String timeTickString = ""+timeTick;
+    String timeTickString = "" + timeTick;
     TimeLabel = new JLabel(timeTickString);
-   
-    getContentPane().add(Panel);
-   
-    // Creating borders
-    Border raisedBevel, loweredBevel, compound;
-    raisedBevel = BorderFactory.createRaisedBevelBorder();
-    loweredBevel = BorderFactory.createLoweredBevelBorder();
-    compound = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
 
-    // Give the border to the message box component
-    nodeRouteTable.setBorder(compound);
+    getContentPane().add(Panel);
 
     // Add the component to the message Panel
     routePanel.add(nodeInfo, BorderLayout.NORTH);
     routePanel.add(nodeRouteTable, BorderLayout.CENTER);
-           
+
     // Add the text area to the scroller
     scroller = new JScrollPane(nodeRouteTable);
-    
+
     // Add component to the node time information panel
     nodeTimePanel.add(TimeLabel, BorderLayout.EAST);
     nodeTimePanel.add(currentNodeTick, BorderLayout.WEST);
@@ -91,8 +96,8 @@ public class AodvDialog extends JDialog {
     // Add all the individual panels to the main panel
     Panel.add(nodeInfoPanel, BorderLayout.NORTH);
     Panel.add(scroller, BorderLayout.CENTER);
-  
-    nodeRouteTable.setText(formatRouteTable(routeTable));
+
+    formatRouteTable(routeTable);
 
     // Display the Panel
     this.pack();
@@ -102,24 +107,36 @@ public class AodvDialog extends JDialog {
   }
 
   void updateInformation(int currentTick, HashMap<String, RouteEntry> routeTable) {
-    nodeRouteTable.setText(formatRouteTable(routeTable));
+    formatRouteTable(routeTable);
     String timeTick = "" + currentTick;
     TimeLabel.setText(timeTick);
   }
 
-  private String formatRouteTable(HashMap<String, RouteEntry> routeTable){
+  private void formatRouteTable(HashMap<String, RouteEntry> routeTable) {
     Iterator<String> iter = routeTable.keySet().iterator();
     String sourId;
     RouteEntry entry;
-    String routeTableText = "DESTINATION\tHOP COUNT\tNEXT HOP\tSTATE\tSEQ #\n";
-    routeTableText += "_______________________________________________________\n";
+    String destinationIP, hopCount, nextHop, state, sequenceNum;
 
-    while(iter.hasNext()){
+    // Clean the table out to refresh the table
+    for (int x = 0; x <= model.getRowCount() - 1; x++) {
+      model.removeRow(x);
+    }
+
+    // Add all the rows back in
+    while (iter.hasNext()) {
       sourId = iter.next();
       entry = routeTable.get(sourId);
-      routeTableText += entry.getDestIP()+"\t" + entry.getHopCount()  + "\t" + 
-      entry.getNextHopIP()+ "\t" + entry.getState() + "\t" + entry.getSeqNum() + "\n";
+
+      destinationIP = entry.getDestIP();
+      hopCount = "" + entry.getHopCount();
+      nextHop = entry.getNextHopIP();
+      state = "" + entry.getState();
+      sequenceNum = "" + entry.getSeqNum();
+
+      model.addRow(new String[] { destinationIP, hopCount, nextHop, nextHop,
+          state, sequenceNum });
     }
-    return routeTableText;
+    return;
   }
 }
