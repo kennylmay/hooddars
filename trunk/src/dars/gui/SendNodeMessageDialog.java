@@ -56,6 +56,7 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
     
     public SendNodeMessageDialog(JFrame frame, String SourceID, Vector<String> nodeList){
         super(frame,"DARS - Send a Message");
+        this.setAlwaysOnTop(true);
      
         // Add each node in the ComboBox from the node list
         for (int i = 0; i < nodeList.size(); i++){
