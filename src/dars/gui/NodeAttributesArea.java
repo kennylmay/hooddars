@@ -346,6 +346,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
        nodeId = iter.next();
        dialog = openNodeDialogs.get(nodeId);
       if (dialog.isVisible() == false){
+        iter.remove();
         openNodeDialogs.remove(nodeId);
         continue;
       }
