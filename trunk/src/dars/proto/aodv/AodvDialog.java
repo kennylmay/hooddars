@@ -2,33 +2,28 @@
  */
 package dars.proto.aodv;
 
-import javax.jws.WebParam.Mode;
+
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class AodvDialog extends JDialog {
   private static final long serialVersionUID     = 1L;
-  private JLabel            sourceNodeLabel      = new JLabel("Source Node:");
-  private JLabel            currentNodeTick      = new JLabel("Clock Ticks:");
+  private JLabel            sourceNodeLabel      = new JLabel("Source Node: ");
+  private JLabel            currentNodeTick      = new JLabel("Clock Ticks: ");
   private JLabel            nodeInfo             = new JLabel("Route Table:");
   private JLabel            sourceLabel;
   private JLabel            TimeLabel;
 
   // Creating the border layout
-
   private BorderLayout      Layout               = new BorderLayout();
   private GridLayout        nodeInfoLayout       = new GridLayout(3, 2);
   private BorderLayout      nodeRouteTableLayout = new BorderLayout();
@@ -72,7 +67,7 @@ public class AodvDialog extends JDialog {
     TimeLabel = new JLabel(timeTickString);
 
     getContentPane().add(Panel);
-
+  
     // Add the component to the message Panel
     routePanel.add(nodeInfo, BorderLayout.NORTH);
     routePanel.add(nodeRouteTable, BorderLayout.CENTER);
@@ -81,11 +76,11 @@ public class AodvDialog extends JDialog {
     scroller = new JScrollPane(nodeRouteTable);
 
     // Add component to the node time information panel
-    nodeTimePanel.add(TimeLabel, BorderLayout.EAST);
+    nodeTimePanel.add(TimeLabel, BorderLayout.CENTER);
     nodeTimePanel.add(currentNodeTick, BorderLayout.WEST);
 
     // Add component to the node time information panel
-    nodeSourcePanel.add(sourceLabel, BorderLayout.EAST);
+    nodeSourcePanel.add(sourceLabel, BorderLayout.CENTER);
     nodeSourcePanel.add(sourceNodeLabel, BorderLayout.WEST);
 
     // Adding to the Grid
