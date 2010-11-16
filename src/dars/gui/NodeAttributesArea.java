@@ -92,10 +92,16 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // Node combobox action handler
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
+        if(blockChangeEvents) {
+          return;
+        }
+        
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           setLock(true);
           return;
         }
+          
+        setAttributes(getAttributes((nodeSelectorComboBox.getSelectedItem().toString())));
         setLock(false);
         simArea.selectNode(nodeSelectorComboBox.getSelectedItem().toString());
       }
@@ -180,6 +186,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     
     promiscuousModeCheckBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
+        if(nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
         InputHandler.dispatch(DARSEvent.inSetNodePromiscuity(
             nodeSelectorComboBox.getSelectedItem().toString(), 
             promiscuousModeCheckBox.isSelected()));
@@ -244,11 +253,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   @Override
   public void nodeSelected(GNode gnode) {
     NodeAttributes ni = getAttributes(gnode.getId());
-    boolean isPromiscuous = nodeInspector.getNodePromiscuity(gnode.getId());
     if (ni != null) {
       setAttributes(ni);
       nodeSelectorComboBox.setSelectedItem(gnode.getId());
-      promiscuousModeCheckBox.setSelected(isPromiscuous);
       
     }
   }
@@ -265,6 +272,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeYField.setText(Integer.toString(n.y));
     nodeRangeSpinner.setValue(n.range);
     blockChangeEvents = false;
+    promiscuousModeCheckBox.setSelected(nodeInspector.getNodePromiscuity(n.id));
   }
 
   public void setNodeInspector(NodeInspector ni) {
@@ -302,8 +310,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   public void selectNodeById(String id) {
     setAttributes(getAttributes(id));
-    promiscuousModeCheckBox.setSelected(nodeInspector.getNodePromiscuity(id));
-    
   }
 
   public void setLock(boolean isLocked) {
