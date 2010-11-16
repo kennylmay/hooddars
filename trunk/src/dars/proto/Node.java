@@ -7,7 +7,6 @@ import javax.swing.JDialog;
 
 import dars.NodeAttributes;
 import dars.Message;
-import dars.proto.aodv.AodvDialog;
 
 /**
  * Base Class for all protocol specific node types.

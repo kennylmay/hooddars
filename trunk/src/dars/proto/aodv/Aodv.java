@@ -529,7 +529,7 @@ public class Aodv implements Node {
     MsgType = MsgArray[0];
     MsgFlags = MsgArray[1];
     MsgTTL = Integer.parseInt(MsgArray[2]);
-    MsgHopCount = Integer.parseInt(MsgArray[3]);
+    MsgHopCount = Integer.parseInt(MsgArray[3]) + 1;
     MsgRREQID = Integer.parseInt(MsgArray[4]);
     MsgDestID = MsgArray[5];
     MsgDestSeqNum = Integer.parseInt(MsgArray[6]);
@@ -567,6 +567,12 @@ public class Aodv implements Node {
             + " Dropped message due to old RREQID. Message String: "
             + message.message));
         return;
+      } else {
+        /**
+         * The RREQ is newer than this node has seen. Add it to the history and
+         * continue to process it.
+         */
+        this.RREQHistory.put(MsgSrcID, MsgRREQID);
       }
     } else {
       this.RREQHistory.put(MsgSrcID, MsgRREQID);
@@ -1121,7 +1127,7 @@ public class Aodv implements Node {
         /**
          * Update the Sequence Number and Lifetime if it is newer.
          */
-        if (DestEntry.getSeqNum() < MsgDestSeqNum) {
+        if (DestEntry.getSeqNum() <= MsgDestSeqNum) {
           DestEntry.setSeqNum(MsgDestSeqNum);
           DestEntry.setState(RouteEntry.StateFlags.VALID);
           DestEntry.setLifetime(this.CurrentTick + MY_ROUTE_TIMEOUT);

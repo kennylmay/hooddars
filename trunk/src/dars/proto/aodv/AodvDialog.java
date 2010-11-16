@@ -113,20 +113,18 @@ public class AodvDialog extends JDialog {
   }
 
   private void formatRouteTable(HashMap<String, RouteEntry> routeTable) {
-    Iterator<String> iter = routeTable.keySet().iterator();
-    String sourId;
+    Iterator<RouteEntry> iter = routeTable.values().iterator();
     RouteEntry entry;
     String destinationIP, hopCount, nextHop, state, sequenceNum;
 
     // Clean the table out to refresh the table
-    for (int x = 0; x <= model.getRowCount() - 1; x++) {
-      model.removeRow(x);
+    while (model.getRowCount() > 0) {
+      model.removeRow(0);
     }
-
+    
     // Add all the rows back in
     while (iter.hasNext()) {
-      sourId = iter.next();
-      entry = routeTable.get(sourId);
+      entry = iter.next();
 
       destinationIP = entry.getDestIP();
       hopCount = "" + entry.getHopCount();
@@ -134,7 +132,7 @@ public class AodvDialog extends JDialog {
       state = "" + entry.getState();
       sequenceNum = "" + entry.getSeqNum();
 
-      model.addRow(new String[] { destinationIP, hopCount, nextHop, nextHop,
+      model.addRow(new String[] { destinationIP, hopCount, nextHop,
           state, sequenceNum });
     }
     return;
