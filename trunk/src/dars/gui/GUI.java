@@ -224,6 +224,7 @@ public class GUI extends JFrame implements OutputConsumer {
         //Notify the menu that the sim has stopped
         menuArea.simStopped();
         simArea.simStopped();
+        nodeAttributesArea.simStopped();
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         
         //Prompt the user to save the log
@@ -240,6 +241,7 @@ public class GUI extends JFrame implements OutputConsumer {
         //Notify the menu the the sim has paused
         menuArea.simPaused();
         simArea.simPaused();
+        nodeAttributesArea.simPaused();
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
@@ -260,9 +262,10 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_NEW_SIM:
         //Clear the sim area.
         simArea.clear();
-        
+        nodeAttributesArea.clear();
         //Unlock the sim area
         simArea.setLocked(false);
+        
         
         //Let the menu area know that a new sim has been created
         menuArea.newSim();

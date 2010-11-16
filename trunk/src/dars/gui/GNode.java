@@ -60,6 +60,11 @@ public class GNode extends JPanel {
   }
 
   // /Functions
+  private boolean locked = false;
+  public void setLocked(boolean locked) {
+    this.locked = locked;  
+  }
+  
   public void addListener(GNodeListener l) {
     this.listeners.add(l);
   }
@@ -173,6 +178,10 @@ public class GNode extends JPanel {
   private class GNodeMouseListener extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
+      if(locked) {
+        return;
+      }
+      
       // Invalidate any other drag notions initially
       isClicked = false;
 
@@ -181,7 +190,6 @@ public class GNode extends JPanel {
         // System.out.println("Popup event");
         for (GNodeListener l : listeners) {
           l.nodePopupEvent((GNode) e.getSource(), e.getX(), e.getY());
-
         }
         return;
       }
@@ -204,6 +212,9 @@ public class GNode extends JPanel {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+      if(locked) {
+        return;
+      }
       if (e.isPopupTrigger()) {
         // System.out.println("Popup event");
         for (GNodeListener l : listeners) {
@@ -238,6 +249,9 @@ public class GNode extends JPanel {
 
     @Override
     public void mouseEntered(MouseEvent e) {
+      if(locked) {
+        return;
+      }
       // Set state to entered
       setEntered(true);
 
@@ -251,6 +265,9 @@ public class GNode extends JPanel {
 
     @Override
     public void mouseExited(MouseEvent e) {
+      if(locked) {
+        return;
+      }
       // Set state to not entered
       setEntered(false);
 
@@ -264,6 +281,9 @@ public class GNode extends JPanel {
   private class GNodeMouseMotionListener extends MouseMotionAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
+      if(locked) {
+        return;
+      }
 
       // If its a right click, return
       if (!isClicked) {

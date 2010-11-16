@@ -45,6 +45,8 @@ public class SimArea extends JLayeredPane {
 class NodeActionHandler implements GNodeListener{
 
   public void nodeMoved(GNode n, int x, int y) {
+    
+    
     //issue a move node request
     moveNodeReq(n.getId(), x, y);
     
@@ -257,7 +259,6 @@ class NodeActionHandler implements GNodeListener{
     } else
       usedFPS = maxFPS;
 
-    System.out.println("setting fps=" + usedFPS);
     
     animations.setFPS(usedFPS);
   }
@@ -344,7 +345,7 @@ class NodeActionHandler implements GNodeListener{
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {            
              new SendNodeMessageDialog(null, gnode.getId(), nodeAttributesArea.getNodeList());
-            }    
+            }
      });
       add(delete_item);
       add(msg_item);
@@ -418,6 +419,14 @@ class NodeActionHandler implements GNodeListener{
    */
   public void setLocked(boolean locked) {
     this.locked = locked;
+    
+    //propagate signal to nodes
+    for(GNode gnode : gnodemap.values() ) {
+      gnode.setLocked(locked);
+    }
+    
+    
+    
   }
 
   /**
@@ -437,9 +446,7 @@ class NodeActionHandler implements GNodeListener{
       //Accumulate every node id
       nodeIds.add(n.getId());
     }
-   
-    //Remove every node
-    for(String id : nodeIds) {
+       for(String id : nodeIds) {
       deleteNode(id); 
     }
   }

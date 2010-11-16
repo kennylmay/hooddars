@@ -51,6 +51,7 @@ public class Animations extends JPanel implements ComponentListener,
     ri.fireBroadcast();
   }
 
+
   public void start() {
     animationTimer.start();
   }
@@ -61,7 +62,6 @@ public class Animations extends JPanel implements ComponentListener,
 
   public void setFPS(int fps) {
     repaintTimer.setDelay(1000/fps); 
-    System.out.println(fps);
   }
 
   LinkedList<Connection>         connStore = new LinkedList<Connection>();
@@ -69,6 +69,8 @@ public class Animations extends JPanel implements ComponentListener,
 
   public void paintComponent(Graphics g) {
 
+
+    
     // Draw the message tracing animation
     Iterator<Connection> i = connStore.iterator();
     while (i.hasNext()) {
@@ -102,6 +104,18 @@ public class Animations extends JPanel implements ComponentListener,
       }
 
     }
+    
+
+  }
+
+  private int getPreferredHeight() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  private int getPreferredWidth() {
+    // TODO Auto-generated method stub
+    return 0;
   }
 
   private Timer animationTimer = new Timer(33, new ActionListener() {
@@ -214,7 +228,6 @@ public class Animations extends JPanel implements ComponentListener,
   }
 
   public void updateSize() {
-    System.out.println("size updated.");
     this.setSize(getParent().getSize());
   }
 

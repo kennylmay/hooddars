@@ -311,6 +311,15 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         OutputHandler.dispatch(DARSEvent.outSetNodeRange(e.nodeId, e.nodeRange));
         break;
         
+      case IN_SET_NODE_PROMISCUITY: 
+        //Get the node
+        n = store.getNode(e.nodeId);
+        
+        // Set the new promiscuity level
+        n.setPromiscuity(e.isPromiscuous);
+        OutputHandler.dispatch(DARSEvent.outSetNodePromiscuity(e.nodeId, e.isPromiscuous));
+        break;
+        
       case IN_CLEAR_SIM:
         //Clear the simulation
         clearSim();
@@ -326,6 +335,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         
         //Set the sim type
         setSimType(e.simType);
+        
+        
         
         //Indicate to output consumers that 
         //a new sim has begun
@@ -519,6 +530,18 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         return null;
       }
       return node.getAttributes();
+    }
+  }
+  
+  public boolean getNodePromiscuity(String nodeId) {
+    synchronized (lock) {
+      Node node = store.getNode(nodeId);
+
+      if (node == null) {
+        return false;
+      }
+      System.out.println("node returned " + node.isPromiscuous());
+      return node.isPromiscuous();
     }
   }
 
