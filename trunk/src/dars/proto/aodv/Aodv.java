@@ -321,6 +321,13 @@ public class Aodv implements Node {
         OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(this.att.id, message));
         return;
       }
+
+      /**
+       * To make M's life easier. Fire a broadcast event.
+       */
+      if (message.destinationId.equals(Message.BCAST_STRING)) {
+        OutputHandler.dispatch(DARSEvent.outNodeBroadcast(this.att.id));
+      }
     }
   }
 
