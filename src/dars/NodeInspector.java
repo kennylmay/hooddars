@@ -10,6 +10,8 @@ import dars.proto.aodv.AodvDialog;
 public interface NodeInspector {
   public NodeAttributes getNodeAttributes(String nodeId);
   
+  public boolean getNodePromiscuity(String nodeId);
+  
   public JDialog getNodeDialog(String nodeId);
   
   public void updateNodeDialog(String nodeId, JDialog dialog);

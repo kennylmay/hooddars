@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -32,10 +33,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   private JTextField     nodeXField           = new JTextField(4);
   private JTextField     nodeYField           = new JTextField(4);
   private JSpinner       nodeRangeSpinner     = new JSpinner(
-                                                  new SpinnerNumberModel(300,
+                                                  new SpinnerNumberModel(0,
                                                       0, 1000, 20));
   private JButton        nodeAttributesButton = new JButton("Attributes");
-
+  private JCheckBox   promiscuousModeCheckBox = new JCheckBox("Promiscous mode Enabled"); 
   private boolean        blockChangeEvents    = false;
   private Vector<String> nodeList             = new Vector<String>();
   private HashMap<String, JDialog> openNodeDialogs = new HashMap<String, JDialog>();
@@ -77,15 +78,25 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     c.add(nodeRangeSpinner);
     box.add(c);
 
+    // setup the promiscuity field
+    c = new JPanel();
+    promiscuousModeCheckBox.setSelected(false);
+    c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
+    c.add(promiscuousModeCheckBox);
+    box.add(c);
+    
     add(box, BorderLayout.NORTH);
+    setLock(true);
     setVisible(true);
 
     // Node combobox action handler
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
         if (nodeSelectorComboBox.getSelectedItem() == null) {
+          setLock(true);
           return;
         }
+        setLock(false);
         simArea.selectNode(nodeSelectorComboBox.getSelectedItem().toString());
       }
     });
@@ -95,6 +106,11 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       public void stateChanged(ChangeEvent ie) {
         if (blockChangeEvents)
           return;
+        
+        if(nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
+        
         InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox
             .getSelectedItem().toString(), (Integer) nodeRangeSpinner
             .getValue()));
@@ -161,7 +177,16 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         openNodeDialogs.put(nodeSelectorComboBox.getSelectedItem().toString(), dialog); 
       }
     });
+    
+    promiscuousModeCheckBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        InputHandler.dispatch(DARSEvent.inSetNodePromiscuity(
+            nodeSelectorComboBox.getSelectedItem().toString(), 
+            promiscuousModeCheckBox.isSelected()));
+      }
+    });
   }
+   
 
   private void setPreferredWidth(int i) {
     // TODO Auto-generated method stub
@@ -219,9 +244,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   @Override
   public void nodeSelected(GNode gnode) {
     NodeAttributes ni = getAttributes(gnode.getId());
+    boolean isPromiscuous = nodeInspector.getNodePromiscuity(gnode.getId());
     if (ni != null) {
       setAttributes(ni);
       nodeSelectorComboBox.setSelectedItem(gnode.getId());
+      promiscuousModeCheckBox.setSelected(isPromiscuous);
+      
     }
   }
 
@@ -256,6 +284,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeXField.setText("");
     nodeYField.setText("");
     nodeList.clear();
+    promiscuousModeCheckBox.setSelected(false);
+    nodeRangeSpinner.setValue(0);
     
     String nodeId;
     JDialog dialog;
@@ -272,8 +302,31 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   public void selectNodeById(String id) {
     setAttributes(getAttributes(id));
+    promiscuousModeCheckBox.setSelected(nodeInspector.getNodePromiscuity(id));
+    
   }
 
+  public void setLock(boolean isLocked) {
+    //lock every field
+    nodeSelectorComboBox.setEnabled(!isLocked);
+    nodeXField.setEnabled(!isLocked);
+    nodeYField.setEnabled(!isLocked);
+    nodeRangeSpinner.setEnabled(!isLocked);
+    promiscuousModeCheckBox.setEnabled(!isLocked);
+    nodeAttributesButton.setEnabled(!isLocked);
+    
+  }
+  
+  public void simPaused() {
+    
+  }
+  
+  public void simStopped() {
+    clear();
+    setLock(true);
+  }
+  
+  
   public void updateNodeDialogs(){
     String nodeId;
     JDialog dialog;
