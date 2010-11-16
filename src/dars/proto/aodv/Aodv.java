@@ -274,6 +274,9 @@ public class Aodv implements Node {
    *          Message to be transmitted.
    */
   private void sendMessage(Message message) {
+
+    String MsgType;
+
     if (!this.Promiscuous) {
       try {
         txQueue.add(message);
@@ -282,6 +285,41 @@ public class Aodv implements Node {
             .dispatch(DARSEvent
                 .outError(this.att.id
                     + " Failed to successfully queue message to be sent due to a full transmit queue."));
+      }
+      
+      /**
+       * Get the message type.
+       * 
+       * Message type is always the first token in the message string. Split
+       * on the '|' and get the first item in the resultant Array of Strings.
+       */
+      MsgType = message.message.split("\\|")[0];
+
+      // TODO: Replace this terrible list of if statements with a switch
+      // statement once Java 7 is released. Java 7 supposedly has the ability
+      // to switch on strings.
+
+      /**
+       * Switch on the Message type to send the DARS in events.
+       */
+      if (MsgType.equals("RREQ")) {
+        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(message));
+        return;
+      }
+
+      if (MsgType.equals("NARR")) {
+        OutputHandler.dispatch(DARSEvent.outNarrMsgReceived(message));
+        return;
+      }
+
+      if (MsgType.equals("RREP")) {
+        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(message));
+        return;
+      }
+
+      if (MsgType.equals("RERR")) {
+        OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(message));
+        return;
       }
     }
   }
@@ -298,9 +336,6 @@ public class Aodv implements Node {
    *          The message the is being received from the network.
    */
   private void receiveMessage(Message message) {
-
-    OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
-        + " Received the following message text: " + message.message));
 
     String MsgType;
 
@@ -326,21 +361,25 @@ public class Aodv implements Node {
 
     if (MsgType.equals("RREQ")) {
       receiveRREQ(message);
+      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(message));
       return;
     }
 
     if (MsgType.equals("NARR")) {
       receiveNarrative(message);
+      OutputHandler.dispatch(DARSEvent.outNarrMsgReceived(message));
       return;
     }
 
     if (MsgType.equals("RREP")) {
       receiveRREP(message);
+      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(message));
       return;
     }
 
     if (MsgType.equals("RERR")) {
       receiveRERR(message);
+      OutputHandler.dispatch(DARSEvent.outControlMsgReceived(message));
       return;
     }
 
