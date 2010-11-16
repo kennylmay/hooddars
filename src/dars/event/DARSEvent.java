@@ -19,12 +19,14 @@ public class DARSEvent {
     // Input event types
     IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SET_NODE_PROMISCUITY, IN_SIM_SPEED, 
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_SET_PROTOCOL, IN_CLEAR_SIM, 
-    IN_NEW_SIM, IN_INSERT_MESSAGE,
+    IN_NEW_SIM, IN_INSERT_MESSAGE, 
     // Output event types
-    OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_SET_NODE_PROMISCUITY, OUT_NODE_DATA_RECEIVED, 
-    OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_NODE_BROADCAST, OUT_DEBUG, OUT_ERROR, OUT_INFORM, 
-    OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED, OUT_CLEAR_SIM, 
-    OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_MSG_RECEIVED, OUT_QUANTUM_ELAPSED
+    OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_SET_NODE_PROMISCUITY,  
+    OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_NODE_BROADCAST, OUT_DEBUG, OUT_ERROR,  
+    OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED,  
+    OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, OUT_CONTROLMSG_RECEIVED,
+    OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM,
+    OUT_MSG_RECEIVED
   };
 
   public enum SimType { AODV, DSDV };
@@ -339,6 +341,48 @@ public class DARSEvent {
     return new DARSEvent();
   }
 
+  public static DARSEvent outControlMsgTransmitted(Message msg) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_CONTROLMSG_TRANSMITTED;
+    d.sourceId = msg.originId;
+    d.destinationId = msg.destinationId;
+    d.transmittedMessage = msg.message;
+    d.informationalMessage = "Control message transmitted: " + msg.message;
+    return d;
+  }
+
+  public static DARSEvent outNarrMsgTransmitted(Message msg) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_NARRMSG_TRANSMITTED;
+    d.sourceId = msg.originId;
+    d.destinationId = msg.destinationId;
+    d.transmittedMessage = msg.message;
+    d.informationalMessage = "Narrative message transmitted: " + msg.message;
+    return d;
+  }
+  
+  public static DARSEvent outControlMsgReceived(Message msg) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_CONTROLMSG_RECEIVED;
+    d.sourceId = msg.originId;
+    d.destinationId = msg.destinationId;
+    d.transmittedMessage = msg.message;
+    d.informationalMessage = "Control message received: " + msg.message;
+    return d;
+  }
+
+  public static DARSEvent outNarrMsgReceived(Message msg) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_NARRMSG_RECEIVED;
+    d.sourceId = msg.originId;
+    d.destinationId = msg.destinationId;
+    d.transmittedMessage = msg.message;
+    d.informationalMessage = "Narrative message received: " + msg.message;
+    return d;
+  }
+  
+  
+  
   public static DARSEvent OutQuantumElapsed() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_QUANTUM_ELAPSED;
