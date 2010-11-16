@@ -51,7 +51,7 @@ public class AodvDialog extends JDialog {
 
   public AodvDialog(JFrame frame, String SourceId, int timeTick,
       HashMap<String, RouteEntry> routeTable) {
-    super(frame, true);
+    super(frame, "Node Attributes: " + SourceId );
 
     // / Set the model columns
     model.addColumn("DESTINATION");
@@ -59,6 +59,7 @@ public class AodvDialog extends JDialog {
     model.addColumn("NEXT HOP");
     model.addColumn("STATE");
     model.addColumn("SEQ #");
+    model.addColumn("EXPIRATION");
 
     sourceLabel = new JLabel(SourceId);
 
@@ -92,7 +93,7 @@ public class AodvDialog extends JDialog {
     Panel.add(nodeInfoPanel, BorderLayout.NORTH);
     Panel.add(scroller, BorderLayout.CENTER);
 
-    formatRouteTable(routeTable);
+    formatRouteTable(routeTable, timeTick);
 
     // Display the Panel
     this.pack();
@@ -102,15 +103,15 @@ public class AodvDialog extends JDialog {
   }
 
   void updateInformation(int currentTick, HashMap<String, RouteEntry> routeTable) {
-    formatRouteTable(routeTable);
+    formatRouteTable(routeTable, currentTick);
     String timeTick = "" + currentTick;
     TimeLabel.setText(timeTick);
   }
 
-  private void formatRouteTable(HashMap<String, RouteEntry> routeTable) {
+  private void formatRouteTable(HashMap<String, RouteEntry> routeTable, int currentTick) {
     Iterator<RouteEntry> iter = routeTable.values().iterator();
     RouteEntry entry;
-    String destinationIP, hopCount, nextHop, state, sequenceNum;
+    String destinationIP, hopCount, nextHop, state, sequenceNum, lifetime;
 
     // Clean the table out to refresh the table
     while (model.getRowCount() > 0) {
@@ -126,9 +127,10 @@ public class AodvDialog extends JDialog {
       nextHop = entry.getNextHopIP();
       state = "" + entry.getState();
       sequenceNum = "" + entry.getSeqNum();
+      lifetime = "" + (entry.getLifetime() - currentTick);
 
       model.addRow(new String[] { destinationIP, hopCount, nextHop,
-          state, sequenceNum });
+          state, sequenceNum, lifetime });
     }
     return;
   }
