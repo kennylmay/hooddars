@@ -424,11 +424,18 @@ class NodeActionHandler implements GNodeListener{
     for(GNode gnode : gnodemap.values() ) {
       gnode.setLocked(locked);
     }
-    
+
+    lockCanvas(locked);
     
     
   }
 
+  private JPanel lockBox = new JPanel();
+  private void lockCanvas(boolean locked) {
+    if(locked) {
+      
+    }
+  }
   /**
    * You can use this function to determine the state of the sim area.
    * 

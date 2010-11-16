@@ -249,7 +249,7 @@ public class Animations extends JPanel implements ComponentListener,
       Graphics2D g2 = (Graphics2D) g;
       // Draw the graphic
       if(parent_.isSelected()) {
-        g2.setColor(Color.BLUE);
+        g2.setColor(Color.RED);
       }
       else {
         g2.setColor(Color.BLACK);
