@@ -3,6 +3,10 @@
  */
 package dars;
 
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SwingUtilities;
+
 import console.Console;
 import logger.Logger;
 import dars.event.DARSEvent;
@@ -14,6 +18,7 @@ import dars.gui.GUI;
  */
 public class DARSMain {
 
+  public DARSMain() { };
   /**
    * @param args
    */
@@ -33,8 +38,20 @@ public class DARSMain {
     // Name the simulator engine as an input consumer
      InputHandler.addInputConsumer(s);
 
-    // Instantiate the gui
-    GUI g = new GUI();
+    // Instantiate the gui SYNCHRONOUSLY on the event dispatching thread
+     GUIStarter gs = new GUIStarter();
+     try {
+      SwingUtilities.invokeAndWait(gs);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    GUI g = gs.getGui();
+    
 
     // Setup the node inpsector for the gui. This gives the gui a backdoor into the 
     // simulation, where it can view node attributes
@@ -47,5 +64,6 @@ public class DARSMain {
     
     
   }
+
 
 }

@@ -108,15 +108,7 @@ public class Animations extends JPanel implements ComponentListener,
 
   }
 
-  private int getPreferredHeight() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
 
-  private int getPreferredWidth() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
 
   private Timer animationTimer = new Timer(33, new ActionListener() {
                                  public void actionPerformed(ActionEvent e) {
@@ -247,6 +239,7 @@ public class Animations extends JPanel implements ComponentListener,
 
       // System.out.println("painting ranger");
       Graphics2D g2 = (Graphics2D) g;
+      
       // Draw the graphic
       if(parent_.isSelected()) {
         g2.setColor(Color.RED);
@@ -257,7 +250,6 @@ public class Animations extends JPanel implements ComponentListener,
       g2.drawOval(parent_.getCenter().x - parent_.getRange(),
           parent_.getCenter().y - parent_.getRange(),
           parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
-
     }
 
     public void drawBroadcast(Graphics g) {
