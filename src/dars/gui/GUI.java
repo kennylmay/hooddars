@@ -180,13 +180,13 @@ public class GUI extends JFrame implements OutputConsumer {
   
       case OUT_NARRMSG_RECEIVED:
         // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Color.RED);
+        simArea.traceMessage(e.sourceId, e.destinationId, Color.RED,3);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
         
       case OUT_CONTROLMSG_RECEIVED:
         // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE);
+        simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE,1);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 

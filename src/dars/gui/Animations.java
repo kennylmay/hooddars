@@ -37,9 +37,9 @@ public class Animations extends JPanel implements ComponentListener,
     repaintTimer.start();
   }
 
-  public void traceMessage(GNode a, GNode b, Color color) {
+  public void traceMessage(GNode a, GNode b, Color color, int longevityFactor) {
 
-    Connection c = new Connection(a, b, color);
+    Connection c = new Connection(a, b, color, longevityFactor);
     connStore.add(c);
   }
 
@@ -67,9 +67,11 @@ public class Animations extends JPanel implements ComponentListener,
   LinkedList<Connection>         connStore = new LinkedList<Connection>();
   HashMap<GNode, RangeIndicator> riStore   = new HashMap<GNode, RangeIndicator>();
 
+  LinkedList<Connection>         topList   = new LinkedList<Connection>();
   public void paintComponent(Graphics g) {
 
-
+    //clear out the top list
+    topList.clear();
     
     // Draw the message tracing animation
     Iterator<Connection> i = connStore.iterator();
@@ -83,6 +85,21 @@ public class Animations extends JPanel implements ComponentListener,
       }
 
       // Draw the connection
+
+      if(c.color == Color.BLUE) {
+        int x1, y1, x2, y2;
+        x1 = c.fromNode.getCenter().x;
+        y1 = c.fromNode.getCenter().y;
+        x2 = c.toNode.getCenter().x;
+        y2 = c.toNode.getCenter().y;
+        drawConn(g, c.color, x1, y1, x2, y2);
+      }
+      else {
+        topList.add(c);
+      }
+    }
+    //Draw the topList connections
+    for(Connection c : topList) {
       int x1, y1, x2, y2;
       x1 = c.fromNode.getCenter().x;
       y1 = c.fromNode.getCenter().y;
@@ -90,7 +107,7 @@ public class Animations extends JPanel implements ComponentListener,
       y2 = c.toNode.getCenter().y;
       drawConn(g, c.color, x1, y1, x2, y2);
     }
-
+      
     // Draw the range indicators and broadcasts
     Iterator<RangeIndicator> j = riStore.values().iterator();
     while (j.hasNext()) {
@@ -124,15 +141,53 @@ public class Animations extends JPanel implements ComponentListener,
     connLifeTime = speed * 4 + 60;
   }
 
+  static public void drawThickLine(
+      Graphics g, int x1, int y1, int x2, int y2, int thickness, Color c) {
+      // The thick line is in fact a filled polygon
+      g.setColor(c);
+      int dX = x2 - x1;
+      int dY = y2 - y1;
+      // line length
+      double lineLength = Math.sqrt(dX * dX + dY * dY);
+
+      double scale = (double)(thickness) / (2 * lineLength);
+
+      // The x,y increments from an endpoint needed to create a rectangle...
+      double ddx = -scale * (double)dY;
+      double ddy = scale * (double)dX;
+      ddx += (ddx > 0) ? 0.5 : -0.5;
+      ddy += (ddy > 0) ? 0.5 : -0.5;
+      int dx = (int)ddx;
+      int dy = (int)ddy;
+
+      // Now we can compute the corner points...
+      int xPoints[] = new int[4];
+      int yPoints[] = new int[4];
+
+      xPoints[0] = x1 + dx; yPoints[0] = y1 + dy;
+      xPoints[1] = x1 - dx; yPoints[1] = y1 - dy;
+      xPoints[2] = x2 - dx; yPoints[2] = y2 - dy;
+      xPoints[3] = x2 + dx; yPoints[3] = y2 + dy;
+
+      g.fillPolygon(xPoints, yPoints, 4);
+   }
+
+  
   static void drawConn(Graphics g, Color c, int x1, int y1, int x2, int y2) {
 
     g.setColor(c);
-    g.drawLine(x1, y1, x2, y2);
+    int fatness =1;
+    if(c != Color.BLUE) {
+      fatness=5;
+    }
+    drawThickLine(g,x1, y1, x2, y2, fatness, c);
+    
     double stepX = (double) (x1 - x2) / 60;
     double stepY = (double) (y1 - y2) / 60;
 
+
     g.fillRect(x1 - (int) (stepX * (anicount % 60)), y1
-        - (int) (stepY * (anicount % 60)), 3, 3);
+        - (int) (stepY * (anicount % 60)), 3+fatness*2, 3+fatness*2);
   }
 
   @Override
@@ -177,12 +232,12 @@ public class Animations extends JPanel implements ComponentListener,
         return false;
     }
 
-    Connection(GNode fromNode, GNode toNode, Color color) {
+    Connection(GNode fromNode, GNode toNode, Color color, int longevityFactor) {
       this.fromNode = fromNode;
       this.toNode = toNode;
       this.color = color;
       startCount = Animations.anicount;
-      dieCount = startCount + Animations.connLifeTime;
+      dieCount = startCount + Animations.connLifeTime * longevityFactor;
     }
 
     public boolean equals(Object b) {
