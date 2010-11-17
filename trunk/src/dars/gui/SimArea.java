@@ -273,7 +273,7 @@ class NodeActionHandler implements GNodeListener{
     animations.nodeBroadcast(n);
   }
   
-  public void traceMessage(String fromId, String toId, Color color) {
+  public void traceMessage(String fromId, String toId, Color color, int longevityFactor) {
     
     if(!graphicsEnabled) {
       return;
@@ -281,10 +281,9 @@ class NodeActionHandler implements GNodeListener{
     GNode a = getGNode(fromId);
     GNode b = getGNode(toId);
 
-    System.out.println("Attempting to trace msg from: " + fromId + " to " + toId);
     if(a == null || b == null) return;
     
-    animations.traceMessage(a,b,color);
+    animations.traceMessage(a,b,color, longevityFactor);
     
   }
   
