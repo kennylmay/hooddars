@@ -8,6 +8,8 @@ import dars.NodeInspector;
 import dars.event.DARSEvent;
 
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.*;
 
@@ -24,14 +26,15 @@ public class SimArea extends JLayeredPane {
 ///////////////////////////////Constructor
   public SimArea() {
     setLayout(null);
-
+    setLocked(true);
     addMouseListener(new PopClickListener());
-   
     setVisible(true);
-    
     animations.start();
   }
 
+
+  
+  
   public void setNodeInspector(NodeInspector nodeInspector) {
     this.nodeInspector = nodeInspector;
   }
@@ -442,10 +445,18 @@ class NodeActionHandler implements GNodeListener{
     
   }
 
-  private JPanel lockBox = new JPanel();
+  private LockBox lockBox;
   private void lockCanvas(boolean locked) {
     if(locked) {
-      
+      lockBox = new LockBox(this);
+      addComponentListener(lockBox);
+      lockBox.updateSize();
+    }
+    else {
+      if(lockBox != null) {
+        this.removeComponentListener(lockBox);
+        this.remove(lockBox);
+      }
     }
   }
   /**
@@ -493,6 +504,51 @@ class NodeActionHandler implements GNodeListener{
 
   public void setNodeAttributesArea(NodeAttributesArea nodeAttributesArea) {
     this.nodeAttributesArea = nodeAttributesArea;
+  }
+  
+  private class LockBox extends JPanel implements ComponentListener {
+
+    private static final long serialVersionUID = 1L;
+
+    public void updateSize() {
+      System.out.println("update size called");
+      this.setSize(parent.getSize());
+    }
+
+    private JLayeredPane parent;
+    public LockBox(JLayeredPane parent) {
+      this.parent = parent;
+      setVisible(true);
+      parent.add(this, JLayeredPane.POPUP_LAYER);
+      setOpaque(false);
+      setLocation(0,0);
+      
+    }
+    
+    public void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      g.setColor(new Color(0,0,0, 20));
+      g.fillRect(0,0,getWidth(),getHeight());
+    }
+    @Override
+    public void componentHidden(ComponentEvent arg0) {
+      this.updateSize();
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent arg0) {
+      this.updateSize();
+    }
+
+    @Override
+    public void componentResized(ComponentEvent arg0) {
+      this.updateSize();
+    }
+
+    @Override
+    public void componentShown(ComponentEvent arg0) {
+      this.updateSize();
+    }
   }
  
 } 
