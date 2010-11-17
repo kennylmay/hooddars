@@ -121,7 +121,7 @@ public class Animations extends JPanel implements ComponentListener,
   public static void setSimSpeed(int speed) {
     // There's no science here, I've just been guesstimating to arrive at this
     // multiplier.
-    connLifeTime = speed * 4 + 30;
+    connLifeTime = speed * 4 + 60;
   }
 
   static void drawConn(Graphics g, Color c, int x1, int y1, int x2, int y2) {
@@ -239,17 +239,25 @@ public class Animations extends JPanel implements ComponentListener,
 
       // System.out.println("painting ranger");
       Graphics2D g2 = (Graphics2D) g;
-      
+
       // Draw the graphic
-      if(parent_.isSelected()) {
+      if (parent_.isSelected()) {
         g2.setColor(Color.RED);
-      }
-      else {
+        g2.drawOval(parent_.getCenter().x - parent_.getRange()+2,
+            parent_.getCenter().y - parent_.getRange()+2,
+            parent_.getRange() * 2 - 6, parent_.getRange() * 2 - 6);
+        g2.drawOval(parent_.getCenter().x - parent_.getRange()+1,
+            parent_.getCenter().y - parent_.getRange()+1,
+            parent_.getRange() * 2 - 4, parent_.getRange() * 2 - 4);
+        g2.drawOval(parent_.getCenter().x - parent_.getRange(),
+            parent_.getCenter().y - parent_.getRange(),
+            parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
+      } else {
         g2.setColor(Color.BLACK);
+        g2.drawOval(parent_.getCenter().x - parent_.getRange(),
+            parent_.getCenter().y - parent_.getRange(),
+            parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
       }
-      g2.drawOval(parent_.getCenter().x - parent_.getRange(),
-          parent_.getCenter().y - parent_.getRange(),
-          parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
     }
 
     public void drawBroadcast(Graphics g) {
