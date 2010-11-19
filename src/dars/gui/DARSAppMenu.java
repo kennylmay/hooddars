@@ -3,11 +3,6 @@ package dars.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Queue;
 import java.util.Random;
@@ -27,6 +22,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import replayer.Replayer;
 
 import logger.Parser;
 
@@ -243,7 +240,43 @@ public class DARSAppMenu  {
             chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(menuBar.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-          /// Some Call to Load the simulation replay
+          
+          String name = chooser.getSelectedFile().getPath();
+          
+          //Parse the replay events into memory
+          Queue<DARSEvent> Q = Parser.parseReplay(name);
+          
+          if(Q == null) {
+            //TODO Some kind of error here?
+            return;
+          }
+          
+          //Okay. New simulation. Have to ask the user what type of sim they want..
+          Object[] options = {"AODV", "DSDV"};
+          int answer = JOptionPane.showOptionDialog(simArea,
+                       "Select a simulation type.",
+                       "Select a simulation type.",
+                       JOptionPane.YES_NO_OPTION,
+                       JOptionPane.QUESTION_MESSAGE,
+                       null,
+                      options,
+                    options[0]);
+          DARSEvent.SimType st;
+          if(answer == 0) {
+            st = DARSEvent.SimType.AODV;
+          } else {
+            st = DARSEvent.SimType.DSDV;
+          }
+
+          //Start a new simualation
+          InputHandler.dispatch(DARSEvent.inNewSim(st));
+
+          
+          //Instantiate a new replayer with the replay events
+          Replayer r = new Replayer(Q);
+          
+          
+          
         }
       }
     });
