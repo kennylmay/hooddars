@@ -29,7 +29,7 @@ public class GUI extends JFrame implements OutputConsumer {
 
 
   public GUI() {
-    super("DAR Simulator Version 1.0");
+    super("DARS Version 1.0");
 
 
    

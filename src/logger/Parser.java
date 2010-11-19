@@ -4,6 +4,9 @@
 package logger;
 
 import java.io.*;
+import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import dars.InputHandler;
 import dars.NodeAttributes;
@@ -16,6 +19,74 @@ import dars.event.DARSEvent;
  */
 public class Parser 
 {
+  
+  static private boolean isSetupEvent(DARSEvent d) {
+    //Setup events are Q=0 and most IN_... types
+    if( ! d.currentQuantum.equals(BigInteger.ZERO)) {
+      return false;
+    }
+    
+    switch(d.eventType) {
+    case IN_ADD_NODE:
+    case IN_DEL_NODE:
+    case IN_MOVE_NODE:
+    case IN_SET_NODE_RANGE:
+    case IN_SET_NODE_PROMISCUITY:
+    case IN_INSERT_MESSAGE:
+      return true;
+    }
+    return false;
+  }
+  
+  public static Queue<DARSEvent> parseSetup(String logFileLocation) {
+    
+    //Open up the file
+    FileReader LogFile = null;
+    try {
+      LogFile = new FileReader(logFileLocation);
+    } catch (FileNotFoundException e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    BufferedReader input =  new BufferedReader(LogFile);
+    
+    
+    Queue<DARSEvent> Q = new LinkedList<DARSEvent>();
+    DARSEvent d;
+    String line;
+    
+    //Make sure this is a valid DARS Log file by matching the first line
+    //with the header of current DARSEvents
+    try {
+      line = input.readLine();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      return null;
+    }
+    
+    if( ! DARSEvent.getLogHeader().equals(line)) {
+      System.out.println("Error: Not a valid DARS file");
+      return null;
+    }
+    
+    //Get every DARSEvents in the file that is a setup event.
+    try {
+      while((line = input.readLine()) != null) {
+        d = DARSEvent.parseLogString(line);
+        if(isSetupEvent(d)) {
+          Q.add(d);
+        }
+        
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return Q;
+  }
+  
   
   public static void parseReplay(String logFileLocation) {
     DARSEvent d;

@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Queue;
 import java.util.Random;
 
 import javax.swing.BoxLayout;
@@ -197,14 +198,39 @@ public class DARSAppMenu  {
             chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(menuBar.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-          /// Some call to load the simulation setup
-        //-----clear simulation first---------
-          InputHandler.dispatch(DARSEvent.inStopSim());
-          InputHandler.dispatch(DARSEvent.inClearSim());
-          //----------------------end clearing simulation--
            String name = chooser.getSelectedFile().getPath();
-           System.out.println("loading simulation");
-           Parser.parseReplay(name);
+           
+           //Parse the setup events into memory
+           Queue<DARSEvent> Q = Parser.parseSetup(name);
+           
+           if(Q == null) {
+             return;
+           }
+           
+           //Okay. New simulation. Have to ask the user what type of sim they want..
+           Object[] options = {"AODV", "DSDV"};
+           int answer = JOptionPane.showOptionDialog(simArea,
+                        "Select a simulation type.",
+                        "Select a simulation type.",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                       options,
+                     options[0]);
+           DARSEvent.SimType st;
+           if(answer == 0) {
+             st = DARSEvent.SimType.AODV;
+           } else {
+             st = DARSEvent.SimType.DSDV;
+           }
+
+           //Start a new simualation, with type AODV
+           InputHandler.dispatch(DARSEvent.inNewSim(st));
+           
+           //Dispatch every event in the Q
+           for(DARSEvent d : Q) {
+             InputHandler.dispatch(d);
+           }
         }
       }
     });
@@ -305,6 +331,11 @@ public class DARSAppMenu  {
   public void newSim() {
     //Disable the New menu item
     newMenu.setEnabled(false);
+    
+    //Enable the play/pause/stop buttons
+    stopButton.setEnabled(true);
+    playButton.setEnabled(true);
+    pauseButton.setEnabled(true);
     
     //Zero out the current quantum
     quantums = BigInteger.ZERO;

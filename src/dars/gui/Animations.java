@@ -176,11 +176,15 @@ public class Animations extends JPanel implements ComponentListener,
   static void drawConn(Graphics g, Color c, int x1, int y1, int x2, int y2) {
 
     g.setColor(c);
-    int fatness =1;
+    int fatness = 5;
     if(c != Color.BLUE) {
-      fatness=5;
+      drawThickLine(g,x1, y1, x2, y2, fatness, c);
     }
-    drawThickLine(g,x1, y1, x2, y2, fatness, c);
+    else {
+      fatness = 1;
+      g.drawLine(x1, y1, x2, y2);
+    }
+
     
     double stepX = (double) (x1 - x2) / 60;
     double stepY = (double) (y1 - y2) / 60;
