@@ -475,6 +475,7 @@ public class DARSEvent {
       e.nodeY = Integer.parseInt(details[8]);
       e.nodeRange = Integer.parseInt(details[9]);
       
+      
       if(details[10]!= null)
       {
         if(details[10].equals("AODV"))
@@ -486,7 +487,12 @@ public class DARSEvent {
           e.simType = SimType.DSDV;
         }
       }
+      
+     
+      
       e.currentQuantum = new BigInteger(details[11]);
+      
+      e.isPromiscuous = Boolean.parseBoolean(details[12]);
       
     }
     catch (Exception ex){
