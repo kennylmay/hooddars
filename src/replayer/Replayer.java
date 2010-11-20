@@ -54,6 +54,7 @@ public class Replayer implements OutputConsumer {
     case OUT_QUANTUM_ELAPSED:
       //If theres no more events in the Q, remove this as an output consumer
       if(replayEvents.size() == 0) {
+        replayerListener.replayerFinished();
         OutputHandler.removeOutputConsumer(this);
       }
       dispatchEventsAtQuantum(this.replayEvents, e.currentQuantum);
