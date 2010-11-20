@@ -306,13 +306,17 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       	break;
       	
       case IN_DEL_NODE:
-        store.deleteNode(e.nodeId);
-        OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
+        if(store.deleteNode(e.nodeId)) { 
+          OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
+        }
         break;
         
       case IN_SET_NODE_RANGE:
         // Get the node
         n = store.getNode(e.nodeId);
+        if(n==null) {
+          return;
+        }
         
         // Set the new range
         n.setRange(e.nodeRange);
@@ -322,7 +326,9 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       case IN_SET_NODE_PROMISCUITY: 
         //Get the node
         n = store.getNode(e.nodeId);
-        
+        if(n == null) {
+          return;
+        }
         // Set the new promiscuity level
         n.setPromiscuity(e.isPromiscuous);
         OutputHandler.dispatch(DARSEvent.outSetNodePromiscuity(e.nodeId, e.isPromiscuous));
@@ -355,6 +361,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       case IN_MOVE_NODE:
         // Get the node
         n = store.getNode(e.nodeId);
+        
+        if(n == null) {
+          return;
+        }
         
         // Set the new coords
         n.setXY(e.nodeX, e.nodeY);
