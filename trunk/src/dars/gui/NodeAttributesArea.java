@@ -276,6 +276,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   }
 
   private void setAttributes(NodeAttributes n) {
+    if(n==null){
+      return;
+    }
     blockChangeEvents = true;
     nodeSelectorComboBox.setSelectedItem(n.id);
     nodeXField.setText(Integer.toString(n.x));
