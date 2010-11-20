@@ -364,14 +364,17 @@ public class DARSAppMenu  {
   }
  
   public void newSim() {
-    //Disable the New menu item
+    //Disable/enable menu items
     newMenu.setEnabled(false);
+    importMenu.setEnabled(false);
+    randomizeMenu.setEnabled(true);
     
     //Enable the play/pause/stop buttons
     stopButton.setEnabled(true);
     playButton.setEnabled(true);
     pauseButton.setEnabled(true);
-    randomizeMenu.setEnabled(true);
+    
+
     
     //Zero out the current quantum
     quantums = BigInteger.ZERO;
@@ -385,8 +388,10 @@ public class DARSAppMenu  {
     playButton.setEnabled(false);
     pauseButton.setEnabled(false);
     
-    //Enable the New menu item
+    //Enable/disable menu items
     newMenu.setEnabled(true);
+    importMenu.setEnabled(true);
+    
   }
   
   public void simPaused() {
