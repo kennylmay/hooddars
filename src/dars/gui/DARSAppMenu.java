@@ -148,10 +148,7 @@ public class DARSAppMenu  {
         //Need to define the speed.
         InputHandler.dispatch(DARSEvent.inSimSpeed(slideBar.getValue()));
         InputHandler.dispatch(DARSEvent.inNewSim(DARSEvent.SimType.AODV));
-        playButton.setEnabled(true);
-        stopButton.setEnabled(true);
-        pauseButton.setEnabled(true);
-        randomizeMenu.setEnabled(true);
+
       }
     });
     
@@ -369,6 +366,7 @@ public class DARSAppMenu  {
     stopButton.setEnabled(true);
     playButton.setEnabled(true);
     pauseButton.setEnabled(true);
+    randomizeMenu.setEnabled(true);
     
     //Zero out the current quantum
     quantums = BigInteger.ZERO;
@@ -397,7 +395,6 @@ public class DARSAppMenu  {
     stopButton.setEnabled(true);
     pauseButton.setVisible(true);
     resumeButton.setVisible(false);
-    randomizeMenu.setEnabled(false);
   }
   
   public JMenuBar getMenuBar() {
