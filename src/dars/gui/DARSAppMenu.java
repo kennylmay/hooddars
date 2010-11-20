@@ -76,13 +76,16 @@ public class DARSAppMenu  {
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
   private LogArea            logArea;
+  private GUI                gui;
   private JPanel         currentQuantumArea     = new JPanel();
   private JLabel         currentQuantumLabel     = new JLabel();
   
   
   
-  public DARSAppMenu() {
+  public DARSAppMenu(GUI g) {
 
+    this.gui = g;
+    
     menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
 
     // Add the web help menu to the menu bar
@@ -270,7 +273,8 @@ public class DARSAppMenu  {
 
           
           //Instantiate a new replayer with the replay events
-          Replayer r = new Replayer(Q);
+          //Name the gui as the replayerListener.
+          Replayer r = new Replayer(Q, (Replayer.ReplayerListener)gui);
           
           
           
@@ -404,6 +408,7 @@ public class DARSAppMenu  {
   public JPanel getActionPanel() {
     return menuPanel;
   }
+  
   
   public void setSimArea(SimArea simArea) {
     this.simArea = simArea;

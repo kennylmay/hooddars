@@ -3,13 +3,15 @@ package dars.gui;
 import javax.swing.*;
 
 import javax.swing.border.Border;
+
+import replayer.Replayer.ReplayerListener;
 import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.Utilities;
 import dars.event.DARSEvent;
 import java.awt.*;
 
-public class GUI extends JFrame implements OutputConsumer {
+public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
 
   /**
    * 
@@ -23,16 +25,13 @@ public class GUI extends JFrame implements OutputConsumer {
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
   private SimArea            simArea             = new SimArea();
 
-  private DARSAppMenu        menuArea            = new DARSAppMenu();
+  private DARSAppMenu        menuArea            = new DARSAppMenu(this);
 
   
 
 
   public GUI() {
     super("DARS Version 1.0");
-
-
-   
 
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -299,6 +298,18 @@ public class GUI extends JFrame implements OutputConsumer {
   private void attachMenus() {
     add(menuArea.getActionPanel(), BorderLayout.NORTH);
     this.setJMenuBar(menuArea.getMenuBar());
+  }
+
+  @Override
+  public void replayerStarted() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void replayerFinished() {
+    // TODO Auto-generated method stub
+    
   }
 
 }
