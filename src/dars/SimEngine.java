@@ -188,6 +188,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       }
       //Introduce the message into the network
       n.newNarrativeMessage(m.originId, m.destinationId, m.message);
+      // Dispatch the insert message event
+      OutputHandler.dispatch(DARSEvent.outInsertMessage());
     }
     
     
@@ -378,8 +380,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         Message m = new Message(e.destinationId,e.sourceId, e.transmittedMessage);
         newMessages.add(m);
        
-        // Dispatch the insert message event
-        OutputHandler.dispatch(DARSEvent.outInsertMessage());
+
         break;
         
       }
