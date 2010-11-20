@@ -13,6 +13,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Utilities {
 
+  public static void showError(String error) {
+    JOptionPane.showMessageDialog(null, 
+        error, "Error", JOptionPane.ERROR_MESSAGE);
+  }
   public static void runSaveLogDialog(Container parent) {
     JFileChooser chooser = new JFileChooser();
     FileNameExtensionFilter filter = new FileNameExtensionFilter(       
