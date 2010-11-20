@@ -201,6 +201,7 @@ public class DARSAppMenu  {
            Queue<DARSEvent> Q = Parser.parseSetup(name);
            
            if(Q == null) {
+             Utilities.showError("Log file can not be parsed.");
              return;
            }
            
@@ -247,7 +248,7 @@ public class DARSAppMenu  {
           Queue<DARSEvent> Q = Parser.parseReplay(name);
           
           if(Q == null) {
-            //TODO Some kind of error here?
+            Utilities.showError("Log file can not be parsed.");
             return;
           }
           
