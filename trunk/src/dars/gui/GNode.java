@@ -43,7 +43,11 @@ public class GNode extends JPanel {
 
 
   public void cleanup() {
-
+    //Cleanup the dragged node if needed
+    if(draggedGNode != null) {
+      draggedGNode.cleanup();
+      draggedGNode = null;
+    }
   }
  
   private Rectangle r = new Rectangle();
@@ -240,7 +244,6 @@ public class GNode extends JPanel {
             draggedGNode.getY());
       }
 
-      System.out.println("Moving node.");
       // Remove the dragged node.
       draggedGNode.cleanup();
       draggedGNode = null;
@@ -344,8 +347,7 @@ public class GNode extends JPanel {
     public void cleanup() {
       // Remove this canvas from the parent container
       layeredPane.remove(this);
-      layeredPane.repaint();
-
+      layeredPane.invalidate();
     }
 
     private BufferedImage img_;
