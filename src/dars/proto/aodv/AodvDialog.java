@@ -5,6 +5,7 @@ package dars.proto.aodv;
 
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -53,13 +54,16 @@ public class AodvDialog extends JDialog {
       HashMap<String, RouteEntry> routeTable) {
     super(frame, "Node Attributes: " + SourceId );
 
-    // / Set the model columns
-    model.addColumn("DESTINATION");
-    model.addColumn("HOP COUNT");
-    model.addColumn("NEXT HOP");
+    // Set the default dimension of the node attributes window
+    this.setPreferredSize(new Dimension(320, 300));
+     
+    // Set the model columns
+    model.addColumn("DEST");
+    model.addColumn("# HOPS");
+    model.addColumn("NXT HOP");
     model.addColumn("STATE");
     model.addColumn("SEQ #");
-    model.addColumn("EXPIRATION");
+    model.addColumn("EXP");
 
     sourceLabel = new JLabel(SourceId);
 
