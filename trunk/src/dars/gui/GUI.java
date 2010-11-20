@@ -286,7 +286,7 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
     // event thread
     ThreadSafeConsumer c = new ThreadSafeConsumer();
 
-    // / Copy the event to the thread safe consumer instance
+    // Copy the event to the thread safe consumer instance
     c.e = e;
 
     // Invoke it later; This will push the runnable instance onto the
@@ -303,12 +303,17 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
   @Override
   public void replayerStarted() {
     // TODO Auto-generated method stub
+    //NOTE: must use SwingUtilities.invokeLater() here. Replayer is
+    //NOT on the gui thread
     
   }
 
   @Override
   public void replayerFinished() {
     // TODO Auto-generated method stub
+    //NOTE: must use SwingUtilities.invokeLater() here. Replayer is
+    //NOT on the gui thread
+    
     
   }
 
