@@ -63,8 +63,8 @@ public void addNode(Node node) {
  * 
  * @param name
  */
-public void deleteNode(String id) {
-   store.remove(id);
+public boolean deleteNode(String id) {
+   return (store.remove(id) != null);
 }
 
 // Returns an iterator for all of the nodes in the store.
