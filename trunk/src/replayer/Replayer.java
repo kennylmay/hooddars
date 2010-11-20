@@ -10,15 +10,23 @@ import dars.event.DARSEvent;
 
 public class Replayer implements OutputConsumer {
 
+  public interface ReplayerListener {
+    void replayerStarted();
+    void replayerFinished();
+  }
   private Queue<DARSEvent> replayEvents;
-
-  public Replayer(Queue<DARSEvent> replayEvents) {
+  private ReplayerListener replayerListener;
+  
+  public Replayer(Queue<DARSEvent> replayEvents, ReplayerListener rl) {
     //Add this as an output consumer
     OutputHandler.addOutputConsumer(this);
     this.replayEvents = replayEvents;
+    this.replayerListener = rl;
     
     //Fire off events at the zero quantum.
     dispatchEventsAtQuantum(replayEvents, BigInteger.ZERO);
+    rl.replayerStarted();
+    
   }
   
   private void dispatchEventsAtQuantum(Queue<DARSEvent> Q, BigInteger quantum) {

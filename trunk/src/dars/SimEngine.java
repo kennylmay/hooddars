@@ -26,6 +26,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
   private boolean             KILL_THREAD  = false;
   NodeStore                   store        = new NodeStore();
   Queue<Message>              messageQueue = new LinkedList<Message>();
+  Queue<Message>              newMessages  = new LinkedList<Message>();
   MessageRelay                thread       = new MessageRelay();
   static public Object        lock         = new Object();
   private volatile boolean    paused;
@@ -163,10 +164,32 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     Node node = null;
     Message message = null;
     Iterator<Node> i;
+    Iterator<Message> mi;
     
     //Increment sim time
     simTime = simTime.add(BigInteger.ONE);
     OutputHandler.dispatch(DARSEvent.OutQuantumElapsed());
+    
+    // If there are any messages in the newMessage Q, introduce them
+    // into the network.
+    mi = newMessages.iterator();
+    while(mi.hasNext()) {
+      //Get the ref to the message
+      Message m = mi.next();
+      
+      //Delete it from the Q
+      mi.remove();
+      
+      //Get the node
+      Node n = store.getNode(m.originId);
+      if(n == null) {
+        continue;
+        
+      }
+      //Introduce the message into the network
+      n.newNarrativeMessage(m.originId, m.destinationId, m.message);
+    }
+    
     
     // If there are messages in the messageQueue try to attempt delivery.
     while (messageQueue.isEmpty() == false) {
@@ -341,9 +364,9 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         break;
         
       case IN_INSERT_MESSAGE:
-        // Get the node
-        n = store.getNode(e.sourceId);
-        n.newNarrativeMessage(e.sourceId, e.destinationId, e.transmittedMessage);
+        // Add the message to the newMessages Q
+        Message m = new Message(e.destinationId,e.sourceId, e.transmittedMessage);
+        newMessages.add(m);
        
         // Dispatch the insert message event
         OutputHandler.dispatch(DARSEvent.outInsertMessage());
@@ -476,9 +499,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     // remove all nodes from the node Store
     store.clear(); 
     
-    //remove all messages from the queue
+    //remove all messages from the queues
     messageQueue.clear();
-
+    newMessages.clear();
+    
     //Reset the node ID assigning sequence
     this.currId = 0;
     
