@@ -52,7 +52,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
      * |_______| |
      */
     setLayout(new BorderLayout());
-    setPreferredWidth(500);
     JPanel box = new JPanel();
     box.setLayout(new BoxLayout(box, BoxLayout.PAGE_AXIS));
 
@@ -130,6 +129,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // X Text Box Single Handler connected to the "Enter"
     nodeXField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
+        if(blockChangeEvents) {
+          return;
+        }
         // Get the ID off of the Combo Box
         String id = nodeSelectorComboBox.getSelectedItem().toString();
         // Get the current node data and save it off so that it can be
@@ -154,6 +156,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
     nodeYField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
+        if(blockChangeEvents) {
+          return;
+        }
+        
         // Get the ID off of the Combo Box
         String id = nodeSelectorComboBox.getSelectedItem().toString();
         // Get the current node data and save it off so that it can be
@@ -197,6 +203,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
     promiscuousModeCheckBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
+        if(blockChangeEvents) {
+          return;
+        }
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
@@ -207,10 +216,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     });
   }
 
-  private void setPreferredWidth(int i) {
-    // TODO Auto-generated method stub
-
-  }
 
   private static final long serialVersionUID = 1L;
 
@@ -284,8 +289,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeXField.setText(Integer.toString(n.x));
     nodeYField.setText(Integer.toString(n.y));
     nodeRangeSpinner.setValue(n.range);
-    blockChangeEvents = false;
     promiscuousModeCheckBox.setSelected(nodeInspector.getNodePromiscuity(n.id));
+    blockChangeEvents = false;
   }
 
   public void setNodeInspector(NodeInspector ni) {
@@ -301,6 +306,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   }
 
   public void clear() {
+    blockChangeEvents = true;
     nodeSelectorComboBox.removeAllItems();
     nodeXField.setText("");
     nodeYField.setText("");
@@ -319,6 +325,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       }
     }
     openNodeDialogs.clear();
+    blockChangeEvents = false;
   }
 
   public void selectNodeById(String id) {
