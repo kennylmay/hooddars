@@ -277,6 +277,8 @@ public class DARSAppMenu  {
           //Name the gui as the replayerListener.
           Replayer r = new Replayer(Q, (Replayer.ReplayerListener)gui);
           
+          JOptionPane.showMessageDialog(simArea, "The replay has been sucessfully loaded. \n" +
+                                                 "Please select \"Play\" from the menu bar to begin.");
           
           
         }
@@ -312,6 +314,7 @@ public class DARSAppMenu  {
 
     exitMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        System.exit(0);
       }
     });
 
