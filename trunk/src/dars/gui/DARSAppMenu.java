@@ -55,7 +55,7 @@ public class DARSAppMenu  {
   JLabel                     typeLabel           = new JLabel("NONE");
 
   private JPanel             buttonArea          = new JPanel();
-  private JButton            playButton          = new JButton("Play");
+  private JButton            playButton          = new JButton("Play ");
   private JButton            resumeButton        = new JButton("Resume");
   private JButton            pauseButton         = new JButton("Pause");
   private JButton            stopButton          = new JButton("Stop");
