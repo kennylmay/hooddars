@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import logger.Logger;
 
 public class Utilities {
 
@@ -46,8 +47,14 @@ public class Utilities {
       // Try to open each file
       try {
         int c;
+        // Make sure everything has been flushed out of the buffer
+        // and has been written to the temporary file.
+        Logger logger = Logger.getInstance();
+        logger.flushLogFile();
+        
         in = new FileReader(logFile);
         out = new FileWriter(saveFile);
+        
         // Write each line of the first file to the file chosen.
         while ((c = in.read()) != -1) {
           out.write(c);

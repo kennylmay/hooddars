@@ -82,6 +82,20 @@ public class Logger implements OutputConsumer, InputConsumer {
     }
     fstream = null;
   }
+  
+  public void flushLogFile() {
+    if(fstream != null) {
+      try {
+        if(out != null) { 
+          out.flush();
+        }
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    fstream = null;
+  }
 
   //Fulfills the DARSConsumer contract
   public void consumeOutput(DARSEvent e) {
