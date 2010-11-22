@@ -1,0 +1,3 @@
+#!/bin/bash
+
+java -jar /usr/lib/DARS/DARS.jar >/dev/null
