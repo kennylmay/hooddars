@@ -290,8 +290,8 @@ public class DARSAppMenu  {
         Dimension dim = simArea.getSize();
         Random r = new Random();
         NodeAttributes att = new NodeAttributes();
-        double X = dim.getWidth();
-        double Y = dim.getHeight();
+        double X = simArea.maxNodePoint().x;
+        double Y = simArea.maxNodePoint().y;
         int numberOfNodes = 0;
         String input = JOptionPane.showInputDialog(null, "How many nodes would you like to randomly add?");
         
@@ -372,10 +372,10 @@ public class DARSAppMenu  {
     importMenu.setEnabled(false);
     randomizeMenu.setEnabled(true);
     
-    //Enable the play/pause/stop buttons
-    stopButton.setEnabled(true);
+    //Enable the Play button, disable tstop and pause
+    stopButton.setEnabled(false);
     playButton.setEnabled(true);
-    pauseButton.setEnabled(true);
+    pauseButton.setEnabled(false);
     
 
     
