@@ -294,6 +294,8 @@ public class Animations extends JPanel implements ComponentListener,
       startStep = Animations.anicount;
     }
 
+    private Color defaultRangeColor = new Color(150,150,150);  
+    private Color selectedRangeColor = new Color(255,153,51);
     public void drawRange(Graphics g) {
 
       // System.out.println("painting ranger");
@@ -301,7 +303,7 @@ public class Animations extends JPanel implements ComponentListener,
 
       // Draw the graphic
       if (parent_.isSelected()) {
-        g2.setColor(Color.RED);
+        g2.setColor(selectedRangeColor);
         g2.drawOval(parent_.getCenter().x - parent_.getRange()+2,
             parent_.getCenter().y - parent_.getRange()+2,
             parent_.getRange() * 2 - 6, parent_.getRange() * 2 - 6);
@@ -312,7 +314,7 @@ public class Animations extends JPanel implements ComponentListener,
             parent_.getCenter().y - parent_.getRange(),
             parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
       } else {
-        g2.setColor(Color.BLACK);
+        g2.setColor(defaultRangeColor);
         g2.drawOval(parent_.getCenter().x - parent_.getRange(),
             parent_.getCenter().y - parent_.getRange(),
             parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
