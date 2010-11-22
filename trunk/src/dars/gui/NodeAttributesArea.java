@@ -182,8 +182,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         } catch (NumberFormatException nfe) {
           return;
         }
+        
+        // Enforce boundaries
+        Point p = simArea.getBoundedNodePoint(new Point(X,Y));
+        
         // Dispatch the signal
-        InputHandler.dispatch(DARSEvent.inMoveNode(id, X, Y));
+        InputHandler.dispatch(DARSEvent.inMoveNode(id, p.x, p.y));
       }
     });
 
