@@ -371,12 +371,11 @@ public class DARSAppMenu  {
     importMenu.setEnabled(false);
     randomizeMenu.setEnabled(true);
     
-    //Enable the play/pause/stop buttons
-    stopButton.setEnabled(true);
+    //Enable the Play button, disable tstop and pause
+    stopButton.setEnabled(false);
     playButton.setEnabled(true);
-    pauseButton.setEnabled(true);
+    pauseButton.setEnabled(false);
     
-
     
     //Zero out the current quantum
     quantums = BigInteger.ZERO;
