@@ -27,9 +27,13 @@ public class SimArea extends JLayeredPane {
   // /////////////////////////////Constructor
   public SimArea() {
     setLayout(null);
+    add(new XYTickPanel(this), JLayeredPane.POPUP_LAYER);
     setLocked(true);
     addMouseListener(new PopClickListener());
     setVisible(true);
+    
+    
+    
     animations.start();
   }
 
