@@ -287,11 +287,10 @@ public class DARSAppMenu  {
     
     randomizeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        Dimension dim = simArea.getSize();
         Random r = new Random();
         NodeAttributes att = new NodeAttributes();
-        double X = dim.getWidth();
-        double Y = dim.getHeight();
+        double X = simArea.maxNodePoint().x;
+        double Y = simArea.maxNodePoint().y;
         int numberOfNodes = 0;
         String input = JOptionPane.showInputDialog(null, "How many nodes would you like to randomly add?");
         

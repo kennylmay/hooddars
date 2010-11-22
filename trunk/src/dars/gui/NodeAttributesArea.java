@@ -2,6 +2,7 @@ package dars.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -149,8 +150,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         } catch (NumberFormatException nfe) {
           return;
         }
+        // Enforce boundaries
+        Point p = simArea.getBoundedNodePoint(new Point(X,Y));
+        
         // Dispatch the signal
-        InputHandler.dispatch(DARSEvent.inMoveNode(id, X, Y));
+        InputHandler.dispatch(DARSEvent.inMoveNode(id, p.x, p.y));
+        
       }
     });
 
