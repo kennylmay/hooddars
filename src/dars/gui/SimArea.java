@@ -510,7 +510,6 @@ class NodeActionHandler implements GNodeListener{
     private static final long serialVersionUID = 1L;
 
     public void updateSize() {
-      System.out.println("update size called");
       this.setSize(parent.getSize());
     }
 
