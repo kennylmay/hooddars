@@ -158,8 +158,14 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
         break;
 
       case OUT_MOVE_NODE:
-        // Move the nodenodeSelectorComboBox
+        //Move the node
         simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
+        
+        //select the node
+        simArea.selectNode(e.nodeId);
+        nodeAttributesArea.selectNodeById(e.nodeId);
+        
+        //show the event in the visual log
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
