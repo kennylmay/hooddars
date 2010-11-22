@@ -19,7 +19,7 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
     setOpaque(false);
   }
   
-  private static Font f = new Font("arial", Font.PLAIN, 9);
+  private static Font f = new Font("arial", Font.PLAIN, 11);
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -32,7 +32,7 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
     
     //Draw the X ticks
     for(int i = 0; i < maxX; i += 5) {
-      if( i % 100 == 0) {
+      if( i % 100 == 0 && i != 0) {
         g.drawLine(i, 0, i, 10);
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
@@ -42,29 +42,29 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
             10 + fm.getAscent());
       }
       else if( i % 50 == 0) {
-        g.drawLine(i, 0, i, 7);
+        g.drawLine(i, 0, i, 6);
       }
       else {
-        g.drawLine(i, 0, i, 5);
+        g.drawLine(i, 0, i, 3);
       }
     }
     
     //Draw the Y ticks
     for(int i = 0; i < maxY; i += 5) {
-      if( i % 100 == 0) {
+      if( i % 100 == 0 && i !=0) {
         g.drawLine(0,i,10,i);
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
         
         g.drawString(Integer.toString(i), 
-            10,
+            10 + 2,
             i + fm.getAscent() / 2);
       }
       else if( i % 50 == 0) {
-       g.drawLine(0, i, 7, i);
+       g.drawLine(0, i, 6, i);
       }
       else {
-        g.drawLine(0,i,5,i);
+        g.drawLine(0,i,3,i);
       }
       
     }
