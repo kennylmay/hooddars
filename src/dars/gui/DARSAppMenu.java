@@ -47,8 +47,8 @@ public class DARSAppMenu  {
   private JMenuItem          setupMenu           = new JMenuItem("Setup");
   private JMenuItem          replayMenu          = new JMenuItem("Replay");
   private JMenu              helpMenu            = new JMenu("Help");
-  private JMenuItem          webMenu             = new JMenuItem(
-                                                     "Web Reference");
+  private JMenuItem          readmeMenu             = new JMenuItem(
+                                                     "Getting Started");
   // If someone knows a better way to align this stuff please feel free.
   private JLabel             simTypeLabel        = new JLabel(
                                                      "Simulation Type: ");
@@ -88,8 +88,8 @@ public class DARSAppMenu  {
     
     menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
 
-    // Add the web help menu to the menu bar
-    helpMenu.add(webMenu);
+    // Add the readme help menu to the menu bar
+    helpMenu.add(readmeMenu);
 
     // Add elements to the sim menu and their sub menus
     simMenu.add(newMenu);
@@ -287,10 +287,11 @@ public class DARSAppMenu  {
     
     randomizeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        Dimension dim = simArea.getSize();
         Random r = new Random();
         NodeAttributes att = new NodeAttributes();
-        double X = simArea.maxNodePoint().x;
-        double Y = simArea.maxNodePoint().y;
+        double X = dim.getWidth();
+        double Y = dim.getHeight();
         int numberOfNodes = 0;
         String input = JOptionPane.showInputDialog(null, "How many nodes would you like to randomly add?");
         
@@ -317,9 +318,9 @@ public class DARSAppMenu  {
       }
     });
 
-    helpMenu.addActionListener(new ActionListener() {
+    readmeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        
+        new HelpWindow();
       }
     });
 
@@ -371,11 +372,12 @@ public class DARSAppMenu  {
     importMenu.setEnabled(false);
     randomizeMenu.setEnabled(true);
     
-    //Enable the Play button, disable tstop and pause
-    stopButton.setEnabled(false);
+    //Enable the play/pause/stop buttons
+    stopButton.setEnabled(true);
     playButton.setEnabled(true);
-    pauseButton.setEnabled(false);
+    pauseButton.setEnabled(true);
     
+
     
     //Zero out the current quantum
     quantums = BigInteger.ZERO;
