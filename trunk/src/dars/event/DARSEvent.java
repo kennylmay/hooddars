@@ -22,11 +22,10 @@ public class DARSEvent {
     IN_NEW_SIM, IN_INSERT_MESSAGE, 
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_SET_NODE_PROMISCUITY,  
-    OUT_NODE_INFORM, OUT_MSG_TRANSMITTED, OUT_NODE_BROADCAST, OUT_DEBUG, OUT_ERROR,  
-    OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, OUT_STOP_SIM, OUT_SIM_SPEED,  
-    OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, OUT_CONTROLMSG_RECEIVED,
-    OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM,
-    OUT_MSG_RECEIVED
+    OUT_MSG_TRANSMITTED,  OUT_DEBUG, OUT_ERROR, OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, 
+    OUT_STOP_SIM, OUT_SIM_SPEED, OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, 
+    OUT_CONTROLMSG_RECEIVED, OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, 
+    OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED
   };
 
   public enum SimType { AODV, DSDV };
@@ -302,24 +301,7 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent outNodeBroadcast(String nodeId) {
-    DARSEvent e = new DARSEvent();
-    e.eventType = EventType.OUT_NODE_BROADCAST;  
-    e.nodeId = nodeId;
-    e.informationalMessage = "Node " + nodeId + " started broadcast"; 
-    return e;
-  }
 
-  static DARSEvent outNodeInform(String sourceID, String informationalMessage) {
-    // stub
-    return new DARSEvent();
-  }
-
-  static DARSEvent outNodeDataReceived(String sourceId, String destinationId,
-      String data) {
-    // stub
-    return new DARSEvent();
-  }
 
   public static DARSEvent outError(String informationalMessage) {
     DARSEvent d = new DARSEvent();

@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import replayer.Replayer.ReplayerListener;
+import dars.Message;
 import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.Utilities;
@@ -181,7 +182,20 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
         // Animate the event
         simArea.traceMessage(e.sourceId, e.destinationId, Color.RED,3);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        
+        
         break;
+
+      
+      case OUT_NARRMSG_TRANSMITTED:
+      case OUT_CONTROLMSG_TRANSMITTED:
+        //If the destination is BROADCAST, animate it.
+        if(e.destinationId.equals(Message.BCAST_STRING)){
+          simArea.nodeBroadcast(e.sourceId);
+          logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        }
+        break;
+        
         
       case OUT_CONTROLMSG_RECEIVED:
         // Animate the event
@@ -189,12 +203,6 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
-      case OUT_NODE_BROADCAST:
-        // Animate the event
-        simArea.nodeBroadcast(e.nodeId);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
-        
         
       case OUT_DEL_NODE:
         // Remove the node
