@@ -1,10 +1,12 @@
 package dars.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
+import java.util.Hashtable;
 import java.util.Queue;
 import java.util.Random;
 
@@ -71,12 +73,8 @@ public class DARSAppMenu  {
   private JPanel             simTypeArea         = new JPanel();
 
   // Labels slider bar for the speed adjustment
-  private JLabel             speedLabel          = new JLabel("Speed");
-  private ImageIcon          minusIcon           = new ImageIcon(getClass().getResource("/minus.png"));
-  private JLabel             slowerLabel         = new JLabel(minusIcon);
+  private JLabel             speedLabel          = new JLabel("Simulation Speed");
   private JSlider            slideBar            = new JSlider(JSlider.HORIZONTAL, 1, 20, 5);
-  private ImageIcon          plusIcon            = new ImageIcon(getClass().getResource("/plus.png"));
-  private JLabel             fasterLabel         = new JLabel(plusIcon);
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
   private LogArea            logArea;
@@ -138,16 +136,23 @@ public class DARSAppMenu  {
     // Add the slider bar, set its properties and values.
     JPanel sliderArea = new JPanel();
     sliderArea.add(slideBar);
-    
     JPanel subPanel = new JPanel();
     subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.PAGE_AXIS));
+    speedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     subPanel.add(speedLabel);
     subPanel.add(sliderArea);
-    speedArea.add(subPanel);
     
+    speedArea.add(subPanel);
     slideBar.setSnapToTicks(true);
     slideBar.setPaintTicks(true);
     slideBar.setMinorTickSpacing(1);
+    Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+    labelTable.put( new Integer( 1 ), new JLabel("Slower") );
+    labelTable.put( new Integer( 20 ), new JLabel("Faster") );
+    slideBar.setLabelTable(labelTable);
+    slideBar.setPaintLabels(true);
+
+    
     menuPanel.add(speedArea);
     menuPanel.add(currentQuantumArea);    
     menuPanel.setOpaque(false);
