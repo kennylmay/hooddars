@@ -29,6 +29,20 @@ import dars.proto.aodv.WaitQueueEntry;
 public class Aodv implements Node {
 
   /**
+   * Constructor
+   */
+  public Aodv(NodeAttributes atts) {
+    setAttributes(atts);
+  }
+  
+  /**
+   * Hidden no-argument constructor.
+   */
+  @SuppressWarnings("unused")
+  private Aodv() { };
+  
+  
+  /**
    * Private Types that are needed for AODV
    */
 
@@ -1728,17 +1742,11 @@ public class Aodv implements Node {
    * @return NodeAttributes
    */
   public NodeAttributes getAttributes() {
-    return new NodeAttributes(att);
+    return att;
   }
 
   /**
    * Implements the setAttributes function that is defined in the Node Class.
-   * 
-   * This function will update the attributes for the node.
-   * 
-   * Note, to be sure that no outside entity can modify the node attributes
-   * object belonging to this instance, this method invokes the copy constructor
-   * of node attributes.
    * 
    * @author mayk
    * 
@@ -1746,7 +1754,7 @@ public class Aodv implements Node {
    *          The new attributes for the node.
    */
   public void setAttributes(NodeAttributes atts) {
-    this.att = new NodeAttributes(atts);
+    this.att = atts;
   }
 
   /**
@@ -1755,8 +1763,7 @@ public class Aodv implements Node {
    * Sets the X and Y coordinate for this node.
    */
   public void setXY(int x, int y) {
-    this.att.x = x;
-    this.att.y = y;
+    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous);
   }
 
   /**
@@ -1765,7 +1772,7 @@ public class Aodv implements Node {
    * Sets the range of this node.
    */
   public void setRange(int range) {
-    this.att.range = range;
+    this.att = new NodeAttributes(att.id, att.x, att.y, range, att.isPromiscuous);
   }
 
   /**
@@ -1805,7 +1812,7 @@ public class Aodv implements Node {
   /**
    * Attributes member
    */
-  NodeAttributes                      att         = new NodeAttributes();
+  NodeAttributes                      att;
 
   /**
    * Route Request ID

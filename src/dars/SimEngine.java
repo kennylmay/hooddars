@@ -9,6 +9,8 @@ import dars.NodeStore;
 import dars.event.DARSEvent;
 import dars.proto.*;
 import dars.proto.aodv.Aodv;
+import dars.proto.dsdv.Dsdv;
+
 import java.lang.Thread;
 import java.math.BigInteger;
 
@@ -294,9 +296,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         NodeAttributes ni = e.getNodeAttributes();
 
         // Assign an ID to the node
-        ni.id = assignNodeId();
+        String id = assignNodeId();
 
         // Make a new network node with these attributes
+        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous);
         n = makeNetworkNode(ni);
 
         // Add it to the node store
@@ -402,19 +405,14 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     Node n = null;
     switch (getSimType()) {
     case AODV:
-      n = new Aodv();
+      n = new Aodv(na);
       break;
 
     case DSDV:
       // TODO implement DSDV
-      n = null;
+      n = new Dsdv();
       break;
     }
-
-    assert (n != null);
-
-    // Set the node attributes
-    n.setAttributes(na);
 
     return n;
   }
@@ -550,17 +548,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         return null;
       }
       return node.getAttributes();
-    }
-  }
-  
-  public boolean getNodePromiscuity(String nodeId) {
-    synchronized (lock) {
-      Node node = store.getNode(nodeId);
-
-      if (node == null) {
-        return false;
-      }
-      return node.isPromiscuous();
     }
   }
 

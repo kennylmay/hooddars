@@ -25,10 +25,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+
 import replayer.Replayer;
 
 import logger.Parser;
 
+import dars.Defaults;
 import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.Utilities;
@@ -295,7 +297,7 @@ public class DARSAppMenu  {
       public void actionPerformed(ActionEvent e) {
         Dimension dim = simArea.getSize();
         Random r = new Random();
-        NodeAttributes att = new NodeAttributes();
+        NodeAttributes att;
         double X = simArea.maxNodePoint().x;
         double Y = simArea.maxNodePoint().y;
         int numberOfNodes = 0;
@@ -309,10 +311,10 @@ public class DARSAppMenu  {
         }  
       
         for (int i = 1; i <= numberOfNodes; i++){
-          att.range = r.nextInt(400) + 50; // Min range of 50
-          att.x = r.nextInt((int)X);
-          att.y = r.nextInt((int)Y);
-          InputHandler.dispatch(DARSEvent.inAddNode(att));
+          int range = r.nextInt(400) + 50; // Min range of 50
+          int x = r.nextInt((int)X);
+          int y = r.nextInt((int)Y);
+          InputHandler.dispatch(DARSEvent.inAddNode(x,y,range, Defaults.IS_PROMISCUOUS));
         }
        }
       

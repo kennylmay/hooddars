@@ -1,22 +1,34 @@
 package dars;
 
 public final class NodeAttributes {
-  public String id;
-  public int    x;
-  public int    y;
-  public int    range;
+  public final String id;
+  public final int x;
+  public final int y;
+  public final int range;
+  public final boolean isPromiscuous;
 
-  // Copy constructor.
+  public NodeAttributes(String id, int x, int y, int range, boolean isPromiscuous) {
+    this.id = id;
+    this.x = x;
+    this.y = y;
+    this.range = range;
+    this.isPromiscuous = isPromiscuous;
+  }
+ 
+  //Copy constructor
   public NodeAttributes(NodeAttributes ni) {
-    id = ni.id;
-    x = ni.x;
-    y = ni.y;
-    range = ni.range;
+    this(ni.id, ni.x, ni.y, ni.range, ni.isPromiscuous);
   }
 
-  // No arg constructor
-  public NodeAttributes() {
-
+  // Hide the no arg constructor.
+  @SuppressWarnings("unused")
+  private NodeAttributes() {
+    //Put values in so compiler doesn't complain
+    this.id = "";
+    this.x = 0;
+    this.y = 0;
+    this.range = 0;
+    this.isPromiscuous = false;
   }
 
 }
