@@ -189,8 +189,6 @@ public class RouteEntry {
     RREQSENT
   }
 
-  // TODO: Need some code here.
-
   /**
    * Destination IP Address for the Destination Node
    */
