@@ -231,7 +231,6 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
 
       case OUT_SIM_SPEED: 
         simArea.setSimSpeed(e.newSimSpeed);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
         
       case OUT_START_SIM:
