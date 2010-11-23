@@ -61,10 +61,13 @@ public class DARSAppMenu  {
   JLabel                     typeLabel           = new JLabel("NONE");
 
   private JPanel             buttonArea          = new JPanel();
-  private JButton            playButton          = new JButton("Play ");
-  private JButton            resumeButton        = new JButton("Resume");
-  private JButton            pauseButton         = new JButton("Pause");
-  private JButton            stopButton          = new JButton("Stop");
+  private ImageIcon          playIcon           = new ImageIcon(getClass().getResource("/play.png"));
+  private ImageIcon          pauseIcon           = new ImageIcon(getClass().getResource("/pause.png"));
+  private ImageIcon          stopIcon           = new ImageIcon(getClass().getResource("/stop.png"));
+  private JButton            playButton          = new JButton(playIcon);
+  private JButton            resumeButton        = new JButton(pauseIcon);
+  private JButton            pauseButton         = new JButton(pauseIcon);
+  private JButton            stopButton          = new JButton(stopIcon);
   
   private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
   private JCheckBoxMenuItem  graphicsCheckBox    = new JCheckBoxMenuItem("Graphics Enabled");
@@ -118,9 +121,9 @@ public class DARSAppMenu  {
     menuPanel.add(simTypeArea);
 
     // Add the Play, pause, and stop buttons
-    buttonArea.add(playButton);
     buttonArea.add(pauseButton);
     buttonArea.add(resumeButton);
+    buttonArea.add(playButton);   
     buttonArea.add(stopButton);
     resumeButton.setVisible(false);
     playButton.setEnabled(false);
