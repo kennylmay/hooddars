@@ -13,48 +13,34 @@ public class ImageFactory {
   
   //set the static instance of the node image. If it's already set, return a ref to it.
   static public BufferedImage getNodeImg() {
-    //return the instance
-    if(nodeImg_ != null) {
-      return nodeImg_;
-    }
-    
-    //otherwise initialize all images
-    init();
+    checkInit();
     return nodeImg_;
   }
 
   static public BufferedImage getHoveredNodeImg() {
-    //return the instance
-    if(hoveredNodeImg_ != null) {
-      return hoveredNodeImg_;
-    }
-    
-    //otherwise initialize all images
-    init();
+    checkInit();
     return hoveredNodeImg_;
   }
 
   static public BufferedImage getSelectedNodeImg() {
-    //return the instance
-    if(selectedNodeImg_ != null) {
-      return selectedNodeImg_;
-    }
-    
-    //otherwise initialize all images
-    init();
+    checkInit();
     return selectedNodeImg_;
   }
 
   static public BufferedImage getGhostedNodeImg() {
-    //return the instance
-    if(ghostedNodeImg_ != null) {
-      return ghostedNodeImg_;
-    }
-    
-    //otherwise initialize all images
-    init();
+    checkInit();
     return ghostedNodeImg_;
   }
+
+  
+  static private boolean isInit = false;
+  static private void checkInit() {
+    if(isInit) {
+      return;
+    }
+    init();
+  }
+  
 
   static private ImageFactory instance = new ImageFactory();
   static private void init() {
