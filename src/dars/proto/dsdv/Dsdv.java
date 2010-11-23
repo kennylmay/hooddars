@@ -8,6 +8,30 @@ import dars.proto.Node;
 
 public class Dsdv implements Node {
 
+  /**
+   * Constants needed by DSDV
+   */
+  
+  
+  /**
+   * Private Member Fields
+   */
+  
+  
+  /**
+   * Private Member Functions
+   */
+  
+  
+  /**
+   * Public Member Functions Not part of the Node Interface
+   */
+  
+  
+  /** 
+   * Public Member Function Required to Implement the Node Interface
+   */
+  
   @Override
   public void clockTick() {
     // TODO Auto-generated method stub
