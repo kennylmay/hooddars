@@ -1,5 +1,6 @@
 package dars.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +9,7 @@ import java.util.Queue;
 import java.util.Random;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -70,7 +72,7 @@ public class DARSAppMenu  {
   private JLabel             speedLabel          = new JLabel("Speed");
   private ImageIcon          minusIcon           = new ImageIcon(getClass().getResource("/minus.png"));
   private JLabel             slowerLabel         = new JLabel(minusIcon);
-  private JSlider            slideBar            = new JSlider();
+  private JSlider            slideBar            = new JSlider(JSlider.HORIZONTAL, 1, 20, 5);
   private ImageIcon          plusIcon            = new ImageIcon(getClass().getResource("/plus.png"));
   private JLabel             fasterLabel         = new JLabel(plusIcon);
   private JPanel             menuPanel           = new JPanel();
@@ -132,19 +134,23 @@ public class DARSAppMenu  {
     currentQuantumArea.add(currentQuantumLabel);
     
     // Add the slider bar, set its properties and values.
-    speedArea.add(speedLabel);
-    speedArea.add(fasterLabel);
-    speedArea.add(slideBar);
-    slideBar.setSnapToTicks(true);
-    slideBar.setMinimum(1);
-    slideBar.setMaximum(20);
-    slideBar.setValue(5);
-    speedArea.add(slowerLabel);
-    speedArea.add(currentQuantumArea);
-    menuPanel.add(speedArea);
+    JPanel sliderArea = new JPanel();
+    sliderArea.add(slideBar);
     
+    JPanel subPanel = new JPanel();
+    subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.PAGE_AXIS));
+    subPanel.add(speedLabel);
+    subPanel.add(sliderArea);
+    speedArea.add(subPanel);
+    
+    slideBar.setSnapToTicks(true);
+    slideBar.setPaintTicks(true);
+    slideBar.setMinorTickSpacing(1);
+    menuPanel.add(speedArea);
+    menuPanel.add(currentQuantumArea);    
     menuPanel.setOpaque(false);
- 
+    menuPanel.setVisible(true);
+    
     aodvMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         typeLabel.setText("AODV");
@@ -349,8 +355,14 @@ public class DARSAppMenu  {
     });
 
     slideBar.addChangeListener(new ChangeListener() {
+      private int lastVal = 0;
       public void stateChanged(ChangeEvent arg0) {
-        InputHandler.dispatch(DARSEvent.inSimSpeed(slideBar.getValue()));
+        int val = 21 - slideBar.getValue();
+        if(lastVal == val) {
+          return;
+        }
+        lastVal = val;
+        InputHandler.dispatch(DARSEvent.inSimSpeed(val));
       }
     });
     
