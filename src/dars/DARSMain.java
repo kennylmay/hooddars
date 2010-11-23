@@ -23,6 +23,9 @@ public class DARSMain {
    * @param args
    */
   public static void main(String[] args) {
+    
+    Utilities.setSwingFont(Defaults.FONT);
+    
     // Setup the logger to consume DARSEvents from both the input handler and
     // the output handler. From henceforth, all DARSEvents that pass through
     // the Input and Output handlers will be logged.

@@ -10,6 +10,8 @@ import java.awt.event.ComponentListener;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+
+import dars.Defaults;
 public class XYTickPanel extends JPanel implements  ComponentListener {
   private static final long serialVersionUID = 1L;
 
@@ -19,7 +21,7 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
     setOpaque(false);
   }
   
-  private static Font f = new Font("arial", Font.PLAIN, 11);
+  private static Font f = Defaults.FONT;
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);

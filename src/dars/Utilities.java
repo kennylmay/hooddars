@@ -9,11 +9,20 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import logger.Logger;
 
 public class Utilities {
-
+  public static void setSwingFont(javax.swing.plaf.FontUIResource f) {
+    java.util.Enumeration keys = UIManager.getDefaults().keys();
+    while (keys.hasMoreElements()) {
+      Object key = keys.nextElement();
+      Object value = UIManager.get(key);
+      if (value instanceof javax.swing.plaf.FontUIResource)
+        UIManager.put(key, f);
+    }
+  }
   public static void showError(String error) {
     JOptionPane.showMessageDialog(null, 
         error, "Error", JOptionPane.ERROR_MESSAGE);
