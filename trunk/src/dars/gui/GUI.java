@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import replayer.Replayer.ReplayerListener;
+import dars.Defaults;
 import dars.Message;
 import dars.NodeInspector;
 import dars.OutputConsumer;
@@ -34,6 +35,8 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
   public GUI() {
     super("DARS Version 1.0");
 
+    
+    
     // Tell this JFrame to exit the program when this window closes
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
