@@ -2,6 +2,7 @@ package dars.gui;
 
 import javax.swing.*;
 
+import dars.Defaults;
 import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.NodeInspector;
@@ -163,11 +164,7 @@ public class SimArea extends JLayeredPane {
   }
 
   private void addNewNodeReq(int x, int y) {
-    NodeAttributes n = new NodeAttributes();
-    n.x = x;
-    n.y = y;
-    n.range = getDefaultRange();
-    InputHandler.dispatch(DARSEvent.inAddNode(n));
+    InputHandler.dispatch(DARSEvent.inAddNode(x,y, Defaults.RANGE, Defaults.IS_PROMISCUOUS));
   }
 
   private void deleteNodeReq(String id) {

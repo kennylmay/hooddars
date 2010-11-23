@@ -44,22 +44,19 @@ public class DARSEvent {
   public BigInteger     currentQuantum;
   public boolean        isPromiscuous;
   
-  
+
+  //Provided for convenience.
   public NodeAttributes getNodeAttributes() {
-    NodeAttributes n = new NodeAttributes();
-    n.x = nodeX;
-    n.y = nodeY;
-    n.range = nodeRange;
-    n.id = nodeId;
-    return n;
+    return new NodeAttributes(nodeId, nodeX, nodeY, nodeRange, isPromiscuous);
   }
   
-  
+//Provided for convenience.
   public void setNodeAttributes(NodeAttributes n) {
     nodeX = n.x;
     nodeY = n.y;
     nodeRange = n.range;
     nodeId = n.id;
+    isPromiscuous = n.isPromiscuous;
   }
 
 
@@ -179,10 +176,13 @@ public class DARSEvent {
     return e;
   }
     
-  public static DARSEvent inAddNode(NodeAttributes n) {
+  public static DARSEvent inAddNode(int x, int y, int range, boolean isPromiscuous) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_ADD_NODE;
-    e.setNodeAttributes(n);
+    e.nodeX = x;
+    e.nodeY = y;
+    e.nodeRange = range;
+    e.isPromiscuous = isPromiscuous;
     return e;
   }
 

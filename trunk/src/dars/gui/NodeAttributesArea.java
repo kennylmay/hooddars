@@ -298,7 +298,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeXField.setText(Integer.toString(n.x));
     nodeYField.setText(Integer.toString(n.y));
     nodeRangeSpinner.setValue(n.range);
-    promiscuousModeCheckBox.setSelected(nodeInspector.getNodePromiscuity(n.id));
+    promiscuousModeCheckBox.setSelected(n.isPromiscuous);
     blockChangeEvents = false;
   }
 
