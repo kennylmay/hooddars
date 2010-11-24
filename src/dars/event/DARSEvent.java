@@ -374,22 +374,24 @@ public class DARSEvent {
   // use reflection to get each field
   static Class<DARSEvent> c = DARSEvent.class;
   static Field[] fields = c.getFields();
-  public String getLogString() {
+  
+  public synchronized String getLogString() {
 
     // proposed format of log string is:
     // comma separated values, with public fields of DARSEvent printed out in
     // order
-
-    String ret = "";
+    StringBuilder sb = new StringBuilder();
+    
+    
     for (Field f : fields) {
       Object obj;
       try {
         f.setAccessible(true);
         obj = f.get(this);
         if (obj != null) {
-          ret += obj.toString() + ",";
+          sb.append(obj.toString() + ",");
         } else {
-          ret += ",";
+          sb.append(",");
         }
       } catch (IllegalArgumentException e) {
         e.printStackTrace();
@@ -401,11 +403,11 @@ public class DARSEvent {
 
     }
     // remove trailing comma
-    ret = ret.substring(0, ret.length() - 1);
+    sb.deleteCharAt(sb.length()-1);
     
     // add a newline char
-    ret += newline;
-    return ret;
+    sb.append(newline);
+    return sb.toString();
   }
 
   public static String getLogHeader() {

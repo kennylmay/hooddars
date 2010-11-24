@@ -58,6 +58,8 @@ public class Animations extends JPanel implements ComponentListener,
 
   public void stop() {
     animationTimer.stop();
+    dropAll();
+    repaint();
   }
 
   public void setFPS(int fps) {
@@ -71,6 +73,8 @@ public class Animations extends JPanel implements ComponentListener,
   LinkedList<Connection>         topList   = new LinkedList<Connection>();
   public void paintComponent(Graphics g) {
 
+    super.paintComponent(g);
+    
     //clear out the top list
     topList.clear();
     
@@ -268,6 +272,8 @@ public class Animations extends JPanel implements ComponentListener,
       }
     }
   }
+  
+  
 
   public void removeConn(Connection c) {
     for (Connection conn : connStore) {
@@ -283,6 +289,11 @@ public class Animations extends JPanel implements ComponentListener,
     for (Connection conn : connStore) {
       conn.marked2Die = true;
     }
+    
+    for ( RangeIndicator ri : riStore.values()){
+      ri.dropAnimation();
+    }
+    
   }
 
   public void updateSize() {
@@ -301,6 +312,9 @@ public class Animations extends JPanel implements ComponentListener,
       startStep = Animations.anicount;
     }
 
+    public void dropAnimation() {
+      startStep = 0;
+    }
     public void drawRange(Graphics g) {
 
       // System.out.println("painting ranger");
