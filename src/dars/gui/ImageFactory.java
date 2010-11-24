@@ -2,6 +2,9 @@ package dars.gui;
 import java.awt.image.*;
 import java.awt.Font;
 import javax.imageio.ImageIO;
+
+import dars.Defaults;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -97,7 +100,7 @@ public class ImageFactory {
      
  
     g.setColor(new Color(0,0,255,255));
-    for(int i=0; i<3; i++) {
+    for(int i=0; i<1; i++) {
       g.drawRoundRect(i, i ,dest.getWidth(null) - 2*i -1, dest.getHeight(null) - 2*i -1 ,10,10);
     }
 
@@ -105,17 +108,13 @@ public class ImageFactory {
   }
 
   
-  static Font f = new Font("arial", Font.PLAIN, 12);
+
   //Function that draws a letter directly onto a buffered image
   static public void drawNodeID(Graphics g1, String id, Rectangle r){
     //get the center
     Graphics2D g = (Graphics2D)g1;
    
-    g.drawRect(r.x,r.y,r.width,r.height);
-    
-    g.setColor(Color.BLACK);
-   
-    g.setFont(f);
+    g.setFont(Defaults.NODEID_FONT);
     FontMetrics fm = g.getFontMetrics();
     g.drawString(id, 
                  r.x + r.width/2 - fm.stringWidth(id)/2,

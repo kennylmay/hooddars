@@ -15,6 +15,8 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import dars.Defaults;
+
 public class Animations extends JPanel implements ComponentListener,
     ActionListener {
 
@@ -37,9 +39,9 @@ public class Animations extends JPanel implements ComponentListener,
     repaintTimer.start();
   }
 
-  public void traceMessage(GNode a, GNode b, Color color, int longevityFactor) {
+  public void traceMessage(GNode a, GNode b, Color color, int longevityFactor, int fatness, int priority) {
 
-    Connection c = new Connection(a, b, color, longevityFactor);
+    Connection c = new Connection(a, b, color, longevityFactor, fatness, priority);
     connStore.add(c);
   }
 
@@ -89,15 +91,14 @@ public class Animations extends JPanel implements ComponentListener,
         continue;
       }
 
-      // Draw the connection
-
-      if(c.color == Color.BLUE) {
+      // Draw the lowest priority connections 
+      if(c.priority == 0) {
         int x1, y1, x2, y2;
         x1 = c.fromNode.getCenter().x;
         y1 = c.fromNode.getCenter().y;
         x2 = c.toNode.getCenter().x;
         y2 = c.toNode.getCenter().y;
-        drawConn(g, c.color, x1, y1, x2, y2);
+        drawConn(g, c.color, x1, y1, x2, y2, c.fatness);
       }
       else {
         topList.add(c);
@@ -110,7 +111,7 @@ public class Animations extends JPanel implements ComponentListener,
       y1 = c.fromNode.getCenter().y;
       x2 = c.toNode.getCenter().x;
       y2 = c.toNode.getCenter().y;
-      drawConn(g, c.color, x1, y1, x2, y2);
+      drawConn(g, c.color, x1, y1, x2, y2, c.fatness);
     }
       
     // Draw the range indicators and broadcasts
@@ -180,15 +181,13 @@ public class Animations extends JPanel implements ComponentListener,
    }
 
   
-  static void drawConn(Graphics g, Color c, int x1, int y1, int x2, int y2) {
+  static void drawConn(Graphics g, Color c, int x1, int y1, int x2, int y2, int fatness) {
 
     g.setColor(c);
-    int fatness = 5;
-    if(c != Color.BLUE) {
+    if(fatness != 1) {
       drawThickLine(g,x1, y1, x2, y2, fatness, c);
     }
     else {
-      fatness = 1;
       g.drawLine(x1, y1, x2, y2);
     }
 
@@ -228,14 +227,15 @@ public class Animations extends JPanel implements ComponentListener,
   }
 
 
-  private static Color defaultRangeColor = new Color(150,150,150);  
-  private static Color selectedRangeColor = new Color(255,153,51);
+
   
   class Connection {
     GNode   fromNode;
     GNode   toNode;
     int     dieCount;
     int     startCount;
+    int     priority; //0 is lowest layer
+    int     fatness;
     boolean marked2Die = false;
     Color   color;
 
@@ -247,10 +247,12 @@ public class Animations extends JPanel implements ComponentListener,
         return false;
     }
 
-    Connection(GNode fromNode, GNode toNode, Color color, int longevityFactor) {
+    Connection(GNode fromNode, GNode toNode, Color color, int longevityFactor, int fatness,int priority) {
       this.fromNode = fromNode;
       this.toNode = toNode;
       this.color = color;
+      this.priority = priority;
+      this.fatness  = fatness;
       startCount = Animations.anicount;
       dieCount = startCount + Animations.connLifeTime * longevityFactor;
     }
@@ -322,7 +324,7 @@ public class Animations extends JPanel implements ComponentListener,
 
       // Draw the graphic
       if (parent_.isSelected()) {
-        g2.setColor(selectedRangeColor);
+        g2.setColor(Defaults.SELECTED_RANGE_COLOR);
         g2.drawOval(parent_.getCenter().x - parent_.getRange()+2,
             parent_.getCenter().y - parent_.getRange()+2,
             parent_.getRange() * 2 - 6, parent_.getRange() * 2 - 6);
@@ -333,7 +335,7 @@ public class Animations extends JPanel implements ComponentListener,
             parent_.getCenter().y - parent_.getRange(),
             parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
       } else {
-        g2.setColor(defaultRangeColor);
+        g2.setColor(Defaults.RANGE_COLOR);
         g2.drawOval(parent_.getCenter().x - parent_.getRange(),
             parent_.getCenter().y - parent_.getRange(),
             parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
@@ -348,7 +350,7 @@ public class Animations extends JPanel implements ComponentListener,
       int bCastX =  parent_.getCenter().x - bCastRadius;
       int bCastY =  parent_.getCenter().y - bCastRadius;
 
-      g2.setColor(Color.GREEN);
+      g2.setColor(Defaults.BROADCAST_COLOR);
       // draw a 3 pixel circle
       g2.drawOval(bCastX, bCastY, bCastRadius * 2, bCastRadius * 2);
       g2.drawOval(bCastX + 1, bCastY + 1, bCastRadius * 2, bCastRadius * 2 - 1);

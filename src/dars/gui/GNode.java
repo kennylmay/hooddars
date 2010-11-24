@@ -51,10 +51,12 @@ public class GNode extends JPanel {
     }
   }
  
-  private static Rectangle r = new Rectangle(9, 4, 17, 12);
+  private static Rectangle r = new Rectangle(7, 7, 22, 19);
   @Override
   public void paintComponent(Graphics g) {
 
+    super.paintComponent(g);
+    
     // Draw the graphic
     g.drawImage(img_, 0, 0, null);
 
