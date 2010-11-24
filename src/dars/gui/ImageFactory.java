@@ -42,6 +42,7 @@ public class ImageFactory {
       return;
     }
     init();
+    isInit=true;
   }
   
 

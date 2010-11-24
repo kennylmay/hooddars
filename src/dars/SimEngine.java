@@ -32,7 +32,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
   MessageRelay                thread       = new MessageRelay();
   static public Object        lock         = new Object();
   private volatile boolean    paused;
-  private volatile BigInteger simTime      = BigInteger.ZERO;
+  private volatile long       simTime      = 0;
 
   /**
    * Function that will start a simulation
@@ -47,15 +47,15 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     if (thread.isAlive() == false) {
       KILL_THREAD = false;
       thread = new MessageRelay();
-      simTime = BigInteger.ZERO;
+      simTime = 0;
       thread.start();
       
     }
   }
   
   @Override
-  public BigInteger getTime() {
-    return new BigInteger(simTime.toString());
+  public long getTime() {
+    return simTime;
   }
   
 
@@ -136,6 +136,9 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     int iterationCount = 0;
 
     public void run() {
+      
+
+      
       // Make sure the kill switch hasn't been thrown.
       while (KILL_THREAD == false) {
 
@@ -145,6 +148,9 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           // Reset the iterationCount after the 100th try
           iterationCount = 0;
           if (paused == false) {
+            //Suggest a garbage collection.
+            System.gc();
+            
             // Enter the critical area for the simulation
             // ////////////////////////////////////////////////////
             synchronized (lock) {
@@ -167,9 +173,11 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     Message message = null;
     Iterator<Node> i;
     Iterator<Message> mi;
+    //Get a reference to the size of the Q
+    int msgQSize = messageQueue.size();
     
     //Increment sim time
-    simTime = simTime.add(BigInteger.ONE);
+    simTime++;
     OutputHandler.dispatch(DARSEvent.OutQuantumElapsed());
     
     // If there are any messages in the newMessage Q, introduce them
@@ -246,7 +254,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       }
     }
     
-
   }
 
   /**
