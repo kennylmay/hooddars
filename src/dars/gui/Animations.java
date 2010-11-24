@@ -141,6 +141,8 @@ public class Animations extends JPanel implements ComponentListener,
     connLifeTime = speed * 4 + 60;
   }
 
+  private static int xPoints[] = new int[4];
+  private static int yPoints[] = new int[4];
   static public void drawThickLine(
       Graphics g, int x1, int y1, int x2, int y2, int thickness, Color c) {
       // The thick line is in fact a filled polygon
@@ -220,6 +222,10 @@ public class Animations extends JPanel implements ComponentListener,
 
   }
 
+
+  private static Color defaultRangeColor = new Color(150,150,150);  
+  private static Color selectedRangeColor = new Color(255,153,51);
+  
   class Connection {
     GNode   fromNode;
     GNode   toNode;
@@ -294,8 +300,6 @@ public class Animations extends JPanel implements ComponentListener,
       startStep = Animations.anicount;
     }
 
-    private Color defaultRangeColor = new Color(150,150,150);  
-    private Color selectedRangeColor = new Color(255,153,51);
     public void drawRange(Graphics g) {
 
       // System.out.println("painting ranger");
