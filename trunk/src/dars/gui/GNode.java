@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class GNode extends JPanel {
@@ -50,7 +51,7 @@ public class GNode extends JPanel {
     }
   }
  
-  private Rectangle r = new Rectangle();
+  private static Rectangle r = new Rectangle(9, 4, 17, 12);
   @Override
   public void paintComponent(Graphics g) {
 
@@ -58,7 +59,6 @@ public class GNode extends JPanel {
     g.drawImage(img_, 0, 0, null);
 
     // Draw the node id onto the graphic
-    r.setRect(9, 4, 17, 12);
     ImageFactory.drawNodeID(g, id_, r);
 
   }
@@ -175,7 +175,7 @@ public class GNode extends JPanel {
 
   private BufferedImage               img_      = null;
 
-  private final Vector<GNodeListener> listeners = new Vector<GNodeListener>();
+  private final ArrayList<GNodeListener> listeners = new ArrayList<GNodeListener>();
 
   private boolean                     isClicked = false;
 
