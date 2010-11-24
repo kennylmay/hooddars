@@ -24,27 +24,30 @@ public class Replayer implements OutputConsumer {
     this.replayerListener = rl;
     
     //Fire off events at the zero quantum.
-    dispatchEventsAtQuantum(replayEvents, BigInteger.ZERO);
+    dispatchEventsAtQuantum(replayEvents, 0);
     rl.replayerStarted();
     
   }
   
-  private void dispatchEventsAtQuantum(Queue<DARSEvent> Q, BigInteger quantum) {
+  private void dispatchEventsAtQuantum(Queue<DARSEvent> Q, long quantum) {
      Iterator<DARSEvent> iter = Q.iterator();
      while(iter.hasNext()) {
        DARSEvent d = iter.next();
        
        //If this quantum is greater than specified quantum, break out
        //This assumes the list is ordered. If it isn't, change this routine!
-       if(d.currentQuantum.compareTo(quantum) == 1) {
+       if(d.currentQuantum > quantum) {
          return;
        }
 
        //If this quantum is = to the specified quantum, pull it off the Q and dispatch it
-       if(d.currentQuantum.compareTo(quantum) == 0) {
+       if(d.currentQuantum == 0) {
          iter.remove();
          InputHandler.dispatch(d);
        }
+       
+       //If we get here, theres a bug
+       for(int i =0; i<500; i++) System.out.println("BUG BUG!! UNFORSEEN SEQUENCE IN dispatchEventsAtQuantum");
      }
   }
   

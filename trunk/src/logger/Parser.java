@@ -35,7 +35,7 @@ public class Parser
   
   static private boolean isSetupEvent(DARSEvent d) {
     //Setup events are Q=0 and most IN_... types
-    if( ! d.currentQuantum.equals(BigInteger.ZERO)) {
+    if( d.currentQuantum != 0) {
       return false;
     }
 

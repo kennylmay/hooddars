@@ -41,7 +41,7 @@ public class DARSEvent {
   public int            nodeY;
   public int            nodeRange;
   public SimType        simType;
-  public BigInteger     currentQuantum;
+  public long           currentQuantum;
   public boolean        isPromiscuous;
   
 
@@ -475,7 +475,7 @@ public class DARSEvent {
       
      
       
-      e.currentQuantum = new BigInteger(details[11]);
+      e.currentQuantum = Long.parseLong(details[11]);
       
       e.isPromiscuous = Boolean.parseBoolean(details[12]);
       

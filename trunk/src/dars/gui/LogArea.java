@@ -28,7 +28,7 @@ public class LogArea extends javax.swing.JPanel {
   private boolean DEBUG;
   
   static private int counter = 0;
-  public void appendLog(String log, BigInteger quantum) {
+  public void appendLog(String log, long quantum) {
     if (log.contains("DEBUG") && DEBUG == false){
       return;
     }
