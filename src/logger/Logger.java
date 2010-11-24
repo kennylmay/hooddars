@@ -27,7 +27,7 @@ import dars.event.DARSEvent;
  */
 public class Logger implements OutputConsumer, InputConsumer {
   public static String newline = System.getProperty("line.separator");
-  public static void log(DARSEvent e){
+  public static synchronized void log(DARSEvent e){
 	  
     
 	//if file handle is not init, do it
