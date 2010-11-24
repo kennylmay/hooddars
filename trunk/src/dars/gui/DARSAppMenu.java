@@ -1,6 +1,5 @@
 package dars.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -9,9 +8,7 @@ import java.math.BigInteger;
 import java.util.Hashtable;
 import java.util.Queue;
 import java.util.Random;
-
 import javax.swing.BoxLayout;
-import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -26,12 +23,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-
 import replayer.Replayer;
-
 import logger.Parser;
-
 import dars.Defaults;
 import dars.InputHandler;
 import dars.NodeAttributes;
@@ -161,6 +154,7 @@ public class DARSAppMenu  {
     
     // Add the quantums elapsed area
     currentQuantumArea.add(new JLabel("  Current Quantum: "));
+    currentQuantumLabel.setText("0"); 
     currentQuantumArea.add(currentQuantumLabel);
     
     // Add the slider bar, set its properties and values.
@@ -208,6 +202,8 @@ public class DARSAppMenu  {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
         InputHandler.dispatch(DARSEvent.inClearSim());
+        currentQuantumLabel.setText("0");
+        typeLabel.setText("NONE");
       }
     });
 
