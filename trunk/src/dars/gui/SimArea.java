@@ -295,7 +295,7 @@ public class SimArea extends JLayeredPane {
   }
 
   public void traceMessage(String fromId, String toId, Color color,
-      int longevityFactor) {
+      int longevityFactor, int fatness, int priority) {
 
     if (!graphicsEnabled) {
       return;
@@ -306,7 +306,7 @@ public class SimArea extends JLayeredPane {
     if (a == null || b == null)
       return;
 
-    animations.traceMessage(a, b, color, longevityFactor);
+    animations.traceMessage(a, b, color, longevityFactor, fatness, priority);
 
   }
 

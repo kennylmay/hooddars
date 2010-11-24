@@ -189,7 +189,7 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
   
       case OUT_NARRMSG_RECEIVED:
         // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Color.RED,3);
+        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.NARRMSG_COLOR,3,5,1);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         
         
@@ -208,7 +208,7 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
         
       case OUT_CONTROLMSG_RECEIVED:
         // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Color.BLUE,1);
+        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.CNTRLMSG_COLOR,1, 1, 0);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
