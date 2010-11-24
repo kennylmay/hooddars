@@ -27,6 +27,7 @@ public class LogArea extends javax.swing.JPanel {
    */
   private boolean DEBUG;
   
+  static private int counter = 0;
   public void appendLog(String log, BigInteger quantum) {
     if (log.contains("DEBUG") && DEBUG == false){
       return;
@@ -35,6 +36,11 @@ public class LogArea extends javax.swing.JPanel {
     textArea.append(newline);
     textArea.setCaretPosition(textArea.getDocument().getLength());
 
+    //Every 1000 row inserts, truncate the visible log
+    if(++counter % 1000 == 0) {
+        textArea.setText("");
+       //textArea.replaceRange("",0, textArea.getDocument().getLength());
+      }
   }
   
 
