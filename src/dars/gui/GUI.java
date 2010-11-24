@@ -12,6 +12,9 @@ import dars.OutputConsumer;
 import dars.Utilities;
 import dars.event.DARSEvent;
 import java.awt.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
 
@@ -145,131 +148,157 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
   }
 
   private class ThreadSafeConsumer implements Runnable {
-    public DARSEvent e;
-
-    public void run() {
-      switch (e.eventType) {
-      case OUT_ADD_NODE:
-        // Add the node
-        simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
-        nodeAttributesArea.nodeAdded(e.nodeId);
-        
-        //select the node
-        simArea.selectNode(e.nodeId);
-        nodeAttributesArea.selectNodeById(e.nodeId);   
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
-
-      case OUT_MOVE_NODE:
-        //Move the node
-        simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
-        
-        //select the node
-        simArea.selectNode(e.nodeId);
-        nodeAttributesArea.selectNodeById(e.nodeId);
-        
-        //show the event in the visual log
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
-
-      case OUT_SET_NODE_RANGE:
-        // Refresh the node attributes panel
-        nodeAttributesArea.setNode(e.nodeId);
-        simArea.setNodeRange(e.nodeId, e.nodeRange);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
     
-      case OUT_MSG_RECEIVED:
-        // Refresh the node attributes panel
-        JOptionPane.showMessageDialog(null, "Successful Message Transmission!\n" +
-                                            "Source Node: "+ e.sourceId + "\n" + 
-                                            "Destination Node: " + e.destinationId + "\n" +
-                                            "Message: " + e.transmittedMessage);
-        break;
-  
-      case OUT_NARRMSG_RECEIVED:
-        // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.NARRMSG_COLOR,3,5,1);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        
-        
-        break;
-
+    private DARSEvent e;
+    int count = 0;
+    java.util.Queue<DARSEvent> Q = new LinkedList<DARSEvent>();
+    public void run() {
+      requestIsIn=false;
       
-      case OUT_NARRMSG_TRANSMITTED:
-      case OUT_CONTROLMSG_TRANSMITTED:
-        //If the destination is BROADCAST, animate it.
-        if(e.destinationId.equals(Message.BCAST_STRING)){
-          simArea.nodeBroadcast(e.sourceId);
-          logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        }
-        break;
-        
-        
-      case OUT_CONTROLMSG_RECEIVED:
-        // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.CNTRLMSG_COLOR,1, 1, 0);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
+      //pull as much as we can off the Q
+      Q.clear();
+      while(!outputQ.isEmpty()){
+        Q.add(outputQ.remove());
+      }
+      
+      
+      
+      Iterator<DARSEvent> i = Q.iterator();
+      while(i.hasNext()) {
+        count++;
+        e = i.next();
+        switch (e.eventType) {
+        case OUT_ADD_NODE:
+          // Add the node
+          simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
+          nodeAttributesArea.nodeAdded(e.nodeId);
 
-        
-      case OUT_DEL_NODE:
-        // Remove the node
-        simArea.deleteNode(e.nodeId);
-        nodeAttributesArea.nodeDeleted(e.nodeId);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
+          // select the node
+          simArea.selectNode(e.nodeId);
+          nodeAttributesArea.selectNodeById(e.nodeId);
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          break;
 
-      case OUT_DEBUG:
-        logArea.appendLog("DEBUG: " + e.informationalMessage, e.currentQuantum);
-        break;
-      case OUT_ERROR:
-        logArea.appendLog("ERROR: " + e.informationalMessage, e.currentQuantum);
-        break;
-        
-      case OUT_QUANTUM_ELAPSED:
-        menuArea.quantumElapsed();
-        nodeAttributesArea.updateNodeDialogs();
-        break;
+        case OUT_MOVE_NODE:
+          // Move the node
+          simArea.moveNode(e.nodeId, e.nodeX, e.nodeY);
 
-      case OUT_SIM_SPEED: 
-        simArea.setSimSpeed(e.newSimSpeed);
-        break;
-        
-      case OUT_START_SIM:
-        //Notify the menu that a sim has started
-        menuArea.simStarted();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
+          // select the node
+          simArea.selectNode(e.nodeId);
+          nodeAttributesArea.selectNodeById(e.nodeId);
 
-      case OUT_STOP_SIM:
-        //Notify the menu that the sim has stopped
-        menuArea.simStopped();
-        simArea.simStopped();
-        nodeAttributesArea.simStopped();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        
-        //Prompt the user to save the log
-        int ret = JOptionPane.showConfirmDialog(null,
-            "Simulation Completed. Would you like to save the log file?", 
-            "Simulation Completed.", JOptionPane.YES_NO_OPTION);
-        if(ret == JOptionPane.YES_OPTION) {
-          Utilities.runSaveLogDialog(simArea);
-        }
-            
-        break;
+          // show the event in the visual log
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          break;
 
-      case OUT_PAUSE_SIM:
-        //Notify the menu the the sim has paused
-        menuArea.simPaused();
-        simArea.simPaused();
-        nodeAttributesArea.simPaused();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        break;
+        case OUT_SET_NODE_RANGE:
+          // Refresh the node attributes panel
+          nodeAttributesArea.setNode(e.nodeId);
+          simArea.setNodeRange(e.nodeId, e.nodeRange);
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          break;
 
-      case OUT_RESUME_SIM:
-        //Notify the menu that the sim has resumed
-        menuArea.simResumed();
+        case OUT_MSG_RECEIVED:
+          // Refresh the node attributes panel
+          JOptionPane.showMessageDialog(null,
+              "Successful Message Transmission!\n" + "Source Node: "
+                  + e.sourceId + "\n" + "Destination Node: " + e.destinationId
+                  + "\n" + "Message: " + e.transmittedMessage);
+          break;
+
+        case OUT_NARRMSG_RECEIVED:
+          // Animate the event
+          simArea.traceMessage(e.sourceId, e.destinationId,
+              Defaults.NARRMSG_COLOR, 3, 5, 1);
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+
+          break;
+
+        case OUT_NARRMSG_TRANSMITTED:
+        case OUT_CONTROLMSG_TRANSMITTED:
+          // If the destination is BROADCAST, animate it.
+          if (e.destinationId.equals(Message.BCAST_STRING)) {
+            simArea.nodeBroadcast(e.sourceId);
+            logArea.appendLog("INFO: " + e.informationalMessage,
+                e.currentQuantum);
+          }
+          break;
+
+        case OUT_CONTROLMSG_RECEIVED:
+          // Animate the event
+          simArea.traceMessage(e.sourceId, e.destinationId,
+              Defaults.CNTRLMSG_COLOR, 1, 1, 0);
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          break;
+
+        case OUT_DEL_NODE:
+          // Remove the node
+          simArea.deleteNode(e.nodeId);
+          nodeAttributesArea.nodeDeleted(e.nodeId);
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          break;
+
+        case OUT_DEBUG:
+          logArea.appendLog("DEBUG: " + e.informationalMessage,
+              e.currentQuantum);
+          break;
+        case OUT_ERROR:
+          logArea.appendLog("ERROR: " + e.informationalMessage,
+              e.currentQuantum);
+          break;
+
+        case OUT_QUANTUM_ELAPSED:
+          menuArea.quantumElapsed();
+          nodeAttributesArea.updateNodeDialogs();
+          break;
+
+        case OUT_SIM_SPEED:
+          simArea.setSimSpeed(e.newSimSpeed);
+          break;
+
+        case OUT_START_SIM:
+          // Notify the menu that a sim has started
+          menuArea.simStarted();
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          break;
+
+        case OUT_STOP_SIM:
+          // Notify the menu that the sim has stopped
+          menuArea.simStopped();
+          simArea.simStopped();
+          nodeAttributesArea.simStopped();
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+
+          // Prompt the user to save the log
+          int ret = JOptionPane.showConfirmDialog(null,
+              "Simulation Completed. Would you like to save the log file?",
+              "Simulation Completed.", JOptionPane.YES_NO_OPTION);
+          if (ret == JOptionPane.YES_OPTION) {
+            Utilities.runSaveLogDialog(simArea);
+          }
+
+          break;
+
+        case OUT_PAUSE_SIM:
+          // Notify the menu the the sim has paused
+          menuArea.simPaused();
+          simArea.simPaused();
+          nodeAttributesArea.simPaused();
+          logArea
+              .appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          break;
+
+        case OUT_RESUME_SIM:
+          // Notify the menu that the sim has resumed
+          menuArea.simResumed();
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
@@ -294,21 +323,33 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
 
       }
+
     }
   }
+  }
 
+  private volatile boolean requestIsIn = false;
+  private void consumeOutputRequest() {
+    //Collapse multiple requests;
+    if(requestIsIn) {
+      return;
+    }
+    
+    //Run a new threadsafe consumer
+    requestIsIn = true;
+    SwingUtilities.invokeLater(new ThreadSafeConsumer());
+    
+  }
+  
+  private ConcurrentLinkedQueue<DARSEvent> outputQ = new ConcurrentLinkedQueue<DARSEvent>();  
   public void consumeOutput(DARSEvent e) {
-    // schedule the event to be processed later so as to not disturb the gui's
-    // event thread
-    ThreadSafeConsumer c = new ThreadSafeConsumer();
-
-    // Copy the event to the thread safe consumer instance
-    c.e = e;
-
-    // Invoke it later; This will push the runnable instance onto the
-    // Java Event Dispatching thread
-    SwingUtilities.invokeLater(c);
-
+    
+    
+    //Make request to consume output
+    consumeOutputRequest();
+    
+    //Push it on to the threadsafe Q
+    outputQ.add(e);
   }
 
   private void attachMenus() {
