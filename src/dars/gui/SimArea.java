@@ -255,6 +255,12 @@ public class SimArea extends JLayeredPane {
 
   public void setGraphicsEnabled(boolean isEnabled) {
     this.graphicsEnabled = isEnabled;
+    if(isEnabled) {
+      animations.start();
+    }
+    else {
+      animations.stop();
+    }
   }
 
   private void reassessFPS() {

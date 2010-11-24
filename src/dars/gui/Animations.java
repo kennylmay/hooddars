@@ -57,13 +57,14 @@ public class Animations extends JPanel implements ComponentListener,
   }
 
   public void stop() {
-
+    animationTimer.stop();
   }
 
   public void setFPS(int fps) {
     repaintTimer.setDelay(1000/fps); 
   }
 
+  
   LinkedList<Connection>         connStore = new LinkedList<Connection>();
   HashMap<GNode, RangeIndicator> riStore   = new HashMap<GNode, RangeIndicator>();
 
