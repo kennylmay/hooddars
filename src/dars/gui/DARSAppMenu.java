@@ -43,18 +43,26 @@ public class DARSAppMenu  {
   private JMenuBar           menuBar             = new JMenuBar();
   private JMenu              simMenu             = new JMenu("Simulation");
   private JMenu              newMenu             = new JMenu("New");
-  private JMenuItem          saveMenu            = new JMenuItem("Save");
-  private JMenuItem          aodvMenu            = new JMenuItem("AODV");
-  private JMenuItem          dsdvMenu            = new JMenuItem("DSDV");
-  private JMenuItem          clearMenu           = new JMenuItem("Clear");
-  private JMenuItem          exitMenu            = new JMenuItem("Exit");
-  private JMenu              importMenu          = new JMenu("Import");
-  private JMenuItem          randomizeMenu           = new JMenuItem("Randomize");
-  private JMenuItem          setupMenu           = new JMenuItem("Setup");
-  private JMenuItem          replayMenu          = new JMenuItem("Replay");
+  private JMenu              createNetworkMenu   = new JMenu("Create Network");
+  private JMenu              modeMenu            = new JMenu("Mode");
+  private JMenu              controlMenu            = new JMenu("Control");
+  private JMenuItem          saveMenuItem        = new JMenuItem("Save As...");
+  private JMenuItem          aodvMenuItem        = new JMenuItem("AODV");
+  private JMenuItem          dsdvMenuItem        = new JMenuItem("DSDV");
+  private JMenuItem          clearMenuItem       = new JMenuItem("Clear");
+  private JMenuItem          exitMenuItem        = new JMenuItem("Exit");
+  private JMenuItem          importMenuItem      = new JMenuItem("Import for Replay...");
+  private JMenuItem          playMenuItem        = new JMenuItem("Play");
+  private JMenuItem          pauseMenuItem        = new JMenuItem("Pause");
+  private JMenuItem          resumeMenuItem        = new JMenuItem("Resume");
+  private JMenuItem          stopMenuItem        = new JMenuItem("Stop");
+  
   private JMenu              helpMenu            = new JMenu("Help");
   private JMenuItem          readmeMenu             = new JMenuItem(
                                                      "Getting Started");
+  private JMenuItem          addSingleNodeMenuItem = new JMenuItem("Add Single Node");
+  private JMenuItem          addMultipleNodesMenuItem  = new JMenuItem("Add Multiple Nodes");
+  private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
   // If someone knows a better way to align this stuff please feel free.
   private JLabel             simTypeLabel        = new JLabel(
                                                      "Simulation Type: ");
@@ -86,7 +94,6 @@ public class DARSAppMenu  {
   private JLabel         currentQuantumLabel     = new JLabel();
   
   
-  
   public DARSAppMenu(GUI g) {
 
     this.gui = g;
@@ -96,23 +103,38 @@ public class DARSAppMenu  {
     // Add the readme help menu to the menu bar
     helpMenu.add(readmeMenu);
 
+    // Add elements to the create network menu
+    createNetworkMenu.add(addSingleNodeMenuItem);
+    createNetworkMenu.add(loadTopologyMenuItem);
+    createNetworkMenu.add(addMultipleNodesMenuItem);
+ 
+    // Add elements to the mode menu
+    modeMenu.add(debugCheckBox);
+    modeMenu.add(graphicsCheckBox);
+    
+    // Add elements to the control menu
+    controlMenu.add(playMenuItem);
+    controlMenu.add(pauseMenuItem);
+    controlMenu.add(resumeMenuItem);
+    controlMenu.add(stopMenuItem);
+    
     // Add elements to the sim menu and their sub menus
     simMenu.add(newMenu);
-    newMenu.add(aodvMenu);
-    newMenu.add(dsdvMenu);
-    simMenu.add(saveMenu);
-    simMenu.add(debugCheckBox);
-    simMenu.add(graphicsCheckBox);
+    simMenu.add(createNetworkMenu);
+    newMenu.add(aodvMenuItem);
+    newMenu.add(dsdvMenuItem);
+    simMenu.add(saveMenuItem);
+    
     graphicsCheckBox.setState(true);
-    randomizeMenu.setEnabled(false);
-    simMenu.add(randomizeMenu);
-    simMenu.add(importMenu);
-    importMenu.add(setupMenu);
-    importMenu.add(replayMenu);
-    simMenu.add(clearMenu);
-    simMenu.add(exitMenu);
+    addMultipleNodesMenuItem.setEnabled(false);
+    addSingleNodeMenuItem.setEnabled(false);
+    simMenu.add(importMenuItem);
+    simMenu.add(clearMenuItem);
+    simMenu.add(exitMenuItem);
 
     menuBar.add(simMenu);
+    menuBar.add(modeMenu);
+    menuBar.add(controlMenu);
     menuBar.add(helpMenu);
 
     // Add the simulation type menu lables
@@ -121,14 +143,19 @@ public class DARSAppMenu  {
     menuPanel.add(simTypeArea);
 
     // Add the Play, pause, and stop buttons
+    buttonArea.add(stopButton);
     buttonArea.add(pauseButton);
     buttonArea.add(resumeButton);
     buttonArea.add(playButton);   
-    buttonArea.add(stopButton);
+    
     resumeButton.setVisible(false);
+    resumeMenuItem.setVisible(false);
     playButton.setEnabled(false);
+    playMenuItem.setEnabled(false);
     stopButton.setEnabled(false);
+    stopMenuItem.setEnabled(false);
     pauseButton.setEnabled(false);
+    pauseMenuItem.setEnabled(false);
     
     menuPanel.add(buttonArea);
     
@@ -161,7 +188,7 @@ public class DARSAppMenu  {
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
     
-    aodvMenu.addActionListener(new ActionListener() {
+    aodvMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         typeLabel.setText("AODV");
         //Need to define the speed.
@@ -171,20 +198,20 @@ public class DARSAppMenu  {
       }
     });
     
-    dsdvMenu.addActionListener(new ActionListener() {
+    dsdvMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         typeLabel.setText("DSDV");
       }
     });
 
-    clearMenu.addActionListener(new ActionListener() {
+    clearMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
         InputHandler.dispatch(DARSEvent.inClearSim());
       }
     });
 
-    saveMenu.addActionListener(new ActionListener() {
+    saveMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Utilities.runSaveLogDialog(menuBar.getParent());
       }
@@ -203,7 +230,13 @@ public class DARSAppMenu  {
       }
     });
     
-    setupMenu.addActionListener(new ActionListener() {
+    addSingleNodeMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inAddNode(Defaults.X,Defaults.Y,Defaults.RANGE, Defaults.IS_PROMISCUOUS));
+      }
+    });
+    
+    loadTopologyMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(       
@@ -249,7 +282,7 @@ public class DARSAppMenu  {
       }
     });
     
-    replayMenu.addActionListener(new ActionListener() {
+    importMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(       
@@ -301,7 +334,7 @@ public class DARSAppMenu  {
       }
     });
     
-    randomizeMenu.addActionListener(new ActionListener() {
+    addMultipleNodesMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Dimension dim = simArea.getSize();
         Random r = new Random();
@@ -309,7 +342,12 @@ public class DARSAppMenu  {
         double X = simArea.maxNodePoint().x;
         double Y = simArea.maxNodePoint().y;
         int numberOfNodes = 0;
-        String input = JOptionPane.showInputDialog(null, "How many nodes would you like to randomly add?");
+        String input = JOptionPane.showInputDialog(null, "How many nodes would you like to add?");
+
+        // If they hit cancel return.
+        if (input == null){
+          return;
+        }
         
         try{
           numberOfNodes = Integer.parseInt(input);
@@ -328,7 +366,7 @@ public class DARSAppMenu  {
       
     });
 
-    exitMenu.addActionListener(new ActionListener() {
+    exitMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         System.exit(0);
       }
@@ -345,8 +383,20 @@ public class DARSAppMenu  {
         InputHandler.dispatch(DARSEvent.inStartSim());
       }
     });
+    
+    playMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inStartSim());
+      }
+    });
 
     pauseButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inPauseSim());
+      }
+    });
+    
+    pauseMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inPauseSim());
       }
@@ -357,8 +407,20 @@ public class DARSAppMenu  {
         InputHandler.dispatch(DARSEvent.inStopSim());
       }
     });
+    
+    stopMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inStopSim());
+      }
+    });
 
     resumeButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        InputHandler.dispatch(DARSEvent.inResumeSim());
+      }
+    });
+    
+    resumeMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inResumeSim());
       }
@@ -381,55 +443,65 @@ public class DARSAppMenu  {
   public void simStarted() {
     //Disable the play button, enable the pause/stop buttons
     playButton.setEnabled(false);
+    playMenuItem.setEnabled(false);
     pauseButton.setEnabled(true);
+    pauseMenuItem.setEnabled(true);
     stopButton.setEnabled(true);   
-    
-    
-
+    stopMenuItem.setEnabled(true);
   }
  
   public void newSim() {
     //Disable/enable menu items
     newMenu.setEnabled(false);
-    importMenu.setEnabled(false);
-    randomizeMenu.setEnabled(true);
+    importMenuItem.setEnabled(false);
+    addMultipleNodesMenuItem.setEnabled(true);
+    addSingleNodeMenuItem.setEnabled(true);
     
     //Enable the Play button, disable tstop and pause
     stopButton.setEnabled(false);
+    stopMenuItem.setEnabled(false);
     playButton.setEnabled(true);
+    playMenuItem.setEnabled(true);
     pauseButton.setEnabled(false);
-    
+    pauseMenuItem.setEnabled(false);
 
-    
     //Zero out the current quantum
     quantums = BigInteger.ZERO;
-    currentQuantumLabel.setText(quantums.toString());
-    
-    
+    currentQuantumLabel.setText(quantums.toString());   
   }
   
   public void simStopped() {
     stopButton.setEnabled(false);
+    stopMenuItem.setEnabled(false);
     playButton.setEnabled(false);
+    playMenuItem.setEnabled(false);
     pauseButton.setEnabled(false);
+    pauseMenuItem.setEnabled(false);
     
     //Enable/disable menu items
     newMenu.setEnabled(true);
-    importMenu.setEnabled(true);
+    importMenuItem.setEnabled(true);
     
   }
   
   public void simPaused() {
     playButton.setEnabled(false);
+    playMenuItem.setEnabled(false);
     stopButton.setEnabled(false);
+    stopMenuItem.setEnabled(false);
     pauseButton.setVisible(false);
+    pauseMenuItem.setVisible(false);
     resumeButton.setVisible(true);
+    resumeMenuItem.setVisible(true);
   }
   
   public void simResumed() {
     stopButton.setEnabled(true);
+    stopMenuItem.setEnabled(true);
     pauseButton.setVisible(true);
+    pauseMenuItem.setVisible(true);
     resumeButton.setVisible(false);
+    resumeMenuItem.setVisible(false);
   }
   
   public JMenuBar getMenuBar() {
