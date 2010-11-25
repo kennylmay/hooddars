@@ -6,6 +6,7 @@ import java.util.Queue;
 import dars.InputHandler;
 import dars.OutputConsumer;
 import dars.OutputHandler;
+import dars.Utilities;
 import dars.event.DARSEvent;
 
 public class Replayer implements OutputConsumer {
@@ -34,6 +35,7 @@ public class Replayer implements OutputConsumer {
      while(iter.hasNext()) {
        DARSEvent d = iter.next();
        
+       
        //If this quantum is greater than specified quantum, break out
        //This assumes the list is ordered. If it isn't, change this routine!
        if(d.currentQuantum > quantum) {
@@ -41,13 +43,15 @@ public class Replayer implements OutputConsumer {
        }
 
        //If this quantum is = to the specified quantum, pull it off the Q and dispatch it
-       if(d.currentQuantum == 0) {
+       if(d.currentQuantum == quantum) {
          iter.remove();
          InputHandler.dispatch(d);
+         continue;
        }
        
        //If we get here, theres a bug
-       for(int i =0; i<500; i++) System.out.println("BUG BUG!! UNFORSEEN SEQUENCE IN dispatchEventsAtQuantum");
+       Utilities.showError("Impossible sequence in replayer dispatch events. Please file a bug report.");
+       System.exit(1);
      }
   }
   
@@ -60,6 +64,7 @@ public class Replayer implements OutputConsumer {
         replayerListener.replayerFinished();
         OutputHandler.removeOutputConsumer(this);
       }
+      System.out.println("dispatching events at quantum: " + e.currentQuantum);
       dispatchEventsAtQuantum(this.replayEvents, e.currentQuantum);
     }
   }
