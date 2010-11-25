@@ -30,11 +30,6 @@ public class Animations extends JPanel implements ComponentListener,
   private int gcCount = 0;
   public void actionPerformed(ActionEvent e) {
     repaint();
-    
-    //Request a garbage collection atleast every 100 repaints
-    if(++gcCount % 100 == 0) {
-      System.gc();
-    }
   }
 
   public Animations(JLayeredPane parent) {
