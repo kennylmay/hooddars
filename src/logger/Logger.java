@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
 
+import javax.swing.JOptionPane;
+
 import dars.event.DARSEvent;
 
 
@@ -26,14 +28,29 @@ import dars.event.DARSEvent;
  * context.
  */
 public class Logger implements OutputConsumer, InputConsumer {
+  static String tempFile = null;
+  static File linuxFolder = new File("/tmp");
+  static File windowsFolder = new File("C:\\Windows\\Temp");
+  
   public static String newline = System.getProperty("line.separator");
   public static synchronized void log(DARSEvent e){
 	  
     
 	//if file handle is not init, do it
     if(fstream == null ) {
-      try {
-        fstream = new FileWriter("darslog.tmp");
+      try {  
+        // Check if we are on linux
+        if (linuxFolder.exists()){
+          tempFile = "/tmp/darslog.tmp";
+        }
+        // Otherwise we are on windows
+        else if( windowsFolder.exists()){
+          tempFile = "C:\\Windows\\Temp\\darslog.tmp";
+        }
+        else{
+          JOptionPane.showMessageDialog(null, "Could not write temp file.");
+        }
+        fstream = new FileWriter(tempFile);
        } 
       catch (IOException e1) {
 	     e1.printStackTrace();
@@ -61,10 +78,10 @@ public class Logger implements OutputConsumer, InputConsumer {
   private void deleteLogFile() {
     //Make sure the file handle is closed.
     closeLogFile();
-    
-    //Delete the file
-    File tmp = new File("darslog.tmp");
-    tmp.delete();
+    File tmp = new File(tempFile);
+    if (tmp.exists()){
+      tmp.delete();
+    }
     
   }
   
