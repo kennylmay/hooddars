@@ -148,9 +148,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           // Reset the iterationCount after the 100th try
           iterationCount = 0;
           if (paused == false) {
-            //Suggest a garbage collection.
-            System.gc();
-            
             // Enter the critical area for the simulation
             // ////////////////////////////////////////////////////
             synchronized (lock) {

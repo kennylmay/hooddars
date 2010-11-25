@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import dars.NodeAttributes;
 import dars.Message;
 import dars.SimulationTimeKeeper;
+import dars.Utilities;
 
 /**
  * @author Mike
@@ -389,7 +390,6 @@ public class DARSEvent {
     for (Field f : fields) {
       Object obj;
       try {
-        f.setAccessible(true);
         obj = f.get(this);
         if (obj != null) {
           sb.append(obj.toString() + ",");
@@ -398,9 +398,11 @@ public class DARSEvent {
         }
       } catch (IllegalArgumentException e) {
         e.printStackTrace();
+        Utilities.showError("An error occurred while trying to serialize an event. Please file a bug report");
         System.exit(1);
       } catch (IllegalAccessException e) {
         e.printStackTrace();
+        Utilities.showError("An error occurred while trying to serialize an event. Please file a bug report");
         System.exit(1);
       }
 
@@ -449,6 +451,9 @@ public class DARSEvent {
       if(details[0] != null)
       { 
         e.eventType = getEventTypeFromString(details[0]);
+        if(e.eventType == null) {
+          return null;
+        }
       }
       e.nodeId = details[1];
       e.sourceId = details[2];
