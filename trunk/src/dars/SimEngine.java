@@ -439,6 +439,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
   private String assignNodeId() {
     // Assign a three character ID from A-Z
     //
+    
+    // increment the id
+    currId++;
+    
     int charA = (int) 'A';
     int totalChars = 26;
     String ret = "";
@@ -446,8 +450,12 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     int remainder;
     int quotient = currId;
     int count = 0;
+    
+    
     while (quotient != 0) {
 
+
+      
       // Divide the digit by our alphabet size. The remainder is the digit for
       // this place.
       remainder = quotient % totalChars;
@@ -455,26 +463,21 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
 
       // Convert the digit to its representation (A-Z)
 
-      // If count is > 0, Cheat and decrement it by one.
       char c;
-      if (count > 0) {
-        c = (char) (remainder + charA - 1);
-      } else {
-        c = (char) (remainder + charA);
-      }
+      c = (char) (remainder + charA);
 
       count++;
       // Prepend the return string
       ret = c + ret;
     }
+    
+    //decrement the first char of the ID
+    System.out.println(ret);
+    char f = ret.charAt(0);
+    f--;
+    ret = f + ret.substring(1);
+    
 
-    // increment the id
-    currId++;
-
-    // if ret is zero len, this must be the first assignment. Set it to "A".
-    if (ret.length() == 0) {
-      return "A";
-    }
 
     return ret;
   }
