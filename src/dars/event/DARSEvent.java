@@ -372,13 +372,13 @@ public class DARSEvent {
   }
   // extracts a log entry from this event.
   // use reflection to get each field
-  static Class<DARSEvent> c = DARSEvent.class;
-  static Field[] fields = c.getFields();
+  static final Class<DARSEvent> c = DARSEvent.class;
+  static final Field[] fields = c.getFields();
  
-  static StringBuilder sb = new StringBuilder();
-  
-  public synchronized String getLogString() {
 
+  
+  public String getLogString() {
+    StringBuilder sb = new StringBuilder();
     // proposed format of log string is:
     // comma separated values, with public fields of DARSEvent printed out in
     // order
@@ -482,6 +482,7 @@ public class DARSEvent {
     }
     catch (Exception ex){
       ex.printStackTrace();
+      return null;
     }
 
     return e;
