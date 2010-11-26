@@ -80,6 +80,9 @@ public class SimArea extends JLayeredPane {
       // enforce simArea's bound restrictions
       Point boundedPoint = getBoundedNodePoint(new Point(x, y));
 
+      // drop all connection animations associated with this node
+      animations.dropConns(n);
+      
       // issue a move node request
       moveNodeReq(n.getId(), boundedPoint.x, boundedPoint.y);
 

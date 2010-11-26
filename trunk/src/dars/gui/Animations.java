@@ -262,7 +262,7 @@ public class Animations extends JPanel implements ComponentListener,
     }
     
     public void drop() {
-      this.startCount = Integer.MIN_VALUE;
+      this.dieCount = Integer.MIN_VALUE;
     }
   }
 
