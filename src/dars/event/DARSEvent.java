@@ -10,6 +10,8 @@ import dars.NodeAttributes;
 import dars.Message;
 import dars.SimulationTimeKeeper;
 import dars.Utilities;
+import dars.proto.NodeFactory;
+import dars.proto.NodeFactory.NodeType;
 
 /**
  * @author Mike
@@ -29,21 +31,19 @@ public class DARSEvent {
     OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED
   };
 
-  public enum SimType { AODV, DSDV };
-  
-  public EventType      eventType;
-  public String         nodeId;
-  public String         sourceId;
-  public String         destinationId;
-  public String         informationalMessage;
-  public String         transmittedMessage;
-  public int            newSimSpeed;
-  public int            nodeX;
-  public int            nodeY;
-  public int            nodeRange;
-  public SimType        simType;
-  public long           currentQuantum;
-  public boolean        isPromiscuous;
+  public EventType            eventType;
+  public String               nodeId;
+  public String               sourceId;
+  public String               destinationId;
+  public String               informationalMessage;
+  public String               transmittedMessage;
+  public int                  newSimSpeed;
+  public int                  nodeX;
+  public int                  nodeY;
+  public int                  nodeRange;
+  public NodeFactory.NodeType nodeType;
+  public long                 currentQuantum;
+  public boolean              isPromiscuous;
   
 
   //Provided for convenience.
@@ -97,10 +97,10 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent inNewSim(SimType st) {
+  public static DARSEvent inNewSim(NodeType nt) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_NEW_SIM;
-    e.simType = st;
+    e.nodeType = nt;
     return e;
   }
   
@@ -139,17 +139,11 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent outNewSim(SimType st) {
+  public static DARSEvent outNewSim(NodeType nt) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_NEW_SIM;
-    e.simType   = st;
-    String simString = "";
-    if (e.simType == SimType.AODV){
-      simString = "AODV";
-    }else if (e.simType == SimType.DSDV){
-      simString = "DSDV";
-    }
-    e.informationalMessage = "New " + simString + " Simulation Created";
+    e.nodeType   = nt;
+    e.informationalMessage = "New " + nt + " Simulation Created";
     return e;
   }
   
@@ -442,6 +436,20 @@ public class DARSEvent {
     return null;
   }
     
+  public static NodeType parseNodeType(String str) {
+    //Get each possible node type
+    NodeType[] nTypes =  Utilities.getNodeTypes();
+    
+    //For each nType..
+    for(NodeType nt : nTypes){
+      if(str.equals(nt.toString())) {
+        return nt;
+      }
+    }
+    
+    //No match
+    return null;
+  }
     
   
   public static DARSEvent parseLogString(String lineEvent) {
@@ -449,14 +457,13 @@ public class DARSEvent {
     try
     {
       String[] details = lineEvent.split(",");
-
-      if(details[0] != null)
-      { 
-        e.eventType = getEventTypeFromString(details[0]);
-        if(e.eventType == null) {
-          return null;
-        }
+      
+      e.eventType = getEventTypeFromString(details[0]);
+      if(e.eventType == null) {
+        //Must have event type field.
+        return null;
       }
+      
       e.nodeId = details[1];
       e.sourceId = details[2];
       e.destinationId = details[3];
@@ -466,24 +473,8 @@ public class DARSEvent {
       e.nodeX = Integer.parseInt(details[7]);
       e.nodeY = Integer.parseInt(details[8]);
       e.nodeRange = Integer.parseInt(details[9]);
-      
-      
-      if(details[10]!= null)
-      {
-        if(details[10].equals("AODV"))
-        {
-          e.simType = SimType.AODV;
-        }
-        else if (details[10].equals("DSDV"))
-        {
-          e.simType = SimType.DSDV;
-        }
-      }
-      
-     
-      
+      e.nodeType = parseNodeType(details[10]);
       e.currentQuantum = Long.parseLong(details[11]);
-      
       e.isPromiscuous = Boolean.parseBoolean(details[12]);
       
     }

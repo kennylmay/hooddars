@@ -12,10 +12,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import dars.event.DARSEvent;
-import dars.event.DARSEvent.EventType;
-import dars.event.DARSEvent.SimType;
+import dars.proto.NodeFactory;
+import dars.proto.NodeFactory.NodeType;
 import logger.Logger;
 
 public class Utilities {
@@ -34,9 +32,9 @@ public class Utilities {
         JOptionPane.ERROR_MESSAGE);
   }
   
-  public static DARSEvent.SimType popupAskSimType() {
-    //Use refelection to get every sim type enum
-    DARSEvent.SimType sTypes[] = getSimTypes();
+  public static NodeType popupAskNodeType() {
+    //Get every node type
+    NodeType nTypes[] = getNodeTypes();
     
     int answer = JOptionPane.showOptionDialog(null,
                  "Select a simulation type.",
@@ -44,17 +42,16 @@ public class Utilities {
                  0,
                  JOptionPane.QUESTION_MESSAGE,
                  null,
-                 sTypes,
-                 sTypes[0]);
+                 nTypes,
+                 nTypes[0]);
     
-    DARSEvent.SimType st;
     //Return null if the user closed the dialog box
     if(answer == JOptionPane.CLOSED_OPTION) {
       return null;
     }
     
     //Return their selection
-    return sTypes[answer];
+    return nTypes[answer];
   }
   
   
@@ -130,11 +127,9 @@ public class Utilities {
     }
   }
 
-  public static SimType[] getSimTypes() {
-    Class<DARSEvent> c = DARSEvent.class;
-    Field[] fields = c.getFields();
-    Class<DARSEvent.SimType> sType =  (Class<DARSEvent.SimType>) fields[10].getType();
-    return sType.getEnumConstants();
+  public static NodeType[] getNodeTypes() {
+    Class<NodeType> c = NodeType.class;
+    return c.getEnumConstants();
   }
     
 }

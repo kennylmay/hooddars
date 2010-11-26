@@ -8,6 +8,7 @@ import java.util.Queue;
 import dars.NodeStore;
 import dars.event.DARSEvent;
 import dars.proto.*;
+import dars.proto.NodeFactory.NodeType;
 import dars.proto.aodv.Aodv;
 import dars.proto.dsdv.Dsdv;
 
@@ -306,7 +307,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
 
         // Make a new network node with these attributes
         ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous);
-        n = makeNetworkNode(ni);
+        n = NodeFactory.makeNewNode(getNodeType(), ni);
 
         // Add it to the node store
         store.addNode(n);
@@ -359,13 +360,13 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         clearSim();
         
         //Set the sim type
-        setSimType(e.simType);
+        setNodeType(e.nodeType);
         
         
         //Indicate to output consumers that 
         //a new sim has begun
         OutputHandler.dispatch(
-            DARSEvent.outNewSim(e.simType));
+            DARSEvent.outNewSim(e.nodeType));
         break;
         
       case IN_MOVE_NODE:
@@ -395,32 +396,16 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     } // / Exit critical area
   }
 
-  private DARSEvent.SimType simType = DARSEvent.SimType.AODV;
+  private NodeType nodeType = null;
 
-  public DARSEvent.SimType getSimType() {
-    return simType;
+  public NodeType getNodeType() {
+    return nodeType;
   }
 
-  public void setSimType(DARSEvent.SimType st) {
-    simType = st;
+  public void setNodeType(NodeType nt) {
+    nodeType = nt;
   }
 
-  public Node makeNetworkNode(NodeAttributes na) {
-    // Make the network node based on what type of node is set
-    Node n = null;
-    switch (getSimType()) {
-    case AODV:
-      n = new Aodv(na);
-      break;
-
-    case DSDV:
-      // TODO implement DSDV
-      n = new Dsdv();
-      break;
-    }
-
-    return n;
-  }
 
   /**
    * assignNodeId method.

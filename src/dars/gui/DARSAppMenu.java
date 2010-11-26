@@ -31,6 +31,7 @@ import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.Utilities;
 import dars.event.DARSEvent;
+import dars.proto.NodeFactory.NodeType;
 
 public class DARSAppMenu  {
 //Creating the menu bar and all of its elements
@@ -238,12 +239,12 @@ public class DARSAppMenu  {
            }
            
            //Okay. New simulation. Have to ask the user what type of sim they want..
-           DARSEvent.SimType st = Utilities.popupAskSimType();
-           if(st == null) {
+           NodeType nt = Utilities.popupAskNodeType();
+           if(nt == null) {
              //User canceled..
              return;
            }
-           InputHandler.dispatch(DARSEvent.inNewSim(st));
+           InputHandler.dispatch(DARSEvent.inNewSim(nt));
            
            //Dispatch every event in the Q
            for(DARSEvent d : Q) {
@@ -273,14 +274,14 @@ public class DARSAppMenu  {
           }
           
           //Okay. New simulation. Have to ask the user what type of sim they want..
-          DARSEvent.SimType st = Utilities.popupAskSimType();
-          if(st == null) {
+          NodeType nt = Utilities.popupAskNodeType();
+          if(nt == null) {
             //User canceled..
             return;
           }
           
           //Start a new simualation
-          InputHandler.dispatch(DARSEvent.inNewSim(st));
+          InputHandler.dispatch(DARSEvent.inNewSim(nt));
 
           
           //Instantiate a new replayer with the replay events
@@ -406,28 +407,28 @@ public class DARSAppMenu  {
   
   class NewSimClickHandler implements ActionListener {
 
-    private DARSEvent.SimType simType;
-    NewSimClickHandler(DARSEvent.SimType simType) {
-      this.simType = simType;
+    private NodeType nodeType;
+    NewSimClickHandler(NodeType nodeType) {
+      this.nodeType = nodeType;
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-      typeLabel.setText(simType.toString());
+      typeLabel.setText(nodeType.toString());
       //Need to define the speed.
-      InputHandler.dispatch(DARSEvent.inNewSim(simType));
+      InputHandler.dispatch(DARSEvent.inNewSim(nodeType));
     }
   }
   
   private void addNewSimMenuItems(JMenu parentMenu) {
     //get sim types
-    DARSEvent.SimType[] sTypes = Utilities.getSimTypes();
+    NodeType[] nTypes = Utilities.getNodeTypes();
     
-    for(DARSEvent.SimType st : sTypes) {
+    for(NodeType nt : nTypes) {
       //Make a new menu item
-      JMenuItem simTypeMenuItem = new JMenuItem(st.toString());
+      JMenuItem simTypeMenuItem = new JMenuItem(nt.toString());
       
       //Add the event handler
-      simTypeMenuItem.addActionListener(new NewSimClickHandler(st));
+      simTypeMenuItem.addActionListener(new NewSimClickHandler(nt));
       
       //Add it to the parent menu
       parentMenu.add(simTypeMenuItem);
