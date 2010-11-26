@@ -1,13 +1,18 @@
 package dars.proto.dsdv;
 
 public class RouteEntry {
+  
   /**
-   * Constants needed by DSDV
+   * **************************************************************************
+   * Constants needed by DSDV Route Entry
+   * **************************************************************************
    */
   
   
   /**
+   * **************************************************************************
    * Private Member Fields
+   * **************************************************************************
    */
 
 
@@ -32,14 +37,36 @@ public class RouteEntry {
    */
   private int InstTime;
   
-  
   /**
-   * Private Member Functions
+   * **************************************************************************
+   * *** Private Member Fields
+   * **************************************************************************
+   */
+    
+  /**
+   * **************************************************************************
+   * *** Public Member Functions 
+   * **************************************************************************
    */
   
-  
   /**
-   * Public Member Functions Not part of the Node Interface
+   * Constructor with all fields defined.
+   * 
+   * @param destIP
+   * @param seqNum
+   * @param hopCount
+   * @param nextHopIP
+   * @param instTime
    */
+  RouteEntry(String destIP, int seqNum, int hopCount, String nextHopIP,
+      int instTime) {
+    super();
+    DestIP = destIP;
+    SeqNum = seqNum;
+    HopCount = hopCount;
+    NextHopIP = nextHopIP;
+    InstTime = instTime;
+  }  
+  
   
 }
