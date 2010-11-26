@@ -42,8 +42,6 @@ public class DARSAppMenu  {
   private JMenu              modeMenu            = new JMenu("Mode");
   private JMenu              controlMenu            = new JMenu("Control");
   private JMenuItem          saveMenuItem        = new JMenuItem("Save As...");
-  private JMenuItem          aodvMenuItem        = new JMenuItem("AODV");
-  private JMenuItem          dsdvMenuItem        = new JMenuItem("DSDV");
   private JMenuItem          clearMenuItem       = new JMenuItem("Clear");
   private JMenuItem          exitMenuItem        = new JMenuItem("Exit");
   private JMenuItem          importMenuItem      = new JMenuItem("Import for Replay...");
@@ -345,13 +343,13 @@ public class DARSAppMenu  {
 
     playButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inStartSim(slideBar.getValue()));
+        InputHandler.dispatch(DARSEvent.inStartSim(getSlideBarSpeed()));
       }
     });
     
     playMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inStartSim(slideBar.getValue()));
+        InputHandler.dispatch(DARSEvent.inStartSim(getSlideBarSpeed()));
       }
     });
 
@@ -394,7 +392,7 @@ public class DARSAppMenu  {
     slideBar.addChangeListener(new ChangeListener() {
       private int lastVal = 0;
       public void stateChanged(ChangeEvent arg0) {
-        int val = 21 - slideBar.getValue();
+        int val = getSlideBarSpeed();
         if(lastVal == val) {
           return;
         }
@@ -402,9 +400,12 @@ public class DARSAppMenu  {
         InputHandler.dispatch(DARSEvent.inSimSpeed(val));
       }
     });
-    
   }
-  
+
+  private int getSlideBarSpeed() {
+    //Interpret the slidebar speed
+    return slideBar.getMaximum() - slideBar.getValue() + 1;
+  }
   class NewSimClickHandler implements ActionListener {
 
     private NodeType nodeType;
