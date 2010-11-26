@@ -6,10 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import dars.event.DARSEvent;
+import dars.event.DARSEvent.EventType;
+import dars.event.DARSEvent.SimType;
 import logger.Logger;
 
 public class Utilities {
@@ -22,12 +28,37 @@ public class Utilities {
         UIManager.put(key, f);
     }
   }
-
+  
   public static void showError(String error) {
     JOptionPane.showMessageDialog(null, error, "Error",
         JOptionPane.ERROR_MESSAGE);
   }
-
+  
+  public static DARSEvent.SimType popupAskSimType() {
+    //Use refelection to get every sim type enum
+    DARSEvent.SimType sTypes[] = getSimTypes();
+    
+    int answer = JOptionPane.showOptionDialog(null,
+                 "Select a simulation type.",
+                 "Select a simulation type.",
+                 0,
+                 JOptionPane.QUESTION_MESSAGE,
+                 null,
+                 sTypes,
+                 sTypes[0]);
+    
+    DARSEvent.SimType st;
+    //Return null if the user closed the dialog box
+    if(answer == JOptionPane.CLOSED_OPTION) {
+      return null;
+    }
+    
+    //Return their selection
+    return sTypes[answer];
+  }
+  
+  
+  
   public static void runSaveLogDialog(Container parent) {
     JFileChooser chooser = new JFileChooser();
     FileNameExtensionFilter filter = new FileNameExtensionFilter("Log Files",
@@ -99,4 +130,11 @@ public class Utilities {
     }
   }
 
+  public static SimType[] getSimTypes() {
+    Class<DARSEvent> c = DARSEvent.class;
+    Field[] fields = c.getFields();
+    Class<DARSEvent.SimType> sType =  (Class<DARSEvent.SimType>) fields[10].getType();
+    return sType.getEnumConstants();
+  }
+    
 }

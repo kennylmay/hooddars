@@ -111,15 +111,17 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent inStartSim() {
+  public static DARSEvent inStartSim(int simSpeed) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_START_SIM;
+    e.newSimSpeed = simSpeed;
     return e;
   }
 
-  public static DARSEvent outStartSim() {
+  public static DARSEvent outStartSim(int simSpeed) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_START_SIM;
+    e.newSimSpeed = simSpeed;
     e.informationalMessage = "Simulation Started";
     return e;
   }

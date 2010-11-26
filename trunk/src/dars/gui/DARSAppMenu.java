@@ -115,8 +115,9 @@ public class DARSAppMenu  {
     // Add elements to the sim menu and their sub menus
     simMenu.add(newMenu);
     simMenu.add(createNetworkMenu);
-    newMenu.add(aodvMenuItem);
-    newMenu.add(dsdvMenuItem);
+    
+    //Add node menu items dynamically using reflection
+    addNewSimMenuItems(newMenu);
     simMenu.add(saveMenuItem);
     
     graphicsCheckBox.setState(true);
@@ -183,21 +184,6 @@ public class DARSAppMenu  {
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
     
-    aodvMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        typeLabel.setText("AODV");
-        //Need to define the speed.
-        InputHandler.dispatch(DARSEvent.inSimSpeed(slideBar.getValue()));
-        InputHandler.dispatch(DARSEvent.inNewSim(DARSEvent.SimType.AODV));
-
-      }
-    });
-    
-    dsdvMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        typeLabel.setText("DSDV");
-      }
-    });
 
     clearMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -252,23 +238,11 @@ public class DARSAppMenu  {
            }
            
            //Okay. New simulation. Have to ask the user what type of sim they want..
-           Object[] options = {"AODV", "DSDV"};
-           int answer = JOptionPane.showOptionDialog(simArea,
-                        "Select a simulation type.",
-                        "Select a simulation type.",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                       options,
-                     options[0]);
-           DARSEvent.SimType st;
-           if(answer == 0) {
-             st = DARSEvent.SimType.AODV;
-           } else {
-             st = DARSEvent.SimType.DSDV;
+           DARSEvent.SimType st = Utilities.popupAskSimType();
+           if(st == null) {
+             //User canceled..
+             return;
            }
-
-           //Start a new simualation, with type AODV
            InputHandler.dispatch(DARSEvent.inNewSim(st));
            
            //Dispatch every event in the Q
@@ -299,22 +273,12 @@ public class DARSAppMenu  {
           }
           
           //Okay. New simulation. Have to ask the user what type of sim they want..
-          Object[] options = {"AODV", "DSDV"};
-          int answer = JOptionPane.showOptionDialog(simArea,
-                       "Select a simulation type.",
-                       "Select a simulation type.",
-                       JOptionPane.YES_NO_OPTION,
-                       JOptionPane.QUESTION_MESSAGE,
-                       null,
-                      options,
-                    options[0]);
-          DARSEvent.SimType st;
-          if(answer == 0) {
-            st = DARSEvent.SimType.AODV;
-          } else {
-            st = DARSEvent.SimType.DSDV;
+          DARSEvent.SimType st = Utilities.popupAskSimType();
+          if(st == null) {
+            //User canceled..
+            return;
           }
-
+          
           //Start a new simualation
           InputHandler.dispatch(DARSEvent.inNewSim(st));
 
@@ -380,13 +344,13 @@ public class DARSAppMenu  {
 
     playButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inStartSim());
+        InputHandler.dispatch(DARSEvent.inStartSim(slideBar.getValue()));
       }
     });
     
     playMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inStartSim());
+        InputHandler.dispatch(DARSEvent.inStartSim(slideBar.getValue()));
       }
     });
 
@@ -440,6 +404,36 @@ public class DARSAppMenu  {
     
   }
   
+  class NewSimClickHandler implements ActionListener {
+
+    private DARSEvent.SimType simType;
+    NewSimClickHandler(DARSEvent.SimType simType) {
+      this.simType = simType;
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      typeLabel.setText(simType.toString());
+      //Need to define the speed.
+      InputHandler.dispatch(DARSEvent.inNewSim(simType));
+    }
+  }
+  
+  private void addNewSimMenuItems(JMenu parentMenu) {
+    //get sim types
+    DARSEvent.SimType[] sTypes = Utilities.getSimTypes();
+    
+    for(DARSEvent.SimType st : sTypes) {
+      //Make a new menu item
+      JMenuItem simTypeMenuItem = new JMenuItem(st.toString());
+      
+      //Add the event handler
+      simTypeMenuItem.addActionListener(new NewSimClickHandler(st));
+      
+      //Add it to the parent menu
+      parentMenu.add(simTypeMenuItem);
+    }
+  }
+
   public void simStarted() {
     //Disable the play button, enable the pause/stop buttons
     playButton.setEnabled(false);

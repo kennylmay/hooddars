@@ -270,8 +270,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     synchronized (lock) {
       switch(e.eventType){
       case IN_START_SIM :
+        //Set the speed
+        setSimSpeed(e.newSimSpeed);
         runSimulation();
-        OutputHandler.dispatch(DARSEvent.outStartSim());
+        OutputHandler.dispatch(DARSEvent.outStartSim(e.newSimSpeed));
         break;
       
       case IN_STOP_SIM:
@@ -358,7 +360,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         
         //Set the sim type
         setSimType(e.simType);
-        
         
         
         //Indicate to output consumers that 
@@ -453,9 +454,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     
     
     while (quotient != 0) {
-
-
-      
       // Divide the digit by our alphabet size. The remainder is the digit for
       // this place.
       remainder = quotient % totalChars;
