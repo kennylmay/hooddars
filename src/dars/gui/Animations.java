@@ -27,7 +27,6 @@ public class Animations extends JPanel implements ComponentListener,
 
   Timer                     repaintTimer     = new Timer(100, this);
 
-  private int gcCount = 0;
   public void actionPerformed(ActionEvent e) {
     repaint();
   }
@@ -170,9 +169,6 @@ public class Animations extends JPanel implements ComponentListener,
       int dy = (int)ddy;
 
       // Now we can compute the corner points...
-      int xPoints[] = new int[4];
-      int yPoints[] = new int[4];
-
       xPoints[0] = x1 + dx; yPoints[0] = y1 + dy;
       xPoints[1] = x1 - dx; yPoints[1] = y1 - dy;
       xPoints[2] = x2 - dx; yPoints[2] = y2 - dy;
@@ -237,12 +233,10 @@ public class Animations extends JPanel implements ComponentListener,
     int     startCount;
     int     priority; //0 is lowest layer
     int     fatness;
-    boolean marked2Die = false;
     Color   color;
 
     public boolean shouldDie() {
-      if (Animations.anicount >= dieCount || Animations.anicount < startCount
-          || marked2Die)
+      if (Animations.anicount >= dieCount || Animations.anicount < startCount)
         return true;
       else
         return false;
@@ -266,12 +260,16 @@ public class Animations extends JPanel implements ComponentListener,
         return false;
       return true;
     }
+    
+    public void drop() {
+      this.startCount = Integer.MIN_VALUE;
+    }
   }
 
   public void dropConns(GNode n) {
     for (Connection conn : connStore) {
       if (conn.fromNode == n || conn.toNode == n) {
-        conn.marked2Die = true;
+        conn.drop();
       }
     }
   }
@@ -281,7 +279,7 @@ public class Animations extends JPanel implements ComponentListener,
   public void removeConn(Connection c) {
     for (Connection conn : connStore) {
       if (conn.equals(c)) {
-        conn.marked2Die = true;
+        conn.drop();
         return;
       }
     }
@@ -290,11 +288,11 @@ public class Animations extends JPanel implements ComponentListener,
 
   public void dropAll() {
     for (Connection conn : connStore) {
-      conn.marked2Die = true;
+      conn.drop();
     }
     
     for ( RangeIndicator ri : riStore.values()){
-      ri.dropAnimation();
+      ri.drop();
     }
     
   }
@@ -315,9 +313,10 @@ public class Animations extends JPanel implements ComponentListener,
       startStep = Animations.anicount;
     }
 
-    public void dropAnimation() {
-      startStep = 0;
+    public void drop() {
+      startStep = Integer.MIN_VALUE;
     }
+    
     public void drawRange(Graphics g) {
 
       // System.out.println("painting ranger");
