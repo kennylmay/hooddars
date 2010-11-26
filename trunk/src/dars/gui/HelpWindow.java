@@ -10,7 +10,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,46 +30,55 @@ public class HelpWindow extends JDialog {
   private JScrollPane       scroller;
   private JTextArea         text             = new JTextArea();
 
-  public HelpWindow() {
-
-    // Attempt to open the README File
-    File readmeFile = new File("README.txt");
-    BufferedReader buffIn = null;
-    String buffer = "";
-
-    // Attempt to create a buffered reader with the tar file
-    try {
-      buffIn = new BufferedReader(new InputStreamReader(new FileInputStream(
-          readmeFile)));
-    } catch (FileNotFoundException e1) {
-      JOptionPane.showMessageDialog(null,
-          "The README file could not be opened.");
-    }
-
-    // Continue to read the file until the end is reached.
-    while (buffer != null) {
-      try {
-        buffer = buffIn.readLine();
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      if (buffer != null){
-        text.append(buffer + "\n");
-      }
-    }
+  public HelpWindow(){
+ 
+    InputStream stream = HelpWindow.class.getResourceAsStream("/README.txt");
     
+    try {
+      text.append(convertStreamToString(stream));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    // Reset the view to the beginning of the file
+    text.setCaretPosition(0);
     this.setPreferredSize(new Dimension(800, 600));
     getContentPane().add(Panel);
-    
+
     // Add the text area to the scroller
     scroller = new JScrollPane(text);
     Panel.add(scroller, BorderLayout.CENTER);
-        
+
     // Set the default dimension of the node attributes window
     this.pack();
     this.setModal(true);
     this.setAlwaysOnTop(true);
     this.setVisible(true);
+  }
+
+  private String convertStreamToString(InputStream is) throws IOException {
+    /*
+     * To convert the InputStream to String we use the Reader.read(char[]
+     * buffer) method. We iterate until the Reader return -1 which means there's
+     * no more data to read. We use the StringWriter class to produce the
+     * string.
+     */
+    if (is != null) {
+      Writer writer = new StringWriter();
+
+      char[] buffer = new char[1024];
+      try {
+        Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        int n;
+        while ((n = reader.read(buffer)) != -1) {
+          writer.write(buffer, 0, n);
+        }
+      } finally {
+        is.close();
+      }
+      return writer.toString();
+    } else {
+      return "";
+    }
   }
 }
