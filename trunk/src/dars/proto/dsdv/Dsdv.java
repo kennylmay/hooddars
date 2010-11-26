@@ -1,10 +1,13 @@
 package dars.proto.dsdv;
 
+import java.util.HashMap;
+
 import javax.swing.JDialog;
 
 import dars.Message;
 import dars.NodeAttributes;
 import dars.proto.Node;
+import dars.proto.dsdv.RouteEntry;
 
 public class Dsdv extends Node {
 
@@ -20,9 +23,9 @@ public class Dsdv extends Node {
    * Send Updates Interval
    * 
    * Each node periodically sends routing table updates. This is the interval
-   * between transmissions. Messured in clock ticks.
+   * between transmissions. Measured in clock ticks.
    */
-  public static final int UpdateInterval = 25;
+  public static final int UPDATE_INTERVAL = 25;
 
   /**
    * Maximum Size of Network Protocol Data Unit(NPDU)
@@ -30,7 +33,7 @@ public class Dsdv extends Node {
    * This is basically the maximum number of route updates that can be sent in
    * one message.
    */
-  public static final int MaxNPDU        = 10;
+  public static final int MAX_NPDU        = 10;
 
   /**
    * **************************************************************************
@@ -56,9 +59,14 @@ public class Dsdv extends Node {
   private int             LastSeqNum     = 1;
 
   /**
-   * Last Tick that a Full Dump of the Route Table was Sent
+   * Last Tick that a Route Table Update Message was Sent
    */
-  private int             LastFullDump   = 0;
+  private int             LastUpdate   = 0;
+  
+  /**
+   * Route Table
+   */
+  private HashMap<String, RouteEntry> RouteTable  = new HashMap<String, RouteEntry>();
 
   /**
    * Private Member Functions
@@ -138,7 +146,21 @@ public class Dsdv extends Node {
    * Constructor
    */
   public Dsdv(NodeAttributes atts) {
-    // TODO implement constructor
+
+    /**
+     * Set Node Attributes
+     */
+    this.att = atts;
+
+    /**
+     * Add this node into it's own route table.
+     * 
+     * This kind of creates a functionality similar to AODV's Hello message as
+     * the node sends out its first Update Message.
+     */
+    this.RouteTable.put(this.att.id, new RouteEntry(this.att.id,
+        this.LastSeqNum, 0, this.att.id, this.CurrentTick));
+
   }
 
   /**
@@ -169,6 +191,10 @@ public class Dsdv extends Node {
   @Override
   public void clockTick() {
     // TODO Auto-generated method stub
+    
+    if (this.CurrentTick >= (this.LastUpdate + this.UPDATE_INTERVAL)) {
+      // TODO: Send Update Message
+    }
     
   }
 
