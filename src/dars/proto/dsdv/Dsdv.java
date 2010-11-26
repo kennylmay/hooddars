@@ -9,6 +9,13 @@ import dars.proto.Node;
 public class Dsdv implements Node {
 
   /**
+   * Constructor
+   */
+  public Dsdv(NodeAttributes atts) {
+    //TODO implement constructor
+  }
+  
+  /**
    * Constants needed by DSDV
    */
   

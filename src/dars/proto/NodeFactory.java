@@ -17,7 +17,7 @@ public class NodeFactory {
   public static Node makeNewNode(NodeType nt, NodeAttributes na) {
     switch(nt) {
     case AODV : return new Aodv(na);
-    case DSDV : return new Dsdv();
+    case DSDV : return new Dsdv(na);
     default   : return null;
     }
   }
