@@ -14,23 +14,24 @@ public class Dsdv implements Node {
    * **************************************************************************
    */
 
-  //TODO: Adjust constant values after experimentation.
-  
+  // TODO: Adjust constant values after experimentation.
+
   /**
    * Send Updates Interval
    * 
-   * Each node periodically sends routing table updates.  This is the interval between transmissions.  Messured in clock ticks.  
+   * Each node periodically sends routing table updates. This is the interval
+   * between transmissions. Messured in clock ticks.
    */
   public static final int UpdateInterval = 25;
-  
+
   /**
    * Maximum Size of Network Protocol Data Unit(NPDU)
    * 
-   * This is basically the maximum number of route updates that can be sent in one message.
+   * This is basically the maximum number of route updates that can be sent in
+   * one message.
    */
-  public static final int MaxNPDU = 10;
-  
-  
+  public static final int MaxNPDU        = 10;
+
   /**
    * **************************************************************************
    * *** Private Member Fields
@@ -43,7 +44,7 @@ public class Dsdv implements Node {
    * Time is loosely defined in the simulation. This is the current tick count
    * for the node. Basically this is the node's time.
    */
-  private int CurrentTick = 0;
+  private int             CurrentTick    = 0;
 
   /**
    * Node Sequence Number
@@ -52,7 +53,12 @@ public class Dsdv implements Node {
    * control messages(RREQ, RREP, RERR) for a node. It is incremented
    * immediately before a protocol control message is generated.
    */
-  private int LastSeqNum  = 1;
+  private int             LastSeqNum     = 1;
+
+  /**
+   * Last Tick that a Full Dump of the Route Table was Sent
+   */
+  private int             LastFullDump   = 0;
 
   /**
    * Private Member Functions
@@ -68,20 +74,37 @@ public class Dsdv implements Node {
     /**
      * Updates Message format.
      * 
+     * TYPE|FLAGS|DESTCOUNT|DESTID1|SEQ1|HOPCOUNT1|...|DESTIDX|SEQX|HOPCOUNTX
      * 
-     */
-    
-    /**
-     * From www.cs.jhu.edu/~cs647/dsdv.pdf
+     * TYPE = RTUP - Routing Table Update
      * 
-     * Each node periodically transmits updates to keep table consistency
-     * Includes its own sequence number #, route table updates <dest_addr,
-     * dest_seq#, hop-count>
+     * FLAGS =
+     * 
+     * DESTCOUNT = Number of Destination Entries in the message.
+     * 
+     * DESTID = Destination ID
+     * 
+     * SEQ = Destination Sequence Number
+     * 
+     * HOPCOUNT = Hop Count from the Destination to the Sender of this Message.
+     * (ie. The receiver of this message would add 1 to the hop count.)
      */
-    
-    
+
+    /*
+     * Find out how many routes have changed since the LastFullDump.
+     * 
+     * If there are more than MaxNPDU updates to the route table that are newer
+     * than the last Full Dump.
+     * 
+     * - Send Full Dump
+     * 
+     * ELSE
+     * 
+     * - Send Incremental Update
+     */
+
   }
-  
+
   /**
    * Receive Route Updates
    * 
@@ -95,12 +118,15 @@ public class Dsdv implements Node {
      */
 
     /**
+     * Process each entry in the update message.
+     */
+    
+    /**
      * When two routes to a destination received from two different neighbors
      * Choose the one with the greatest destination sequence number If equal,
      * choose the smallest hop-count
      */
   }
-  
 
   /**
    * **************************************************************************
@@ -114,7 +140,6 @@ public class Dsdv implements Node {
   public Dsdv(NodeAttributes atts) {
     // TODO implement constructor
   }
-
 
   /**
    * **************************************************************************
