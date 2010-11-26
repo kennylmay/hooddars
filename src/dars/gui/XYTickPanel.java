@@ -1,6 +1,7 @@
 package dars.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -15,7 +16,7 @@ import dars.Defaults;
 public class XYTickPanel extends JPanel implements  ComponentListener {
   private static final long serialVersionUID = 1L;
 
-  public XYTickPanel(JLayeredPane parent) {
+  public XYTickPanel(Component parent) {
     setLocation(0,0);  
     parent.addComponentListener(this);
     setOpaque(false);
