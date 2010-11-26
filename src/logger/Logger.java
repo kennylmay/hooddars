@@ -75,7 +75,7 @@ public class Logger implements OutputConsumer, InputConsumer {
 	
   }
  
-  private void deleteLogFile() {
+  public void deleteLogFile() {
     //Make sure the file handle is closed.
     closeLogFile();
     File tmp = new File(tempFile);
