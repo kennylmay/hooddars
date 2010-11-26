@@ -12,6 +12,9 @@ import dars.OutputConsumer;
 import dars.Utilities;
 import dars.event.DARSEvent;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import logger.Logger;
 
 public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
 
@@ -29,17 +32,20 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
 
   private DARSAppMenu        menuArea            = new DARSAppMenu(this);
 
-  
-
-
   public GUI() {
     super("DARS Version 1.0");
 
+    // Close the program when the frame is exited
+    this.addWindowListener(new WindowAdapter()
+    {
+      public void windowClosing(WindowEvent e){
+        // Before we exit make sure to clean up the temporary log file.
+        Logger logger = Logger.getInstance();
+        logger.deleteLogFile();
+        System.exit(0);
+      }
+    });
     
-    
-    // Tell this JFrame to exit the program when this window closes
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
     // Setup a new layout for the outermost part of the frame. We'll use the
     // border layout.
     this.setLayout(new BorderLayout());
