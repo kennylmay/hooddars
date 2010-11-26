@@ -14,7 +14,12 @@ import dars.Message;
  * @author kresss
  * 
  */
-public abstract interface Node {
+public abstract class Node {
+  
+  /**
+   * Attributes member
+   */
+  protected NodeAttributes                      att;
   
   /**
    * Pop a message of the node's transmit queue and return it.
@@ -25,7 +30,7 @@ public abstract interface Node {
    * 
    * @return Message Message that is being sent into the network.
    */
-  Message messageToNetwork();
+  public abstract Message messageToNetwork();
   
   /**
    * Push a message into the node's receive queue.
@@ -37,7 +42,7 @@ public abstract interface Node {
    * @param message Message to be delivered to the node.
    * 
    */
-  void messageToNode(Message message);
+  public abstract void messageToNode(Message message);
 
   /**
    * Send a narrative message from one node to another.
@@ -50,14 +55,20 @@ public abstract interface Node {
    * @param destinationID
    * @param messageText
    */
-  void newNarrativeMessage(String sourceID, String desinationID, String messageText);
+  public abstract void newNarrativeMessage(String sourceID, String desinationID, String messageText);
   
   /**
-   * Returns the Node's attributes
+   * This function will return the attributes that are defined in the Node
+   * class.
+   * 
+   * Note, this returns a copy of the node attributes. Not a reference to the
+   * attributes object itself.
    * 
    * @return NodeAttributes
    */
-  NodeAttributes getAttributes();
+  public NodeAttributes getAttributes(){
+    return att;
+  }
 
   /**
    * Sets the Node's attributes
@@ -66,21 +77,27 @@ public abstract interface Node {
    * 
    * @param atts The new attributes for the node.
    */
-  void setAttributes(NodeAttributes atts);
+  public void setAttributes(NodeAttributes atts){
+    this.att = atts;
+  }
 
   /**
    * Sets the X and Y coordinates of the node.
    * @param x The new x coordinate.
    * @param y The new y coordinate.
    */
-  void setXY(int x, int y);
+  public void setXY(int x, int y){
+    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous);
+  }
   
   /**
    * Sets the range of the node.
    * 
    * @param newRange
    */
-  void setRange(int range);
+  public void setRange(int range){
+    this.att = new NodeAttributes(att.id, att.x, att.y, range, att.isPromiscuous);
+  }
   
   
   /**
@@ -90,7 +107,7 @@ public abstract interface Node {
    * 
    * @author kresss
    */
-  void clockTick();
+  public abstract void clockTick();
   
   /**
    * Return a JDialog that will be displayed by the GUI.
@@ -100,7 +117,7 @@ public abstract interface Node {
    * 
    * @author kennylmay
    */
-  JDialog getNodeDialog();
+  public abstract JDialog getNodeDialog();
   
   /**
    * Update the dialog with information that is showed to the GUI.
@@ -110,7 +127,7 @@ public abstract interface Node {
    * 
    * @author kennylmay
    */
-  void updateNodeDialog(JDialog dialog);
+  public abstract void updateNodeDialog(JDialog dialog);
   
   /**
    * Return true if the nodes is listen only.
@@ -119,7 +136,9 @@ public abstract interface Node {
    * 
    * @return True/False based on the nodes Promiscuity
    */
-  boolean isPromiscuous();
+  public boolean isPromiscuous(){
+    return this.att.isPromiscuous;
+  }
   
   
   /**
@@ -129,6 +148,8 @@ public abstract interface Node {
    * 
    * @param value
    */
-  void setPromiscuity(boolean value);
+  public void setPromiscuity(boolean value){
+    this.att = new NodeAttributes (this.att.id, this.att.x, this.att.y, this.att.range, value);
+  }
 
 }

@@ -26,7 +26,7 @@ import dars.proto.aodv.WaitQueueEntry;
  * @author kresss
  * 
  */
-public class Aodv implements Node {
+public class Aodv extends Node {
 
   /**
    * Constructor
@@ -249,28 +249,7 @@ public class Aodv implements Node {
 
   }
 
-  /**
-   * Return true if the nodes is listen only.
-   * 
-   * @author kresss
-   * 
-   * @return True/False based on the nodes Promiscuity
-   */
-  public boolean isPromiscuous() {
-    return this.att.isPromiscuous;
-  }
-
-  /**
-   * Set whether or not a node is listen only.
-   * 
-   * @author kresss
-   * 
-   * @param value
-   */
-  public void setPromiscuity(boolean value) {
-    this.att = new NodeAttributes (this.att.id, this.att.x, this.att.y, this.att.range, value);
-  }
-
+  
   /*
    * Functions that extend the org.dars.proto.node interface to make it unique
    * to aodv.
@@ -1728,54 +1707,7 @@ public class Aodv implements Node {
     }
   }
 
-  /**
-   * Implements the getAttributes function that is defined in the Node Class.
-   * 
-   * This function will return the attributes that are defined in the Node
-   * class.
-   * 
-   * Note, this returns a copy of the node attributes. Not a reference to the
-   * attributes object itself.
-   * 
-   * @author mayk
-   * 
-   * @return NodeAttributes
-   */
-  public NodeAttributes getAttributes() {
-    return att;
-  }
-
-  /**
-   * Implements the setAttributes function that is defined in the Node Class.
-   * 
-   * @author mayk
-   * 
-   * @param atts
-   *          The new attributes for the node.
-   */
-  public void setAttributes(NodeAttributes atts) {
-    this.att = atts;
-  }
-
-  /**
-   * Implements the setXY function that is defined in the Node class.
-   * 
-   * Sets the X and Y coordinate for this node.
-   */
-  public void setXY(int x, int y) {
-    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous);
-  }
-
-  /**
-   * Implements the setRange function that is defined in the Node class.
-   * 
-   * Sets the range of this node.
-   */
-  public void setRange(int range) {
-    this.att = new NodeAttributes(att.id, att.x, att.y, range, att.isPromiscuous);
-  }
-
-  /**
+   /**
    * Process an iteration of this node.
    * 
    * This will do all the processing for a node's time interval.
@@ -1808,11 +1740,6 @@ public class Aodv implements Node {
 
     checkRouteTable();
   }
-
-  /**
-   * Attributes member
-   */
-  NodeAttributes                      att;
 
   /**
    * Route Request ID
