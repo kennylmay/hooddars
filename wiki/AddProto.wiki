@@ -1,0 +1,17 @@
+#Collection of Notes on Adding a New Protocol
+
+= Introduction =
+
+This page contains a collection of notes about adding a new protocol to the DARS Simulator.  The contents of this page will eventually be organized and turned into a section in the developers guide.
+
+= Notes =
+
+== The Message Type ==
+
+=== How to Send a Broadcast Message ===
+
+The special *Message.BCAST_STRING* Destination
+
+== The Node Base Class ==
+
+=== Node Attributes ===
