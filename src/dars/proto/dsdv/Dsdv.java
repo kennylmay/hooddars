@@ -9,16 +9,13 @@ import dars.proto.Node;
 public class Dsdv implements Node {
 
   /**
-   * Constructor
-   */
-  public Dsdv(NodeAttributes atts) {
-    // TODO implement constructor
-  }
-
-  /**
-   * Constants needed by DSDV
+   * **************************************************************************
+   * *** Constants Needed by DSDV
+   * **************************************************************************
    */
 
+  //TODO: Adjust constant values after experimentation.
+  
   /**
    * Send Updates Interval
    * 
@@ -26,10 +23,18 @@ public class Dsdv implements Node {
    */
   public static final int UpdateInterval = 25;
   
+  /**
+   * Maximum Size of Network Protocol Data Unit(NPDU)
+   * 
+   * This is basically the maximum number of route updates that can be sent in one message.
+   */
+  public static final int MaxNPDU = 10;
   
   
   /**
-   * Private Member Fields
+   * **************************************************************************
+   * *** Private Member Fields
+   * **************************************************************************
    */
 
   /**
@@ -98,11 +103,23 @@ public class Dsdv implements Node {
   
 
   /**
-   * Public Member Functions Not part of the Node Interface
+   * **************************************************************************
+   * *** Public Member Functions - Not in Node Interface
+   * **************************************************************************
    */
 
   /**
-   * Public Member Function Required to Implement the Node Interface
+   * Constructor
+   */
+  public Dsdv(NodeAttributes atts) {
+    // TODO implement constructor
+  }
+
+
+  /**
+   * **************************************************************************
+   * *** Public Member Functions - Implement Node Interface
+   * **************************************************************************
    */
 
   @Override
