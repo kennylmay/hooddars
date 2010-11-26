@@ -257,7 +257,7 @@ public class Aodv implements Node {
    * @return True/False based on the nodes Promiscuity
    */
   public boolean isPromiscuous() {
-    return this.Promiscuous;
+    return this.att.isPromiscuous;
   }
 
   /**
@@ -268,7 +268,7 @@ public class Aodv implements Node {
    * @param value
    */
   public void setPromiscuity(boolean value) {
-    this.Promiscuous = value;
+    this.att = new NodeAttributes (this.att.id, this.att.x, this.att.y, this.att.range, value);
   }
 
   /*
@@ -291,7 +291,7 @@ public class Aodv implements Node {
 
     String MsgType;
 
-    if (!this.Promiscuous) {
+    if (!this.att.isPromiscuous) {
       try {
         txQueue.add(message);
       } catch (IllegalStateException exception) {
@@ -1879,15 +1879,6 @@ public class Aodv implements Node {
    * Last Tick That A Hello Message Was Sent At
    */
   private int                         HelloSentAt = 0;
-
-  /**
-   * Current Promiscuous mode.
-   * 
-   * True - Send and Receive
-   * 
-   * False - Receive (Listen) Only
-   */
-  private boolean                     Promiscuous = false;
 
   /**
    * getNodeDialog
