@@ -9,6 +9,28 @@ public class RouteEntry {
   /**
    * Private Member Fields
    */
+
+
+  /**
+   * Destination IP Address for the Destination Node
+   */
+  private String     DestIP = "";
+  /**
+   * Destination Sequence Number
+   */
+  private int        SeqNum;
+  /**
+   * Hop Count to the Destination Node
+   */
+  private int        HopCount;
+  /**
+   * IP Address of the Next Hop Node on the path to the Destination Node.
+   */
+  private String     NextHopIP = "";
+  /**
+   * Time that route was installed into the table.
+   */
+  private int InstTime;
   
   
   /**
