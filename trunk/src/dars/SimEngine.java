@@ -5,17 +5,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import dars.NodeStore;
-import dars.event.DARSEvent;
-import dars.proto.*;
-import dars.proto.NodeFactory.NodeType;
-import dars.proto.aodv.Aodv;
-import dars.proto.dsdv.Dsdv;
-
-import java.lang.Thread;
-import java.math.BigInteger;
-
 import javax.swing.JDialog;
+
+import dars.event.DARSEvent;
+import dars.proto.Node;
+import dars.proto.NodeFactory;
+import dars.proto.NodeFactory.NodeType;
 
 /**
  * @author Kenny
@@ -321,12 +316,16 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         if(store.deleteNode(e.nodeId)) { 
           OutputHandler.dispatch(DARSEvent.outDeleteNode(e.nodeId));
         }
+        else {
+          OutputHandler.dispatch(DARSEvent.outError("Could not delete node " + e.nodeId + ", node does not exist"));
+        }
         break;
         
       case IN_SET_NODE_RANGE:
         // Get the node
         n = store.getNode(e.nodeId);
         if(n==null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not set range for node " + e.nodeId + ", node does not exist"));
           return;
         }
         
@@ -339,6 +338,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         //Get the node
         n = store.getNode(e.nodeId);
         if(n == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not set promsicuity for node " + e.nodeId + ", node does not exist"));
           return;
         }
         // Set the new promiscuity level
@@ -374,6 +374,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         n = store.getNode(e.nodeId);
         
         if(n == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not move node " + e.nodeId + ", node does not exist"));
           return;
         }
         
@@ -385,13 +386,15 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         break;
         
       case IN_INSERT_MESSAGE:
+        // Check if the source node exists
+        if(store.getNode(e.sourceId) == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not insert a new message into the network, originating node " + e.nodeId + " does not exist"));
+        }
+        
         // Add the message to the newMessages Q
         Message m = new Message(e.destinationId,e.sourceId, e.transmittedMessage);
         newMessages.add(m);
-       
-
         break;
-        
       }
     } // / Exit critical area
   }
