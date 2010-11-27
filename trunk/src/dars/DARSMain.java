@@ -7,10 +7,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 
-import console.Console;
-import logger.Logger;
+import dars.console.Console;
 import dars.event.DARSEvent;
 import dars.gui.GUI;
+import dars.logger.Logger;
 
 /**
  * @author Mike

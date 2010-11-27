@@ -1,7 +1,7 @@
 /**
  * 
  */
-package logger;
+package dars.logger;
 
 import java.io.*;
 import java.math.BigInteger;

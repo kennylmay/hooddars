@@ -1,4 +1,4 @@
-package console;
+package dars.console;
 
 import dars.OutputConsumer;
 import dars.event.DARSEvent;

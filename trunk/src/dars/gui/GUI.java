@@ -4,17 +4,18 @@ import javax.swing.*;
 
 import javax.swing.border.Border;
 
-import replayer.Replayer.ReplayerListener;
 import dars.Defaults;
 import dars.Message;
 import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.Utilities;
 import dars.event.DARSEvent;
+import dars.logger.Logger;
+import dars.replayer.Replayer.ReplayerListener;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import logger.Logger;
 
 public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
 
