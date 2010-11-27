@@ -23,15 +23,15 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import replayer.Replayer;
-import logger.Logger;
-import logger.Parser;
 import dars.Defaults;
 import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.Utilities;
 import dars.event.DARSEvent;
+import dars.logger.Logger;
+import dars.logger.Parser;
 import dars.proto.NodeFactory.NodeType;
+import dars.replayer.Replayer;
 
 public class DARSAppMenu  {
 //Creating the menu bar and all of its elements

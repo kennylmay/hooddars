@@ -1,7 +1,7 @@
 /**
  * 
  */
-package logger;
+package dars.logger;
 
 import dars.InputConsumer;
 import dars.OutputConsumer;

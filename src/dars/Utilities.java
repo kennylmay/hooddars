@@ -14,9 +14,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import dars.logger.Logger;
 import dars.proto.NodeFactory;
 import dars.proto.NodeFactory.NodeType;
-import logger.Logger;
 
 public class Utilities {
   public static void setSwingFont(javax.swing.plaf.FontUIResource f) {
