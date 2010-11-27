@@ -117,8 +117,7 @@ public class Utilities {
   }
 
   public static NodeType[] getNodeTypes() {
-    Class<NodeType> c = NodeType.class;
-    return c.getEnumConstants();
+    return NodeType.values();
   }
     
 }

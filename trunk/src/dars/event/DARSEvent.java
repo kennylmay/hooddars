@@ -367,13 +367,9 @@ public class DARSEvent {
     e.eventType = EventType.OUT_QUANTUM_ELAPSED;
     return e;
   }
-  // extracts a log entry from this event.
-  // use reflection to get each field
+
   static final Class<DARSEvent> c = DARSEvent.class;
   static final Field[] fields = c.getFields();
- 
-
-  
   public String getLogString() {
     StringBuilder sb = new StringBuilder();
     // proposed format of log string is:
@@ -426,11 +422,7 @@ public class DARSEvent {
 
   private static EventType getEventTypeFromString(String str) {
     // use reflection to get each field
-    Class<DARSEvent> c = DARSEvent.class;
-    Field[] fields = c.getFields();
-    Class<DARSEvent.EventType> eType =  (Class<DARSEvent.EventType>) fields[0].getType();
-    EventType[] eTypes =  eType.getEnumConstants();
-    for(EventType e : eTypes) {
+    for(EventType e : EventType.values()) {
       if(e.toString().equals(str)) return e;  
     }
     return null;
