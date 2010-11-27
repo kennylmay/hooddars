@@ -5,6 +5,8 @@ package logger;
 
 import dars.InputConsumer;
 import dars.OutputConsumer;
+import dars.Utilities;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,9 +26,6 @@ import dars.event.DARSEvent;
  *         DARSConsumer context.
  */
 public class Logger implements OutputConsumer, InputConsumer {
-  static String        tempFile      = null;
-  static File          linuxFolder   = new File("/tmp");
-  static File          windowsFolder = new File("C:\\Windows\\Temp");
 
   public static String newline       = System.getProperty("line.separator");
 
@@ -35,19 +34,9 @@ public class Logger implements OutputConsumer, InputConsumer {
     // if file handle is not init, do it
     if (fstream == null) {
       try {
-        // Check if we are on linux
-        if (linuxFolder.exists()) {
-          tempFile = "/tmp/darslog.tmp";
-        }
-        // Otherwise we are on windows
-        else if (windowsFolder.exists()) {
-          tempFile = "C:\\Windows\\Temp\\darslog.tmp";
-        } else {
-          JOptionPane.showMessageDialog(null, "Could not write temp file.");
-        }
-        fstream = new FileWriter(tempFile);
-      } catch (IOException e1) {
-        e1.printStackTrace();
+        fstream = new FileWriter(Utilities.getTmpLogPath());
+      } catch (IOException e2) {
+        Utilities.showError("Could not open the DARS temp file. Please file a bug report");
         System.exit(1);
       }
       out = new BufferedWriter(fstream);
@@ -74,7 +63,7 @@ public class Logger implements OutputConsumer, InputConsumer {
     closeLogFile();
     File tmp = null;
     try {
-      tmp = new File(tempFile);
+      tmp = new File(Utilities.getTmpLogPath());
       if (tmp.exists()) {
         tmp.delete();
       }
