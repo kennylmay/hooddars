@@ -55,6 +55,9 @@ public class Utilities {
   }
   
   
+  public static String getTmpLogPath() {
+    return System.getProperty("java.io.tmpdir") + "darslog.tmp";
+  }
   
   public static void runSaveLogDialog(Container parent) {
     JFileChooser chooser = new JFileChooser();
@@ -64,23 +67,8 @@ public class Utilities {
     int returnVal = chooser.showSaveDialog(parent);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-      // Determine where the tempfile is
-      String tempFile = null;
-      File linuxFolder = new File("/tmp/darslog.tmp");
-      File windowsFolder = new File("C:\\Windows\\Temp\\darslog.tmp");
-      // Check if we are on linux
-      if (linuxFolder.exists()) {
-        tempFile = "/tmp/darslog.tmp";
-      }
-      // Otherwise we are on windows
-      else if (windowsFolder.exists()) {
-        tempFile = "C:\\Windows\\Temp\\darslog.tmp";
-      } else {
-        JOptionPane.showMessageDialog(null, "Could not open temp file.");
-      }
-
       // Define the new files to be saved.
-      File logFile = new File(tempFile);
+      File logFile = new File(getTmpLogPath());
       File saveFile = new File(chooser.getSelectedFile().getPath() + ".log");
 
       // Check to see if we will overwrite the file
@@ -119,6 +107,7 @@ public class Utilities {
         out.close();
 
       } catch (FileNotFoundException e1) {
+        e1.printStackTrace();
         JOptionPane.showMessageDialog(parent, "Log file could not be saved at"
             + chooser.getSelectedFile().getPath());
       } catch (IOException e1) {
