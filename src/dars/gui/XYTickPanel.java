@@ -34,8 +34,8 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
     g.setColor(Color.BLACK);
     
     //Draw the X ticks
-    for(int i = 0; i < maxX; i += 5) {
-      if( i % 100 == 0 && i != 0) {
+    for(int i = 5; i < maxX; i += 5) {
+      if( i % 100 == 0 ) {
         g.drawLine(i, 0, i, 10);
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
@@ -53,8 +53,8 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
     }
     
     //Draw the Y ticks
-    for(int i = 0; i < maxY; i += 5) {
-      if( i % 100 == 0 && i !=0) {
+    for(int i = 5; i < maxY; i += 5) {
+      if( i % 100 == 0 ) {
         g.drawLine(0,i,10,i);
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
