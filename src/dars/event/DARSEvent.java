@@ -87,7 +87,7 @@ public class DARSEvent {
   public static DARSEvent outInsertMessage() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_INSERT_MESSAGE;
-    e.informationalMessage = "Message Insertion Successful";
+    e.informationalMessage = "Message Insertion Successful. T:" + Utilities.timeStamp();
     return e;
   }
   
@@ -107,7 +107,7 @@ public class DARSEvent {
   public static DARSEvent outClearSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_CLEAR_SIM;
-    e.informationalMessage = "Simulation Cleared";
+    e.informationalMessage = "Simulation Cleared. T:" + Utilities.timeStamp();
     return e;
   }
   
@@ -122,7 +122,7 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_START_SIM;
     e.newSimSpeed = simSpeed;
-    e.informationalMessage = "Simulation Started";
+    e.informationalMessage = "Simulation Started. T:" + Utilities.timeStamp();
     return e;
   }
   
@@ -135,7 +135,7 @@ public class DARSEvent {
   public static DARSEvent outStopSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_STOP_SIM;
-    e.informationalMessage = "Simulation Stopped";
+    e.informationalMessage = "Simulation Stopped. T:" + Utilities.timeStamp();
     return e;
   }
   
@@ -143,7 +143,7 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_NEW_SIM;
     e.nodeType   = nt;
-    e.informationalMessage = "New " + nt + " Simulation Created";
+    e.informationalMessage = "New " + nt + " Simulation Created. T:" + Utilities.timeStamp();
     return e;
   }
   
@@ -156,7 +156,7 @@ public class DARSEvent {
   public static DARSEvent outPauseSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_PAUSE_SIM;
-    e.informationalMessage = "Simulation Paused.";
+    e.informationalMessage = "Simulation Paused. T:" + Utilities.timeStamp();
     return e;
   }
   
@@ -169,7 +169,7 @@ public class DARSEvent {
   public static DARSEvent outResumeSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_RESUME_SIM;
-    e.informationalMessage = "Simulation Resumed";
+    e.informationalMessage = "Simulation Resumed. T:" + Utilities.timeStamp();
     return e;
   }
     
@@ -210,7 +210,7 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SIM_SPEED;
     e.newSimSpeed = newSpeed;
-    e.informationalMessage = "Simulation Speed Set: " + newSpeed;
+    e.informationalMessage = "Simulation Speed Set: " + newSpeed + ". T:" + Utilities.timeStamp();
     return e;
   }
 
@@ -236,7 +236,7 @@ public class DARSEvent {
     DARSEvent d = new DARSEvent();
     d.eventType = EventType.OUT_ADD_NODE;
     d.setNodeAttributes(n);
-    d.informationalMessage = "Node Added: " + n.id;
+    d.informationalMessage = "Node Added: " + n.id + ". T:" + Utilities.timeStamp();
     return d;
     
   }
@@ -247,7 +247,7 @@ public class DARSEvent {
     d.nodeId = id;
     d.nodeX = x;
     d.nodeY = y;
-    d.informationalMessage = "Node " + id + " moved to X:" + x +" Y:" + y;
+    d.informationalMessage = "Node " + id + " moved to X:" + x +" Y:" + y + ". T:" + Utilities.timeStamp();;
     return d;
   }
 
@@ -264,7 +264,7 @@ public class DARSEvent {
     e.eventType = EventType.OUT_SET_NODE_RANGE;
     e.nodeId = id;
     e.nodeRange = newRange;
-    e.informationalMessage = "Node " + id + "'s range changed to " + newRange;
+    e.informationalMessage = "Node " + id + "'s range changed to " + newRange + ". T:" + Utilities.timeStamp();
     return e;
   }
 
@@ -275,7 +275,7 @@ public class DARSEvent {
     String status;
     if(isPromiscuous) status = "enabled";
     else status = "disabled";
-    e.informationalMessage = "Node " + id + " " + status + " promiscuous mode.";
+    e.informationalMessage = "Node " + id + " " + status + " promiscuous mode. T:" + Utilities.timeStamp();
     return e;
   }
   public static DARSEvent outMsgRecieved(String sourceId, String destId, String message) {
@@ -326,7 +326,7 @@ public class DARSEvent {
     d.sourceId = msg.originId;
     d.destinationId = msg.destinationId;
     d.transmittedMessage = msg.message;
-    d.informationalMessage = "Control message transmitted: " + msg.message;
+    d.informationalMessage = d.sourceId + " transmitted control message to " + d.destinationId + " : " + msg.message;
     return d;
   }
 
@@ -336,7 +336,7 @@ public class DARSEvent {
     d.sourceId = msg.originId;
     d.destinationId = msg.destinationId;
     d.transmittedMessage = msg.message;
-    d.informationalMessage = "Narrative message transmitted: " + msg.message;
+    d.informationalMessage = d.sourceId + " transmitted narrative message to " + d.destinationId + " : " + msg.message;
     return d;
   }
   
@@ -346,7 +346,7 @@ public class DARSEvent {
     d.sourceId = msg.originId;
     d.destinationId = sourceId;
     d.transmittedMessage = msg.message;
-    d.informationalMessage = "Control message received: " + msg.message;
+    d.informationalMessage = d.sourceId + " received control message from " + d.destinationId + " : " + msg.message;
     return d;
   }
 
@@ -356,7 +356,7 @@ public class DARSEvent {
     d.sourceId = msg.originId;
     d.destinationId = sourceId;
     d.transmittedMessage = msg.message;
-    d.informationalMessage = "Narrative message received: " + msg.message;
+    d.informationalMessage = d.sourceId + " received narrative message from " + d.destinationId + " : " + msg.message;
     return d;
   }
   
