@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -119,5 +121,13 @@ public class Utilities {
   public static NodeType[] getNodeTypes() {
     return NodeType.values();
   }
-    
+
+  
+  public static String timeStamp() {
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    return sdf.format(cal.getTime());
+  }
+
 }
+
