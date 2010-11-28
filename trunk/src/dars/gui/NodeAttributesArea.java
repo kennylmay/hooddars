@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -92,6 +94,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     setLock(true);
     setVisible(true);
 
+    // Set the attributes shortcut
+    nodeAttributesButton.setMnemonic(KeyEvent.VK_A);
+    promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
+    
     // Node combobox action handler
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
