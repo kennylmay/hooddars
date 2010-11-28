@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.math.BigInteger;
 import java.util.Hashtable;
 import java.util.Queue;
@@ -20,8 +21,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import dars.Defaults;
 import dars.InputHandler;
@@ -33,7 +37,7 @@ import dars.logger.Parser;
 import dars.proto.NodeFactory.NodeType;
 import dars.replayer.Replayer;
 
-public class DARSAppMenu  {
+public class DARSAppMenu{
 //Creating the menu bar and all of its elements
   private JMenuBar           menuBar             = new JMenuBar();
   private JMenu              simMenu             = new JMenu("Simulation");
@@ -86,7 +90,6 @@ public class DARSAppMenu  {
   private GUI                gui;
   private JPanel         currentQuantumArea     = new JPanel();
   private JLabel         currentQuantumLabel     = new JLabel();
-  
   
   public DARSAppMenu(GUI g) {
 
@@ -185,7 +188,25 @@ public class DARSAppMenu  {
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
     
-
+    // Setup a few simple keyboard shortcuts
+    // These respond when ctrl is held
+    saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+    saveScreenMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+    debugCheckBox.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+    exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+    graphicsCheckBox.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
+    clearMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+    importMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+        
+    // Responds no matter what
+    readmeMenu.setAccelerator(KeyStroke.getKeyStroke("F1"));
+    
+    // Responds if alt is held
+    playMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
+    pauseMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
+    stopMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+    resumeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
+    
     clearMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
@@ -194,12 +215,13 @@ public class DARSAppMenu  {
         typeLabel.setText("NONE");
       }
     });
-
+      
     saveMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Utilities.runSaveLogDialog(menuBar.getParent());
       }
     });
+    
     
     saveScreenMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {     
@@ -529,6 +551,5 @@ public class DARSAppMenu  {
   public void quantumElapsed() {
     quantums = quantums.add(BigInteger.ONE);
     currentQuantumLabel.setText(quantums.toString());
-  }
-  
+  }  
 }
