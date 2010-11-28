@@ -30,7 +30,7 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
     int maxX, maxY;
     maxX = size.width;
     maxY = size.height;
-    
+  
     g.setColor(Color.BLACK);
     
     //Draw the X ticks

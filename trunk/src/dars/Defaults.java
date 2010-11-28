@@ -17,4 +17,6 @@ public class Defaults {
   public static final Color RANGE_COLOR = new Color(150,150,150);
   public static final Color SELECTED_RANGE_COLOR = new Color(255,153,51); 
   public static final Font NODEID_FONT = new Font("tahoma", Font.BOLD, 12);
+  public static final int SELECTED_NODE_RANGE_INDICATOR_THICKNESS = 3;
+  public static final int BROADCAST_THICKNESS = 2;
 }
