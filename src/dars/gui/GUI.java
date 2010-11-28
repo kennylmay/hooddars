@@ -34,19 +34,8 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
   private DARSAppMenu        menuArea            = new DARSAppMenu(this);
 
   public GUI() {
-    super("DARS Version 1.0");
+    super(Defaults.TITLE_STRING);
 
-    // Close the program when the frame is exited
-    this.addWindowListener(new WindowAdapter()
-    {
-      public void windowClosing(WindowEvent e){
-        // Before we exit make sure to clean up the temporary log file.
-        Logger logger = Logger.getInstance();
-        logger.deleteLogFile();
-        System.exit(0);
-      }
-    });
-    
     // Setup a new layout for the outermost part of the frame. We'll use the
     // border layout.
     this.setLayout(new BorderLayout());
