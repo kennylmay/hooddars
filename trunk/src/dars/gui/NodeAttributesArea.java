@@ -97,7 +97,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // Set the attributes shortcut
     nodeAttributesButton.setMnemonic(KeyEvent.VK_A);
     promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
-    
+
     // Node combobox action handler
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
@@ -136,7 +136,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // X Text Box Single Handler connected to the "Enter"
     nodeXField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        if(blockChangeEvents) {
+        if (blockChangeEvents) {
           return;
         }
         // Get the ID off of the Combo Box
@@ -157,20 +157,20 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
           return;
         }
         // Enforce boundaries
-        Point p = simArea.getBoundedNodePoint(new Point(X,Y));
-        
+        Point p = simArea.getBoundedNodePoint(new Point(X, Y));
+
         // Dispatch the signal
         InputHandler.dispatch(DARSEvent.inMoveNode(id, p.x, p.y));
-        
+
       }
     });
 
     nodeYField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        if(blockChangeEvents) {
+        if (blockChangeEvents) {
           return;
         }
-        
+
         // Get the ID off of the Combo Box
         String id = nodeSelectorComboBox.getSelectedItem().toString();
         // Get the current node data and save it off so that it can be
@@ -188,10 +188,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         } catch (NumberFormatException nfe) {
           return;
         }
-        
+
         // Enforce boundaries
-        Point p = simArea.getBoundedNodePoint(new Point(X,Y));
-        
+        Point p = simArea.getBoundedNodePoint(new Point(X, Y));
+
         // Dispatch the signal
         InputHandler.dispatch(DARSEvent.inMoveNode(id, p.x, p.y));
       }
@@ -203,9 +203,17 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
-        // If the node attributes window is already open return
+        // If the node attributes window has already been opened check to see if it 
+        // is still visible
         if (openNodeDialogs.containsKey((nodeSelectorComboBox.getSelectedItem()
             .toString()))) {
+          JDialog dialog = openNodeDialogs.get((nodeSelectorComboBox
+              .getSelectedItem().toString()));
+          // If it is not still visible, show it.
+          if (dialog.isVisible() == false) {
+            dialog.setVisible(true);
+            return;
+          }
           return;
         }
         JDialog dialog = nodeInspector.getNodeDialog(nodeSelectorComboBox
@@ -218,7 +226,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
     promiscuousModeCheckBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        if(blockChangeEvents) {
+        if (blockChangeEvents) {
           return;
         }
         if (nodeSelectorComboBox.getSelectedItem() == null) {
@@ -230,7 +238,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       }
     });
   }
-
 
   private static final long serialVersionUID = 1L;
 
@@ -296,7 +303,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   }
 
   private void setAttributes(NodeAttributes n) {
-    if(n==null){
+    if (n == null) {
       return;
     }
     blockChangeEvents = true;
