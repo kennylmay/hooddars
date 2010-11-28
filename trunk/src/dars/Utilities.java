@@ -37,46 +37,40 @@ public class Utilities {
         UIManager.put(key, f);
     }
   }
-  
+
   public static void showError(String error) {
     JOptionPane.showMessageDialog(null, error, "Error",
         JOptionPane.ERROR_MESSAGE);
   }
-  
+
   public static NodeType popupAskNodeType() {
-    //Get every node type
+    // Get every node type
     NodeType nTypes[] = getNodeTypes();
-    
+
     int answer = JOptionPane.showOptionDialog(null,
-                 "Select a simulation type.",
-                 "Select a simulation type.",
-                 0,
-                 JOptionPane.QUESTION_MESSAGE,
-                 null,
-                 nTypes,
-                 nTypes[0]);
-    
-    //Return null if the user closed the dialog box
-    if(answer == JOptionPane.CLOSED_OPTION) {
+        "Select a simulation type.", "Select a simulation type.", 0,
+        JOptionPane.QUESTION_MESSAGE, null, nTypes, nTypes[0]);
+
+    // Return null if the user closed the dialog box
+    if (answer == JOptionPane.CLOSED_OPTION) {
       return null;
     }
-    
-    //Return their selection
+
+    // Return their selection
     return nTypes[answer];
   }
-  
-  
+
   public static String getTmpLogPath() {
     String tmpDir = System.getProperty("java.io.tmpdir");
-    
-    //On some JVMs, a trailing file separator doesn't exist. Correct this.
-    if(!tmpDir.endsWith(System.getProperty("file.separator"))) {
+
+    // On some JVMs, a trailing file separator doesn't exist. Correct this.
+    if (!tmpDir.endsWith(System.getProperty("file.separator"))) {
       tmpDir = tmpDir + System.getProperty("file.separator");
     }
-    
+
     return tmpDir + "darslog.tmp";
   }
-  
+
   public static void runSaveLogDialog(Container parent) {
     JFileChooser chooser = new JFileChooser();
     FileNameExtensionFilter filter = new FileNameExtensionFilter("Log Files",
@@ -88,6 +82,11 @@ public class Utilities {
       // Define the new files to be saved.
       File logFile = new File(getTmpLogPath());
       File saveFile = new File(chooser.getSelectedFile().getPath() + ".log");
+
+      if (!logFile.exists()) {
+        JOptionPane.showMessageDialog(parent, "There is nothing to save yet.");
+        return;
+      }
 
       // Check to see if we will overwrite the file
       if (saveFile.exists()) {
@@ -138,26 +137,25 @@ public class Utilities {
     return NodeType.values();
   }
 
-  
   public static String timeStamp() {
     Calendar cal = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     return sdf.format(cal.getTime());
   }
-  
-  public static void captureScreen(Component Area){
-  
+
+  public static void captureScreen(Component Area) {
+
     // Find out where the user would like to save their screen shot
     String fileName = null;
     JFileChooser chooser = new JFileChooser();
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("Screen Shots",
-        "png");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "Screen Shots", "png");
     chooser.setFileFilter(filter);
     int returnVal = chooser.showSaveDialog(null);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       File saveFile = new File(chooser.getSelectedFile().getPath() + ".png");
       fileName = saveFile.toString();
-      
+
       // Check to see if we will overwrite the file
       if (saveFile.exists()) {
         int overwrite = JOptionPane.showConfirmDialog(null,
@@ -169,7 +167,7 @@ public class Utilities {
         }
       }
     }
-   
+
     // Determine the exact coordinates of the screen that is to be captured
     Dimension screenSize = Area.getSize();
     Rectangle screenRectangle = new Rectangle();
@@ -177,20 +175,30 @@ public class Utilities {
     screenRectangle.width = screenSize.width;
     screenRectangle.x = Area.getLocationOnScreen().x;
     screenRectangle.y = Area.getLocationOnScreen().y;
-    
-    Robot robot;
+
+    // Here we have to make the GUI Thread sleep for 1/4 of a second
+    // just to give the save dialog enough time to close off of the 
+    // screen. On slower computers they were capturing the screen
+    // before the dialog was out of the way.
     try {
-      robot = new Robot();
+      Thread.currentThread();
+      Thread.sleep(250);
+    } catch (InterruptedException e1) {
+      e1.printStackTrace();
+    }
+
+    // Attempt to capture the screen at the defined location.
+    try {
+      Robot robot = new Robot();
       BufferedImage image = robot.createScreenCapture(screenRectangle);
       ImageIO.write(image, "png", new File(fileName));
     } catch (AWTException e) {
       e.printStackTrace();
     } catch (IOException e) {
-      JOptionPane.showMessageDialog(null, "Could not save screen shoot at: " + fileName);
+      JOptionPane.showMessageDialog(null, "Could not save screen shoot at: "
+          + fileName);
       e.printStackTrace();
     }
-  
- }
+  }
 
 }
-
