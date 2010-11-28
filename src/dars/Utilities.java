@@ -1,6 +1,13 @@
 package dars;
 
+import java.awt.AWTException;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,6 +17,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -136,6 +144,53 @@ public class Utilities {
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     return sdf.format(cal.getTime());
   }
+  
+  public static void captureScreen(Component Area){
+  
+    // Find out where the user would like to save their screen shot
+    String fileName = null;
+    JFileChooser chooser = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Screen Shots",
+        "png");
+    chooser.setFileFilter(filter);
+    int returnVal = chooser.showSaveDialog(null);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      File saveFile = new File(chooser.getSelectedFile().getPath() + ".png");
+      fileName = saveFile.toString();
+      
+      // Check to see if we will overwrite the file
+      if (saveFile.exists()) {
+        int overwrite = JOptionPane.showConfirmDialog(null,
+            "File already exists, do you want to overwrite?");
+        if (overwrite == JOptionPane.CANCEL_OPTION
+            || overwrite == JOptionPane.CLOSED_OPTION
+            || overwrite == JOptionPane.NO_OPTION) {
+          return;
+        }
+      }
+    }
+   
+    // Determine the exact coordinates of the screen that is to be captured
+    Dimension screenSize = Area.getSize();
+    Rectangle screenRectangle = new Rectangle();
+    screenRectangle.height = screenSize.height;
+    screenRectangle.width = screenSize.width;
+    screenRectangle.x = Area.getLocationOnScreen().x;
+    screenRectangle.y = Area.getLocationOnScreen().y;
+    
+    Robot robot;
+    try {
+      robot = new Robot();
+      BufferedImage image = robot.createScreenCapture(screenRectangle);
+      ImageIO.write(image, "png", new File(fileName));
+    } catch (AWTException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      JOptionPane.showMessageDialog(null, "Could not save screen shoot at: " + fileName);
+      e.printStackTrace();
+    }
+  
+ }
 
 }
 

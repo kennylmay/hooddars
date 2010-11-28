@@ -42,6 +42,7 @@ public class DARSAppMenu  {
   private JMenu              modeMenu            = new JMenu("Mode");
   private JMenu              controlMenu            = new JMenu("Control");
   private JMenuItem          saveMenuItem        = new JMenuItem("Save As...");
+  private JMenuItem          saveScreenMenuItem  = new JMenuItem("Save Screen...");
   private JMenuItem          clearMenuItem       = new JMenuItem("Clear");
   private JMenuItem          exitMenuItem        = new JMenuItem("Exit");
   private JMenuItem          importMenuItem      = new JMenuItem("Import for Replay...");
@@ -78,7 +79,7 @@ public class DARSAppMenu  {
 
   // Labels slider bar for the speed adjustment
   private JLabel             speedLabel          = new JLabel("Simulation Speed");
-  private JSlider            slideBar            = new JSlider(JSlider.HORIZONTAL, 1, 20, 5);
+  private JSlider            slideBar            = new JSlider(JSlider.HORIZONTAL, 1, 20, 10);
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
   private LogArea            logArea;
@@ -118,6 +119,7 @@ public class DARSAppMenu  {
     //Add node menu items dynamically using reflection
     addNewSimMenuItems(newMenu);
     simMenu.add(saveMenuItem);
+    simMenu.add(saveScreenMenuItem);
     
     graphicsCheckBox.setState(true);
     addMultipleNodesMenuItem.setEnabled(false);
@@ -199,6 +201,11 @@ public class DARSAppMenu  {
       }
     });
     
+    saveScreenMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {     
+        Utilities.captureScreen(simArea);
+      }
+    });
 
     debugCheckBox.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent arg0) {
