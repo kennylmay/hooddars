@@ -414,9 +414,8 @@ public class DARSAppMenu  {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+      //Dispatch the new sim event
       typeLabel.setText(nodeType.toString());
-      simArea.setSimSpeed(getSlideBarSpeed());
-      //Need to define the speed.
       InputHandler.dispatch(DARSEvent.inNewSim(nodeType));
     }
   }
