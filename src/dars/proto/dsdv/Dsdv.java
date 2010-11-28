@@ -42,7 +42,7 @@ public class Dsdv extends Node {
    * one message.
    */
   public static final int             MAX_NPDU        = 10;
-  
+
   /**
    * Route Timeout
    * 
@@ -57,7 +57,7 @@ public class Dsdv extends Node {
    * Infinity Hop Count is a sentinel value that is used to mark a broken Link.
    */
   public static final int             INFINITY_HOPS   = -1;
-  
+
   /**
    * **************************************************************************
    * *** Private Member Fields
@@ -121,18 +121,19 @@ public class Dsdv extends Node {
    * not been updated mark it as a broken route.
    */
   void checkRoute() {
-    
+
     /**
      * Iterator and RouteEntry for going through the values in the RouteTable.
      */
     Iterator<RouteEntry> RouteTableIter;
     RouteEntry TempRouteEntry;
-    
+
     /**
-     * List of Broken Route Entry Destinations used to find other routes that are affected by the breakage.
+     * List of Broken Route Entry Destinations used to find other routes that
+     * are affected by the breakage.
      */
     HashSet<String> DestList = new HashSet<String>();
-    
+
     /**
      * Get Iterator for RouteTable and then traverse it looking for entries that
      * are newer than tick.
@@ -142,36 +143,39 @@ public class Dsdv extends Node {
     while (RouteTableIter.hasNext()) {
       TempRouteEntry = RouteTableIter.next();
 
-      
       /**
-       * If this entry has not been updated in ROUTE_LIFETIME mark it as a broken link.
+       * If this entry has not been updated in ROUTE_LIFETIME mark it as a
+       * broken link.
        */
       if ((TempRouteEntry.getInstTime() + ROUTE_TIMEOUT) <= this.CurrentTick) {
         /**
-         * If this entry is already marked as broken drop it from the route table.
+         * If this entry is already marked as broken drop it from the route
+         * table.
          */
         if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
           RouteTableIter.remove();
         }
-        
+
         TempRouteEntry.setHopCount(INFINITY_HOPS);
         TempRouteEntry.setInstTime(CurrentTick);
         TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
-        
+
         this.RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
-        
+
         /**
-         * Since the Route Table was modified, set the last update time to -1 to force an update message.
+         * Since the Route Table was modified, set the last update time to -1 to
+         * force an update message.
          */
         this.LastUpdate = -1;
 
         /**
-         * Add this destination to the list of Destination that need to be check for as next hops.
+         * Add this destination to the list of Destination that need to be check
+         * for as next hops.
          */
         DestList.add(TempRouteEntry.getDestIP());
       }
     }
-    
+
     /**
      * If the DestList has entries in it then check all routes to see if any of
      * the routes us an entry in the DestList as their next hop. If any are
@@ -183,10 +187,11 @@ public class Dsdv extends Node {
       TempRouteEntry = RouteTableIter.next();
 
       /**
-       * If this entry has a next hop that is in the list of links that were just marked as broken then mark it broken.
+       * If this entry has a next hop that is in the list of links that were
+       * just marked as broken then mark it broken.
        */
       if (DestList.contains(TempRouteEntry.getNextHopIP())) {
-        
+
         TempRouteEntry.setHopCount(INFINITY_HOPS);
         TempRouteEntry.setInstTime(CurrentTick);
         TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
@@ -195,7 +200,26 @@ public class Dsdv extends Node {
       }
     }
   }
-  
+
+  /**
+   * Increment this nodes Sequence Number
+   * 
+   * In addition to incrementing the sequence number this function also take
+   * care of updating the Routing Table entry for this nodes entry for itself.
+   */
+  void incrSeqNum() {
+
+    RouteEntry TempRouteEntry;
+
+    this.LastSeqNum++;
+
+    TempRouteEntry = this.RouteTable.get(this.att.id);
+    TempRouteEntry.setSeqNum(this.LastSeqNum);
+    TempRouteEntry.setInstTime(this.CurrentTick);
+    this.RouteTable.put(this.att.id, TempRouteEntry);
+
+  }
+
   /**
    * Place message into the transmit queue.
    * 
@@ -250,6 +274,11 @@ public class Dsdv extends Node {
     this.LastUpdate = this.CurrentTick;
 
     /**
+     * Before sending out updates update our sequence number.
+     */
+    incrSeqNum();
+
+    /**
      * If more routes have changed since the last full update than can be sent
      * out in one update message then send out a full update, otherwise send out
      * an incremental update.
@@ -259,6 +288,7 @@ public class Dsdv extends Node {
        * Send Full Update
        */
       this.LastFullUpdate = this.CurrentTick;
+      sendFullUpdates();
 
     } else {
       /**
@@ -296,13 +326,16 @@ public class Dsdv extends Node {
     String MsgType = "RTUP";
     String MsgFlags = "";
     int MsgDestCount = 0;
-    String MsgDestEntries = "|"; /* DESTID1|SEQ1|HOPCOUNT1|... */
+    String MsgDestEntries = ""; /* DESTID1|SEQ1|HOPCOUNT1|... */
 
     /**
      * Iterator and RouteEntry for going through the values in the RouteTable.
      */
     Iterator<RouteEntry> RouteTableIter;
     RouteEntry TempRouteEntry;
+
+    OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+        + "Starting a Full Update Message"));
 
     /**
      * Get Iterator for RouteTable and then traverse it looking for entries that
@@ -335,11 +368,16 @@ public class Dsdv extends Node {
 
         sendMessage(Msg);
 
+        OutputHandler
+            .dispatch(DARSEvent
+                .outDebug(this.att.id
+                    + "Sending a Full Update message as part of a Full Routing Table Dump"));
+
         /**
          * Reset the message properties before continuing the loop.
          */
         MsgDestCount = 0;
-        MsgDestEntries = "|";
+        MsgDestEntries = "";
       }
     }
 
@@ -356,6 +394,11 @@ public class Dsdv extends Node {
       Msg = new Message(Message.BCAST_STRING, this.att.id, MsgStr);
 
       sendMessage(Msg);
+
+      OutputHandler
+          .dispatch(DARSEvent
+              .outDebug(this.att.id
+                  + "Sending a Partial Update message as part of a Full Routing Table Dump"));
 
     }
   }
@@ -423,7 +466,7 @@ public class Dsdv extends Node {
     sendMessage(Msg);
 
   }
-  
+
   /**
    * Take a message off the receive queue.
    * 
@@ -435,7 +478,7 @@ public class Dsdv extends Node {
    * @param message
    *          The message the is being received from the network.
    */
-  void receiveMessage(Message message){
+  void receiveMessage(Message message) {
 
     String MsgType;
 
@@ -465,7 +508,7 @@ public class Dsdv extends Node {
       receiveNarrative(message);
     }
   }
-  
+
   /**
    * Receive Narrative Message.
    * 
@@ -676,7 +719,7 @@ public class Dsdv extends Node {
        */
       MsgDestEntryID = MsgArray[i * 3 + 3];
       MsgDestEntrySeq = Integer.parseInt(MsgArray[i * 3 + 4]);
-      MsgDestEntryHopCount = Integer.parseInt(MsgArray[i * 3 + 5]);
+      MsgDestEntryHopCount = Integer.parseInt(MsgArray[i * 3 + 5]) + 1;
 
       /**
        * If the destination is not already in the route table, add it.
@@ -701,17 +744,31 @@ public class Dsdv extends Node {
          * If the update's sequence number is newer than update ours.
          */
         if (TempRouteEntry.getSeqNum() < MsgDestEntrySeq) {
+          /**
+           * SAK - THIS IS A DEVIATION FROM WHAT IS WRITTEN IN THE DSDV
+           * PAPERS!!!!!!
+           * 
+           * ONLY if we have a change the Hop Count and/or the Next Hop Id will
+           * this update to the route table result in a forced update out to the
+           * network.
+           * 
+           */
+          if ((TempRouteEntry.getHopCount() < MsgDestEntryHopCount)
+              || (!TempRouteEntry.getNextHopIP().endsWith(message.originId))) {
+            /**
+             * Set the last update time to -1 to force an update message to be
+             * sent out advertising our new information.
+             */
+            this.LastUpdate = -1;
+          }
+
           TempRouteEntry.setHopCount(MsgDestEntryHopCount);
           TempRouteEntry.setNextHopIP(message.originId);
           TempRouteEntry.setSeqNum(MsgDestEntrySeq);
           TempRouteEntry.setInstTime(this.CurrentTick);
 
           this.RouteTable.put(MsgDestEntryID, TempRouteEntry);
-          /**
-           * Set the last update time to -1 to force an update message to be
-           * sent out advertising our new information.
-           */
-          this.LastUpdate = -1;
+
         } else {
           /**
            * If the sequence number in the update is the same as ours and the
@@ -1022,14 +1079,12 @@ public class Dsdv extends Node {
     while (!rxQueue.isEmpty()) {
       receiveMessage(rxQueue.remove());
     }
-    
+
     /**
      * Check for link breakage.
      */
-    //check routes.
-    
-    
-    
+    // check routes.
+
     if (this.CurrentTick >= (this.LastUpdate + UPDATE_INTERVAL)) {
       sendUpdates();
     }
