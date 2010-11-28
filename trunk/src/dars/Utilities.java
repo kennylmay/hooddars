@@ -59,7 +59,14 @@ public class Utilities {
   
   
   public static String getTmpLogPath() {
-    return System.getProperty("java.io.tmpdir") + "darslog.tmp";
+    String tmpDir = System.getProperty("java.io.tmpdir");
+    
+    //On some JVMs, a trailing file separator doesn't exist. Correct this.
+    if(!tmpDir.endsWith(System.getProperty("file.separator"))) {
+      tmpDir = tmpDir + System.getProperty("file.separator");
+    }
+    
+    return tmpDir + "darslog.tmp";
   }
   
   public static void runSaveLogDialog(Container parent) {
