@@ -1,8 +1,10 @@
 package dars.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -68,10 +70,11 @@ public class Animations extends JPanel implements ComponentListener,
     repaintTimer.setDelay(1000/fps); 
   }
 
-  
+  private static Stroke BASIC_STROKE = new BasicStroke(1);
+  private static Stroke SELECTED_RANGE_STROKE = new BasicStroke(Defaults.SELECTED_NODE_RANGE_INDICATOR_THICKNESS);
+  private static Stroke BROADCAST_STROKE = new BasicStroke(Defaults.BROADCAST_THICKNESS);
   LinkedList<Connection>         connStore = new LinkedList<Connection>();
   HashMap<GNode, RangeIndicator> riStore   = new HashMap<GNode, RangeIndicator>();
-
   LinkedList<Connection>         topList   = new LinkedList<Connection>();
   public void paintComponent(Graphics g) {
 
@@ -317,29 +320,28 @@ public class Animations extends JPanel implements ComponentListener,
       startStep = Integer.MIN_VALUE;
     }
     
+    
+    
     public void drawRange(Graphics g) {
 
       // System.out.println("painting ranger");
-      Graphics2D g2 = (Graphics2D) g;
+      Graphics2D g2 = (Graphics2D)g;
 
       // Draw the graphic
+      int x = parent_.getCenter().x - parent_.getRange();
+      int y = parent_.getCenter().y - parent_.getRange();
+      int width = parent_.getRange() * 2;
+      int height = parent_.getRange() * 2;
       if (parent_.isSelected()) {
         g2.setColor(Defaults.SELECTED_RANGE_COLOR);
-        g2.drawOval(parent_.getCenter().x - parent_.getRange()+2,
-            parent_.getCenter().y - parent_.getRange()+2,
-            parent_.getRange() * 2 - 6, parent_.getRange() * 2 - 6);
-        g2.drawOval(parent_.getCenter().x - parent_.getRange()+1,
-            parent_.getCenter().y - parent_.getRange()+1,
-            parent_.getRange() * 2 - 4, parent_.getRange() * 2 - 4);
-        g2.drawOval(parent_.getCenter().x - parent_.getRange(),
-            parent_.getCenter().y - parent_.getRange(),
-            parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
+        g2.setStroke(SELECTED_RANGE_STROKE);
       } else {
         g2.setColor(Defaults.RANGE_COLOR);
-        g2.drawOval(parent_.getCenter().x - parent_.getRange(),
-            parent_.getCenter().y - parent_.getRange(),
-            parent_.getRange() * 2 - 2, parent_.getRange() * 2 - 2);
       }
+      g2.drawOval(x,y,width,height);
+      
+      //restore the original stroking context
+      g2.setStroke(BASIC_STROKE);
     }
 
     public void drawBroadcast(Graphics g) {
@@ -351,14 +353,13 @@ public class Animations extends JPanel implements ComponentListener,
       int bCastY =  parent_.getCenter().y - bCastRadius;
 
       g2.setColor(Defaults.BROADCAST_COLOR);
-      // draw a 3 pixel circle
+      g2.setStroke(BROADCAST_STROKE);
       g2.drawOval(bCastX, bCastY, bCastRadius * 2, bCastRadius * 2);
-      g2.drawOval(bCastX + 1, bCastY + 1, bCastRadius * 2, bCastRadius * 2 - 1);
-      g2.drawOval(bCastX + 2, bCastY + 2, bCastRadius * 2, bCastRadius * 2 - 2);
+      g2.setStroke(BASIC_STROKE);
     }
 
     int startStep;
-    int totalSteps = 30;
+    int totalSteps = 25;
 
     public boolean isActive() {
       return (Animations.anicount - startStep < totalSteps && Animations.anicount > startStep);
@@ -375,8 +376,6 @@ public class Animations extends JPanel implements ComponentListener,
   }
 
   public void removeRangeIndicator(GNode g) {
-
-    RangeIndicator ri = riStore.get(g);
     riStore.remove(g);
   }
 
