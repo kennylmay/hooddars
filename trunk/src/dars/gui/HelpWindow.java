@@ -42,6 +42,7 @@ public class HelpWindow extends JDialog {
 
     // Reset the view to the beginning of the file
     text.setCaretPosition(0);
+    text.setEditable(false);
     this.setPreferredSize(new Dimension(800, 600));
     getContentPane().add(Panel);
 
