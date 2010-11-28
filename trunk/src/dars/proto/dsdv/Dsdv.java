@@ -1,6 +1,7 @@
 package dars.proto.dsdv;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -32,7 +33,7 @@ public class Dsdv extends Node {
    * Each node periodically sends routing table updates. This is the interval
    * between transmissions. Measured in clock ticks.
    */
-  public static final int             UPDATE_INTERVAL = 25;
+  public static final int             UPDATE_INTERVAL = 10;
 
   /**
    * Maximum Size of Network Protocol Data Unit(NPDU)
@@ -41,7 +42,22 @@ public class Dsdv extends Node {
    * one message.
    */
   public static final int             MAX_NPDU        = 10;
+  
+  /**
+   * Route Timeout
+   * 
+   * If a route has not been updated in ROUTE_TIMEOUT then it will be considered
+   * a broken link.
+   */
+  public static final int             ROUTE_TIMEOUT   = UPDATE_INTERVAL * 3;
 
+  /**
+   * Infinity Hop Count
+   * 
+   * Infinity Hop Count is a sentinel value that is used to mark a broken Link.
+   */
+  public static final int             INFINITY_HOPS   = -1;
+  
   /**
    * **************************************************************************
    * *** Private Member Fields
@@ -98,6 +114,88 @@ public class Dsdv extends Node {
    * Private Member Functions
    */
 
+  /**
+   * Check Routes
+   * 
+   * Look at each entry in the route table. If there is an old route that has
+   * not been updated mark it as a broken route.
+   */
+  void checkRoute() {
+    
+    /**
+     * Iterator and RouteEntry for going through the values in the RouteTable.
+     */
+    Iterator<RouteEntry> RouteTableIter;
+    RouteEntry TempRouteEntry;
+    
+    /**
+     * List of Broken Route Entry Destinations used to find other routes that are affected by the breakage.
+     */
+    HashSet<String> DestList = new HashSet<String>();
+    
+    /**
+     * Get Iterator for RouteTable and then traverse it looking for entries that
+     * are newer than tick.
+     */
+    RouteTableIter = RouteTable.values().iterator();
+
+    while (RouteTableIter.hasNext()) {
+      TempRouteEntry = RouteTableIter.next();
+
+      
+      /**
+       * If this entry has not been updated in ROUTE_LIFETIME mark it as a broken link.
+       */
+      if ((TempRouteEntry.getInstTime() + ROUTE_TIMEOUT) <= this.CurrentTick) {
+        /**
+         * If this entry is already marked as broken drop it from the route table.
+         */
+        if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
+          RouteTableIter.remove();
+        }
+        
+        TempRouteEntry.setHopCount(INFINITY_HOPS);
+        TempRouteEntry.setInstTime(CurrentTick);
+        TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
+        
+        this.RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
+        
+        /**
+         * Since the Route Table was modified, set the last update time to -1 to force an update message.
+         */
+        this.LastUpdate = -1;
+
+        /**
+         * Add this destination to the list of Destination that need to be check for as next hops.
+         */
+        DestList.add(TempRouteEntry.getDestIP());
+      }
+    }
+    
+    /**
+     * If the DestList has entries in it then check all routes to see if any of
+     * the routes us an entry in the DestList as their next hop. If any are
+     * found mark them as broken just like was done above.
+     */
+    RouteTableIter = RouteTable.values().iterator();
+
+    while (RouteTableIter.hasNext()) {
+      TempRouteEntry = RouteTableIter.next();
+
+      /**
+       * If this entry has a next hop that is in the list of links that were just marked as broken then mark it broken.
+       */
+      if (DestList.contains(TempRouteEntry.getNextHopIP())) {
+        
+        TempRouteEntry.setHopCount(INFINITY_HOPS);
+        TempRouteEntry.setInstTime(CurrentTick);
+        TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
+
+        this.RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
+      }
+    }
+  }
+  
   /**
    * Place message into the transmit queue.
    * 
@@ -325,6 +423,164 @@ public class Dsdv extends Node {
     sendMessage(Msg);
 
   }
+  
+  /**
+   * Take a message off the receive queue.
+   * 
+   * This function receives a message from the network by removing it from the
+   * receive queue for processing.
+   * 
+   * @author kresss
+   * 
+   * @param message
+   *          The message the is being received from the network.
+   */
+  void receiveMessage(Message message){
+
+    String MsgType;
+
+    /**
+     * Check to see if this node sent the message. If it did then ignore the
+     * message.
+     */
+    if (message.originId.equals(this.att.id)) {
+      return;
+    }
+
+    /**
+     * Get the message type.
+     * 
+     * Message type is always the first token in the message string. Split on
+     * the '|' and get the first item in the resultant Array of Strings.
+     */
+    MsgType = message.message.split("\\|")[0];
+
+    // TODO: Replace this terrible list of if statements with a switch statement
+    // once Java 7 is released. Java 7 supposedly has the ability to switch on
+    // strings.
+
+    if (MsgType.equals("RTUP")) {
+      receiveUpdates(message);
+    } else if (MsgType.equals("NARR")) {
+      receiveNarrative(message);
+    }
+  }
+  
+  /**
+   * Receive Narrative Message.
+   * 
+   * @author kresss
+   * 
+   * @param message
+   *          Narrative message received from network.
+   */
+  void receiveNarrative(Message message) {
+
+    /**
+     * NARR Message Format
+     * 
+     * TYPE|FLAGS|DESTID|ORIGID|TEXT
+     * 
+     */
+
+    /**
+     * The message that will be sent if the message needs forwarded.
+     */
+    Message Msg;
+
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+
+    /**
+     * Message Properties
+     */
+    String MsgType;
+    String MsgFlags;
+    String MsgOrigID;
+    String MsgDestID;
+    String MsgText;
+
+    /**
+     * Route Table Entry used to get the destination ID info in our Route Table.
+     */
+    RouteEntry DestEntry;
+
+    /**
+     * Array to hold Message Fields
+     */
+    String MsgArray[];
+
+    /**
+     * Split Message into fields based on '|' delimiters and store in MsgArray.
+     */
+    MsgArray = message.message.split("\\|");
+
+    /**
+     * Store message fields into local variables. Yes this is not really needed
+     * but I (SAK) think it makes the code more readable.
+     * 
+     * Note: Skip MsgArray[0] - Message Type.
+     */
+    MsgType = MsgArray[0];
+    MsgFlags = MsgArray[1];
+    MsgDestID = MsgArray[2];
+    MsgOrigID = MsgArray[3];
+    MsgText = MsgArray[4];
+
+    /**
+     * Check to see if this node is the final destination of the message. If it
+     * is great if not we need to forward it.
+     */
+    if (this.att.id.equals(MsgDestID)) {
+      /**
+       * The message has reached its final destination. Consider it delivered.
+       */
+      OutputHandler.dispatch(DARSEvent.outMsgRecieved(MsgOrigID, MsgDestID,
+          MsgText));
+      return;
+    }
+
+    /**
+     * Need to forward the message on.
+     */
+
+    /**
+     * Check to see if the destination node ID is in our Route Table.
+     */
+    if (RouteTable.containsKey(MsgDestID)) {
+      /**
+       * Get the Route Entry.
+       */
+      DestEntry = RouteTable.get(MsgDestID);
+
+      /**
+       * Create the message string that will be sent.
+       */
+      MsgStr = MsgType + '|' + MsgFlags + '|' + MsgDestID + '|' + MsgOrigID
+          + '|' + MsgText;
+
+      /**
+       * The destination is in our RouteTable. Create the message to be sent.
+       */
+
+      Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
+      sendMessage(Msg);
+
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + " Forwarded Narrative Message: " + MsgStr));
+    } else {
+      /**
+       * This node does not have a route to the desired destination and thus
+       * should not have been used in the route. ERROR.
+       */
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + "Received a narrative message for " + MsgDestID
+          + " but has no route to the destination.  Dropping message."));
+    }
+
+  }
 
   /**
    * Receive Route Updates
@@ -429,6 +685,12 @@ public class Dsdv extends Node {
         TempRouteEntry = new RouteEntry(MsgDestEntryID, MsgDestEntrySeq,
             MsgDestEntryHopCount, message.originId, this.CurrentTick);
         this.RouteTable.put(MsgDestEntryID, TempRouteEntry);
+
+        /**
+         * Set the last update time to -1 to force an update message to be sent
+         * out advertising our new information.
+         */
+        this.LastUpdate = -1;
       } else {
         /**
          * Update the existing route entry if it needs it.
@@ -445,6 +707,11 @@ public class Dsdv extends Node {
           TempRouteEntry.setInstTime(this.CurrentTick);
 
           this.RouteTable.put(MsgDestEntryID, TempRouteEntry);
+          /**
+           * Set the last update time to -1 to force an update message to be
+           * sent out advertising our new information.
+           */
+          this.LastUpdate = -1;
         } else {
           /**
            * If the sequence number in the update is the same as ours and the
@@ -457,6 +724,11 @@ public class Dsdv extends Node {
             TempRouteEntry.setInstTime(this.CurrentTick);
 
             this.RouteTable.put(MsgDestEntryID, TempRouteEntry);
+            /**
+             * Set the last update time to -1 to force an update message to be
+             * sent out advertising our new information.
+             */
+            this.LastUpdate = -1;
           }
         }
 
@@ -636,22 +908,104 @@ public class Dsdv extends Node {
     // strings.
 
     if (MsgType.equals("RTUP")) {
-      receiveUpdates(message);
       OutputHandler.dispatch(DARSEvent.outControlMsgReceived(this.att.id,
           message));
     } else if (MsgType.equals("NARR")) {
-      // receiveNarrative(message);
       OutputHandler
           .dispatch(DARSEvent.outNarrMsgReceived(this.att.id, message));
     }
 
   }
 
+  /**
+   * Send a narrative message from one node to another.
+   * 
+   * Narrative messages are messages that the user inits.
+   * 
+   * @author kresss
+   * 
+   * @param srcID
+   * @param destID
+   * @param messageText
+   */
   @Override
-  public void newNarrativeMessage(String sourceID, String desinationID,
+  public void newNarrativeMessage(String sourceID, String destinationID,
       String messageText) {
-    // TODO Auto-generated method stub
 
+    /**
+     * NARR Message Format
+     * 
+     * TYPE|FLAGS|DESTID|ORIGID|TEXT
+     * 
+     */
+
+    /**
+     * The message that will be sent.
+     */
+    Message Msg;
+
+    /**
+     * MsgStr will hold the message that is sent into the network.
+     */
+    String MsgStr = "";
+
+    /**
+     * Message Properties
+     */
+    String MsgType = "NARR";
+    String MsgFlags = "";
+    String MsgOrigID = sourceID;
+    String MsgDestID = destinationID;
+
+    /**
+     * Route Table Entry used to get the destination ID info in our Route Table.
+     */
+    RouteEntry DestEntry;
+
+    /**
+     * Check to make sure that the sourceID is this node.
+     */
+    if (!this.att.id.equals(sourceID)) {
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + " Tried to create a new Narrative Message but the source ID was "
+          + sourceID));
+    }
+
+    /**
+     * Build the Message String.
+     * 
+     * This is independent of which logic path is chosen below.
+     */
+    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgDestID + '|' + MsgOrigID + '|'
+        + messageText;
+
+    /**
+     * Check to see if the destination node ID is in our Route Table.
+     */
+    if (RouteTable.containsKey(destinationID)) {
+      /**
+       * Get the Route Entry.
+       */
+      DestEntry = RouteTable.get(destinationID);
+      /**
+       * The destination is in our RouteTable.
+       */
+      Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
+      sendMessage(Msg);
+
+      OutputHandler.dispatch(DARSEvent.outDebug(MsgStr));
+      /**
+       * Done processing this request.
+       */
+      return;
+    } else {
+      /**
+       * Do not have a route to the destination node.
+       */
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + " Wants to send to " + MsgDestID
+          + " but has no Route.  The message will be dropped."));
+    }
   }
 
   @Override
@@ -662,7 +1016,21 @@ public class Dsdv extends Node {
      */
     this.CurrentTick++;
 
-    if (this.CurrentTick >= (this.LastUpdate + this.UPDATE_INTERVAL)) {
+    /**
+     * Receive and process each message on the Receive Queue.
+     */
+    while (!rxQueue.isEmpty()) {
+      receiveMessage(rxQueue.remove());
+    }
+    
+    /**
+     * Check for link breakage.
+     */
+    //check routes.
+    
+    
+    
+    if (this.CurrentTick >= (this.LastUpdate + UPDATE_INTERVAL)) {
       sendUpdates();
     }
 

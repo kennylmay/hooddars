@@ -79,7 +79,7 @@ public abstract class Node {
    * @param destinationID
    * @param messageText
    */
-  public abstract void newNarrativeMessage(String sourceID, String desinationID, String messageText);
+  public abstract void newNarrativeMessage(String sourceID, String destinationID, String messageText);
   
   /**
    * This function will return the attributes that are defined in the Node
