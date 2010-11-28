@@ -56,8 +56,8 @@ public class DARSAppMenu{
   private JMenuItem          stopMenuItem        = new JMenuItem("Stop");
   
   private JMenu              helpMenu            = new JMenu("Help");
-  private JMenuItem          readmeMenu             = new JMenuItem(
-                                                     "Getting Started");
+  private JMenuItem          readmeMenuItem            = new JMenuItem("Getting Started");
+  private JMenuItem          aboutMenuItem            = new JMenuItem("About");
   private JMenuItem          addSingleNodeMenuItem = new JMenuItem("Add Single Node");
   private JMenuItem          addMultipleNodesMenuItem  = new JMenuItem("Add Multiple Nodes");
   private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
@@ -98,7 +98,8 @@ public class DARSAppMenu{
     menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
 
     // Add the readme help menu to the menu bar
-    helpMenu.add(readmeMenu);
+    helpMenu.add(readmeMenuItem);
+    helpMenu.add(aboutMenuItem);
 
     // Add elements to the create network menu
     createNetworkMenu.add(addSingleNodeMenuItem);
@@ -200,7 +201,8 @@ public class DARSAppMenu{
     addSingleNodeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
     
     // Responds no matter what
-    readmeMenu.setAccelerator(KeyStroke.getKeyStroke("F1"));
+    readmeMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
+    aboutMenuItem.setAccelerator(KeyStroke.getKeyStroke("F2"));
     
     // Responds if alt is held
     playMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
@@ -365,9 +367,15 @@ public class DARSAppMenu{
       }
     });
 
-    readmeMenu.addActionListener(new ActionListener() {
+    readmeMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        new HelpWindow();
+        new TextWindow("/README.txt");     
+      }
+    });
+    
+    aboutMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        new TextWindow("/ABOUT.txt");     
       }
     });
 
