@@ -167,6 +167,10 @@ public class Utilities {
         }
       }
     }
+    // If they didn't hit approve, return
+    else{
+      return;
+    }
 
     // Determine the exact coordinates of the screen that is to be captured
     Dimension screenSize = Area.getSize();
