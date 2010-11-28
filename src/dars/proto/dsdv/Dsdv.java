@@ -14,7 +14,7 @@ import dars.NodeAttributes;
 import dars.OutputHandler;
 import dars.event.DARSEvent;
 import dars.proto.Node;
-import dars.proto.aodv.AodvDialog;
+import dars.proto.dsdv.DsdvDialog;
 import dars.proto.dsdv.RouteEntry;
 
 public class Dsdv extends Node {
@@ -309,8 +309,6 @@ public class Dsdv extends Node {
    * @author kresss
    */
   void sendFullUpdates() {
-
-    // TODO: THIS NEEDS UNIT TESTED.
 
     /**
      * Message object that will be passed to sendMessage.
