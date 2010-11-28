@@ -24,22 +24,46 @@ public abstract class Node {
   /**
    * Pop a message of the node's transmit queue and return it.
    * 
-   * This function is used to return a message off the transmit queue of a node and return it for the simulation engine to consume.  Effectively this is used to simulate the transmittal of a message into the network.
+   * This function is used to return a message off the transmit queue of a node
+   * and return it for the simulation engine to consume. Effectively this is
+   * used to simulate the transmittal of a message into the network.
+   * 
+   * When a protocol implements this function it should call the appropriate
+   * DARSEvent for the message that is being sent. A message is either a Control
+   * message or Narrative. Example follows:
+   * 
+   * OutputHandler.dispatch(DARSEvent.outControlMsgTransmitted(this.att.id,
+   * message));
+   * 
+   * OutputHandler.dispatch(DARSEvent.outNarrMsgTransmitted(this.att.id,
+   * message));
    * 
    * @author kresss
    * 
    * @return Message Message that is being sent into the network.
    */
   public abstract Message messageToNetwork();
-  
+
   /**
    * Push a message into the node's receive queue.
    * 
-   * This function is used to deliver a message to a node.  The message will be placed into the nodes receive queue effectively the node is receiving the message.
+   * This function is used to deliver a message to a node. The message will be
+   * placed into the nodes receive queue effectively the node is receiving the
+   * message.
+   * 
+   * When a protocol implements this function it should call the appropriate
+   * DARSEvent for the message that is being received. A message is either a
+   * Control message or Narrative. Example follows:
+   * 
+   * OutputHandler.dispatch(DARSEvent.outControlMsgReceived(this.att.id,
+   * message));
+   * 
+   * OutputHandler.dispatch(DARSEvent.outNarrMsgReceived(this.att.id, message));
    * 
    * @author kresss
    * 
-   * @param message Message to be delivered to the node.
+   * @param message
+   *          Message to be delivered to the node.
    * 
    */
   public abstract void messageToNode(Message message);
