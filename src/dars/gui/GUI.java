@@ -246,6 +246,8 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
       case OUT_START_SIM:
         //Notify the menu that a sim has started
         menuArea.simStarted();
+        //Set the starting simulation speed
+        simArea.setSimSpeed(e.newSimSpeed);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
