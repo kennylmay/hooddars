@@ -47,6 +47,10 @@ public class Logger implements OutputConsumer, InputConsumer {
         // TODO Auto-generated catch block
         e1.printStackTrace();
       }
+      
+      //Arrange for the file to be deleted on exit
+      File tmpFile = new File(Utilities.getTmpLogPath());
+      tmpFile.deleteOnExit();
     }
 
     try {
