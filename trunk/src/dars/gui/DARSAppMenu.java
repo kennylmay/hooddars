@@ -226,7 +226,7 @@ public class DARSAppMenu{
     
     saveScreenMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {     
-        Utilities.captureScreen(simArea);
+        Utilities.captureScreen(simArea.getParent());
       }
     });
 
