@@ -16,4 +16,8 @@
          main-class="dars.DARSMain"
          >
      </application-desc>
+     <security>
+       <all-permissions/>
+     </security>
+     <update check="always" policy="prompt-update">
 </jnlp>	
