@@ -59,6 +59,7 @@ public class DARSAppMenu{
   private JMenuItem          readmeMenuItem            = new JMenuItem("Getting Started");
   private JMenuItem          aboutMenuItem            = new JMenuItem("About");
   private JMenuItem          addSingleNodeMenuItem = new JMenuItem("Add Single Node");
+  private JMenuItem          deleteNodeMenuItem    = new JMenuItem("Delete Selected Node");
   private JMenuItem          addMultipleNodesMenuItem  = new JMenuItem("Add Multiple Nodes");
   private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
   // If someone knows a better way to align this stuff please feel free.
@@ -105,6 +106,7 @@ public class DARSAppMenu{
     createNetworkMenu.add(addSingleNodeMenuItem);
     createNetworkMenu.add(loadTopologyMenuItem);
     createNetworkMenu.add(addMultipleNodesMenuItem);
+    createNetworkMenu.add(deleteNodeMenuItem);
  
     // Add elements to the mode menu
     modeMenu.add(debugCheckBox);
@@ -128,6 +130,7 @@ public class DARSAppMenu{
     graphicsCheckBox.setState(true);
     addMultipleNodesMenuItem.setEnabled(false);
     addSingleNodeMenuItem.setEnabled(false);
+    deleteNodeMenuItem.setEnabled(false);
     simMenu.add(importMenuItem);
     simMenu.add(clearMenuItem);
     simMenu.add(exitMenuItem);
@@ -194,6 +197,7 @@ public class DARSAppMenu{
     saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
     saveScreenMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
     debugCheckBox.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+    
     exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
     graphicsCheckBox.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
     clearMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
@@ -203,6 +207,7 @@ public class DARSAppMenu{
     // Responds no matter what
     readmeMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
     aboutMenuItem.setAccelerator(KeyStroke.getKeyStroke("F2"));
+    deleteNodeMenuItem.setAccelerator(KeyStroke.getKeyStroke("DELETE"));
     
     // Responds if alt is held
     playMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
@@ -247,6 +252,16 @@ public class DARSAppMenu{
     addSingleNodeMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inAddNode(Defaults.X,Defaults.Y,Defaults.RANGE, Defaults.IS_PROMISCUOUS));
+      }
+    });
+    
+    deleteNodeMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        String selectedNode = simArea.getSelectedNodeID();
+        if (selectedNode == null){
+          return;
+        }
+        InputHandler.dispatch(DARSEvent.inDeleteNode(selectedNode));
       }
     });
     
@@ -490,6 +505,7 @@ public class DARSAppMenu{
     importMenuItem.setEnabled(false);
     addMultipleNodesMenuItem.setEnabled(true);
     addSingleNodeMenuItem.setEnabled(true);
+    deleteNodeMenuItem.setEnabled(true);
     
     //Enable the Play button, disable tstop and pause
     stopButton.setEnabled(false);
@@ -515,6 +531,9 @@ public class DARSAppMenu{
     //Enable/disable menu items
     newMenu.setEnabled(true);
     importMenuItem.setEnabled(true);
+    addMultipleNodesMenuItem.setEnabled(false);
+    addSingleNodeMenuItem.setEnabled(false);
+    deleteNodeMenuItem.setEnabled(false);
     
   }
   
