@@ -518,13 +518,14 @@ public class SimArea extends JLayeredPane {
 
     // lock the user interface
     setLocked(true);
-
   }
 
   public void setNodeAttributesArea(NodeAttributesArea nodeAttributesArea) {
     this.nodeAttributesArea = nodeAttributesArea;
   }
 
+  
+  private static Color LOCKBOX_COLOR = new Color(0,0,0,20);
   private class LockBox extends JPanel implements ComponentListener {
 
     private static final long serialVersionUID = 1L;
@@ -546,7 +547,7 @@ public class SimArea extends JLayeredPane {
 
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      g.setColor(new Color(0, 0, 0, 20));
+      g.setColor(LOCKBOX_COLOR);
       g.fillRect(0, 0, getWidth(), getHeight());
     }
 
