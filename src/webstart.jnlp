@@ -12,12 +12,12 @@
 
     </resources>
     <application-desc
-         name="Dynamic Tree Demo Application"
+         name="Dynamic Ad-hoc Routing Simulator"
          main-class="dars.DARSMain"
          >
      </application-desc>
      <security>
        <all-permissions/>
      </security>
-     <update check="always" policy="prompt-update">
+     <update check="always" policy="prompt-update"/>
 </jnlp>	
