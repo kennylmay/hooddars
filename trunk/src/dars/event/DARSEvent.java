@@ -87,7 +87,7 @@ public class DARSEvent {
   public static DARSEvent outInsertMessage() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_INSERT_MESSAGE;
-    e.informationalMessage = "Message Insertion Successful. T:" + Utilities.timeStamp();
+    e.informationalMessage = "Message Insertion Successful.";
     return e;
   }
   
@@ -107,7 +107,7 @@ public class DARSEvent {
   public static DARSEvent outClearSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_CLEAR_SIM;
-    e.informationalMessage = "Simulation Cleared. T:" + Utilities.timeStamp();
+    e.informationalMessage = "Simulation Cleared.";
     return e;
   }
   
@@ -122,7 +122,7 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_START_SIM;
     e.newSimSpeed = simSpeed;
-    e.informationalMessage = "Simulation Started. T:" + Utilities.timeStamp();
+    e.informationalMessage = "Simulation Started.";
     return e;
   }
   
@@ -135,7 +135,7 @@ public class DARSEvent {
   public static DARSEvent outStopSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_STOP_SIM;
-    e.informationalMessage = "Simulation Stopped. T:" + Utilities.timeStamp();
+    e.informationalMessage = "Simulation Stopped.";
     return e;
   }
   
@@ -143,7 +143,7 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_NEW_SIM;
     e.nodeType   = nt;
-    e.informationalMessage = "New " + nt + " Simulation Created. T:" + Utilities.timeStamp();
+    e.informationalMessage = "New " + nt + " Simulation Created.";
     return e;
   }
   
@@ -156,7 +156,7 @@ public class DARSEvent {
   public static DARSEvent outPauseSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_PAUSE_SIM;
-    e.informationalMessage = "Simulation Paused. T:" + Utilities.timeStamp();
+    e.informationalMessage = "Simulation Paused.";
     return e;
   }
   
@@ -169,7 +169,7 @@ public class DARSEvent {
   public static DARSEvent outResumeSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_RESUME_SIM;
-    e.informationalMessage = "Simulation Resumed. T:" + Utilities.timeStamp();
+    e.informationalMessage = "Simulation Resumed.";
     return e;
   }
     
@@ -210,7 +210,7 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SIM_SPEED;
     e.newSimSpeed = newSpeed;
-    e.informationalMessage = "Simulation Speed Set: " + newSpeed + ". T:" + Utilities.timeStamp();
+    e.informationalMessage = "Simulation Speed Set: " + newSpeed + ".";
     return e;
   }
 
@@ -236,7 +236,7 @@ public class DARSEvent {
     DARSEvent d = new DARSEvent();
     d.eventType = EventType.OUT_ADD_NODE;
     d.setNodeAttributes(n);
-    d.informationalMessage = "Node Added: " + n.id + ". T:" + Utilities.timeStamp();
+    d.informationalMessage = "Node Added: " + n.id + ".";
     return d;
     
   }
@@ -247,7 +247,7 @@ public class DARSEvent {
     d.nodeId = id;
     d.nodeX = x;
     d.nodeY = y;
-    d.informationalMessage = "Node " + id + " moved to X:" + x +" Y:" + y + ". T:" + Utilities.timeStamp();;
+    d.informationalMessage = "Node " + id + " moved to X:" + x +" Y:" + y + ".";
     return d;
   }
 
@@ -264,7 +264,7 @@ public class DARSEvent {
     e.eventType = EventType.OUT_SET_NODE_RANGE;
     e.nodeId = id;
     e.nodeRange = newRange;
-    e.informationalMessage = "Node " + id + "'s range changed to " + newRange + ". T:" + Utilities.timeStamp();
+    e.informationalMessage = "Node " + id + "'s range changed to " + newRange + ".";
     return e;
   }
 
@@ -275,7 +275,7 @@ public class DARSEvent {
     String status;
     if(isPromiscuous) status = "enabled";
     else status = "disabled";
-    e.informationalMessage = "Node " + id + " " + status + " promiscuous mode. T:" + Utilities.timeStamp();
+    e.informationalMessage = "Node " + id + " " + status + " promiscuous mode.";
     return e;
   }
   public static DARSEvent outMsgRecieved(String sourceId, String destId, String message) {

@@ -217,10 +217,7 @@ public class DARSAppMenu{
     
     clearMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        InputHandler.dispatch(DARSEvent.inStopSim());
         InputHandler.dispatch(DARSEvent.inClearSim());
-        currentQuantumLabel.setText("0");
-        typeLabel.setText("NONE");
       }
     });
       

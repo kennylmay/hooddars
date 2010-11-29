@@ -36,10 +36,18 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
   public GUI() {
     super(Defaults.TITLE_STRING);
 
+    // Close the program when the frame is exited
+    this.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e){
+        System.exit(0);
+      }
+    });
+    
     // Setup a new layout for the outermost part of the frame. We'll use the
     // border layout.
     this.setLayout(new BorderLayout());
 
+    
     // Allocate as follows:
     /*
      * _________________ | | | | | | | CENTER | <-|-- EAST | | | | | |

@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import dars.Utilities;
+
 /**
  * @author Mike
  *
@@ -32,7 +34,7 @@ public class LogArea extends javax.swing.JPanel {
     if (log.contains("DEBUG") && DEBUG == false){
       return;
     }
-    textArea.append("Q " + quantum + " : " + log); 
+    textArea.append("T:" + Utilities.timeStamp() + " Q" + quantum + " : " + log); 
     textArea.append(newline);
     textArea.setCaretPosition(textArea.getDocument().getLength());
 
