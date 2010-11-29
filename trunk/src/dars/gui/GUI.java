@@ -96,11 +96,18 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
     // setup the sizes of the panels
     setSizes();
 
+    
     // Show everything
+    pack();
     this.setVisible(true);
 
   }
-
+ 
+  @Override
+  public void addNotify(){
+    super.addNotify();
+    setSizes();
+  }
   private void setSizes() {
     GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment
         .getLocalGraphicsEnvironment();
@@ -109,15 +116,10 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
     Dimension windowSize = new Dimension(r.width, r.height);
 
     this.setPreferredSize(windowSize);
-    logPanel.setPreferredSize(new Dimension((int) (windowSize.width * .8),
-        (int) (windowSize.height * .2)));
+    //The logpanel's size is dependent on the size of the nodeAttributes area
+    logPanel.setPreferredSize(logPanel.getPreferredSize());
     simPanel.setPreferredSize(new Dimension((int) (windowSize.width),
         (int) (windowSize.height * .8)));
-    nodeAttributesPanel.setPreferredSize(new Dimension(
-        (int) (windowSize.width * .2), (int) (windowSize.height * .2)));
-
-    pack();
-
   }
 
   private void setBorders() {
