@@ -43,6 +43,9 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
       }
     });
     
+    // Initialize images
+    ImageFactory.checkInit();
+    
     // Setup a new layout for the outermost part of the frame. We'll use the
     // border layout.
     this.setLayout(new BorderLayout());
@@ -296,7 +299,7 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
         
         
         //Let the menu area know that a new sim has been created
-        menuArea.newSim();
+        menuArea.newSim(e.nodeType);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
 
       }

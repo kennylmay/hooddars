@@ -37,7 +37,7 @@ public class ImageFactory {
 
   
   static private boolean isInit = false;
-  static private void checkInit() {
+  static public void checkInit() {
     if(isInit) {
       return;
     }

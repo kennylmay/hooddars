@@ -63,8 +63,7 @@ public class DARSAppMenu{
   private JMenuItem          addMultipleNodesMenuItem  = new JMenuItem("Add Multiple Nodes");
   private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
   // If someone knows a better way to align this stuff please feel free.
-  private JLabel             simTypeLabel        = new JLabel(
-                                                     "Simulation Type: ");
+  private JLabel             simTypeLabel        = new JLabel("Simulation Type: ");
   JLabel                     typeLabel           = new JLabel("NONE");
 
   private JPanel             buttonArea          = new JPanel();
@@ -465,7 +464,6 @@ public class DARSAppMenu{
     @Override
     public void actionPerformed(ActionEvent e) {
       //Dispatch the new sim event
-      typeLabel.setText(nodeType.toString());
       InputHandler.dispatch(DARSEvent.inNewSim(nodeType));
     }
   }
@@ -496,7 +494,7 @@ public class DARSAppMenu{
     stopMenuItem.setEnabled(true);
   }
  
-  public void newSim() {
+  public void newSim(NodeType nodeType) {
     //Disable/enable menu items
     newMenu.setEnabled(false);
     importMenuItem.setEnabled(false);
@@ -514,7 +512,10 @@ public class DARSAppMenu{
 
     //Zero out the current quantum
     quantums = BigInteger.ZERO;
-    currentQuantumLabel.setText(quantums.toString());   
+    currentQuantumLabel.setText(quantums.toString());
+    
+    //Show the new sim label
+    typeLabel.setText(nodeType.toString());
   }
   
   public void simStopped() {

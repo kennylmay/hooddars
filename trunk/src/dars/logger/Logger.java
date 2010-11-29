@@ -43,6 +43,7 @@ public class Logger implements OutputConsumer, InputConsumer {
       try {
         out.append(DARSEvent.getLogHeader() + newline);
       } catch (IOException e1) {
+        Utilities.showError("Could not write to the DARS temp file2. Please file a bug report");
         // TODO Auto-generated catch block
         e1.printStackTrace();
       }
@@ -55,6 +56,7 @@ public class Logger implements OutputConsumer, InputConsumer {
     try {
       out.append(e.getLogString());
     } catch (IOException e1) {
+      Utilities.showError("Could not write to the DARS temp file1. Please file a bug report");
       // TODO Auto-generated catch block
       e1.printStackTrace();
     }
