@@ -200,9 +200,14 @@ public class SimArea extends JLayeredPane {
     // Get the gnode
     GNode gnode = getGNode(id);
 
-    // If it doesn't exist, there's a problem
-    assert (gnode != null);
-
+    // If it doesn't exist, just return
+    if(gnode == null) {
+      return;
+    }
+    
+    // Unselect this node
+    gnode.unselect();
+    
     // Remove it from the layeredPanel
     this.remove(this.getIndexOf(gnode));
 
