@@ -20,4 +20,5 @@ public class Defaults {
   public static final int SELECTED_NODE_RANGE_INDICATOR_THICKNESS = 3;
   public static final int BROADCAST_THICKNESS = 2;
   public static final String TITLE_STRING = "Dynamic Ad-hoc Routing Simulator";
+  public static final int LOG_AREA_BUF_SIZE = 16384;
 }

@@ -8,7 +8,10 @@ import java.math.BigInteger;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
+import dars.Defaults;
 import dars.Utilities;
 
 /**
@@ -30,21 +33,45 @@ public class LogArea extends javax.swing.JPanel {
   private boolean DEBUG;
   
   static private int counter = 0;
+  static private String topLine = null;
   public void appendLog(String log, long quantum) {
     if (log.contains("DEBUG") && DEBUG == false){
       return;
     }
-    textArea.append("T:" + Utilities.timeStamp() + " Q" + quantum + " : " + log); 
-    textArea.append(newline);
+    
+    //Construct the log line
+    String line = ("T:" + Utilities.timeStamp() + " Q" + quantum + " : " + log + newline);
+
+    //Maintain the buffer
+    clampBuffer(line.length());
+    
+    //Append
+    textArea.append(line);
+    
+    //Move the caret to chase the log as it grows downward
     textArea.setCaretPosition(textArea.getDocument().getLength());
 
-    //Every 1000 row inserts, truncate the visible log
-    if(++counter % 1000 == 0) {
-        textArea.setText("");
-       //textArea.replaceRange("",0, textArea.getDocument().getLength());
-      }
+    
   }
   
+  void clampBuffer(int incomingDataSize)
+  {
+     Document doc = textArea.getDocument();
+     //If the document is > buf size, trunc it down to 50 percent of buf size.
+     int overLength = doc.getLength() + incomingDataSize - Defaults.LOG_AREA_BUF_SIZE;
+
+     if (overLength > 0)
+     {
+        try {
+          //Chomp off from 0 to the end of the line where offset LOG_AREA_BUF_SIZE/2 falls.
+          doc.remove(0, textArea.getLineEndOffset(textArea.getLineOfOffset(Defaults.LOG_AREA_BUF_SIZE/2)) );
+        } catch (BadLocationException e) {
+          Utilities.showError("An error occurred while truncating the buffer in the LogArea. Please file a bug report.");
+          System.exit(1);
+        }
+     }
+  }
+
 
   private JScrollPane jsp;
   private JTextArea textArea = new JTextArea();
