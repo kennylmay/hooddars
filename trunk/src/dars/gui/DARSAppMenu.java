@@ -67,7 +67,7 @@ public class DARSAppMenu implements ReplayerListener {
   private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
   // If someone knows a better way to align this stuff please feel free.
   private JLabel             simTypeLabel        = new JLabel("Simulation Type: ");
-  JLabel                     typeLabel           = new JLabel("NONE");
+  static JLabel                     typeLabel           = new JLabel("NONE");
 
   private JPanel             buttonArea          = new JPanel();
   private ImageIcon          playIcon           = new ImageIcon(getClass().getResource("/play.png"));
@@ -92,8 +92,11 @@ public class DARSAppMenu implements ReplayerListener {
   private LogArea            logArea;
   private GUI                gui;
   private JPanel         currentQuantumArea     = new JPanel();
-  private JLabel         currentQuantumLabel     = new JLabel();
+  private static JLabel         currentQuantumLabel     = new JLabel();
   private JProgressBar   replayPBar              = new JProgressBar();
+  
+  private static boolean isSimRunning = false;
+  
   public DARSAppMenu(GUI g) {
 
     this.gui = g;
@@ -406,12 +409,14 @@ public class DARSAppMenu implements ReplayerListener {
     playButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStartSim(getSlideBarSpeed()));
+        isSimRunning = true;
       }
     });
     
     playMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStartSim(getSlideBarSpeed()));
+        isSimRunning = true;
       }
     });
 
@@ -430,12 +435,14 @@ public class DARSAppMenu implements ReplayerListener {
     stopButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
+        isSimRunning = false;
       }
     });
     
     stopMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
+        isSimRunning = false;
       }
     });
 
@@ -621,6 +628,15 @@ public class DARSAppMenu implements ReplayerListener {
   @Override
   public void replayEventDispatched(long qauntum) {
     
+  }
+
+  public static void clear() {
+    // If the user never hit stop only clear out the node information.
+    // If the user hit stop then we need to reset the timer.
+    if (isSimRunning == false){
+      currentQuantumLabel.setText("0");
+      typeLabel.setText("NONE");
+    }
   }
   
   
