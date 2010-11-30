@@ -14,6 +14,7 @@ import dars.logger.Logger;
 import dars.replayer.Replayer.ReplayerListener;
 
 import java.awt.*;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -45,11 +46,23 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
     
     // Initialize images
     ImageFactory.checkInit();
+   
+    //Add a listener for resize events
+    this.addComponentListener(new java.awt.event.ComponentAdapter() 
+    {
+        public void componentResized(ComponentEvent e)
+        {
+            setSizes();
+        }
+    });
+
+    
     
     // Setup a new layout for the outermost part of the frame. We'll use the
     // border layout.
     this.setLayout(new BorderLayout());
 
+    
     
     // Allocate as follows:
     /*
@@ -93,16 +106,15 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
     // setup the borders
     setBorders();
 
-    // setup the sizes of the panels
-    setSizes();
-
     
     // Show everything
     pack();
     this.setVisible(true);
 
   }
- 
+
+  //This method is called when the window is "realized" onto the screen. Perfect time
+  //to setup the relative sizes of components.
   @Override
   public void addNotify(){
     super.addNotify();
