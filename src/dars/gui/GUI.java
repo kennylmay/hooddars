@@ -18,7 +18,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
+public class GUI extends JFrame implements OutputConsumer {
 
   /**
    * 
@@ -44,7 +44,7 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
       }
     });
     
-    // Initialize images
+    //Initialize images
     ImageFactory.checkInit();
    
     //Add a listener for resize events
@@ -212,8 +212,6 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
         // Animate the event
         simArea.traceMessage(e.sourceId, e.destinationId, Defaults.NARRMSG_COLOR,3,5,1);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
-        
-        
         break;
 
       
@@ -337,23 +335,6 @@ public class GUI extends JFrame implements OutputConsumer, ReplayerListener {
   private void attachMenus() {
     add(menuArea.getActionPanel(), BorderLayout.NORTH);
     this.setJMenuBar(menuArea.getMenuBar());
-  }
-
-  @Override
-  public void replayerStarted() {
-    // TODO Auto-generated method stub
-    //NOTE: must use SwingUtilities.invokeLater() here. Replayer is
-    //NOT on the gui thread
-    
-  }
-
-  @Override
-  public void replayerFinished() {
-    // TODO Auto-generated method stub
-    //NOTE: must use SwingUtilities.invokeLater() here. Replayer is
-    //NOT on the gui thread
-    
-    
   }
 
 }
