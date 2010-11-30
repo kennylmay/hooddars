@@ -1,5 +1,4 @@
 package dars.replayer;
-import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Queue;
 
@@ -12,7 +11,8 @@ import dars.event.DARSEvent;
 public class Replayer implements OutputConsumer {
 
   public interface ReplayerListener {
-    void replayerStarted();
+    void replayerStarted(Queue<DARSEvent> Q);
+    void replayEventDispatched(long quantum);
     void replayerFinished();
   }
   private Queue<DARSEvent> replayEvents;
@@ -26,7 +26,7 @@ public class Replayer implements OutputConsumer {
     
     //Fire off events at the zero quantum.
     dispatchEventsAtQuantum(replayEvents, 0);
-    rl.replayerStarted();
+    rl.replayerStarted(replayEvents);
     
   }
   
@@ -46,6 +46,7 @@ public class Replayer implements OutputConsumer {
        if(d.currentQuantum == quantum) {
          iter.remove();
          InputHandler.dispatch(d);
+         replayerListener.replayEventDispatched(quantum);
          continue;
        }
        

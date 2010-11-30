@@ -43,6 +43,12 @@ public class Utilities {
         JOptionPane.ERROR_MESSAGE);
   }
 
+  public static void showInfo(String info, String title) {
+    JOptionPane.showMessageDialog(null, info, title,
+        JOptionPane.INFORMATION_MESSAGE);
+  }
+
+  
   public static NodeType popupAskNodeType() {
     // Get every node type
     NodeType nTypes[] = getNodeTypes();

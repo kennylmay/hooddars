@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigInteger;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.Random;
 import javax.swing.BoxLayout;
@@ -20,6 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
@@ -36,8 +38,9 @@ import dars.logger.Logger;
 import dars.logger.Parser;
 import dars.proto.NodeFactory.NodeType;
 import dars.replayer.Replayer;
+import dars.replayer.Replayer.ReplayerListener;
 
-public class DARSAppMenu{
+public class DARSAppMenu implements ReplayerListener {
 //Creating the menu bar and all of its elements
   private JMenuBar           menuBar             = new JMenuBar();
   private JMenu              simMenu             = new JMenu("Simulation");
@@ -54,7 +57,7 @@ public class DARSAppMenu{
   private JMenuItem          pauseMenuItem        = new JMenuItem("Pause");
   private JMenuItem          resumeMenuItem        = new JMenuItem("Resume");
   private JMenuItem          stopMenuItem        = new JMenuItem("Stop");
-  
+  private DARSAppMenu        instance            = this;
   private JMenu              helpMenu            = new JMenu("Help");
   private JMenuItem          readmeMenuItem            = new JMenuItem("Getting Started");
   private JMenuItem          aboutMenuItem            = new JMenuItem("About");
@@ -90,7 +93,7 @@ public class DARSAppMenu{
   private GUI                gui;
   private JPanel         currentQuantumArea     = new JPanel();
   private JLabel         currentQuantumLabel     = new JLabel();
-  
+  private JProgressBar   replayPBar              = new JProgressBar();
   public DARSAppMenu(GUI g) {
 
     this.gui = g;
@@ -142,7 +145,17 @@ public class DARSAppMenu{
     // Add the simulation type menu lables
     simTypeArea.add(simTypeLabel);
     simTypeArea.add(typeLabel);
-    menuPanel.add(simTypeArea);
+    
+    JPanel tmpPanel = new JPanel();
+    tmpPanel.setLayout(new BoxLayout(tmpPanel,BoxLayout.PAGE_AXIS));
+    replayPBar.setVisible(false);
+    replayPBar.setString("Replay Progress");
+    replayPBar.setStringPainted(true);
+    tmpPanel.add(simTypeArea);
+    tmpPanel.add(replayPBar);
+
+    
+    menuPanel.add(tmpPanel);
 
     // Add the Play, pause, and stop buttons
     buttonArea.add(stopButton);
@@ -327,7 +340,7 @@ public class DARSAppMenu{
           
           //Instantiate a new replayer with the replay events
           //Name the gui as the replayerListener.
-          Replayer r = new Replayer(Q, (Replayer.ReplayerListener)gui);
+          new Replayer(Q, (Replayer.ReplayerListener)instance);
           
           JOptionPane.showMessageDialog(simArea, "The replay has been sucessfully loaded. \n" +
                                                  "Please select \"Play\" from the menu bar to begin.");
@@ -511,8 +524,8 @@ public class DARSAppMenu{
     pauseMenuItem.setEnabled(false);
 
     //Zero out the current quantum
-    quantums = BigInteger.ZERO;
-    currentQuantumLabel.setText(quantums.toString());
+    quantums = 0;
+    currentQuantumLabel.setText(Long.toString(quantums));
     
     //Show the new sim label
     typeLabel.setText(nodeType.toString());
@@ -572,10 +585,43 @@ public class DARSAppMenu{
     this.logArea = logArea;
   }  
  
-  private BigInteger quantums = BigInteger.ZERO;
+  private long quantums = 0;
   
   public void quantumElapsed() {
-    quantums = quantums.add(BigInteger.ONE);
-    currentQuantumLabel.setText(quantums.toString());
+    quantums += 1;
+    currentQuantumLabel.setText(Long.toString(quantums));
+    if(replayPBar.isVisible()) {
+      replayPBar.setValue((int)quantums);
+    }
+    
   }  
+  
+  @Override
+  public void replayerStarted(Queue<DARSEvent> Q) {
+    if(Q.size() == 0) return;
+    
+    replayPBar.setVisible(true);
+    
+    //Get the last event of the replay. Use it to determine the upper bound for the progress bar.
+    DARSEvent e = null;
+    Iterator<DARSEvent> i = Q.iterator();
+    while(i.hasNext()) e = i.next();
+    
+    replayPBar.setMaximum((int)e.currentQuantum);
+  }
+  
+  
+
+  @Override
+  public void replayerFinished() {
+   replayPBar.setVisible(false);
+   Utilities.showInfo("Replay finished.", "Replay finished");
+  }
+
+  @Override
+  public void replayEventDispatched(long qauntum) {
+    
+  }
+  
+  
 }
