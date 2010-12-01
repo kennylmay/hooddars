@@ -1,5 +1,6 @@
 package dars.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Random;
+
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.KeyStroke;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
@@ -65,9 +69,7 @@ public class DARSAppMenu implements ReplayerListener {
   private JMenuItem          deleteNodeMenuItem    = new JMenuItem("Delete Selected Node");
   private JMenuItem          addMultipleNodesMenuItem  = new JMenuItem("Add Multiple Nodes");
   private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
-  // If someone knows a better way to align this stuff please feel free.
-  private JLabel             simTypeLabel        = new JLabel("Simulation Type: ");
-  static JLabel                     typeLabel           = new JLabel("NONE");
+  private JLabel             typeLabel           = new JLabel();
 
   private JPanel             buttonArea          = new JPanel();
   private ImageIcon          playIcon           = new ImageIcon(getClass().getResource("/play.png"));
@@ -96,6 +98,10 @@ public class DARSAppMenu implements ReplayerListener {
    
   public DARSAppMenu(GUI g) {
 
+    float[] rgba = menuPanel.getBackground().getRGBComponents(null);
+    for(int i =0;i <4; i++){ rgba[i] -= .08f; if(rgba[i] < 0f) rgba[i]=0f;}
+    menuBar.setBackground(new Color(rgba[0], rgba[1], rgba[2],rgba[3]));
+    
     menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
 
     // Add the readme help menu to the menu bar
@@ -141,9 +147,8 @@ public class DARSAppMenu implements ReplayerListener {
     menuBar.add(helpMenu);
 
     // Add the simulation type menu lables
-    simTypeArea.add(simTypeLabel);
     simTypeArea.add(typeLabel);
-    
+    typeLabel.setVisible(false);
     JPanel tmpPanel = new JPanel();
     tmpPanel.setLayout(new BoxLayout(tmpPanel,BoxLayout.PAGE_AXIS));
     replayPBar.setVisible(false);
@@ -151,8 +156,7 @@ public class DARSAppMenu implements ReplayerListener {
     replayPBar.setStringPainted(true);
     tmpPanel.add(simTypeArea);
     tmpPanel.add(replayPBar);
-
-    
+    simTypeArea.setPreferredSize(new Dimension(200, simTypeArea.getPreferredSize().height));
     menuPanel.add(tmpPanel);
 
     // Add the Play, pause, and stop buttons
@@ -526,7 +530,8 @@ public class DARSAppMenu implements ReplayerListener {
     currentQuantumLabel.setText(Long.toString(quantums));
     
     //Show the new sim label
-    typeLabel.setText(nodeType.toString());
+    typeLabel.setText("Simulation Type: " + nodeType.toString());
+    typeLabel.setVisible(true);
   }
   
   public void simStopped() {
@@ -547,7 +552,7 @@ public class DARSAppMenu implements ReplayerListener {
   }
   
   public void simPaused() {
-    playButton.setEnabled(false);
+    playButton.setEnabled(true);
     playMenuItem.setEnabled(false);
     stopButton.setEnabled(false);
     stopMenuItem.setEnabled(false);
