@@ -107,7 +107,7 @@ public class DARSEvent {
   public static DARSEvent outClearSim() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_CLEAR_SIM;
-    e.informationalMessage = "Simulation Cleared.";
+    e.informationalMessage = "Nodes cleared.";
     return e;
   }
   
