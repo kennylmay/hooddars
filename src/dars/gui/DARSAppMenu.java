@@ -50,7 +50,7 @@ public class DARSAppMenu implements ReplayerListener {
   private JMenu              controlMenu            = new JMenu("Control");
   private JMenuItem          saveMenuItem        = new JMenuItem("Save As...");
   private JMenuItem          saveScreenMenuItem  = new JMenuItem("Save Screen...");
-  private JMenuItem          clearMenuItem       = new JMenuItem("Clear");
+  private JMenuItem          clearNodesMenuItem       = new JMenuItem("Clear Nodes");
   private JMenuItem          exitMenuItem        = new JMenuItem("Exit");
   private JMenuItem          importMenuItem      = new JMenuItem("Import for Replay...");
   private JMenuItem          playMenuItem        = new JMenuItem("Play");
@@ -90,17 +90,12 @@ public class DARSAppMenu implements ReplayerListener {
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
   private LogArea            logArea;
-  private GUI                gui;
   private JPanel         currentQuantumArea     = new JPanel();
   private static JLabel         currentQuantumLabel     = new JLabel();
   private JProgressBar   replayPBar              = new JProgressBar();
-  
-  private static boolean isSimRunning = false;
-  
+   
   public DARSAppMenu(GUI g) {
 
-    this.gui = g;
-    
     menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
 
     // Add the readme help menu to the menu bar
@@ -137,7 +132,7 @@ public class DARSAppMenu implements ReplayerListener {
     addSingleNodeMenuItem.setEnabled(false);
     deleteNodeMenuItem.setEnabled(false);
     simMenu.add(importMenuItem);
-    simMenu.add(clearMenuItem);
+    simMenu.add(clearNodesMenuItem);
     simMenu.add(exitMenuItem);
 
     menuBar.add(simMenu);
@@ -215,7 +210,7 @@ public class DARSAppMenu implements ReplayerListener {
     
     exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
     graphicsCheckBox.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-    clearMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+    clearNodesMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
     importMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
     addSingleNodeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
     
@@ -230,7 +225,7 @@ public class DARSAppMenu implements ReplayerListener {
     stopMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
     resumeMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
     
-    clearMenuItem.addActionListener(new ActionListener() {
+    clearNodesMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inClearSim());
       }
@@ -409,14 +404,12 @@ public class DARSAppMenu implements ReplayerListener {
     playButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStartSim(getSlideBarSpeed()));
-        isSimRunning = true;
       }
     });
     
     playMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStartSim(getSlideBarSpeed()));
-        isSimRunning = true;
       }
     });
 
@@ -435,14 +428,12 @@ public class DARSAppMenu implements ReplayerListener {
     stopButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
-        isSimRunning = false;
       }
     });
     
     stopMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         InputHandler.dispatch(DARSEvent.inStopSim());
-        isSimRunning = false;
       }
     });
 
@@ -629,15 +620,5 @@ public class DARSAppMenu implements ReplayerListener {
   public void replayEventDispatched(long qauntum) {
     
   }
-
-  public static void clear() {
-    // If the user never hit stop only clear out the node information.
-    // If the user hit stop then we need to reset the timer.
-    if (isSimRunning == false){
-      currentQuantumLabel.setText("0");
-      typeLabel.setText("NONE");
-    }
-  }
-  
-  
 }
+
