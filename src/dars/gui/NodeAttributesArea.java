@@ -1,6 +1,7 @@
 package dars.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -39,10 +40,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
                                                                new SpinnerNumberModel(
                                                                    0, 0, 1000,
                                                                    20));
-  private JButton                  nodeAttributesButton    = new JButton(
-                                                               "Attributes");
-  private JCheckBox                promiscuousModeCheckBox = new JCheckBox(
-                                                               "Promiscous mode Enabled");
+  private JButton                  nodeAttributesButton    = new JButton("Attributes");
+  private JCheckBox                promiscuousModeCheckBox = new JCheckBox("Promiscous mode Enabled");
   private boolean                  blockChangeEvents       = false;
   private Vector<String>           nodeList                = new Vector<String>();
   private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
@@ -64,6 +63,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
     c.add(new JLabel("Node ID:"));
     c.add(nodeSelectorComboBox);
+    nodeSelectorComboBox.setPreferredSize(new Dimension(60,
+        nodeSelectorComboBox.getPreferredSize().height));
     c.add(nodeAttributesButton);
     box.add(c);
 

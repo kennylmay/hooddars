@@ -297,7 +297,8 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_CLEAR_SIM:
         //Clear the sim area.
         nodeAttributesArea.clear();
-        simArea.clear();    
+        simArea.clear();
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
      
       case OUT_NEW_SIM:
