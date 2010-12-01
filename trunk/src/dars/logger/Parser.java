@@ -27,6 +27,7 @@ public class Parser
     case IN_MOVE_NODE:
     case IN_SET_NODE_RANGE:
     case IN_SET_NODE_PROMISCUITY:
+    case IN_CLEAR_SIM:
     case IN_INSERT_MESSAGE:
       return true;
     }
