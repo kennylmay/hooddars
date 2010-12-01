@@ -3,6 +3,7 @@
  */
 package dars;
 
+import java.awt.SplashScreen;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
@@ -10,6 +11,7 @@ import javax.swing.SwingUtilities;
 import dars.console.Console;
 import dars.event.DARSEvent;
 import dars.gui.GUI;
+import dars.gui.ImageFactory;
 import dars.logger.Logger;
 
 /**
@@ -23,8 +25,22 @@ public class DARSMain {
    * @param args
    */
   public static void main(String[] args) {
+
+    //Init images
+    ImageFactory.checkInit();
     
-    Utilities.setSwingFont(Defaults.FONT);
+    
+    //sleep if the splash screen is up
+    if(SplashScreen.getSplashScreen() != null ) {
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+      Utilities.setSwingFont(Defaults.FONT);
+    }
+    
     
     // Setup the logger to consume DARSEvents from both the input handler and
     // the output handler. From henceforth, all DARSEvents that pass through
