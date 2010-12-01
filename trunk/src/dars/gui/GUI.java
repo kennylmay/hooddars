@@ -297,10 +297,7 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_CLEAR_SIM:
         //Clear the sim area.
         nodeAttributesArea.clear();
-        DARSAppMenu.clear();
-        simArea.clear();
-        logArea.clear();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        simArea.clear();    
         break;
      
       case OUT_NEW_SIM:
@@ -308,11 +305,10 @@ public class GUI extends JFrame implements OutputConsumer {
         simArea.clear();
         nodeAttributesArea.clear();
         //Unlock the sim area
-        simArea.setLocked(false);
-        
-        
+        simArea.setLocked(false);      
         //Let the menu area know that a new sim has been created
         menuArea.newSim(e.nodeType);
+        logArea.clear();
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
 
       }
