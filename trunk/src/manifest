@@ -1,1 +1,4 @@
+Manifest-Version: 1.0
 Main-Class: dars.DARSMain
+SplashScreen-Image: splash.png
+
