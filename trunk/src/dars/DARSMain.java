@@ -28,20 +28,8 @@ public class DARSMain {
 
     //Init images
     ImageFactory.checkInit();
-    
-    
-    //sleep if the splash screen is up
-    if(SplashScreen.getSplashScreen() != null ) {
-      try {
-        Thread.sleep(2000);
-      } catch (InterruptedException e1) {
-        // TODO Auto-generated catch block
-        e1.printStackTrace();
-      }
-      Utilities.setSwingFont(Defaults.FONT);
-    }
-    
-    
+    Utilities.setSwingFont(Defaults.FONT);
+
     // Setup the logger to consume DARSEvents from both the input handler and
     // the output handler. From henceforth, all DARSEvents that pass through
     // the Input and Output handlers will be logged.
@@ -50,7 +38,7 @@ public class DARSMain {
 
     // Instantiate the simulator engine
     SimEngine s = new SimEngine();
-
+    
     // Make the time keeping component of the simulator engine viewable to DARSEvents
     DARSEvent.setSimTimeKeeper( (SimulationTimeKeeper) s);
       
@@ -79,5 +67,20 @@ public class DARSMain {
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
     OutputHandler.addOutputConsumer(new Console());
+    
+    System.gc();
+    
+    //sleep if the splash screen is up
+    if(SplashScreen.getSplashScreen() != null ) {
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+      
+    }
+    g.setVisible(true);
+  
   }
 }

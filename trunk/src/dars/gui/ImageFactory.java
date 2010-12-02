@@ -86,21 +86,22 @@ public class ImageFactory {
     g.drawImage(src,null,0,0);
     RescaleOp rescaleOp = new RescaleOp(1.5f, 0.0f, null);
     rescaleOp.filter(dest,dest);
+    g.dispose();
     return dest;
   }
 
   //Function that creates a selected image counterpart for a given image
+  private static final Color SELECTED_OVERLAY_COLOR = new Color(0,0,255,20); //blue + 30% transparency
+  private static final Color SELECTED_BOX_COLOR = new Color(0,0,100,255); 
   static public BufferedImage getSelectedImg(BufferedImage src1) {
     BufferedImage src = getHoverImg(src1);
     BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(),
                                            BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = dest.createGraphics();
-    g.setColor(new Color(0,0,255,20)); //blue + 30% transparency
+    g.setColor(SELECTED_OVERLAY_COLOR);
     g.drawImage(src, null, 0,0);
     g.fillRect(0,0,dest.getWidth(null), dest.getHeight(null));
-     
- 
-    g.setColor(new Color(0,0,255,255));
+    g.setColor(SELECTED_BOX_COLOR);
     for(int i=0; i<1; i++) {
       g.drawRoundRect(i, i ,dest.getWidth(null) - 2*i -1, dest.getHeight(null) - 2*i -1 ,10,10);
     }
