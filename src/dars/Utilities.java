@@ -139,8 +139,9 @@ public class Utilities {
     }
   }
 
+  private static final NodeType[] nodeTypes = NodeType.values();
   public static NodeType[] getNodeTypes() {
-    return NodeType.values();
+    return nodeTypes;
   }
 
   public static String timeStamp() {
