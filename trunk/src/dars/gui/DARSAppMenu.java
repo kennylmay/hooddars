@@ -552,7 +552,7 @@ public class DARSAppMenu implements ReplayerListener {
   }
   
   public void simPaused() {
-    playButton.setEnabled(true);
+    playButton.setEnabled(false);
     playMenuItem.setEnabled(false);
     stopButton.setEnabled(false);
     stopMenuItem.setEnabled(false);
