@@ -1,9 +1,11 @@
 package dars.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,6 +13,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Random;
+
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.KeyStroke;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -41,7 +46,7 @@ import dars.replayer.Replayer.ReplayMode;
 import dars.replayer.Replayer.ReplayerListener;
 
 public class DARSAppMenu implements ReplayerListener {
-//Creating the menu bar and all of its elements
+//Creating the  bar and all of its elements
   private JMenuBar           menuBar             = new JMenuBar();
   private JMenu              simMenu             = new JMenu("Simulation");
   private JMenu              newMenu             = new JMenu("New");
@@ -99,37 +104,38 @@ public class DARSAppMenu implements ReplayerListener {
     guiInstance = g;
     
     //Make the menubar slightly darker.
-    float[] rgba = menuPanel.getBackground().getRGBComponents(null);
+    float[] rgba = menuBar.getBackground().getRGBComponents(null);
     for(int i =0;i <4; i++){ rgba[i] -= .08f; if(rgba[i] < 0f) rgba[i]=0f;}
     menuBar.setBackground(new Color(rgba[0], rgba[1], rgba[2],rgba[3]));
     
-    menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.LINE_AXIS));
+    menuPanel.setLayout(new BorderLayout());
 
-    // Add the readme help menu to the menu bar
+    
+    // Add the readme help  to the  bar
     helpMenu.add(readmeMenuItem);
     helpMenu.add(aboutMenuItem);
 
-    // Add elements to the create network menu
+    // Add elements to the create network 
     createNetworkMenu.add(addSingleNodeMenuItem);
     createNetworkMenu.add(loadTopologyMenuItem);
     createNetworkMenu.add(addMultipleNodesMenuItem);
     createNetworkMenu.add(deleteNodeMenuItem);
  
-    // Add elements to the mode menu
+    // Add elements to the mode 
     modeMenu.add(debugCheckBox);
     modeMenu.add(graphicsCheckBox);
     
-    // Add elements to the control menu
+    // Add elements to the control 
     controlMenu.add(playMenuItem);
     controlMenu.add(pauseMenuItem);
     controlMenu.add(resumeMenuItem);
     controlMenu.add(stopMenuItem);
     
-    // Add elements to the sim menu and their sub menus
+    // Add elements to the sim  and their sub menus
     simMenu.add(newMenu);
     simMenu.add(createNetworkMenu);
     
-    //Add node menu items dynamically using reflection
+    //Add node  items dynamically using reflection
     addNewSimMenuItems(newMenu);
     simMenu.add(saveMenuItem);
     simMenu.add(saveScreenMenuItem);
@@ -147,19 +153,22 @@ public class DARSAppMenu implements ReplayerListener {
     menuBar.add(controlMenu);
     menuBar.add(helpMenu);
 
-    // Add the simulation type menu lables
+    // Add the simulation type  lables
     simTypeArea.add(typeLabel);
     typeLabel.setVisible(false);
-    JPanel tmpPanel = new JPanel();
-    tmpPanel.setLayout(new BoxLayout(tmpPanel,BoxLayout.PAGE_AXIS));
+    JPanel statusPanel = new JPanel();
+    statusPanel.setLayout(new BoxLayout(statusPanel,BoxLayout.PAGE_AXIS));
     replayPBar.setVisible(false);
     replayPBar.setString("Replay Progress");
     replayPBar.setStringPainted(true);
-    tmpPanel.add(simTypeArea);
-    tmpPanel.add(replayPBar);
+    statusPanel.add(simTypeArea);
+    statusPanel.add(replayPBar);
     simTypeArea.setPreferredSize(new Dimension(200, simTypeArea.getPreferredSize().height));
-    menuPanel.add(tmpPanel);
-
+    
+    statusPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Simulation Status", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+    
     // Add the Play, pause, and stop buttons
     JPanel innerPanel = new JPanel();
     innerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 11));
@@ -177,7 +186,13 @@ public class DARSAppMenu implements ReplayerListener {
     innerPanel.add(vBox);
     
     innerPanel.add(speedArea);
-    menuPanel.add(innerPanel);
+    
+    innerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Simulation Controls", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+    
+    menuPanel.add(innerPanel, BorderLayout.WEST);
+    menuPanel.add(statusPanel, BorderLayout.CENTER);
     
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
@@ -502,13 +517,13 @@ public class DARSAppMenu implements ReplayerListener {
     NodeType[] nTypes = Utilities.getNodeTypes();
     
     for(NodeType nt : nTypes) {
-      //Make a new menu item
+      //Make a new  item
       JMenuItem simTypeMenuItem = new JMenuItem(nt.toString());
       
       //Add the event handler
       simTypeMenuItem.addActionListener(new NewSimClickHandler(nt));
       
-      //Add it to the parent menu
+      //Add it to the parent 
       parentMenu.add(simTypeMenuItem);
     }
   }
@@ -524,7 +539,7 @@ public class DARSAppMenu implements ReplayerListener {
   }
  
   public void newSim(NodeType nodeType) {
-    //Disable/enable menu items
+    //Disable/enable  items
     newMenu.setEnabled(false);
     importMenuItem.setEnabled(false);
     addMultipleNodesMenuItem.setEnabled(true);
@@ -556,7 +571,7 @@ public class DARSAppMenu implements ReplayerListener {
     pauseButton.setEnabled(false);
     pauseMenuItem.setEnabled(false);
     
-    //Enable/disable menu items
+    //Enable/disable  items
     newMenu.setEnabled(true);
     importMenuItem.setEnabled(true);
     addMultipleNodesMenuItem.setEnabled(false);
