@@ -42,6 +42,7 @@ import dars.logger.Logger;
 import dars.logger.Parser;
 import dars.proto.NodeFactory.NodeType;
 import dars.replayer.Replayer;
+import dars.replayer.Replayer.ReplayMode;
 import dars.replayer.Replayer.ReplayerListener;
 
 public class DARSAppMenu implements ReplayerListener {
@@ -95,9 +96,14 @@ public class DARSAppMenu implements ReplayerListener {
   private JPanel         currentQuantumArea     = new JPanel();
   private static JLabel         currentQuantumLabel     = new JLabel();
   private JProgressBar   replayPBar              = new JProgressBar();
-   
+  private GUI                guiInstance; 
+  private Replayer           replayer = null;
+  
   public DARSAppMenu(GUI g) {
 
+    guiInstance = g;
+    
+    //Make the menubar slightly darker.
     float[] rgba = menuPanel.getBackground().getRGBComponents(null);
     for(int i =0;i <4; i++){ rgba[i] -= .08f; if(rgba[i] < 0f) rgba[i]=0f;}
     menuBar.setBackground(new Color(rgba[0], rgba[1], rgba[2],rgba[3]));
@@ -339,14 +345,15 @@ public class DARSAppMenu implements ReplayerListener {
           //Start a new simualation
           InputHandler.dispatch(DARSEvent.inNewSim(nt));
 
+          //Ask the user what mode of replay they want
+          ReplayMode mode = Replayer.askReplayMode();
+          if(mode == null) {
+            return;
+          }
           
           //Instantiate a new replayer with the replay events
           //Name the gui as the replayerListener.
-          new Replayer(Q, (Replayer.ReplayerListener)instance);
-          
-          JOptionPane.showMessageDialog(simArea, "The replay has been sucessfully loaded. \n" +
-                                                 "Please select \"Play\" from the menu bar to begin.");
-          
+          replayer = new Replayer(Q, (Replayer.ReplayerListener)guiInstance.getReplayerListener(), mode);
           
         }
       }
@@ -549,6 +556,11 @@ public class DARSAppMenu implements ReplayerListener {
     addSingleNodeMenuItem.setEnabled(false);
     deleteNodeMenuItem.setEnabled(false);
     
+    //If the replayer is running, abort it.
+    if(replayer != null && replayer.isRunning()) {
+      replayer.abort();
+    }
+    
   }
   
   public void simPaused() {
@@ -600,7 +612,7 @@ public class DARSAppMenu implements ReplayerListener {
   }  
   
   @Override
-  public void replayerStarted(Queue<DARSEvent> Q) {
+  public void replayerStarted(Queue<DARSEvent> Q, Replayer instance) {
     if(Q.size() == 0) return;
     
     replayPBar.setVisible(true);
@@ -608,22 +620,30 @@ public class DARSAppMenu implements ReplayerListener {
     //Get the last event of the replay. Use it to determine the upper bound for the progress bar.
     DARSEvent e = null;
     Iterator<DARSEvent> i = Q.iterator();
-    while(i.hasNext()) e = i.next();
-    
+    while(i.hasNext()) {
+      e = i.next();
+    }
+
     replayPBar.setMaximum((int)e.currentQuantum);
-  }
-  
-  
-
-  @Override
-  public void replayerFinished() {
-   replayPBar.setVisible(false);
-   Utilities.showInfo("Replay finished.", "Replay finished");
-  }
-
-  @Override
-  public void replayEventDispatched(long qauntum) {
+    
     
   }
+  
+  
+
+  @Override
+  public void replayerFinished(boolean aborted) {
+   //hide the replay progress bar
+   replayPBar.setVisible(false);
+
+  }
+
+
+  public void setLockedReplayMode(boolean b) {
+    // TODO Auto-generated method stub
+    
+  }
+
+
 }
 
