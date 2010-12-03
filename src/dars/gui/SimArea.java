@@ -577,4 +577,10 @@ public class SimArea extends JLayeredPane {
     }
   }
 
+  public void setLockedReplayMode(boolean b) {
+    // TODO Auto-generated method stub
+    
+  }
+
+
 }

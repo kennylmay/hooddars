@@ -402,4 +402,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   }
 
   private NodeInspector nodeInspector;
+
+  public void setLockedReplayMode(boolean b) {
+    // TODO Auto-generated method stub
+    
+  }
 }

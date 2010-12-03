@@ -11,12 +11,18 @@ import dars.OutputConsumer;
 import dars.Utilities;
 import dars.event.DARSEvent;
 import dars.logger.Logger;
+import dars.replayer.Replayer;
+import dars.replayer.Replayer.ReplayMode;
 import dars.replayer.Replayer.ReplayerListener;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Queue;
 
 public class GUI extends JFrame implements OutputConsumer {
 
@@ -106,10 +112,8 @@ public class GUI extends JFrame implements OutputConsumer {
     // setup the borders
     setBorders();
 
-    
-    // Show everything
+    // pack everything
     pack();
-    this.setVisible(true);
 
   }
 
@@ -326,8 +330,12 @@ public class GUI extends JFrame implements OutputConsumer {
 
     // Invoke it later; This will push the runnable instance onto the
     // Java Event Dispatching thread
-    SwingUtilities.invokeLater(c);
-
+    if(!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(c);
+    }
+    else {
+      c.run();
+    }
   }
 
   private void attachMenus() {
@@ -335,4 +343,94 @@ public class GUI extends JFrame implements OutputConsumer {
     this.setJMenuBar(menuArea.getMenuBar());
   }
 
+  public class ThreadSafeReplayerListener implements ReplayerListener {
+    @Override
+    public void replayerStarted(Queue<DARSEvent> Q, Replayer instance) {
+      ReplayerStartedActionHandler action = new ReplayerStartedActionHandler(Q,instance);
+      if(!SwingUtilities.isEventDispatchThread()) {
+        try {
+        SwingUtilities.invokeAndWait(action);
+        } catch (Exception e) {
+        Utilities.showError("An error occurred while starting the replayer. Please file a bug report.");
+        System.exit(1);
+        }
+      }
+      else {
+        action.run();
+      }
+    }
+
+    class ReplayerStartedActionHandler implements Runnable {
+
+      private final Replayer instance;
+      private final Queue<DARSEvent> Q;
+      ReplayerStartedActionHandler(Queue<DARSEvent> Q, Replayer instance) {
+        this.Q = Q;
+        this.instance = instance;
+      }
+      
+      @Override
+      public void run() {
+        //Send the signal to the menuArea
+        menuArea.replayerStarted(Q, instance);
+        
+        //SetLockedReplayMode on all components
+        if(instance.getMode() == ReplayMode.LOCKED) {
+          simArea.setLockedReplayMode(true);
+          menuArea.setLockedReplayMode(true);
+          nodeAttributesArea.setLockedReplayMode(true);
+        }
+      
+        JOptionPane.showMessageDialog(simArea, "The replay has been sucessfully loaded. \n" +
+          "Please select \"Play\" from the menu bar to begin.");
+      }
+    }
+    
+    @Override
+    public void replayerFinished(boolean aborted) {
+      ReplayerFinishedActionHandler action = new ReplayerFinishedActionHandler(aborted);
+      if(!SwingUtilities.isEventDispatchThread()) {
+        try {
+        SwingUtilities.invokeAndWait(action);
+        } catch (Exception e) {
+        Utilities.showError("An error occurred while starting the replayer. Please file a bug report.");
+        System.exit(1);
+        }
+      }
+      else {
+        action.run();
+      }
+    }
+
+    class ReplayerFinishedActionHandler implements Runnable {
+
+      private final boolean aborted;
+      ReplayerFinishedActionHandler(boolean aborted) {
+        this.aborted = aborted;
+      }
+      
+      @Override
+      public void run() {
+        //Send the signal to the menuArea
+        menuArea.replayerFinished(aborted);
+        
+        //Unset LockedReplayMode on all components
+        simArea.setLockedReplayMode(false);
+        menuArea.setLockedReplayMode(false);
+        nodeAttributesArea.setLockedReplayMode(false);
+        
+        //Show a a dialog box if not aborted
+        if(!aborted) {
+          Utilities.showInfo("Replay finished.", "Replay finished");
+        }
+      }
+    }
+  }
+  private final ThreadSafeReplayerListener threadSafeReplayerListener = new ThreadSafeReplayerListener();
+  public ThreadSafeReplayerListener getReplayerListener() {
+    return threadSafeReplayerListener;
+  }
+
 }
+ 
+

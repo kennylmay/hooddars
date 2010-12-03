@@ -49,12 +49,9 @@ public class DARSMain {
      GUIStarter gs = new GUIStarter();
      try {
       SwingUtilities.invokeAndWait(gs);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    } catch (Exception e) {
+      Utilities.showError("A fatal error was encountered while trying to load the GUI. Please file a bug report.");
+      System.exit(1);
     }
     
     GUI g = gs.getGui();
