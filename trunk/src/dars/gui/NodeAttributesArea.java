@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,7 +28,6 @@ import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
-import dars.proto.aodv.AodvDialog;
 
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
@@ -113,8 +111,14 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
         setAttributes(getAttributes((nodeSelectorComboBox.getSelectedItem()
             .toString())));
-        setLock(false);
+        
+        if(!lockedReplayMode) {
+          setLock(false);
+        }
+        
         simArea.selectNode(nodeSelectorComboBox.getSelectedItem().toString());
+        
+        
       }
     });
 
@@ -308,11 +312,17 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       return;
     }
     blockChangeEvents = true;
+    
     nodeSelectorComboBox.setSelectedItem(n.id);
     nodeXField.setText(Integer.toString(n.x));
     nodeYField.setText(Integer.toString(n.y));
     nodeRangeSpinner.setValue(n.range);
     promiscuousModeCheckBox.setSelected(n.isPromiscuous);
+    
+    //Cludge alert. Reset the settings based on locked replay mode
+    nodeRangeSpinner.setEnabled(!lockedReplayMode);
+    promiscuousModeCheckBox.setEnabled(!lockedReplayMode);
+    
     blockChangeEvents = false;
   }
 
@@ -348,6 +358,11 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       }
     }
     openNodeDialogs.clear();
+    
+    //Cludge alert. Reset the settings based on locked replay mode
+    nodeRangeSpinner.setEnabled(!lockedReplayMode);
+    promiscuousModeCheckBox.setEnabled(!lockedReplayMode);
+    
     blockChangeEvents = false;
   }
 
@@ -363,7 +378,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     nodeRangeSpinner.setEnabled(!isLocked);
     promiscuousModeCheckBox.setEnabled(!isLocked);
     nodeAttributesButton.setEnabled(!isLocked);
-
   }
 
   public void simPaused() {
@@ -403,8 +417,13 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   private NodeInspector nodeInspector;
 
+  private boolean lockedReplayMode = false;
   public void setLockedReplayMode(boolean b) {
-    // TODO Auto-generated method stub
-    
+    //lock/unlock all modifiers
+    nodeXField.setEditable(!b);
+    nodeYField.setEditable(!b);
+    nodeRangeSpinner.setEnabled(!b);
+    promiscuousModeCheckBox.setEnabled(!b);
+    lockedReplayMode = b;
   }
 }

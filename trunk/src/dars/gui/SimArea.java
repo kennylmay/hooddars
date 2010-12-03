@@ -251,6 +251,9 @@ public class SimArea extends JLayeredPane {
 
     // add our node listener
     node.addListener(new NodeActionHandler());
+    
+    // set the locked replay status
+    node.setLockedReplayMode(lockedReplayMode);
 
     // Add a range indicator
     animations.addRangeIndicator(node);
@@ -384,8 +387,10 @@ public class SimArea extends JLayeredPane {
         }
       });
 
-      add(delete_item);
-      add(msg_item);
+      if(!lockedReplayMode){
+        add(delete_item);
+        add(msg_item);
+      }
       add(view_item);
 
     }
@@ -419,7 +424,7 @@ public class SimArea extends JLayeredPane {
 
     private void doPop(MouseEvent e) {
       // If the Sim Area is locked just return.
-      if (locked == true)
+      if (locked || lockedReplayMode)
         return;
 
       // Show the "Add Node" menu.
@@ -430,9 +435,6 @@ public class SimArea extends JLayeredPane {
     }
   }
 
-  public int getDefaultRange() {
-    return 100;
-  }
 
   public String getSimType() {
     return "AODV";
@@ -577,9 +579,12 @@ public class SimArea extends JLayeredPane {
     }
   }
 
+  private boolean lockedReplayMode = false;
   public void setLockedReplayMode(boolean b) {
-    // TODO Auto-generated method stub
-    
+    lockedReplayMode=b;
+    for(GNode n : gnodemap.values()) {
+      n.setLockedReplayMode(b);
+    }
   }
 
 
