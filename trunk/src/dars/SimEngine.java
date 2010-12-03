@@ -144,8 +144,20 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           // Reset the iterationCount after the 100th try
           iterationCount = 0;
           if (paused == false) {
+            
+            //Increment sim time
+            simTime++;
+            
+            //Begin a new quantum
+            OutputHandler.dispatch(DARSEvent.OutQuantumElapsed());
+            
+            //Check if the kill switch was thrown as a result of the event
+            if(KILL_THREAD) {
+              break;
+            }
+            
             // Enter the critical area for the simulation
-            // ////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////
             synchronized (lock) {
               MainLoop();
             }
@@ -167,12 +179,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     Iterator<Node> i;
     Iterator<Message> mi;
     //Get a reference to the size of the Q
-    int msgQSize = messageQueue.size();
-    
-    //Increment sim time
-    simTime++;
-    OutputHandler.dispatch(DARSEvent.OutQuantumElapsed());
-    
+    int msgQSize = messageQueue.size();  
+   
     // If there are any messages in the newMessage Q, introduce them
     // into the network.
     mi = newMessages.iterator();
