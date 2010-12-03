@@ -3,16 +3,14 @@ package dars.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.math.BigInteger;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Random;
-
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,11 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.KeyStroke;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import dars.Defaults;
 import dars.InputHandler;
@@ -166,10 +161,23 @@ public class DARSAppMenu implements ReplayerListener {
     menuPanel.add(tmpPanel);
 
     // Add the Play, pause, and stop buttons
+    JPanel innerPanel = new JPanel();
+    innerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 11));
+   
+    JPanel vBox = new JPanel();
+    vBox.setLayout(new BoxLayout(vBox, BoxLayout.PAGE_AXIS));
+    vBox.add(currentQuantumArea);
+    buttonArea.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
     buttonArea.add(stopButton);
     buttonArea.add(pauseButton);
     buttonArea.add(resumeButton);
-    buttonArea.add(playButton);   
+    buttonArea.add(playButton);
+    vBox.add(buttonArea);
+    
+    innerPanel.add(vBox);
+    
+    innerPanel.add(speedArea);
+    menuPanel.add(innerPanel);
     
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
@@ -180,10 +188,9 @@ public class DARSAppMenu implements ReplayerListener {
     pauseButton.setEnabled(false);
     pauseMenuItem.setEnabled(false);
     
-    menuPanel.add(buttonArea);
-    
     // Add the quantums elapsed area
-    currentQuantumArea.add(new JLabel("  Current Quantum: "));
+    currentQuantumArea.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
+    currentQuantumArea.add(new JLabel("Current Quantum: "));
     currentQuantumLabel.setText("0"); 
     currentQuantumArea.add(currentQuantumLabel);
     
@@ -196,7 +203,9 @@ public class DARSAppMenu implements ReplayerListener {
     subPanel.add(speedLabel);
     subPanel.add(sliderArea);
     
+    speedArea.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 0));
     speedArea.add(subPanel);
+    
     slideBar.setSnapToTicks(true);
     slideBar.setPaintTicks(true);
     slideBar.setMinorTickSpacing(1);
@@ -207,8 +216,6 @@ public class DARSAppMenu implements ReplayerListener {
     slideBar.setPaintLabels(true);
 
     
-    menuPanel.add(speedArea);
-    menuPanel.add(currentQuantumArea);    
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
     
