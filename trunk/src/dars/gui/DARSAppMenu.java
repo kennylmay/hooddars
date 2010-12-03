@@ -80,18 +80,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel             simEngineStatusLabel   = new JLabel();
 
   private JPanel             buttonArea          = new JPanel();
-  private ImageIcon          playIcon            = new ImageIcon(getClass().getResource("/play.png"));
+  private ImageIcon          playIcon           = new ImageIcon(getClass().getResource("/play.png"));
   private ImageIcon          pauseIcon           = new ImageIcon(getClass().getResource("/pause.png"));
-  private ImageIcon          stopIcon            = new ImageIcon(getClass().getResource("/stop.png"));
-  
-  private ImageIcon          bluePlayIcon        = new ImageIcon(getClass().getResource("/blueplay.png"));
-  private ImageIcon          bluePauseIcon       = new ImageIcon(getClass().getResource("/bluepause.png"));
-  private ImageIcon          blueStopIcon        = new ImageIcon(getClass().getResource("/bluestop.png"));
- 
-  private JLabel             bluePlayLabel       = new JLabel(bluePlayIcon);
-  private JLabel             bluePauseLabel      = new JLabel(bluePauseIcon);
-  private JLabel             blueStopLabel       = new JLabel(blueStopIcon);
-  
+  private ImageIcon          stopIcon           = new ImageIcon(getClass().getResource("/stop.png"));
   private JButton            playButton          = new JButton(playIcon);
   private JButton            resumeButton        = new JButton(pauseIcon);
   private JButton            pauseButton         = new JButton(pauseIcon);
@@ -214,17 +205,19 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     // Add the Play, pause, and stop buttons
     controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 11, 2));
    
-    buttonArea.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
-      buttonArea.add(stopButton);
-      buttonArea.add(pauseButton);
-      buttonArea.add(resumeButton);
-      buttonArea.add(playButton);
-      buttonArea.add(blueStopLabel);
-      buttonArea.add(bluePauseLabel);
-      buttonArea.add(bluePlayLabel);
 
-    controlPanel.add(buttonArea);
+    customizeButton(stopButton);
+    customizeButton(playButton);
+    customizeButton(pauseButton);
+    customizeButton(resumeButton);
+
+
+    buttonArea.add(stopButton);
+    buttonArea.add(pauseButton);
+    buttonArea.add(resumeButton);
+    buttonArea.add(playButton);
     
+    controlPanel.add(buttonArea);
     controlPanel.add(speedArea);
     
     controlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
@@ -769,6 +762,13 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
   }
 
+  private void customizeButton(JButton b) {
+    Color transparent = new Color(0,0,0,0);
+    b.setOpaque(false);
+    b.setBackground(transparent);
+    b.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+    
+  }
 
 }
 
