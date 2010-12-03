@@ -419,21 +419,25 @@ public class GUI extends JFrame implements OutputConsumer {
       public void run() {
 
         
+        
         if(!aborted) {
           //Prompt the user to end the simulation
           int ret = JOptionPane.showConfirmDialog(null,
               "Replay finished. Would you like to continue running the simulation?", 
               "Replay finished.", JOptionPane.YES_NO_OPTION);
+          
+          //Unset LockedReplayMode on all components
+          simArea.setLockedReplayMode(false);
+          menuArea.setLockedReplayMode(false);
+          nodeAttributesArea.setLockedReplayMode(false);
+          
           if(ret != JOptionPane.YES_OPTION) {
             shouldStopSimulation = true;
             return;
           }
         }
         
-        //Unset LockedReplayMode on all components
-        simArea.setLockedReplayMode(false);
-        menuArea.setLockedReplayMode(false);
-        nodeAttributesArea.setLockedReplayMode(false);
+
         
         //Send the signal to the menuArea
         menuArea.replayerFinished(aborted);      
