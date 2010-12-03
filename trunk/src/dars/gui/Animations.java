@@ -324,7 +324,6 @@ public class Animations extends JPanel implements ComponentListener,
     
     public void drawRange(Graphics g) {
 
-      // System.out.println("painting ranger");
       Graphics2D g2 = (Graphics2D)g;
 
       // Draw the graphic

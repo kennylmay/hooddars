@@ -49,6 +49,20 @@ public class Utilities {
   }
 
   
+  public static String popupAskUser(String question, String[] answers, String title) {
+    int answer = JOptionPane.showOptionDialog(null,
+        question, title, 0,
+        JOptionPane.QUESTION_MESSAGE, null, answers, answers[0]);
+    // Return null if the user closed the dialog box
+    if (answer == JOptionPane.CLOSED_OPTION) {
+      return null;
+    }
+
+    // Return their selection
+    return answers[answer];
+
+  }
+  
   public static NodeType popupAskNodeType() {
     // Get every node type
     NodeType nTypes[] = getNodeTypes();

@@ -63,7 +63,6 @@ public class DARSMain {
     
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
-    OutputHandler.addOutputConsumer(new Console());
     
     System.gc();
     

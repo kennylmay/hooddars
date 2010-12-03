@@ -97,7 +97,6 @@ public class Replayer implements OutputConsumer {
       if(replayEvents.size() == 0) {
         finish();
       }
-      System.out.println("dispatching events at quantum: " + e.currentQuantum);
       dispatchEventsAtQuantum(this.replayEvents, e.currentQuantum);
     }
   }
