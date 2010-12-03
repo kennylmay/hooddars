@@ -192,7 +192,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     replayPBar.setString("Replay Progress");
     replayPBar.setStringPainted(true);
     statusSubPanel.add(simTypeArea); statusSubPanel.add(simEngineArea);
-    statusSubPanel.add(simModeArea); 
+    statusSubPanel.add(simModeArea); statusSubPanel.add(currentQuantumArea);
     
     statusPanel.add(statusSubPanel);
     statusPanel.add(replayPBar);
@@ -203,24 +203,20 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
     // Add the Play, pause, and stop buttons
-    controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 2));
+    controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 11, 2));
    
-    JPanel vBox = new JPanel();
-    vBox.setLayout(new BoxLayout(vBox, BoxLayout.PAGE_AXIS));
-    vBox.add(currentQuantumArea);
     buttonArea.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
     buttonArea.add(stopButton);
     buttonArea.add(pauseButton);
     buttonArea.add(resumeButton);
     buttonArea.add(playButton);
-    vBox.add(buttonArea);
     
-    controlPanel.add(vBox);
+    controlPanel.add(buttonArea);
     
     controlPanel.add(speedArea);
     
     controlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-        "Controls", 
+        "Simulation Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
 
     menuPanel.add(statusPanel);
@@ -237,12 +233,11 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     pauseMenuItem.setEnabled(false);
     
     // Add the quantums elapsed area
-    currentQuantumArea.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
+    currentQuantumArea.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     JLabel qLabel = new JLabel("Current Quantum: ");
     qLabel.setFont(Defaults.BOLDFACED_FONT);
     currentQuantumArea.add(qLabel);
     
-    currentQuantumLabel.setText("0"); 
     currentQuantumArea.add(currentQuantumLabel);
     
     // Add the slider bar, set its properties and values.
@@ -724,7 +719,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   public void replayerFinished(boolean aborted) {
    //hide the replay progress bar
    replayPBar.setVisible(false);
-   
+   replayPBar.setValue(0);
 
   }
 
@@ -755,8 +750,6 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
 
   private void resizeMenuPanel() {
     statusPanel.setPreferredSize(new Dimension(500, statusPanel.getPreferredSize().height));
-    System.out.println("resizing..");
-    
     controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, 
         Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height)));
     

@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -22,8 +24,12 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import dars.Defaults;
 import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.NodeInspector;
@@ -32,12 +38,21 @@ import dars.event.DARSEvent;
 public class NodeAttributesArea extends JPanel implements GNodeListener {
 
   private JComboBox                nodeSelectorComboBox    = new JComboBox();
-  private JTextField               nodeXField              = new JTextField(4);
-  private JTextField               nodeYField              = new JTextField(4);
   private JSpinner                 nodeRangeSpinner        = new JSpinner(
                                                                new SpinnerNumberModel(
-                                                                   0, 0, 1000,
+                                                                   0, -10, 1000,
                                                                    20));
+  
+  private JSpinner                 XSpinner        = new JSpinner(
+      new SpinnerNumberModel(
+          0, -10, 10000,
+          10));
+  
+  private JSpinner                 YSpinner        = new JSpinner(
+      new SpinnerNumberModel(
+          0, -10, 10000,
+          10));
+  
   private JButton                  nodeAttributesButton    = new JButton("Attributes");
   private JCheckBox                promiscuousModeCheckBox = new JCheckBox("Promiscous mode Enabled");
   private boolean                  blockChangeEvents       = false;
@@ -51,6 +66,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
      * _____________________ | ITEM | | | ITEM | | | ITEM | | | .... | |
      * |_______| |
      */
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Node Controls", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+        
     setLayout(new BorderLayout());
     JPanel box = new JPanel();
     box.setLayout(new BoxLayout(box, BoxLayout.PAGE_AXIS));
@@ -59,7 +78,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     JPanel c;
     c = new JPanel();
     c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
-    c.add(new JLabel("Node ID:"));
+    JLabel label = new JLabel("Node ID:");
+    label.setFont(Defaults.BOLDFACED_FONT);
+    c.add(label);
     c.add(nodeSelectorComboBox);
     nodeSelectorComboBox.setPreferredSize(new Dimension(60,
         nodeSelectorComboBox.getPreferredSize().height));
@@ -69,22 +90,29 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     // setup the node x and y field
     c = new JPanel();
     c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
-    c.add(new JLabel("X:"));
-    c.add(nodeXField);
-    c.add(new JLabel("Y:"));
-    c.add(nodeYField);
+    label = new JLabel("X:");
+    label.setFont(Defaults.BOLDFACED_FONT);
+    c.add(label);
+    c.add(XSpinner);
+    label = new JLabel("Y:");
+    label.setFont(Defaults.BOLDFACED_FONT);
+    c.add(label);
+    c.add(YSpinner);
     box.add(c);
 
     // setup the range field
     c = new JPanel();
     c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
-    c.add(new JLabel("Range:"));
+    label = new JLabel("Range:");
+    label.setFont(Defaults.BOLDFACED_FONT);
+    c.add(label);
     c.add(nodeRangeSpinner);
     box.add(c);
 
     // setup the promiscuity field
     c = new JPanel();
     promiscuousModeCheckBox.setSelected(false);
+    promiscuousModeCheckBox.setFont(Defaults.BOLDFACED_FONT);
     c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
     c.add(promiscuousModeCheckBox);
     box.add(c);
@@ -139,8 +167,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     });
 
     // X Text Box Single Handler connected to the "Enter"
-    nodeXField.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0) {
+    XSpinner.addChangeListener(new ChangeListener() {
+      public void  stateChanged(ChangeEvent ie){
         if (blockChangeEvents) {
           return;
         }
@@ -156,8 +184,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         try {
           // Attempt to convert the string to an int if it fails
           // the user messed up and we use the original attributes.
-          X = Integer.parseInt(nodeXField.getText());
-          Y = Integer.parseInt(nodeYField.getText());
+          X = Integer.parseInt(XSpinner.getValue().toString());
+          Y = Integer.parseInt(YSpinner.getValue().toString());
         } catch (NumberFormatException nfe) {
           return;
         }
@@ -170,8 +198,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       }
     });
 
-    nodeYField.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0) {
+    YSpinner.addChangeListener(new ChangeListener() {
+      public void  stateChanged(ChangeEvent ie){
         if (blockChangeEvents) {
           return;
         }
@@ -188,8 +216,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
         try {
           // Attempt to convert the string to an int if it fails
           // the user messed up and we use the original attributes
-          X = Integer.parseInt(nodeXField.getText());
-          Y = Integer.parseInt(nodeYField.getText());
+          X = Integer.parseInt(XSpinner.getValue().toString());
+          Y = Integer.parseInt(YSpinner.getValue().toString());
         } catch (NumberFormatException nfe) {
           return;
         }
@@ -314,8 +342,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     blockChangeEvents = true;
     
     nodeSelectorComboBox.setSelectedItem(n.id);
-    nodeXField.setText(Integer.toString(n.x));
-    nodeYField.setText(Integer.toString(n.y));
+    XSpinner.setValue(n.x);
+    YSpinner.setValue(n.y);
     nodeRangeSpinner.setValue(n.range);
     promiscuousModeCheckBox.setSelected(n.isPromiscuous);
     
@@ -341,8 +369,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   public void clear() {
     blockChangeEvents = true;
     nodeSelectorComboBox.removeAllItems();
-    nodeXField.setText("");
-    nodeYField.setText("");
+    XSpinner.setValue(0);
+    YSpinner.setValue(0);
     nodeList.clear();
     promiscuousModeCheckBox.setSelected(false);
     nodeRangeSpinner.setValue(0);
@@ -373,8 +401,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   public void setLock(boolean isLocked) {
     // lock every field
     nodeSelectorComboBox.setEnabled(!isLocked);
-    nodeXField.setEnabled(!isLocked);
-    nodeYField.setEnabled(!isLocked);
+    XSpinner.setEnabled(!isLocked);
+    YSpinner.setEnabled(!isLocked);
     nodeRangeSpinner.setEnabled(!isLocked);
     promiscuousModeCheckBox.setEnabled(!isLocked);
     nodeAttributesButton.setEnabled(!isLocked);
@@ -420,8 +448,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   private boolean lockedReplayMode = false;
   public void setLockedReplayMode(boolean b) {
     //lock/unlock all modifiers
-    nodeXField.setEditable(!b);
-    nodeYField.setEditable(!b);
+    XSpinner.setEnabled(!b);
+    YSpinner.setEnabled(!b);
     nodeRangeSpinner.setEnabled(!b);
     promiscuousModeCheckBox.setEnabled(!b);
     lockedReplayMode = b;
