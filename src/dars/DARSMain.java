@@ -64,11 +64,10 @@ public class DARSMain {
     // Name the GUI as an output consumer
     OutputHandler.addOutputConsumer(g);
     
-    System.gc();
-    
     //sleep if the splash screen is up
     if(SplashScreen.getSplashScreen() != null ) {
       try {
+        System.gc();
         Thread.sleep(2000);
       } catch (InterruptedException e1) {
         // TODO Auto-generated catch block
