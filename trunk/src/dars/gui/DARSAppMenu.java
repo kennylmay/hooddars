@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -46,7 +48,7 @@ import dars.replayer.Replayer;
 import dars.replayer.Replayer.ReplayMode;
 import dars.replayer.Replayer.ReplayerListener;
 
-public class DARSAppMenu implements ReplayerListener {
+public class DARSAppMenu implements ReplayerListener, ComponentListener {
 //Creating the  bar and all of its elements
   private JMenuBar           menuBar             = new JMenuBar();
   private JMenu              simMenu             = new JMenu("Simulation");
@@ -91,6 +93,8 @@ public class DARSAppMenu implements ReplayerListener {
 
   private JPanel             speedArea           = new JPanel();
   private JPanel             simTypeArea         = new JPanel();
+  private JPanel             statusPanel         = new JPanel();
+  private JPanel             controlPanel         = new JPanel();
 
   // Labels slider bar for the speed adjustment
   private JLabel             speedLabel          = new JLabel("Simulation Speed");
@@ -108,13 +112,18 @@ public class DARSAppMenu implements ReplayerListener {
 
     guiInstance = g;
     
+    //listen for component events so we can resize the menu panel later
+    g.addComponentListener(this);
+    
     //Make the menubar slightly darker.
     float[] rgba = menuBar.getBackground().getRGBComponents(null);
     for(int i =0;i <4; i++){ rgba[i] -= .08f; if(rgba[i] < 0f) rgba[i]=0f;}
     menuBar.setBackground(new Color(rgba[0], rgba[1], rgba[2],rgba[3]));
     
-    menuPanel.setLayout(new BorderLayout());
+    menuPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0 ,0));
 
+    
+    
     
     // Add the readme help  to the  bar
     helpMenu.add(readmeMenuItem);
@@ -176,7 +185,6 @@ public class DARSAppMenu implements ReplayerListener {
     simEngineArea.add(engineStatusLabel);
     simEngineArea.add(simEngineStatusLabel);
     
-    JPanel statusPanel = new JPanel();
     JPanel statusSubPanel = new JPanel();
     statusPanel.setLayout(new GridLayout(2,1, 0, 5));
     statusSubPanel.setLayout(new GridLayout(2,2, 0, 5));
@@ -188,7 +196,6 @@ public class DARSAppMenu implements ReplayerListener {
     
     statusPanel.add(statusSubPanel);
     statusPanel.add(replayPBar);
-    statusPanel.setPreferredSize(new Dimension(500,statusPanel.getSize().height));
     
     
     statusPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
@@ -196,8 +203,7 @@ public class DARSAppMenu implements ReplayerListener {
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
     // Add the Play, pause, and stop buttons
-    JPanel innerPanel = new JPanel();
-    innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 2));
+    controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 2));
    
     JPanel vBox = new JPanel();
     vBox.setLayout(new BoxLayout(vBox, BoxLayout.PAGE_AXIS));
@@ -209,16 +215,17 @@ public class DARSAppMenu implements ReplayerListener {
     buttonArea.add(playButton);
     vBox.add(buttonArea);
     
-    innerPanel.add(vBox);
+    controlPanel.add(vBox);
     
-    innerPanel.add(speedArea);
+    controlPanel.add(speedArea);
     
-    innerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+    controlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         "Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
-    
-    menuPanel.add(innerPanel, BorderLayout.CENTER);
-    menuPanel.add(statusPanel, BorderLayout.WEST);
+
+    menuPanel.add(statusPanel);
+    menuPanel.add(controlPanel);
+
     
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
@@ -597,7 +604,7 @@ public class DARSAppMenu implements ReplayerListener {
     //Show the sim mode; Normal by default. 
     simModeLabel.setText("Normal");
     
-    //Show engine status
+    //Show engine status; Stopped by default
     simEngineStatusLabel.setText("Stopped");
     
     //Make sure the replaybar is hidden
@@ -723,7 +730,37 @@ public class DARSAppMenu implements ReplayerListener {
 
 
   public void setLockedReplayMode(boolean b) {
-    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void componentHidden(ComponentEvent arg0) {
+    resizeMenuPanel();
+  }
+
+  @Override
+  public void componentMoved(ComponentEvent arg0) {
+    resizeMenuPanel();
+  }
+
+  @Override
+  public void componentResized(ComponentEvent arg0) {
+    resizeMenuPanel();
+  }
+
+  @Override
+  public void componentShown(ComponentEvent arg0) {
+    resizeMenuPanel();
+  }
+
+  private void resizeMenuPanel() {
+    statusPanel.setPreferredSize(new Dimension(500, statusPanel.getPreferredSize().height));
+    System.out.println("resizing..");
+    
+    controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, 
+        Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height)));
+    
+    menuPanel.invalidate();
     
   }
 
