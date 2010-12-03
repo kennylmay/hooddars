@@ -6,8 +6,10 @@ package dars.gui;
 import java.awt.BorderLayout;
 import java.math.BigInteger;
 
+import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
@@ -77,6 +79,11 @@ public class LogArea extends javax.swing.JPanel {
   private JTextArea textArea = new JTextArea();
   
   public LogArea() {
+    
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Console", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+    
     //Setup the text area.
     configureTextArea(textArea);  
     
