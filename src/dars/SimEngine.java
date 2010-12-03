@@ -289,7 +289,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         
       case IN_SIM_SPEED:
         WAIT_TIME = e.newSimSpeed;
-        System.out.println(e.newSimSpeed);
         OutputHandler.dispatch(DARSEvent.outSimSpeed(WAIT_TIME));
         break;
         
@@ -458,7 +457,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     }
     
     //decrement the first char of the ID
-    System.out.println(ret);
     char f = ret.charAt(0);
     f--;
     ret = f + ret.substring(1);

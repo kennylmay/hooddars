@@ -4,6 +4,7 @@ import java.awt.Font;
 import javax.imageio.ImageIO;
 
 import dars.Defaults;
+import dars.Utilities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -56,7 +57,7 @@ public class ImageFactory {
       ghostedNodeImg_ =  getTransparentImg(nodeImg_, 0.5f);
 
     } catch(Exception e) {
-      System.out.println("FAIL in image init");
+      Utilities.showError("Failed to load images. Please file a bug report");
       System.exit(1);
     }
 

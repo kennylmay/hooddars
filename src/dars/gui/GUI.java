@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import dars.Defaults;
+import dars.InputHandler;
 import dars.Message;
 import dars.NodeInspector;
 import dars.OutputConsumer;
@@ -400,29 +401,44 @@ public class GUI extends JFrame implements OutputConsumer {
       else {
         action.run();
       }
+      
+      if(action.shouldStopSimulation) {
+        InputHandler.dispatch(DARSEvent.inStopSim());
+      }
     }
 
     class ReplayerFinishedActionHandler implements Runnable {
 
       private final boolean aborted;
+      private boolean shouldStopSimulation = false;
       ReplayerFinishedActionHandler(boolean aborted) {
         this.aborted = aborted;
       }
       
       @Override
       public void run() {
-        //Send the signal to the menuArea
-        menuArea.replayerFinished(aborted);
+
+        
+        if(!aborted) {
+          //Prompt the user to end the simulation
+          int ret = JOptionPane.showConfirmDialog(null,
+              "Replay finished. Would you like to continue running the simulation?", 
+              "Replay finished.", JOptionPane.YES_NO_OPTION);
+          if(ret != JOptionPane.YES_OPTION) {
+            shouldStopSimulation = true;
+            return;
+          }
+        }
         
         //Unset LockedReplayMode on all components
         simArea.setLockedReplayMode(false);
         menuArea.setLockedReplayMode(false);
         nodeAttributesArea.setLockedReplayMode(false);
         
-        //Show a a dialog box if not aborted
-        if(!aborted) {
-          Utilities.showInfo("Replay finished.", "Replay finished");
-        }
+        //Send the signal to the menuArea
+        menuArea.replayerFinished(aborted);      
+
+        menuArea.setSimModeLabel("Normal");
       }
     }
   }

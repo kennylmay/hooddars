@@ -91,8 +91,6 @@ public class Parser
     String line = "";
     DARSEvent d;
     if(!isValidDARSLogFile(logFileLocation)) {
-     // TODO Throw some kind of exception? log error? something.
-      System.out.println("Not a valid DARS log file!");
       return null;
     }
     
@@ -123,8 +121,6 @@ public class Parser
     String line;
     
     if(!isValidDARSLogFile(logFileLocation)) {
-      // TODO Throw some kind of exception? log error? something.
-       System.out.println("Not a valid DARS log file!");
        return null;
      }
     

@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -62,7 +63,6 @@ public class DARSAppMenu implements ReplayerListener {
   private JMenuItem          pauseMenuItem        = new JMenuItem("Pause");
   private JMenuItem          resumeMenuItem        = new JMenuItem("Resume");
   private JMenuItem          stopMenuItem        = new JMenuItem("Stop");
-  private DARSAppMenu        instance            = this;
   private JMenu              helpMenu            = new JMenu("Help");
   private JMenuItem          readmeMenuItem            = new JMenuItem("Getting Started");
   private JMenuItem          aboutMenuItem            = new JMenuItem("About");
@@ -70,7 +70,12 @@ public class DARSAppMenu implements ReplayerListener {
   private JMenuItem          deleteNodeMenuItem    = new JMenuItem("Delete Selected Node");
   private JMenuItem          addMultipleNodesMenuItem  = new JMenuItem("Add Multiple Nodes");
   private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
-  private JLabel             typeLabel           = new JLabel();
+  private JLabel             typeLabel           = new JLabel("Simulation type: ");
+  private JLabel             modeLabel           = new JLabel("Mode: ");
+  private JLabel             engineStatusLabel      = new JLabel("Engine status: ");
+  private JLabel             simModeLabel           = new JLabel();
+  private JLabel             simTypeLabel           = new JLabel();
+  private JLabel             simEngineStatusLabel   = new JLabel();
 
   private JPanel             buttonArea          = new JPanel();
   private ImageIcon          playIcon           = new ImageIcon(getClass().getResource("/play.png"));
@@ -153,25 +158,46 @@ public class DARSAppMenu implements ReplayerListener {
     menuBar.add(controlMenu);
     menuBar.add(helpMenu);
 
-    // Add the simulation type  lables
+    // Add the simulation type  labels
+    JPanel simModeArea = new JPanel();
+    JPanel simEngineArea = new JPanel();
+    
+    simTypeArea.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    simModeArea.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    simEngineArea.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    typeLabel.setFont(Defaults.BOLDFACED_FONT);
+    modeLabel.setFont(Defaults.BOLDFACED_FONT);
+    engineStatusLabel.setFont(Defaults.BOLDFACED_FONT);
+    
+    simModeArea.add(modeLabel);
+    simModeArea.add(simModeLabel);
     simTypeArea.add(typeLabel);
-    typeLabel.setVisible(false);
+    simTypeArea.add(simTypeLabel);
+    simEngineArea.add(engineStatusLabel);
+    simEngineArea.add(simEngineStatusLabel);
+    
     JPanel statusPanel = new JPanel();
-    statusPanel.setLayout(new BoxLayout(statusPanel,BoxLayout.PAGE_AXIS));
+    JPanel statusSubPanel = new JPanel();
+    statusPanel.setLayout(new GridLayout(2,1, 0, 5));
+    statusSubPanel.setLayout(new GridLayout(2,2, 0, 5));
     replayPBar.setVisible(false);
     replayPBar.setString("Replay Progress");
     replayPBar.setStringPainted(true);
-    statusPanel.add(simTypeArea);
+    statusSubPanel.add(simTypeArea); statusSubPanel.add(simEngineArea);
+    statusSubPanel.add(simModeArea); 
+    
+    statusPanel.add(statusSubPanel);
     statusPanel.add(replayPBar);
-    simTypeArea.setPreferredSize(new Dimension(200, simTypeArea.getPreferredSize().height));
+    statusPanel.setPreferredSize(new Dimension(500,statusPanel.getSize().height));
+    
     
     statusPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-        "Simulation Status", 
+        "Status", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
     // Add the Play, pause, and stop buttons
     JPanel innerPanel = new JPanel();
-    innerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 11));
+    innerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 2));
    
     JPanel vBox = new JPanel();
     vBox.setLayout(new BoxLayout(vBox, BoxLayout.PAGE_AXIS));
@@ -188,11 +214,11 @@ public class DARSAppMenu implements ReplayerListener {
     innerPanel.add(speedArea);
     
     innerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-        "Simulation Controls", 
+        "Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
-    menuPanel.add(innerPanel, BorderLayout.WEST);
-    menuPanel.add(statusPanel, BorderLayout.CENTER);
+    menuPanel.add(innerPanel, BorderLayout.CENTER);
+    menuPanel.add(statusPanel, BorderLayout.WEST);
     
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
@@ -205,7 +231,10 @@ public class DARSAppMenu implements ReplayerListener {
     
     // Add the quantums elapsed area
     currentQuantumArea.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
-    currentQuantumArea.add(new JLabel("Current Quantum: "));
+    JLabel qLabel = new JLabel("Current Quantum: ");
+    qLabel.setFont(Defaults.BOLDFACED_FONT);
+    currentQuantumArea.add(qLabel);
+    
     currentQuantumLabel.setText("0"); 
     currentQuantumArea.add(currentQuantumLabel);
     
@@ -215,6 +244,7 @@ public class DARSAppMenu implements ReplayerListener {
     JPanel subPanel = new JPanel();
     subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.PAGE_AXIS));
     speedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    speedLabel.setFont(Defaults.BOLDFACED_FONT);
     subPanel.add(speedLabel);
     subPanel.add(sliderArea);
     
@@ -536,6 +566,9 @@ public class DARSAppMenu implements ReplayerListener {
     pauseMenuItem.setEnabled(true);
     stopButton.setEnabled(true);   
     stopMenuItem.setEnabled(true);
+    
+    //Update the engine label
+    simEngineStatusLabel.setText("Running");
   }
  
   public void newSim(NodeType nodeType) {
@@ -559,8 +592,16 @@ public class DARSAppMenu implements ReplayerListener {
     currentQuantumLabel.setText(Long.toString(quantums));
     
     //Show the new sim label
-    typeLabel.setText("Simulation Type: " + nodeType.toString());
-    typeLabel.setVisible(true);
+    simTypeLabel.setText(nodeType.toString());
+    
+    //Show the sim mode; Normal by default. 
+    simModeLabel.setText("Normal");
+    
+    //Show engine status
+    simEngineStatusLabel.setText("Stopped");
+    
+    //Make sure the replaybar is hidden
+    replayPBar.setVisible(false);
   }
   
   public void simStopped() {
@@ -583,6 +624,9 @@ public class DARSAppMenu implements ReplayerListener {
       replayer.abort();
     }
     
+    //Update the engine label
+    simEngineStatusLabel.setText("Stopped");
+    
   }
   
   public void simPaused() {
@@ -594,6 +638,9 @@ public class DARSAppMenu implements ReplayerListener {
     pauseMenuItem.setVisible(false);
     resumeButton.setVisible(true);
     resumeMenuItem.setVisible(true);
+    
+    //Update the engine label
+    simEngineStatusLabel.setText("Paused");
   }
   
   public void simResumed() {
@@ -603,6 +650,8 @@ public class DARSAppMenu implements ReplayerListener {
     pauseMenuItem.setVisible(true);
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
+    //Update the engine label
+    simEngineStatusLabel.setText("Running");
   }
   
   public JMenuBar getMenuBar() {
@@ -648,15 +697,27 @@ public class DARSAppMenu implements ReplayerListener {
 
     replayPBar.setMaximum((int)e.currentQuantum);
     
+    //Set the mode
+    if(instance.getMode() == ReplayMode.LOCKED) {
+      simModeLabel.setText("Locked replay mode");
+    }
+    else {
+      simModeLabel.setText("Interactive replay mode");
+    }
     
   }
   
   
 
+  public void setSimModeLabel(String modeText) {
+    simModeLabel.setText(modeText);
+  }
+  
   @Override
   public void replayerFinished(boolean aborted) {
    //hide the replay progress bar
    replayPBar.setVisible(false);
+   
 
   }
 
