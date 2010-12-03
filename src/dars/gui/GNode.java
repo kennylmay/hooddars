@@ -230,8 +230,8 @@ public class GNode extends JPanel {
         return;
       }
 
-      // If its a right click, return
-      if (e.getButton() == MouseEvent.BUTTON3) {
+      // If its a right click, or in locked replay mode return
+      if (e.getButton() == MouseEvent.BUTTON3 || lockedReplayMode) {
         return;
       }
 
@@ -260,8 +260,6 @@ public class GNode extends JPanel {
       // Set state to entered
       setEntered(true);
 
-      // invalidate the parent container
-
       // Notify the handlers
       for (GNodeListener l : listeners) {
         l.nodeEntered((GNode) e.getSource());
@@ -286,7 +284,7 @@ public class GNode extends JPanel {
   private class GNodeMouseMotionListener extends MouseMotionAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
-      if(locked) {
+      if(locked || lockedReplayMode) {
         return;
       }
 
@@ -360,5 +358,10 @@ public class GNode extends JPanel {
 
 
   private int range;
+
+  private boolean lockedReplayMode = false;
+  public void setLockedReplayMode(boolean b) {
+    lockedReplayMode = b;   
+  }
 
 }
