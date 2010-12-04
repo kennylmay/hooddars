@@ -495,7 +495,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
                                              "\nJagriti Nanda" +
                                              "\n\nContact Information:" +
                                              "\n\tDr. George Dimitoglou" +
-                                             "\nProfessor of Computer Science at Hood University" +
+                                             "\nProfessor of Computer Science at Hood College" +
                                              "\nEmail: dimitoglou@hood.edu" +
                                              "\n\nCopyright (c) 2010 The DARS Team & the Department of " +
                                              "\nComputer Science, Hood College, Frederick, MD 21701", 
