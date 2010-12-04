@@ -145,8 +145,6 @@ public class GUI extends JFrame implements OutputConsumer {
     loweredBevel = BorderFactory.createLoweredBevelBorder();
     compound = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
     simPanel.setBorder(compound);
-    logPanel.setBorder(compound);
-    //nodeAttributesPanel.setBorder(compound);
 
   }
 

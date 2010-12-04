@@ -81,7 +81,7 @@ public class ImageFactory {
 
   //Function that creates a hover image counterpart for a given image
   static public BufferedImage getHoverImg( BufferedImage src) {
-    BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(),
+    BufferedImage dest = new BufferedImage(src.getWidth(null), src.getHeight(null),
                                            BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = dest.createGraphics();
     g.drawImage(src,null,0,0);

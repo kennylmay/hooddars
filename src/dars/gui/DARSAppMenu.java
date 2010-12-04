@@ -763,7 +763,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   }
 
   private void resizeMenuPanel() {
-    statusPanel.setPreferredSize(new Dimension(500, statusPanel.getPreferredSize().height));
+    statusPanel.setPreferredSize(new Dimension(500, 
+        Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height)));
     controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, 
         Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height)));
     
