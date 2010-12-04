@@ -82,6 +82,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel             simEngineStatusLabel   = new JLabel();
 
   private JPanel             buttonArea          = new JPanel();
+  
+  //TODO Initialize all of these images and buttons from a method. Need to be able to catch any exceptions that
+  //might happen if the files don't make it out to release (and do a Utilities.showError() ).
   private ImageIcon          playIcon            = new ImageIcon(getClass().getResource("/play.png"));
   private ImageIcon          pauseIcon           = new ImageIcon(getClass().getResource("/pause.png"));
   private ImageIcon          stopIcon            = new ImageIcon(getClass().getResource("/stop.png"));
