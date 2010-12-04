@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -85,9 +86,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JButton            stopButton          = new JButton();
    
   private JPanel             legendArea          = new JPanel();
-  private JLabel             controlMessageLabel = new JLabel("Ctrl: ");
-  private JLabel             narrativeMessageLabel = new JLabel("Narr: ");
-  private JLabel             broadcastMessageLabel = new JLabel("Broad: ");
+  private JLabel             controlMessageLabel = new JLabel("Control:");
+  private JLabel             narrativeMessageLabel = new JLabel("Narrative:");
+  private JLabel             broadcastMessageLabel = new JLabel("Broadcast:");
   
   private JPanel             controlMessageColor   = new JPanel();
   private JPanel             narrativeMessageColor = new JPanel();
@@ -227,15 +228,14 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     narrativeMessageColor.setBackground(Defaults.NARRMSG_COLOR);
     controlMessageColor.setBackground(Defaults.CNTRLMSG_COLOR);
     broadcastMessageColor.setBackground(Defaults.BROADCAST_COLOR);
-
-    legendArea.setLayout(new GridLayout(3,2, 0, 5));   
+    
+    legendArea.setLayout(new GridLayout(3,2,5,5));
     legendArea.add(narrativeMessageLabel);
     legendArea.add(narrativeMessageColor);
     legendArea.add(controlMessageLabel);
     legendArea.add(controlMessageColor);
     legendArea.add(broadcastMessageLabel);
     legendArea.add(broadcastMessageColor);
-    legendArea.setPreferredSize(new Dimension(90,103));
     legendArea.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         "Legend", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
@@ -786,11 +786,15 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   }
 
   private void resizeMenuPanel() {
-    statusPanel.setPreferredSize(new Dimension(500, 
-        Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height)));
-    controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, 
-        Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height)));
+    //Set all of the component heights to the maximum component height
+    int maxH = Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height);
+    maxH = Math.max(maxH, legendArea.getPreferredSize().height);
     
+    statusPanel.setPreferredSize(new Dimension(400, maxH));
+    controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, maxH));
+    legendArea.setPreferredSize(new Dimension(legendArea.getPreferredSize().width, maxH));
+    
+    //Invalidate the panel so swing knows to resize 
     menuPanel.invalidate();
     
   }
