@@ -477,7 +477,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
 
     readmeMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        new TextWindow("/README.txt");     
+      //  new TextWindow("/README.txt");   
+        new HTMLWindow();
       }
     });
     
