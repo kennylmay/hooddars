@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -83,6 +84,16 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JButton            pauseButton         = new JButton();
   private JButton            stopButton          = new JButton();
    
+  private JPanel             legendArea          = new JPanel();
+  private JLabel             controlMessageLabel = new JLabel("Ctrl: ");
+  private JLabel             narrativeMessageLabel = new JLabel("Narr: ");
+  private JLabel             broadcastMessageLabel = new JLabel("Broad: ");
+  
+  private JPanel             controlMessageColor   = new JPanel();
+  private JPanel             narrativeMessageColor = new JPanel();
+  private JPanel             broadcastMessageColor = new JPanel();
+  
+  
   private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
   private JCheckBoxMenuItem  graphicsCheckBox    = new JCheckBoxMenuItem("Graphics Enabled");
 
@@ -188,9 +199,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     statusSubPanel.add(simModeArea); statusSubPanel.add(currentQuantumArea);
     
     statusPanel.add(statusSubPanel);
-    statusPanel.add(replayPBar);
-    
-    
+    statusPanel.add(replayPBar);   
     statusPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         "Status", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
@@ -215,9 +224,25 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
         "Simulation Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
 
+    narrativeMessageColor.setBackground(Defaults.NARRMSG_COLOR);
+    controlMessageColor.setBackground(Defaults.CNTRLMSG_COLOR);
+    broadcastMessageColor.setBackground(Defaults.BROADCAST_COLOR);
+
+    legendArea.setLayout(new GridLayout(3,2, 0, 5));   
+    legendArea.add(narrativeMessageLabel);
+    legendArea.add(narrativeMessageColor);
+    legendArea.add(controlMessageLabel);
+    legendArea.add(controlMessageColor);
+    legendArea.add(broadcastMessageLabel);
+    legendArea.add(broadcastMessageColor);
+    legendArea.setPreferredSize(new Dimension(90,103));
+    legendArea.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Legend", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+   
     menuPanel.add(statusPanel);
     menuPanel.add(controlPanel);
-
+    menuPanel.add(legendArea);
     
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);

@@ -12,7 +12,7 @@ public class Defaults {
   public static final int RANGE = 150;
   public static final FontUIResource FONT = new FontUIResource(new Font("tahoma", Font.PLAIN, 12 ));
   public static final FontUIResource BOLDFACED_FONT = new FontUIResource(new Font("tahoma", Font.BOLD, 12 ));
-  public static final Color NARRMSG_COLOR = new Color(255,100,100);
+  public static final Color NARRMSG_COLOR = new Color(0,0,0);
   public static final Color CNTRLMSG_COLOR = new Color(100,100,255);
   public static final Color BROADCAST_COLOR = new Color(100,255,100);
   public static final Color RANGE_COLOR = new Color(150,150,150);
