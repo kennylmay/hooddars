@@ -762,7 +762,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
 
 
   public void setLockedReplayMode(boolean b) {
-    
+    addSingleNodeMenuItem.setEnabled(!b);
+    deleteNodeMenuItem.setEnabled(!b);
+    addMultipleNodesMenuItem.setEnabled(!b);
+    clearNodesMenuItem.setEnabled(!b);
   }
 
   @Override
