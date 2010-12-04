@@ -1,24 +1,20 @@
 package dars.gui;
 
-import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Random;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -82,19 +78,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel             simEngineStatusLabel   = new JLabel();
 
   private JPanel             buttonArea          = new JPanel();
-  
-  //TODO Initialize all of these images and buttons from a method. Need to be able to catch any exceptions that
-  //might happen if the files don't make it out to release (and do a Utilities.showError() ).
-  private ImageIcon          playIcon            = new ImageIcon(getClass().getResource("/play.png"));
-  private ImageIcon          pauseIcon           = new ImageIcon(getClass().getResource("/pause.png"));
-  private ImageIcon          stopIcon            = new ImageIcon(getClass().getResource("/stop.png"));
-  private ImageIcon          hoverPlayIcon       = new ImageIcon(getClass().getResource("/hoverplay.png"));
-  private ImageIcon          hoverPauseIcon      = new ImageIcon(getClass().getResource("/hoverpause.png"));
-  private ImageIcon          hoverStopIcon       = new ImageIcon(getClass().getResource("/hoverstop.png"));
-  private JButton            playButton          = new JButton(playIcon);
-  private JButton            resumeButton        = new JButton(pauseIcon);
-  private JButton            pauseButton         = new JButton(pauseIcon);
-  private JButton            stopButton          = new JButton(stopIcon);
+  private JButton            playButton          = new JButton();
+  private JButton            resumeButton        = new JButton();
+  private JButton            pauseButton         = new JButton();
+  private JButton            stopButton          = new JButton();
    
   private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
   private JCheckBoxMenuItem  graphicsCheckBox    = new JCheckBoxMenuItem("Graphics Enabled");
@@ -130,9 +117,6 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     menuPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0 ,0));
 
-    
-    
-    
     // Add the readme help  to the  bar
     helpMenu.add(readmeMenuItem);
     helpMenu.add(aboutMenuItem);
@@ -214,17 +198,11 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     // Add the Play, pause, and stop buttons
     controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 11, 2));
    
-
-    customizeButton(stopButton);
-    customizeButton(playButton);
-    customizeButton(pauseButton);
-    customizeButton(resumeButton);
+    customizeButton(stopButton, "stop.png", "hoverstop.png" );
+    customizeButton(playButton, "play.png", "hoverplay.png");
+    customizeButton(pauseButton, "pause.png", "hoverpause.png");
+    customizeButton(resumeButton, "pause.png", "hoverpause.png");
     
-    stopButton.setRolloverIcon(hoverStopIcon);
-    playButton.setRolloverIcon(hoverPlayIcon);
-    pauseButton.setRolloverIcon(hoverPauseIcon);
-    resumeButton.setRolloverIcon(hoverPauseIcon);
-
     buttonArea.add(stopButton);
     buttonArea.add(pauseButton);
     buttonArea.add(resumeButton);
@@ -480,7 +458,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     aboutMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(null, "The Dynamic Ad-Hoc Routing Simulator (DARS) Version: 1.0" +
+        Utilities.showInfo("The Dynamic Ad-Hoc Routing Simulator (DARS) Version: 1.0" +
                                              "\n\nCode License: " +
                                              "\nGNU General Public License v3" +
                                              "\n\nDevelopers:" +
@@ -495,7 +473,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
                                              "\nEmail: dimitoglou@hood.edu" +
                                              "\n\nCopyright (c) 2010 The DARS Team & the Department of " +
                                              "\nComputer Science, Hood College, Frederick, MD 21701", 
-                                             "ABOUT", JOptionPane.DEFAULT_OPTION);
+                                             "About");
       }
     });
 
@@ -791,15 +769,26 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
   }
 
-  private void customizeButton(JButton b) {
-    Color transparent = new Color(0,0,0,0);
-    b.setOpaque(false);
-    b.setBackground(transparent);
-    b.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-    b.setRolloverEnabled(true);
-    b.setFocusable(false);
-    
+  private void customizeButton(JButton b, String ImageName, String RolloverImage) {
+    ImageIcon          Icon = null;
+    ImageIcon          hoverIcon = null;
+    try{
+       Icon            = new ImageIcon(getClass().getResource("/"+ImageName));
+       hoverIcon       = new ImageIcon(getClass().getResource("/"+RolloverImage));
+       b.setIcon(Icon);
+       b.setRolloverIcon(hoverIcon);
+       Color transparent = new Color(0,0,0,0);
+       b.setOpaque(false);
+       b.setBackground(transparent);
+       b.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+       b.setRolloverEnabled(true);
+       b.setFocusable(false);
+    }catch(Exception e){
+      // Rather than throw an error, if the image can't be loaded just set the
+      // button to a default button with the name of the image in all caps 
+      // minus the .png. 
+       b.setText(ImageName.substring(0, ImageName.length()- 4).toUpperCase());
+    }
   }
-
 }
 
