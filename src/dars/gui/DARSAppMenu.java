@@ -58,8 +58,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JMenu              createNetworkMenu   = new JMenu("Create Network");
   private JMenu              modeMenu            = new JMenu("Mode");
   private JMenu              controlMenu            = new JMenu("Control");
-  private JMenuItem          saveMenuItem        = new JMenuItem("Save As...");
-  private JMenuItem          saveScreenMenuItem  = new JMenuItem("Save Screen...");
+  private JMenuItem          saveMenuItem        = new JMenuItem("Save Log");
+  private JMenuItem          saveScreenMenuItem  = new JMenuItem("Take Screenshot");
   private JMenuItem          clearNodesMenuItem       = new JMenuItem("Clear Nodes");
   private JMenuItem          exitMenuItem        = new JMenuItem("Exit");
   private JMenuItem          importMenuItem      = new JMenuItem("Import for Replay...");
@@ -159,9 +159,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     //Add node  items dynamically using reflection
     addNewSimMenuItems(newMenu);
+    simMenu.addSeparator();
     simMenu.add(saveMenuItem);
     simMenu.add(saveScreenMenuItem);
-    
+    simMenu.addSeparator();
     graphicsCheckBox.setState(true);
     addMultipleNodesMenuItem.setEnabled(false);
     addSingleNodeMenuItem.setEnabled(false);
@@ -479,7 +480,22 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     aboutMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        new TextWindow("/ABOUT.txt");     
+        JOptionPane.showMessageDialog(null, "The Dynamic Ad-Hoc Routing Simulator (DARS) Version: 1.0" +
+                                             "\n\nCode License: " +
+                                             "\nGNU General Public License v3" +
+                                             "\n\nDevelopers:" +
+                                             "\nSeth Kress" +
+                                             "\nMichael Moorman" +
+                                             "\nKenneth May" +
+                                             "\nMisael Marin" +
+                                             "\nJagriti Nanda" +
+                                             "\n\nContact Information:" +
+                                             "\n\tDr. George Dimitoglou" +
+                                             "\nProfessor of Computer Science at Hood University" +
+                                             "\nEmail: dimitoglou@hood.edu" +
+                                             "\n\nCopyright (c) 2010 The DARS Team & the Department of " +
+                                             "\nComputer Science, Hood College, Frederick, MD 21701", 
+                                             "ABOUT", JOptionPane.DEFAULT_OPTION);
       }
     });
 
