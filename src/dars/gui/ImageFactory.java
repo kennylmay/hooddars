@@ -107,6 +107,7 @@ public class ImageFactory {
       g.drawRoundRect(i, i ,dest.getWidth(null) - 2*i -1, dest.getHeight(null) - 2*i -1 ,10,10);
     }
 
+    g.dispose();
     return dest;
   }
 
