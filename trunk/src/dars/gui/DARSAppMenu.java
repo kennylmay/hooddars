@@ -80,14 +80,17 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel             simEngineStatusLabel   = new JLabel();
 
   private JPanel             buttonArea          = new JPanel();
-  private ImageIcon          playIcon           = new ImageIcon(getClass().getResource("/play.png"));
+  private ImageIcon          playIcon            = new ImageIcon(getClass().getResource("/play.png"));
   private ImageIcon          pauseIcon           = new ImageIcon(getClass().getResource("/pause.png"));
-  private ImageIcon          stopIcon           = new ImageIcon(getClass().getResource("/stop.png"));
+  private ImageIcon          stopIcon            = new ImageIcon(getClass().getResource("/stop.png"));
+  private ImageIcon          hoverPlayIcon       = new ImageIcon(getClass().getResource("/hoverplay.png"));
+  private ImageIcon          hoverPauseIcon      = new ImageIcon(getClass().getResource("/hoverpause.png"));
+  private ImageIcon          hoverStopIcon       = new ImageIcon(getClass().getResource("/hoverstop.png"));
   private JButton            playButton          = new JButton(playIcon);
   private JButton            resumeButton        = new JButton(pauseIcon);
   private JButton            pauseButton         = new JButton(pauseIcon);
   private JButton            stopButton          = new JButton(stopIcon);
-  
+   
   private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
   private JCheckBoxMenuItem  graphicsCheckBox    = new JCheckBoxMenuItem("Graphics Enabled");
 
@@ -210,7 +213,11 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     customizeButton(playButton);
     customizeButton(pauseButton);
     customizeButton(resumeButton);
-
+    
+    stopButton.setRolloverIcon(hoverStopIcon);
+    playButton.setRolloverIcon(hoverPlayIcon);
+    pauseButton.setRolloverIcon(hoverPauseIcon);
+    resumeButton.setRolloverIcon(hoverPauseIcon);
 
     buttonArea.add(stopButton);
     buttonArea.add(pauseButton);
