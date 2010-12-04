@@ -19,6 +19,8 @@ public class Defaults {
   public static final Color SELECTED_RANGE_COLOR = new Color(255,153,51); 
   public static final Font NODEID_FONT = new Font("tahoma", Font.BOLD, 12);
   public static final int SELECTED_NODE_RANGE_INDICATOR_THICKNESS = 3;
+  public static final int CNTRLMSG_THICKNESS = 1;
+  public static final int NARRMSG_THICKNESS = 4;
   public static final int BROADCAST_THICKNESS = 2;
   public static final String TITLE_STRING = "Dynamic Ad-hoc Routing Simulator";
   public static final int LOG_AREA_BUF_SIZE = 16384;

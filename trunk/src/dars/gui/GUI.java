@@ -213,7 +213,7 @@ public class GUI extends JFrame implements OutputConsumer {
   
       case OUT_NARRMSG_RECEIVED:
         // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.NARRMSG_COLOR,3,5,1);
+        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.NARRMSG_COLOR, 5, Defaults.NARRMSG_THICKNESS, 1);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
@@ -230,7 +230,7 @@ public class GUI extends JFrame implements OutputConsumer {
         
       case OUT_CONTROLMSG_RECEIVED:
         // Animate the event
-        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.CNTRLMSG_COLOR,1, 1, 0);
+        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.CNTRLMSG_COLOR,1, Defaults.CNTRLMSG_THICKNESS,0);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
@@ -261,8 +261,9 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_START_SIM:
         //Notify the menu that a sim has started
         menuArea.simStarted();
-        //Set the starting simulation speed
+        //Tell the simarea what the simulation speed is
         simArea.setSimSpeed(e.newSimSpeed);
+        
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
@@ -307,12 +308,19 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_NEW_SIM:
         //Clear the sim area.
         simArea.clear();
+        
+        //Clear the node attributes area.
         nodeAttributesArea.clear();
+        
+        //clear the console
+        logArea.clear();
+        
         //Unlock the sim area
-        simArea.setLocked(false);      
+        simArea.setLocked(false);
+        
         //Let the menu area know that a new sim has been created
         menuArea.newSim(e.nodeType);
-        logArea.clear();
+        
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
 
       }
@@ -416,6 +424,10 @@ public class GUI extends JFrame implements OutputConsumer {
       @Override
       public void run() {
 
+        //Unset LockedReplayMode on all components
+        simArea.setLockedReplayMode(false);
+        menuArea.setLockedReplayMode(false);
+        nodeAttributesArea.setLockedReplayMode(false);
         
         
         if(!aborted) {
@@ -424,11 +436,7 @@ public class GUI extends JFrame implements OutputConsumer {
               "Replay finished. Would you like to continue running the simulation?", 
               "Replay finished.", JOptionPane.YES_NO_OPTION);
           
-          //Unset LockedReplayMode on all components
-          simArea.setLockedReplayMode(false);
-          menuArea.setLockedReplayMode(false);
-          nodeAttributesArea.setLockedReplayMode(false);
-          
+         
           if(ret != JOptionPane.YES_OPTION) {
             shouldStopSimulation = true;
             return;
