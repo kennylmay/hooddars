@@ -40,7 +40,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   private JComboBox                nodeSelectorComboBox    = new JComboBox();
   private JSpinner                 nodeRangeSpinner        = new JSpinner(
                                                                new SpinnerNumberModel(
-                                                                   0, -10, 1000,
+                                                                   0, -19, 1000,
                                                                    20));
   
   private JSpinner                 XSpinner        = new JSpinner(
@@ -160,9 +160,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
           return;
         }
 
+        //Enforce minumum range of zero
+        int range = (Integer)nodeRangeSpinner.getValue();
+        range = Math.max(0, range);
+        
         InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox
-            .getSelectedItem().toString(), (Integer) nodeRangeSpinner
-            .getValue()));
+            .getSelectedItem().toString(), range));
       }
     });
 
@@ -324,9 +327,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   public void nodeSelected(GNode gnode) {
     NodeAttributes ni = getAttributes(gnode.getId());
     if (ni != null) {
+      //update the component
       setAttributes(ni);
-      nodeSelectorComboBox.setSelectedItem(gnode.getId());
-
     }
   }
 
@@ -350,6 +352,9 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     //Cludge alert. Reset the settings based on locked replay mode
     nodeRangeSpinner.setEnabled(!lockedReplayMode);
     promiscuousModeCheckBox.setEnabled(!lockedReplayMode);
+    XSpinner.setEnabled(!lockedReplayMode);
+    YSpinner.setEnabled(!lockedReplayMode);
+    
     
     blockChangeEvents = false;
   }
@@ -358,9 +363,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     this.nodeInspector = ni;
   }
 
-  public void setNode(String nodeId) {
-
-  }
 
   public Vector<String> getNodeList() {
     return nodeList;
@@ -394,7 +396,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     blockChangeEvents = false;
   }
 
-  public void selectNodeById(String id) {
+  public void setNodeById(String id) {
     setAttributes(getAttributes(id));
   }
 
@@ -436,7 +438,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
       dialog = openNodeDialogs.get(nodeId);
       if (dialog.isVisible() == false) {
         iter.remove();
-        openNodeDialogs.remove(nodeId);
         continue;
       }
       nodeInspector.updateNodeDialog(nodeId, dialog);

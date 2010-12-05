@@ -180,7 +180,7 @@ public class GUI extends JFrame implements OutputConsumer {
         
         //select the node
         simArea.selectNode(e.nodeId);
-        nodeAttributesArea.selectNodeById(e.nodeId);   
+        nodeAttributesArea.setNodeById(e.nodeId);   
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
@@ -190,7 +190,7 @@ public class GUI extends JFrame implements OutputConsumer {
         
         //select the node
         simArea.selectNode(e.nodeId);
-        nodeAttributesArea.selectNodeById(e.nodeId);
+        nodeAttributesArea.setNodeById(e.nodeId);
         
         //show the event in the visual log
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
@@ -198,8 +198,14 @@ public class GUI extends JFrame implements OutputConsumer {
 
       case OUT_SET_NODE_RANGE:
         // Refresh the node attributes panel
-        nodeAttributesArea.setNode(e.nodeId);
+        nodeAttributesArea.setNodeById(e.nodeId);
         simArea.setNodeRange(e.nodeId, e.nodeRange);
+        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        break;
+        
+      case OUT_SET_NODE_PROMISCUITY:
+        // Refresh the node attributes panel
+        nodeAttributesArea.setNodeById(e.nodeId);
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
     
@@ -263,7 +269,6 @@ public class GUI extends JFrame implements OutputConsumer {
         menuArea.simStarted();
         //Tell the simarea what the simulation speed is
         simArea.setSimSpeed(e.newSimSpeed);
-        
         logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
