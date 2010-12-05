@@ -5,6 +5,7 @@ package dars.gui;
 
 import javax.swing.JDialog; 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -98,6 +99,8 @@ public class SendNodeMessageDialog extends JDialog implements ActionListener {
         messagePanel.add(message, BorderLayout.CENTER);
         
         // Add the buttons to the buttons panel
+        submitButton.setPreferredSize(new Dimension(85,25));
+        cancelButton.setPreferredSize(new Dimension(85,25));
         buttonPanel.add(submitButton, BorderLayout.EAST); 
         buttonPanel.add(cancelButton, BorderLayout.WEST);
         
