@@ -638,7 +638,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     simTypeLabel.setText(nodeType.toString());
     
     //Show the sim mode; Normal by default. 
-    simModeLabel.setText("Normal");
+    simModeLabel.setText("Interactive");
     
     //Show engine status; Stopped by default
     simEngineStatusLabel.setText("Stopped");
@@ -752,10 +752,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     //Set the mode
     if(instance.getMode() == ReplayMode.LOCKED) {
-      simModeLabel.setText("Locked replay mode");
+      simModeLabel.setText("Locked Replay");
     }
     else {
-      simModeLabel.setText("Interactive replay mode");
+      simModeLabel.setText("Interactive Replay");
     }
     
   }
