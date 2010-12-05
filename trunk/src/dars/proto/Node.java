@@ -15,12 +15,32 @@ import dars.Message;
  * 
  */
 public abstract class Node {
-  
+
   /**
    * Attributes member
    */
-  protected NodeAttributes                      att;
-  
+  protected NodeAttributes att;
+
+  /**
+   * Node Constructor.
+   * 
+   * All nodes must have node attributes set.
+   * 
+   * @author kresss
+   * 
+   * @param atts
+   *          Node Attributes
+   */
+  public Node(NodeAttributes atts) {
+    this.setAttributes(atts);
+  }
+
+  /**
+   * **************************************************************************
+   * *** Abstract methods that must be implemented to define a new protocol.
+   * **************************************************************************
+   */
+
   /**
    * Pop a message of the node's transmit queue and return it.
    * 
@@ -71,7 +91,19 @@ public abstract class Node {
   /**
    * Send a narrative message from one node to another.
    * 
-   * Narrative messages are messages that the user inits.
+   * Narrative messages are messages that the user initiates. This method will
+   * be called by the simulation engine to notify the node that the user
+   * requests it send a message.
+   * 
+   * This method should build a new narrative message and place it on the
+   * transmit message queue.
+   * 
+   * Upon successful processing of a narrative message if the node receiving the
+   * message is the destination for the message an addition DARSEvent should be
+   * sent.
+   * 
+   * OutputHandler.dispatch(DARSEvent.outMsgRecieved(MsgOrigID, MsgDestID,
+   * MsgText));
    * 
    * @author kresss
    * 
@@ -79,8 +111,46 @@ public abstract class Node {
    * @param destinationID
    * @param messageText
    */
-  public abstract void newNarrativeMessage(String sourceID, String destinationID, String messageText);
-  
+  public abstract void newNarrativeMessage(String sourceID,
+      String destinationID, String messageText);
+
+  /**
+   * Process an iteration of this node.
+   * 
+   * This will do all the processing for a node's time interval.
+   * 
+   * @author kresss
+   */
+  public abstract void clockTick();
+
+  /**
+   * Return a JDialog that will be displayed by the GUI.
+   * 
+   * Each protocol must define this function so that the GUI can inspect the
+   * nodes information.
+   * 
+   * @author kennylmay
+   */
+  public abstract JDialog getNodeDialog();
+
+  /**
+   * Update the previously returned JDialog with the latest information for a
+   * node that will be showed to the GUI.
+   * 
+   * 
+   * Each protocol must define this function so that the GUI can inspect the
+   * nodes information.
+   * 
+   * @author kennylmay
+   */
+  public abstract void updateNodeDialog(JDialog dialog);
+
+  /**
+   * **************************************************************************
+   * *** Standard Node methods. Additional protocols should not modify these.
+   * **************************************************************************
+   */
+
   /**
    * This function will return the attributes that are defined in the Node
    * class.
@@ -90,7 +160,7 @@ public abstract class Node {
    * 
    * @return NodeAttributes
    */
-  public NodeAttributes getAttributes(){
+  public NodeAttributes getAttributes() {
     return att;
   }
 
@@ -99,60 +169,35 @@ public abstract class Node {
    * 
    * @author mayk
    * 
-   * @param atts The new attributes for the node.
+   * @param atts
+   *          The new attributes for the node.
    */
-  public void setAttributes(NodeAttributes atts){
+  public void setAttributes(NodeAttributes atts) {
     this.att = atts;
   }
 
   /**
    * Sets the X and Y coordinates of the node.
-   * @param x The new x coordinate.
-   * @param y The new y coordinate.
+   * 
+   * @param x
+   *          The new x coordinate.
+   * @param y
+   *          The new y coordinate.
    */
-  public void setXY(int x, int y){
+  public void setXY(int x, int y) {
     this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous);
   }
-  
+
   /**
    * Sets the range of the node.
    * 
    * @param newRange
    */
-  public void setRange(int range){
-    this.att = new NodeAttributes(att.id, att.x, att.y, range, att.isPromiscuous);
+  public void setRange(int range) {
+    this.att = new NodeAttributes(att.id, att.x, att.y, range,
+        att.isPromiscuous);
   }
-  
-  
-  /**
-   * Process an iteration of this node.
-   * 
-   * This will do all the processing for a node's time interval.
-   * 
-   * @author kresss
-   */
-  public abstract void clockTick();
-  
-  /**
-   * Return a JDialog that will be displayed by the GUI.
-   * 
-   * Each protocol must define this function so that the
-   * GUI can inspect the nodes information.
-   * 
-   * @author kennylmay
-   */
-  public abstract JDialog getNodeDialog();
-  
-  /**
-   * Update the dialog with information that is showed to the GUI.
-   * 
-   * Each protocol must define this function so that the
-   * GUI can inspect the nodes information.
-   * 
-   * @author kennylmay
-   */
-  public abstract void updateNodeDialog(JDialog dialog);
-  
+
   /**
    * Return true if the nodes is listen only.
    * 
@@ -160,11 +205,10 @@ public abstract class Node {
    * 
    * @return True/False based on the nodes Promiscuity
    */
-  public boolean isPromiscuous(){
+  public boolean isPromiscuous() {
     return this.att.isPromiscuous;
   }
-  
-  
+
   /**
    * Set whether or not a node is listen only.
    * 
@@ -172,8 +216,9 @@ public abstract class Node {
    * 
    * @param value
    */
-  public void setPromiscuity(boolean value){
-    this.att = new NodeAttributes (this.att.id, this.att.x, this.att.y, this.att.range, value);
+  public void setPromiscuity(boolean value) {
+    this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
+        this.att.range, value);
   }
 
 }

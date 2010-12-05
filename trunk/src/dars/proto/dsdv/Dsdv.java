@@ -852,7 +852,7 @@ public class Dsdv extends Node {
     /**
      * Set Node Attributes
      */
-    this.att = atts;
+    super(atts);
 
     /**
      * Add this node into it's own route table.

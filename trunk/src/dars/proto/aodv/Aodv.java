@@ -32,14 +32,14 @@ public class Aodv extends Node {
    * Constructor
    */
   public Aodv(NodeAttributes atts) {
-    setAttributes(atts);
+    super(atts);
   }
   
   /**
    * Hidden no-argument constructor.
    */
   @SuppressWarnings("unused")
-  private Aodv() { };
+  private Aodv() { super(null); };
   
   
   /**
