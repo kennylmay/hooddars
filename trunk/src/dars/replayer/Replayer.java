@@ -97,7 +97,7 @@ public class Replayer implements OutputConsumer {
       if(replayEvents.size() == 0) {
         finish();
       }
-      dispatchEventsAtQuantum(this.replayEvents, e.currentQuantum);
+      dispatchEventsAtQuantum(this.replayEvents, e.currentQuantum-1);
     }
   }
   
