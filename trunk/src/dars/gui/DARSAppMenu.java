@@ -137,10 +137,11 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     helpMenu.add(aboutMenuItem);
 
     // Add elements to the create network 
-    createNetworkMenu.add(addSingleNodeMenuItem);
     createNetworkMenu.add(loadTopologyMenuItem);
+    createNetworkMenu.add(addSingleNodeMenuItem);
     createNetworkMenu.add(addMultipleNodesMenuItem);
     createNetworkMenu.add(deleteNodeMenuItem);
+    createNetworkMenu.add(clearNodesMenuItem);
  
     // Add elements to the mode 
     modeMenu.add(debugCheckBox);
@@ -163,11 +164,13 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     simMenu.add(saveScreenMenuItem);
     simMenu.addSeparator();
     graphicsCheckBox.setState(true);
+    saveMenuItem.setEnabled(false);
     addMultipleNodesMenuItem.setEnabled(false);
     addSingleNodeMenuItem.setEnabled(false);
     deleteNodeMenuItem.setEnabled(false);
+    clearNodesMenuItem.setEnabled(false);
+    loadTopologyMenuItem.setEnabled(false);
     simMenu.add(importMenuItem);
-    simMenu.add(clearNodesMenuItem);
     simMenu.add(exitMenuItem);
 
     menuBar.add(simMenu);
@@ -377,14 +380,6 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
              Utilities.showError("Log file can not be parsed.");
              return;
            }
-           
-           //Okay. New simulation. Have to ask the user what type of sim they want..
-           NodeType nt = Utilities.popupAskNodeType();
-           if(nt == null) {
-             //User canceled..
-             return;
-           }
-           InputHandler.dispatch(DARSEvent.inNewSim(nt));
            
            //Dispatch every event in the Q
            for(DARSEvent d : Q) {
@@ -609,6 +604,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     stopButton.setEnabled(true);   
     stopMenuItem.setEnabled(true);
     
+    //Do not let user save while replay is running.
+    saveMenuItem.setEnabled(false);
+    
     //Update the engine label
     simEngineStatusLabel.setText("Running");
   }
@@ -620,6 +618,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     addMultipleNodesMenuItem.setEnabled(true);
     addSingleNodeMenuItem.setEnabled(true);
     deleteNodeMenuItem.setEnabled(true);
+    clearNodesMenuItem.setEnabled(true);
+    loadTopologyMenuItem.setEnabled(true);
+    saveMenuItem.setEnabled(true);
     
     //Enable the Play button, disable tstop and pause
     stopButton.setEnabled(false);
@@ -660,6 +661,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     addMultipleNodesMenuItem.setEnabled(false);
     addSingleNodeMenuItem.setEnabled(false);
     deleteNodeMenuItem.setEnabled(false);
+    clearNodesMenuItem.setEnabled(false);
+    loadTopologyMenuItem.setEnabled(false);
+    
+    saveMenuItem.setEnabled(true);
     
     //If the replayer is running, abort it.
     if(replayer != null && replayer.isRunning()) {
@@ -681,6 +686,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     resumeButton.setVisible(true);
     resumeMenuItem.setVisible(true);
     
+    saveMenuItem.setEnabled(true);
+    
     //Update the engine label
     simEngineStatusLabel.setText("Paused");
   }
@@ -692,6 +699,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     pauseMenuItem.setVisible(true);
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
+    
+    //Do not let user save while simulation is running.
+    saveMenuItem.setEnabled(false);
+    
     //Update the engine label
     simEngineStatusLabel.setText("Running");
   }
@@ -765,10 +776,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
 
 
   public void setLockedReplayMode(boolean b) {
-    addSingleNodeMenuItem.setEnabled(!b);
-    deleteNodeMenuItem.setEnabled(!b);
-    addMultipleNodesMenuItem.setEnabled(!b);
-    clearNodesMenuItem.setEnabled(!b);
+    createNetworkMenu.setEnabled(!b);
   }
 
   @Override
