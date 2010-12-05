@@ -122,6 +122,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     //listen for component events so we can resize the menu panel later
     g.addComponentListener(this);
     
+    // Set the preferred size of the simTypeLabel so it displays correctly on Linux.
+    simTypeLabel.setPreferredSize(new Dimension(40,10));
+    
     //Make the menubar slightly darker.
     float[] rgba = menuBar.getBackground().getRGBComponents(null);
     for(int i =0;i <4; i++){ rgba[i] -= .08f; if(rgba[i] < 0f) rgba[i]=0f;}
