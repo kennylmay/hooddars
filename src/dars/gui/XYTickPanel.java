@@ -31,7 +31,7 @@ public class XYTickPanel extends JPanel implements  ComponentListener {
     maxX = size.width;
     maxY = size.height;
   
-    g.setColor(Color.BLACK);
+    g.setColor(Color.GRAY);
     
     //Draw the X ticks
     for(int i = 5; i < maxX; i += 5) {
