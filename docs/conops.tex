@@ -1,0 +1,155 @@
+\documentclass[a4paper,11pt,titlepage]{article}
+
+\begin{document}
+
+% title definition
+\author{CS524: Graduate Group 2}
+\title{﻿DARS: Dynamic Ad-Hoc Routing Simulator\\
+       Concept of Operations\\
+       (CONOPS v1.0)}
+\date{\today}
+
+%generate the title page
+\maketitle
+
+%generate the table of contents
+\tableofcontents
+\newpage
+
+
+\section{Scope}
+The DARS Concept of Operations (ConOps) document describes the desire to simulate the communication between mobile devices located in a controlled area and describe the interaction between them. 
+
+
+\subsection{Identification}
+The proposed Dynamic Ad-Hoc Routing Simulator (DARS) will include all of the associated software, and technical documentation. 
+ 
+\subsection{Document Overview}
+The Dynamic Ad-Hoc Routing Simulator (DARS) ConOps document serves as a vehicle to communicate the high-level characteristics of the simulator to the user, developer, and other stakeholders.
+ 
+\subsection{System Overview}
+Mobile Ad-Hoc networks are not new to computer science, but the concept of a a well organized free open-sourced routing simulator that can demonstrate routing protocols used in Ad-Hoc networks is still not a reality. DARS will serve as a learning tool for students and other members of the open source community to explore and experiment with Mobile Ad-Hoc Networks.  This simulator will be capable of demonstrating two different routing protocols initially, but will also have the room to expand its capabilities.  The simulator will be able to play out many real life scenarios, allowing users to seek out a routing protocol that can optimize the Mobile Ad-Hoc Network experience.  After completion the project it will be turned over to the open source community for further expansion and maintenance.   
+ 
+\section{Referenced Documents}
+\subsection{Course Handouts}
+1. Dimitoglou, George. "Group, Term Project." N.p., 02 Sep 2010. Web. 13 Sep 2010.  
+\section{Current System or Situation}
+After searching for similar routing simulators that were free and open source, we were left with few choices that showed any viable potential.  Some examples were cumbersome and clumsy while leaving the user guessing as to what settings were used for or how to even get started. The idea behind DARS was to provide a expandable solution for students and researchers alike to explore MANETS and the protocols behind them.
+ 
+\section{Justification for and nature of changes}
+The concept of dynamic Ad-Hoc routing has been around for almost 20 years, yet there has not been any movement towards a standardized protocol capable of performing the task.  Many different protocols have been designed that can perform this job, but they all have advantages and disadvantages.  The the problem lies in the lack of availability of information on the subject. There are few open source simulators that can be used to test this type of network, however they are virtually unusable or not flexible enough to handle a multitude of protocols. The idea is by expanding the availability of this information more minds can work on the solution.  The new routing simulator will have an intuitive easy to use interface that will allow new users to learn about Ad-Hoc routing and the different protocols used to perform it.  Since it will become open source many eyes can critique and expand the initial code base.  The more users that get involved with the project the better chances are that it can eventually help lead to an algorithm that can be agreed upon and standardized. 
+ 
+\subsection{Description of desired changes}
+The new routing simulator will be able to handle users adding, moving, and deleting any number of nodes during a running simulation, through the use a simple click and drag interface.  The simulator will be able to handle these changes on the fly and demonstrate how each protocol would react to a real life situation. DARS will be flexible enough to handle manual node parameters to be entered, but also automatically set valid parameters if the user chooses to not enter manual parameters. This will allow novice as well as experienced users to be able to utilize the simulator.  The simulator will also feature animations as well as text play-by-play operations of the actions that are taking place. The simulator will also allow the user to review already run simulations for a second time in order review the operations.  This will allow users to quickly understand what operations that the routing protocol is performing.  Since the overall goal of the project is to eventually lead to the best overall routing protocol, the software will be able to handle the addition of new protocols.  The software shall also be cross-platform compatible so that users on any operating system can have the same experience.  These changes all reflect improvements over current open source routing simulators which are found to be cumbersome and hard to use.
+ 
+\subsection{Priorities among changes}
+The most desired improvement in this routing simulator is going to be the intuitive GUI that will invite novice users to learn easily about Ad-Hoc routing.  Without this initial attraction the entire point is lost in the project.  Expandability is the second most important factor because this allows future possibly more efficient routing protocols to be added to the simulator. This essentially makes the simulator timeless. Cross platform compatibility is also important so that it can reach all members of the open source community regardless of operating system preference. The GUI animations along with a description are also a priority to make sure the routing protocols are easily understood and can be visualized.
+ 
+\subsection{Changes considered but not included}
+It was a brief consideration to include the Apple Operating system into the list of platforms, but there was a lack of hardware and expertise to accomplish this goal.  A web application was also considered so the only necessary software would be a web browser.  This however would prove more difficult to separate the back end processes from the front end GUI.
+ 
+\subsection{Assumptions and constraints}
+The time allotted for this project is very short and could cause many rough edges and shortcomings.  The features that are listed for this project are under the assumption that no serious issues effect development. The programming team has come from many different backgrounds none of which include Java (the primary language being used), this language was chosen because of its cross platform potential but could cause some initial slowdown in design.
+ 
+\section{ Concept for the Dynamic Ad-Hoc Routing Simulator (DARS)}
+The concept for the proposed system is a tool that allows a user to understand the inner workings of Ad-Hoc networks. The user specifies parameters (e.g. number of network nodes, physical proximity of nodes to one another, etc.) that mimic a real world situation. The system then simulates against these parameters. The user is allowed to further alter parameters of the network nodes as the simulation unfolds. The overall results of the simulation as well as the parameters will be made available to the user at the end of the simulation.
+ 
+\subsection{Background, objectives, and scope}
+DARS will provide a means to run a simulation of a MANET using the AODV and DSDV routing protocols.  Through the use of this tool the user will be able to gain an understanding of the routing protocols in general as well as their limitations and strengths.  
+ 
+It is the objective of this tool to be a functioning simulation interface for the AODV and DSDV protocols while also providing a means for future expansion of additional protocols through a defined Application Programming Interface (API).
+ 
+\subsection{Operational policies and constraints}
+The Dynamic Ad-Hoc Routing Simulator (DARS) must accurately simulate a mobile ad-hoc network using the AODV and DSDV routing methods. It will provide a simple graphical interface. The simulation must accommodate any reasonable number of nodes.  It must allow the user to add, remove, or move nodes within the network during the simulation. Additionally, it must also allow the user to replay or re-execute a given simulation. 
+ 
+\subsection{Description of the proposed system}
+The proposed system will be written in the Java programming language and will be delivered via a single JAR file archive. It will present to the the user a simple but consistent interface where a simulation of network routing can take place. 
+ 
+\subsection{Modes of operation}
+The proposed simulator will be able to operate in two modes - AODV and DSDV mode. Each will determine the underlying routing method used in the simulation. 
+ 
+\subsection{User classes and other involved personnel}
+There will be two major user classes for DARS.  The first is the set of end users that will primarily interface with the GUI and run simulations.  These users will rely heavily on the intuitiveness of the GUI as well as the built in logging capabilities to successfully execute simulations of Ad-Hoc networks.  It is expected that the end users of this project will load the GUI application and proceed to build the simulation environment through the addition of nodes and their given, or generated, parameters.  During and at the end of the simulation session the user will have the ability to review the log files that have been generated.
+ 
+The second group consumers for DARS are the programmers that will add additional routing protocols.  These developers will depend on the defined set of APIs to enable them to expand the list of supported routing protocols of the proposed system.
+ 
+\subsection{Support environment}
+The required environment for the proposed simulator will be a computer that has the Java runtime environment installed. The supported operating systems will be Windows XP, Vista, 7, and Linux based operating systems.
+ 
+\section{Operational scenarios}
+The scenarios represented in the following sections describe one (1) example of users may interact with DARS. Scenarios are not intended to identify all possible situations for any given user class. 
+ 
+A scenario is a step-by-step description of how Dynamic Ad-Hoc Routing Simulator (DARS) should operate and interact with its users under a given set of circumstances. Scenarios are described in a manner that enables readers to walk through them and gain an understanding of how DARS functions and interacts.
+ 
+\subsection{Initialization Entity Scenario}
+The scenario represents one (1) example of how Dynamic Ad-Hoc Routing Simulator (DARS) will provide an easy way to setup a simulated network in seconds.
+\begin{itemize}
+  \item Allowing entering a Coverage range to define the boundaries of the network.
+  \item Offering menu options that allow dragging and dropping of nodes (mobile devices).
+  \item Allowing the entering of a message to be sent to a specified node.
+  \item Illustration of how the message is transferred throughout the nodes until it reaches its destination.
+  \item Offering a log reporting option where you can see which transactions and where they took place.
+\end{itemize} 
+
+DARS will search throughout the nodes finding the shortest path to the destination node and will notify you after the transaction has been completed.
+ 
+\subsection{Initialization Entity}
+Initialization Enties are students, developers, or professors who want are interested in Mobile Ad-hoc Networks.
+ 
+\subsection{Initialization Entity Activities}
+\begin{itemize}
+  \item The Initialization Entity defines the network scope to be simulated.
+  \item The Initialization Entity can locate nodes in and out of the network scope to test different scenarios.
+  \item The Initialization Entity defines the numbers of nodes and the distance between them.
+  \item The Initialization Entity can assign a name and time of life for a node.
+  \item The Initialization Entity defines a message to be sent to a specific node.
+  \item The Initialization Entity selects when they want to send the message by clicking a button.
+\end{itemize} 
+ 
+\section{Summary of impacts}
+The implementation of the proposed Dynamic Ad-Hoc Routing Simulator (DARS) may have wide ranging impacts on both students and professors.
+ 
+\subsection{Operational impacts}
+Until the DARS program undergoes systems analysis and design, operational impacts of the DARS system are not known; therefore, impacts to the following have been omitted.
+ 
+However, it is anticipated that Dynamic Ad-Hoc Routing Simulator (DARS) will implement changes to the user interaction with the system in order to make things more simple and user-friendly.  The proposed Dynamic Ad-Hoc Routing Simulator (DARS) will facilitate this endeavor to help new users understand the routing simulator quickly.  When implemented, the Dynamic Ad-Hoc Routing Simulator (DARS) will have the ability to handle vast number of nodes, easy communication among them, GUI interface with more interactive environment than the current routing simulators.
+ 
+\subsection{Organizational impacts}
+The depth and breadth of the organizational impact is unknown at this time as the system will be made for education purposes.
+ 
+\subsection{Impacts during development}
+The full extent of impacts during development will not be known until completion of the systems analysis and design phase. 
+ 
+\section{Analysis of the Proposed system}
+The proposed system will be organized into modules that exist independent of one another. The main modules will consist of a display component, modeling component, and a routing component. Each module will define a specific interface for their use. 
+ 
+The routing component will be the instantiation of the AODV and DSDV routing methods. It will provide an interface for determining routing behavior based on the state of the model component and the desired action to be simulated. 
+ 
+The model component will consist of an abstract representation of node and routing data. This component will house simulation data throughout the operation of the program. It will provide an interface for getting and setting the relevant information in the simulation. 
+ 
+The display component will consist of a GUI that is displayed to the user. It will interpret the results of the simulation as it runs. Additionally, it will serve as an entry point for the user to augment the parameters of nodes while the simulation is running.
+ 
+\subsection{Summary of improvements}
+The proposed system will be an improvement over existing systems in that it will accurately simulate AODV and DSDV mobile ad-hoc networks with an intuitive and flexible user interface. 
+ 
+\subsection{Disadvantages and limitations}
+DARS does not accurately simulate the physical limitations of real world MANETS.  It assumes an endless plain with no physical barriers that could decrease the effectiveness of a signal.  The only limitation to a nodes ability to communicate with any other node is the range a given node can transmit and the distance between two nodes.
+ 
+\subsection{Alternatives and trade-offs considered}
+As an alternative use of the chosen Java implementation, an alternative solution comprised of a web page interface and separate set of active server pages were investigated.  This approach required an increased knowledge domain of multiple programming languages as well as the use of a client server web model.  Java was chosen over this proposed solution to the benefit of decreasing the breadth of the knowledge base required to manage and expand on the system.  It was also the feeling of the design committee that the Java solution provided increased accessibility to developers that wish to expand on the product under the open source paradigm.
+ 
+\section{Notes}
+Appendixes
+Appexdix A - Definitions
+
+\newpage
+ 
+\appendix
+\section{Definitions}
+
+GUI - Graphical User Interface\\
+AODV - Ad-hoc On Demand Distance Vector\\
+DSDV - Destination-Sequenced Distance-Vector Routing\\
+MANET - Mobile Ad-Hoc Network\\
+DARS - Dynamic Ad-Hoc Routing Simulator\\
+\end{document}
