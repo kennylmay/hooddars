@@ -15,6 +15,10 @@ import dars.proto.dsdv.Dsdv;
 public class NodeFactory {
   public enum NodeType { AODV, DSDV };
   public static Node makeNewNode(NodeType nt, NodeAttributes na) {
+    if(nt == null || na == null) {
+      return null;
+    }
+  
     switch(nt) {
     case AODV : return new Aodv(na);
     case DSDV : return new Dsdv(na);
