@@ -748,7 +748,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
       e = i.next();
     }
 
-    replayPBar.setMaximum((int)e.currentQuantum);
+    replayPBar.setMaximum((int)e.currentQuantum - 1);
     
     //Set the mode
     if(instance.getMode() == ReplayMode.LOCKED) {
