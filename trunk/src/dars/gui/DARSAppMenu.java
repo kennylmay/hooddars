@@ -79,7 +79,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel             simTypeLabel           = new JLabel();
   private JLabel             simEngineStatusLabel   = new JLabel();
 
-  private JPanel             buttonArea          = new JPanel();
+  private JPanel             buttonArea          = new JPanel(new FlowLayout(FlowLayout.LEFT, 0,0));
   private JButton            playButton          = new JButton();
   private JButton            resumeButton        = new JButton();
   private JButton            pauseButton         = new JButton();
