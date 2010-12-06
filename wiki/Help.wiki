@@ -1,4 +1,5 @@
 <wiki:toc max_depth="3" />
+
 =DARS (Dynamic Ad-Hoc Routing Simulator v 1.0)=                   
 
 ==1.0 Setting Up A Simulation==                     
@@ -98,7 +99,9 @@
 		
 ==7.0 AODV Notes==                   
 
-==8.0 DSDV Notes==                    
+==8.0 DSDV Notes==    
+
+  [http://code.google.com/p/hooddars/wiki/DSDV DSDV]
 
 ==9.0 Programmer Notes==                  
 	  
