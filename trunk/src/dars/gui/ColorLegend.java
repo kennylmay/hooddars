@@ -34,7 +34,9 @@ public class ColorLegend extends JPanel {
     colorPanel.setPreferredSize(new Dimension(20,5));
     colorContainer.add(colorPanel);
     
-    labelsGrid.add(new JLabel(name));
+    JLabel label = new JLabel(name);
+    label.setFont(Defaults.BOLDFACED_FONT);
+    labelsGrid.add(label);
     colorsGrid.add(colorContainer);
   }
 }
