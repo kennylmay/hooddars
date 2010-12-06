@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import dars.Defaults;
 
@@ -25,6 +27,9 @@ public class ColorLegend extends JPanel {
     
     add(labelsGrid);
     add(colorsGrid);
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Legend", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
   }
   
   private void addLegendItem(String name, Color c) {
