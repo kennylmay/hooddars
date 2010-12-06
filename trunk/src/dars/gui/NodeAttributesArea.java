@@ -54,7 +54,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
           10));
   
   private JButton                  nodeAttributesButton    = new JButton("Attributes");
-  private JCheckBox                promiscuousModeCheckBox = new JCheckBox("Promiscous mode Enabled");
+  private JCheckBox                promiscuousModeCheckBox = new JCheckBox("Promiscous Mode Enabled");
   private boolean                  blockChangeEvents       = false;
   private Vector<String>           nodeList                = new Vector<String>();
   private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
