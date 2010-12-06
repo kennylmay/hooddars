@@ -29,6 +29,7 @@ public class Parser
     case IN_SET_NODE_PROMISCUITY:
     case IN_CLEAR_SIM:
     case IN_INSERT_MESSAGE:
+    case IN_STOP_SIM:
       return true;
     }
     return false;    

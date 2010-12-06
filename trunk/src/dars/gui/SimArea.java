@@ -35,8 +35,6 @@ public class SimArea extends JLayeredPane {
     addMouseListener(new PopClickListener());
     setVisible(true);
     
-    
-    
     animations.start();
   }
 

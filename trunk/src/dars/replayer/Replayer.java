@@ -9,6 +9,7 @@ import dars.OutputConsumer;
 import dars.OutputHandler;
 import dars.Utilities;
 import dars.event.DARSEvent;
+import dars.event.DARSEvent.EventType;
 
 public class Replayer implements OutputConsumer {
 
@@ -52,6 +53,13 @@ public class Replayer implements OutputConsumer {
 
        //If this quantum is = to the specified quantum, pull it off the Q and dispatch it
        if(d.currentQuantum == quantum) {
+         //If this is the STOP SIM event, finish and break out
+         if(d.eventType == EventType.IN_STOP_SIM) {
+           iter.remove();
+           finish();
+           break;
+         }
+         
          iter.remove();
          InputHandler.dispatch(d);
          continue;
@@ -93,11 +101,8 @@ public class Replayer implements OutputConsumer {
   public void consumeOutput(DARSEvent e) {
     switch(e.eventType) {
     case OUT_QUANTUM_ELAPSED:
-      //If theres no more events in the Q, remove this as an output consumer
-      if(replayEvents.size() == 0) {
-        finish();
-      }
       dispatchEventsAtQuantum(this.replayEvents, e.currentQuantum-1);
+      break;
     }
   }
   
