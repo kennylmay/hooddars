@@ -44,7 +44,6 @@ public class Replayer implements OutputConsumer {
      while(iter.hasNext()) {
        DARSEvent d = iter.next();
        
-       
        //If this quantum is greater than specified quantum, break out
        //This assumes the list is ordered. If it isn't, change this routine!
        if(d.currentQuantum > quantum) {

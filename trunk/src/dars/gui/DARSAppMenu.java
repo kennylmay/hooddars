@@ -85,10 +85,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JButton            pauseButton         = new JButton();
   private JButton            stopButton          = new JButton();
    
-  private JPanel             legendArea          = new JPanel();
-  private JLabel             controlMessageLabel = new JLabel("Control:");
-  private JLabel             narrativeMessageLabel = new JLabel("Narrative:");
-  private JLabel             broadcastMessageLabel = new JLabel("Broadcast:");
+  
+  private ColorLegend        legendArea          = new ColorLegend();
   
   private JPanel             controlMessageColor   = new JPanel();
   private JPanel             narrativeMessageColor = new JPanel();
@@ -235,13 +233,6 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     controlMessageColor.setBackground(Defaults.CNTRLMSG_COLOR);
     broadcastMessageColor.setBackground(Defaults.BROADCAST_COLOR);
     
-    legendArea.setLayout(new GridLayout(3,2,5,5));
-    legendArea.add(narrativeMessageLabel);
-    legendArea.add(narrativeMessageColor);
-    legendArea.add(controlMessageLabel);
-    legendArea.add(controlMessageColor);
-    legendArea.add(broadcastMessageLabel);
-    legendArea.add(broadcastMessageColor);
     legendArea.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         "Legend", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
