@@ -72,9 +72,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JMenuItem          deleteNodeMenuItem    = new JMenuItem("Delete Selected Node");
   private JMenuItem          addMultipleNodesMenuItem  = new JMenuItem("Add Multiple Nodes");
   private JMenuItem          loadTopologyMenuItem  = new JMenuItem("Load Topology from File...");
-  private JLabel             typeLabel           = new JLabel("Simulation type: ");
+  private JLabel             typeLabel           = new JLabel("Simulation Type: ");
   private JLabel             modeLabel           = new JLabel("Mode: ");
-  private JLabel             engineStatusLabel      = new JLabel("Engine status: ");
+  private JLabel             engineStatusLabel      = new JLabel("Engine Status: ");
   private JLabel             simModeLabel           = new JLabel();
   private JLabel             simTypeLabel           = new JLabel();
   private JLabel             simEngineStatusLabel   = new JLabel();
@@ -465,9 +465,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     });
 
     readmeMenuItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-      //  new TextWindow("/README.txt");   
-        new HTMLWindow();
+      public void actionPerformed(ActionEvent e) {   
+        new OpenBrowser("http://code.google.com/p/hooddars/wiki/Help");
       }
     });
     
