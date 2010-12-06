@@ -1,3 +1,5 @@
+<wiki:toc max_depth="2" />
+
 =Adding a New Protocol=
 
 DARS is designed to easily accept the addition of new routing protocols.  Adding a protocol can be divided into three major steps.
@@ -7,7 +9,7 @@ DARS is designed to easily accept the addition of new routing protocols.  Adding
   * Creating a Protocol Dialog Box
 
 
-==Updating the NodeFactory==
+==Updating the Node Factory==
 
 Updating the NodeFactory class indicates to DARS that there is an additional protocol.  This automatically adds the new protocol into the GUI as well as giving the simumlation engine access to nodes of the new protocol type.
 
