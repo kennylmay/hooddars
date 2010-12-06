@@ -1,14 +1,14 @@
 <wiki:toc max_depth="3" />
 =DARS (Dynamic Ad-Hoc Routing Simulator v 1.0)=                   
 
-  ==1.0 Setting Up A Simulation==                     
+==1.0 Setting Up A Simulation==                     
 
   * Create a new simulation by selecting Simulation->New->AODV. This will should unlock the canvas and other buttons such as Play. From here you may begin by adding and moving nodes around the canvas.
 
   * See section 2.0 for adding and moving nodes.
 
 
-  ==2.0 Node Management==                   
+==2.0 Node Management==                   
 
   ===2.1 Adding Nodes===
 	
@@ -45,7 +45,7 @@
   * This Operation can be performed before and during a simulation.
 		  
 
-  ==3.0 Playing A Simulation==                   
+==3.0 Playing A Simulation==                   
 
   ===3.1 Playing A New Simulation===
 	
@@ -60,11 +60,11 @@
 		
   * The simulation can be played as usual. If untouched the simulation will continue to run just as it had previously. If the simulation is edited it will attempt to follow the previous replay as closely as possible with the new changes taken into account.
 		  
-  ==4.0 Saving A Simulation==                   
+==4.0 Saving A Simulation==                   
 
   * A simulation can be saved at any point before, during, or after the simulation has been run.  This can be accomplished by selecting Simulation->Save.  This will ask you for the file location in which to save the file and if it should be overwritten or not.
 	  
-  ==5.0 Loading A Simulation==                    
+==5.0 Loading A Simulation==                    
 
   ===5.1 Loading a Replay===
 	
@@ -88,7 +88,7 @@
   * The simulation will continue to run until it is paused or stopped.
 		
 
-  ==6.0 Sending a Message==                 
+==6.0 Sending a Message==                 
 	
   * A narritave message can be sent from one node to another by right clicking on a node and clicking send message. This will display a popup box asking for the destination node and a text area with the message to send.
 		  
@@ -96,9 +96,9 @@
 		  
   * A message can be added to a node before or during a simulation.  
 		
-  ==7.0 AODV Notes==                   
+==7.0 AODV Notes==                   
 
-  ==8.0 DSDV Notes==                    
+==8.0 DSDV Notes==                    
 
-  ==9.0 Programmer Notes==                  
+==9.0 Programmer Notes==                  
 	  
