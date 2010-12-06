@@ -35,7 +35,7 @@ import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
 
-public class NodeAttributesArea extends JPanel implements GNodeListener {
+public class NodeAttributesArea extends JPanel implements GNodeListener, NodeControls {
 
   private JComboBox                nodeSelectorComboBox    = new JComboBox();
   private JSpinner                 nodeRangeSpinner        = new JSpinner(
@@ -45,12 +45,12 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   
   private JSpinner                 XSpinner        = new JSpinner(
       new SpinnerNumberModel(
-          0, -10, 10000,
+          0, -10, 9999,
           10));
   
   private JSpinner                 YSpinner        = new JSpinner(
       new SpinnerNumberModel(
-          0, -10, 10000,
+          0, -10, 9999,
           10));
   
   private JButton                  nodeAttributesButton    = new JButton("Attributes");
@@ -60,72 +60,15 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
   private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
 
   public NodeAttributesArea() {
-    // Use a box layout inside a border layout, with an internal flow layout at
-    // each vertical item.
-    /*
-     * _____________________ | ITEM | | | ITEM | | | ITEM | | | .... | |
-     * |_______| |
-     */
-    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-        "Node Controls", 
-        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
-        
-    setLayout(new BorderLayout());
-    JPanel box = new JPanel();
-    box.setLayout(new BoxLayout(box, BoxLayout.PAGE_AXIS));
 
-    // setup the node id field and label
-    JPanel c;
-    c = new JPanel();
-    c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
-    JLabel label = new JLabel("Node ID:");
-    label.setFont(Defaults.BOLDFACED_FONT);
-    c.add(label);
-    c.add(nodeSelectorComboBox);
-    nodeSelectorComboBox.setPreferredSize(new Dimension(60,
-        nodeSelectorComboBox.getPreferredSize().height));
-    c.add(nodeAttributesButton);
-    box.add(c);
-
-    // setup the node x and y field
-    c = new JPanel();
-    c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
-    label = new JLabel("X:");
-    label.setFont(Defaults.BOLDFACED_FONT);
-    c.add(label);
-    c.add(XSpinner);
-    label = new JLabel("Y:");
-    label.setFont(Defaults.BOLDFACED_FONT);
-    c.add(label);
-    c.add(YSpinner);
-    box.add(c);
-
-    // setup the range field
-    c = new JPanel();
-    c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
-    label = new JLabel("Range:");
-    label.setFont(Defaults.BOLDFACED_FONT);
-    c.add(label);
-    c.add(nodeRangeSpinner);
-    box.add(c);
-
-    // setup the promiscuity field
-    c = new JPanel();
-    promiscuousModeCheckBox.setSelected(false);
-    promiscuousModeCheckBox.setFont(Defaults.BOLDFACED_FONT);
-    c.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 11));
-    c.add(promiscuousModeCheckBox);
-    box.add(c);
-
-    add(box, BorderLayout.NORTH);
+    // Set locked mode
     setLock(true);
-    setVisible(true);
 
-    // Set the attributes shortcut
+    // Set keyboard shortcuts
     nodeAttributesButton.setMnemonic(KeyEvent.VK_A);
     promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
 
-    // Node combobox action handler
+    // Add action handlers
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
         if (blockChangeEvents) {
@@ -455,4 +398,36 @@ public class NodeAttributesArea extends JPanel implements GNodeListener {
     promiscuousModeCheckBox.setEnabled(!b);
     lockedReplayMode = b;
   }
+
+  @Override
+  public JSpinner getXSpinner() {
+    return XSpinner;
+  }
+
+  @Override
+  public JSpinner getYSpinner() {
+    return YSpinner;
+  }
+
+  @Override
+  public JSpinner getRangeSpinner() {
+    return nodeRangeSpinner;
+  }
+
+  @Override
+  public JButton getNodeAttributesButton() {
+    return nodeAttributesButton;
+  }
+
+  @Override
+  public JCheckBox getPromiscuityCheckBox() {
+    return promiscuousModeCheckBox;
+  }
+
+  @Override
+  public JComboBox getNodeComboBox() {
+    return nodeSelectorComboBox;
+  }
+  
+
 }

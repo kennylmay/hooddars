@@ -33,13 +33,14 @@ public class GUI extends JFrame implements OutputConsumer {
   private static final long  serialVersionUID    = 1L;
   private JPanel             simPanel            = new JPanel();
   private JPanel             logPanel            = new JPanel();
-  private JPanel             nodeAttributesPanel = new JPanel();
+  private JPanel             bottomRightPanel = new JPanel();
 
   private LogArea            logArea             = new LogArea();
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
+  private ColorLegend         colorLegend         = new ColorLegend();
   private SimArea            simArea             = new SimArea();
 
-  private DARSAppMenu        menuArea            = new DARSAppMenu(this);
+  private DARSAppMenu        menuArea            ;
 
   public GUI() {
     super(Defaults.TITLE_STRING);
@@ -63,7 +64,7 @@ public class GUI extends JFrame implements OutputConsumer {
         }
     });
 
-    
+
     
     // Setup a new layout for the outermost part of the frame. We'll use the
     // border layout.
@@ -85,8 +86,8 @@ public class GUI extends JFrame implements OutputConsumer {
     this.add(subpanel, BorderLayout.CENTER);
 
     // Add the east panel.
-    nodeAttributesPanel.setLayout(new BorderLayout());
-    nodeAttributesPanel.add(nodeAttributesArea, BorderLayout.CENTER);
+    bottomRightPanel.setLayout(new BorderLayout());
+    bottomRightPanel.add(colorLegend, BorderLayout.CENTER);
     
 
     /*
@@ -104,7 +105,7 @@ public class GUI extends JFrame implements OutputConsumer {
     // Add the Status log panel to the bottom part.
     logPanel.setLayout(new BorderLayout());
     logPanel.add(logArea, BorderLayout.CENTER);
-    logPanel.add(nodeAttributesPanel, BorderLayout.EAST);
+    logPanel.add(bottomRightPanel, BorderLayout.EAST);
     subpanel.add(logPanel, BorderLayout.SOUTH);
 
     // initialize communication paths between the gui objects
@@ -133,8 +134,7 @@ public class GUI extends JFrame implements OutputConsumer {
     Dimension windowSize = new Dimension(r.width, r.height);
 
     this.setPreferredSize(windowSize);
-    //The logpanel's size is dependent on the size of the nodeAttributes area
-    logPanel.setPreferredSize(logPanel.getPreferredSize());
+    logPanel.setPreferredSize(new Dimension(logPanel.getPreferredSize().width, 210));
     simPanel.setPreferredSize(new Dimension((int) (windowSize.width),
         (int) (windowSize.height * .8)));
   }
@@ -351,6 +351,8 @@ public class GUI extends JFrame implements OutputConsumer {
   }
 
   private void attachMenus() {
+    //Insantiate the menu area
+    menuArea = new DARSAppMenu(this, (NodeControls)nodeAttributesArea);
     add(menuArea.getActionPanel(), BorderLayout.NORTH);
     this.setJMenuBar(menuArea.getMenuBar());
   }

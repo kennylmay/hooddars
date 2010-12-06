@@ -86,11 +86,6 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JButton            stopButton          = new JButton();
    
   
-  private ColorLegend        legendArea          = new ColorLegend();
-  
-  private JPanel             controlMessageColor   = new JPanel();
-  private JPanel             narrativeMessageColor = new JPanel();
-  private JPanel             broadcastMessageColor = new JPanel();
   
   
   private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
@@ -113,7 +108,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private GUI                guiInstance; 
   private Replayer           replayer = null;
   
-  public DARSAppMenu(GUI g) {
+  public DARSAppMenu(GUI g, NodeControls nodeControls) {
 
     guiInstance = g;
     
@@ -210,7 +205,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
     // Add the Play, pause, and stop buttons
-    controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 11, 2));
+    controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 2));
    
     customizeButton(stopButton, "stop.png", "hoverstop.png" );
     customizeButton(playButton, "play.png", "hoverplay.png");
@@ -229,17 +224,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
         "Simulation Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
 
-    narrativeMessageColor.setBackground(Defaults.NARRMSG_COLOR);
-    controlMessageColor.setBackground(Defaults.CNTRLMSG_COLOR);
-    broadcastMessageColor.setBackground(Defaults.BROADCAST_COLOR);
-    
-    legendArea.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-        "Legend", 
-        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+
    
     menuPanel.add(statusPanel);
     menuPanel.add(controlPanel);
-    menuPanel.add(legendArea);
     
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
@@ -268,18 +256,19 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     subPanel.add(speedLabel);
     subPanel.add(sliderArea);
     
-    speedArea.setLayout(new FlowLayout(FlowLayout.LEFT, 11, 0));
+    speedArea.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     speedArea.add(subPanel);
     
     slideBar.setSnapToTicks(true);
     slideBar.setPaintTicks(true);
     slideBar.setMinorTickSpacing(1);
+    
     Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
     labelTable.put( new Integer( 1 ), new JLabel("Slower") );
     labelTable.put( new Integer( 20 ), new JLabel("Faster") );
     slideBar.setLabelTable(labelTable);
     slideBar.setPaintLabels(true);
-
+    slideBar.setPreferredSize(new Dimension(130, slideBar.getPreferredSize().height));
     
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
@@ -792,11 +781,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private void resizeMenuPanel() {
     //Set all of the component heights to the maximum component height
     int maxH = Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height);
-    maxH = Math.max(maxH, legendArea.getPreferredSize().height);
     
-    statusPanel.setPreferredSize(new Dimension(350, maxH));
+    statusPanel.setPreferredSize(new Dimension(330, maxH));
     controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, maxH));
-    legendArea.setPreferredSize(new Dimension(legendArea.getPreferredSize().width, maxH));
     
     //Invalidate the panel so swing knows to resize 
     menuPanel.invalidate();
