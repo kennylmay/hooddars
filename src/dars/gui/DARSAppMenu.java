@@ -794,7 +794,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     int maxH = Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height);
     maxH = Math.max(maxH, legendArea.getPreferredSize().height);
     
-    statusPanel.setPreferredSize(new Dimension(400, maxH));
+    statusPanel.setPreferredSize(new Dimension(360, maxH));
     controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, maxH));
     legendArea.setPreferredSize(new Dimension(legendArea.getPreferredSize().width, maxH));
     
