@@ -15,8 +15,8 @@ import dars.Defaults;
 
 
 public class ColorLegend extends JPanel {
-  private JPanel labelsGrid = new JPanel(new GridLayout(4,1,0,0));
-  private JPanel colorsGrid = new JPanel(new GridLayout(4,1,0,0));
+  private JPanel labelsGrid = new JPanel(new GridLayout(5,1,0,0));
+  private JPanel colorsGrid = new JPanel(new GridLayout(5,1,0,0));
   public ColorLegend() {
     super();
     //Add the control message row
@@ -24,6 +24,7 @@ public class ColorLegend extends JPanel {
     addLegendItem("User Data Message:", Defaults.NARRMSG_COLOR);
     addLegendItem("Broadcast Message:", Defaults.BROADCAST_COLOR);
     addLegendItem("Selected Node Range:", Defaults.SELECTED_RANGE_COLOR);
+    addLegendItem("Node Range:", Defaults.RANGE_COLOR);
     
     add(labelsGrid);
     add(colorsGrid);
