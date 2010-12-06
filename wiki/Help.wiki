@@ -101,7 +101,9 @@
 
 ==8.0 DSDV Notes==    
 
-  [http://code.google.com/p/hooddars/wiki/DSDV DSDV]
+  [http://code.google.com/p/hooddars/wiki/DSDV Resources]
 
-==9.0 Programmer Notes==                  
+==9.0 Programmer Notes==        
+
+  [http://code.google.com/p/hooddars/wiki/NewProto Adding A New Protocol]   
 	  
