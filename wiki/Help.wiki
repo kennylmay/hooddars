@@ -105,5 +105,5 @@
 
 ==9.0 Programmer Notes==        
 
-  [http://code.google.com/p/hooddars/wiki/NewProto Adding A New Protocol]   
+  [http://code.google.com/p/hooddars/wiki/AddProto Adding A New Protocol]   
 	  
