@@ -123,7 +123,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel    RangeSpinnerLabel            = new JLabel("Range:");
   private JSpinner  RangeSpinner;
   private JCheckBox PromiscuityCheckBox;
-    
+ // private JLabel Logo = new JLabel(new ImageIcon(getClass().getResource("/logo.png")));
   public DARSAppMenu(GUI g, NodeControls nodeControls) {
 
     guiInstance = g;
@@ -250,39 +250,48 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     // Node Attributes panel layout
     nodeAttributesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-        "Node Attributes", 
+        "Node Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
-    nodeAttributesPanel.setLayout(new GridLayout(3,2,5,2));
+    nodeAttributesPanel.setLayout(new GridLayout(3,2,11,5));
        
-    JPanel XPanel = new JPanel(new GridLayout(1,2));
-    JPanel YPanel = new JPanel(new GridLayout(1,2));
-    JPanel RangePanel = new JPanel(new GridLayout(1,2));
+    JPanel XPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
+    JPanel YPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
+    JPanel RangePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5,0));
     JPanel NodePanel = new JPanel(new GridLayout(1,2));
         
+    NodeLabel.setFont(Defaults.BOLDFACED_FONT);
     NodePanel.add(NodeLabel);
     NodePanel.add(NodeComboBox);
   
+    
+    XSpinnerLabel.setFont(Defaults.BOLDFACED_FONT);
     XPanel.add(XSpinnerLabel);
     XPanel.add(XSpinner);
+    
    
+    YSpinnerLabel.setFont(Defaults.BOLDFACED_FONT);
+    YPanel.setFont(Defaults.BOLDFACED_FONT);
     YPanel.add(YSpinnerLabel);
     YPanel.add(YSpinner);
  
+    RangeSpinnerLabel.setFont(Defaults.BOLDFACED_FONT);
     RangePanel.add(RangeSpinnerLabel);
     RangePanel.add(RangeSpinner);
        
     nodeAttributesPanel.add(NodePanel);
     nodeAttributesPanel.add(XPanel);
+    AttributesButton.setFont(Defaults.BOLDFACED_FONT);
     nodeAttributesPanel.add(AttributesButton);
     nodeAttributesPanel.add(YPanel);
+    PromiscuityCheckBox.setFont(Defaults.BOLDFACED_FONT);
     nodeAttributesPanel.add(PromiscuityCheckBox);
     nodeAttributesPanel.add(RangePanel);
           
     menuPanel.add(statusPanel);
     menuPanel.add(controlPanel);
     menuPanel.add(nodeAttributesPanel);
-       
+    //menuPanel.add(Logo);
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
     playButton.setEnabled(false);
@@ -323,7 +332,6 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     slideBar.setLabelTable(labelTable);
     slideBar.setPaintLabels(true);
     slideBar.setPreferredSize(new Dimension(170, slideBar.getPreferredSize().height));
-    
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
         
@@ -835,12 +843,11 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private void resizeMenuPanel() {
     //Set all of the component heights to the maximum component height
     int maxH = Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height);
+    maxH = Math.max(maxH, nodeAttributesPanel.getPreferredSize().height);
     
     statusPanel.setPreferredSize(new Dimension(350, maxH));
     controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, maxH));
-    nodeAttributesPanel.setPreferredSize(new Dimension(300, maxH));
-    
-    //Invalidate the panel so swing knows to resize 
+    nodeAttributesPanel.setPreferredSize(new Dimension(nodeAttributesPanel.getPreferredSize().width, maxH));
     menuPanel.invalidate();
     
   }
