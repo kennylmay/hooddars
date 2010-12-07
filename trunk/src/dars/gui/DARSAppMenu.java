@@ -123,9 +123,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel    RangeSpinnerLabel            = new JLabel("Range:");
   private JSpinner  RangeSpinner;
   private JCheckBox PromiscuityCheckBox;
-  
-  private JLabel Logo = new JLabel(new ImageIcon(getClass().getResource("/logo.png")));
-  
+    
   public DARSAppMenu(GUI g, NodeControls nodeControls) {
 
     guiInstance = g;
@@ -223,7 +221,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
     // Add the Play, pause, and stop buttons
-    controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 2));
+    controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 2));
    
     customizeButton(stopButton, "stop.png", "hoverstop.png" );
     customizeButton(playButton, "play.png", "hoverplay.png");
@@ -284,7 +282,6 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     menuPanel.add(statusPanel);
     menuPanel.add(controlPanel);
     menuPanel.add(nodeAttributesPanel);
-    menuPanel.add(Logo);
        
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
@@ -325,7 +322,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     labelTable.put( new Integer( 20 ), new JLabel("Faster") );
     slideBar.setLabelTable(labelTable);
     slideBar.setPaintLabels(true);
-    slideBar.setPreferredSize(new Dimension(130, slideBar.getPreferredSize().height));
+    slideBar.setPreferredSize(new Dimension(170, slideBar.getPreferredSize().height));
     
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
@@ -839,12 +836,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     //Set all of the component heights to the maximum component height
     int maxH = Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height);
     
-    
-    statusPanel.setPreferredSize(new Dimension(330, maxH));
+    statusPanel.setPreferredSize(new Dimension(350, maxH));
     controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, maxH));
-    nodeAttributesPanel.setPreferredSize(new Dimension(270, maxH));
-    Logo.setLocation(menuPanel.getSize().width-100, 0);
-   
+    nodeAttributesPanel.setPreferredSize(new Dimension(300, maxH));
+    
     //Invalidate the panel so swing knows to resize 
     menuPanel.invalidate();
     
