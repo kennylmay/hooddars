@@ -45,8 +45,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import dars.Defaults;
 import dars.InputHandler;
 import dars.NodeAttributes;
+import dars.OutputHandler;
 import dars.Utilities;
 import dars.event.DARSEvent;
+import dars.event.DARSEvent.EventType;
 import dars.logger.Logger;
 import dars.logger.Parser;
 import dars.proto.NodeFactory.NodeType;
@@ -379,7 +381,12 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
 
     debugCheckBox.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent arg0) {
-        logArea.setDEBUG(debugCheckBox.getState());
+         if(debugCheckBox.getState()) {
+           OutputHandler.addFilteredEvent(EventType.OUT_DEBUG);
+         }
+         else {
+           OutputHandler.removeFilteredEvent(EventType.OUT_DEBUG);
+         }
       }      
     });
     

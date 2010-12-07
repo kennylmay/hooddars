@@ -37,9 +37,6 @@ public class LogArea extends javax.swing.JPanel {
   static private int counter = 0;
   static private String topLine = null;
   public void appendLog(String log, long quantum) {
-    if (log.contains("DEBUG") && DEBUG == false){
-      return;
-    }
     
     //Construct the log line
     String line = ("T:" + Utilities.timeStamp() + " Q" + quantum + " : " + log + newline);
@@ -108,23 +105,6 @@ public class LogArea extends javax.swing.JPanel {
     textArea.setText("");
   }
 
-
-  /**
-   * Set whether to display debug messages.
-   * @param dEBUG the dEBUG to set
-   */
-  public void setDEBUG(boolean dEBUG) {
-    DEBUG = dEBUG;
-  }
-
-
-  /**
-   * Return whether or not DEBUG is set
-   * @return the dEBUG
-   */
-  public boolean isDEBUG() {
-    return DEBUG;
-  }
   
   //Add a text area
   
