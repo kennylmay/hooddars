@@ -331,7 +331,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     labelTable.put( new Integer( 20 ), new JLabel("Faster") );
     slideBar.setLabelTable(labelTable);
     slideBar.setPaintLabels(true);
-    slideBar.setPreferredSize(new Dimension(170, slideBar.getPreferredSize().height));
+    slideBar.setPreferredSize(new Dimension(150, slideBar.getPreferredSize().height));
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
         
