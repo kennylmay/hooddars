@@ -64,7 +64,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
     // Set locked mode
     setLock(true);
 
-    // Set keyboard shortcuts
+    //Set keyboard shortcuts
     nodeAttributesButton.setMnemonic(KeyEvent.VK_A);
     promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
   
@@ -332,10 +332,6 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
     }
     openNodeDialogs.clear();
     
-    //Cludge alert. Reset the settings based on locked replay mode
-    nodeRangeSpinner.setEnabled(!lockedReplayMode);
-    promiscuousModeCheckBox.setEnabled(!lockedReplayMode);
-    
     blockChangeEvents = false;
   }
 
@@ -343,8 +339,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
     setAttributes(getAttributes(id));
   }
 
+  boolean isLocked = false;
   public void setLock(boolean isLocked) {
     // lock every field
+    this.isLocked = isLocked; 
     nodeSelectorComboBox.setEnabled(!isLocked);
     XSpinner.setEnabled(!isLocked);
     YSpinner.setEnabled(!isLocked);
