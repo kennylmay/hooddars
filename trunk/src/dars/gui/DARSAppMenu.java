@@ -155,6 +155,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     createNetworkMenu.add(clearNodesMenuItem);
  
     // Add elements to the mode 
+    debugCheckBox.setState(Defaults.DEBUG_ENABLED);
     modeMenu.add(debugCheckBox);
     modeMenu.add(graphicsCheckBox);
     

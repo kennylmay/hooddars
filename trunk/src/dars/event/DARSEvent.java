@@ -28,7 +28,7 @@ public class DARSEvent {
     OUT_MSG_TRANSMITTED,  OUT_DEBUG, OUT_ERROR, OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, 
     OUT_STOP_SIM, OUT_SIM_SPEED, OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, 
     OUT_CONTROLMSG_RECEIVED, OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, 
-    OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED
+    OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED, OUT_NODE_INFO
   };
 
   public EventType            eventType;
@@ -84,10 +84,10 @@ public class DARSEvent {
     return e;
   }
   
-  public static DARSEvent outInsertMessage() {
+  public static DARSEvent outInsertMessage(String sourceID, String destID, String message) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_INSERT_MESSAGE;
-    e.informationalMessage = "Message Insertion Successful.";
+    e.informationalMessage = "User message inserted into the network. Source ID: " + sourceID + ", Dest ID: " + destID + ", Message: " + message;
     return e;
   }
   
@@ -361,8 +361,14 @@ public class DARSEvent {
   }
   
   
+  public static DARSEvent outNodeInfo(String infoMsg) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_NODE_INFO;
+    e.informationalMessage = infoMsg;
+    return e;
+  }
   
-  public static DARSEvent OutQuantumElapsed() {
+  public static DARSEvent outQuantumElapsed() {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_QUANTUM_ELAPSED;
     return e;

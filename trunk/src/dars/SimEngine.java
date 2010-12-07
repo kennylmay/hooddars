@@ -149,7 +149,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
             simTime++;
             
             //Begin a new quantum
-            OutputHandler.dispatch(DARSEvent.OutQuantumElapsed());
+            OutputHandler.dispatch(DARSEvent.outQuantumElapsed());
             
             //Check if the kill switch was thrown as a result of the event
             if(KILL_THREAD) {
@@ -199,8 +199,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       }
       //Introduce the message into the network
       n.newNarrativeMessage(m.originId, m.destinationId, m.message);
-      // Dispatch the insert message event
-      OutputHandler.dispatch(DARSEvent.outInsertMessage());
     }
     
     
@@ -401,6 +399,10 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         // Add the message to the newMessages Q
         Message m = new Message(e.destinationId,e.sourceId, e.transmittedMessage);
         newMessages.add(m);
+        
+        // Dispatch the insert message event
+        OutputHandler.dispatch(DARSEvent.outInsertMessage(e.sourceId, e.destinationId, e.transmittedMessage));
+        
         break;
       }
     } // / Exit critical area
