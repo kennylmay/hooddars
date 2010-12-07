@@ -283,12 +283,12 @@ public class SimArea extends JLayeredPane {
     }
     int minFPS = 1;
     int usedFPS;
-    if (newFPS < maxFPS && newFPS > minFPS)
+    if (newFPS < Defaults.MAXFPS && newFPS > Defaults.MINFPS)
       usedFPS = newFPS;
-    else if (newFPS <= minFPS) {
+    else if (newFPS <= Defaults.MINFPS) {
       usedFPS = minFPS;
     } else
-      usedFPS = maxFPS;
+      usedFPS = Defaults.MAXFPS;
 
     animations.setFPS(usedFPS);
   }

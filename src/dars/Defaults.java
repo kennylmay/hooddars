@@ -24,4 +24,6 @@ public class Defaults {
   public static final int BROADCAST_THICKNESS = 2;
   public static final String TITLE_STRING = "Dynamic Ad-hoc Routing Simulator";
   public static final int LOG_AREA_BUF_SIZE = 16384;
+  public static final int MAXFPS = 50;
+  public static final int MINFPS = 1;
 }
