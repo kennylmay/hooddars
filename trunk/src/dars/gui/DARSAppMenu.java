@@ -1,8 +1,10 @@
 package dars.gui;
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
@@ -21,7 +23,9 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -31,7 +35,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -84,17 +90,15 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JButton            resumeButton        = new JButton();
   private JButton            pauseButton         = new JButton();
   private JButton            stopButton          = new JButton();
-   
-  
-  
-  
+
   private JCheckBoxMenuItem  debugCheckBox       = new JCheckBoxMenuItem("Debug Enabled");
   private JCheckBoxMenuItem  graphicsCheckBox    = new JCheckBoxMenuItem("Graphics Enabled");
 
   private JPanel             speedArea           = new JPanel();
   private JPanel             simTypeArea         = new JPanel();
   private JPanel             statusPanel         = new JPanel();
-  private JPanel             controlPanel         = new JPanel();
+  private JPanel             controlPanel        = new JPanel();
+  private JPanel             nodeAttributesPanel = new JPanel();
 
   // Labels slider bar for the speed adjustment
   private JLabel             speedLabel          = new JLabel("Simulation Speed");
@@ -102,16 +106,30 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JPanel             menuPanel           = new JPanel();
   private SimArea            simArea;
   private LogArea            logArea;
-  private JPanel         currentQuantumArea     = new JPanel();
-  private static JLabel         currentQuantumLabel     = new JLabel();
+  private JPanel         currentQuantumArea      = new JPanel();
+  private static JLabel  currentQuantumLabel     = new JLabel();
   private JProgressBar   replayPBar              = new JProgressBar();
   private GUI                guiInstance; 
   private Replayer           replayer = null;
   
+  // Node controls components
+  private JButton   AttributesButton;
+  private JLabel    NodeLabel                    = new JLabel("Node ID:");
+  private JComboBox NodeComboBox;
+  private JLabel    XSpinnerLabel                = new JLabel("X:");
+  private JSpinner  XSpinner;
+  private JLabel    YSpinnerLabel                = new JLabel("Y:");
+  private JSpinner  YSpinner;
+  private JLabel    RangeSpinnerLabel            = new JLabel("Range:");
+  private JSpinner  RangeSpinner;
+  private JCheckBox PromiscuityCheckBox;
+  
+  private JLabel Logo = new JLabel(new ImageIcon(getClass().getResource("/logo.png")));
+  
   public DARSAppMenu(GUI g, NodeControls nodeControls) {
 
     guiInstance = g;
-    
+   
     //listen for component events so we can resize the menu panel later
     g.addComponentListener(this);
     
@@ -224,11 +242,50 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
         "Simulation Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
 
-
+    AttributesButton = nodeControls.getNodeAttributesButton();
+    NodeComboBox = nodeControls.getNodeComboBox();
+    XSpinner = nodeControls.getXSpinner();
+    YSpinner = nodeControls.getYSpinner();
+    RangeSpinner = nodeControls.getRangeSpinner();
+    PromiscuityCheckBox = nodeControls.getPromiscuityCheckBox();
+    
+    
+    // Node Attributes panel layout
+    nodeAttributesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Node Attributes", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+    
+    nodeAttributesPanel.setLayout(new GridLayout(3,2,5,2));
+       
+    JPanel XPanel = new JPanel(new GridLayout(1,2));
+    JPanel YPanel = new JPanel(new GridLayout(1,2));
+    JPanel RangePanel = new JPanel(new GridLayout(1,2));
+    JPanel NodePanel = new JPanel(new GridLayout(1,2));
+        
+    NodePanel.add(NodeLabel);
+    NodePanel.add(NodeComboBox);
+  
+    XPanel.add(XSpinnerLabel);
+    XPanel.add(XSpinner);
    
+    YPanel.add(YSpinnerLabel);
+    YPanel.add(YSpinner);
+ 
+    RangePanel.add(RangeSpinnerLabel);
+    RangePanel.add(RangeSpinner);
+       
+    nodeAttributesPanel.add(NodePanel);
+    nodeAttributesPanel.add(XPanel);
+    nodeAttributesPanel.add(AttributesButton);
+    nodeAttributesPanel.add(YPanel);
+    nodeAttributesPanel.add(PromiscuityCheckBox);
+    nodeAttributesPanel.add(RangePanel);
+          
     menuPanel.add(statusPanel);
     menuPanel.add(controlPanel);
-    
+    menuPanel.add(nodeAttributesPanel);
+    menuPanel.add(Logo);
+       
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);
     playButton.setEnabled(false);
@@ -272,7 +329,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     menuPanel.setOpaque(false);
     menuPanel.setVisible(true);
-    
+        
     // Setup a few simple keyboard shortcuts
     // These respond when ctrl is held
     saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
@@ -782,9 +839,12 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     //Set all of the component heights to the maximum component height
     int maxH = Math.max(statusPanel.getPreferredSize().height, controlPanel.getPreferredSize().height);
     
+    
     statusPanel.setPreferredSize(new Dimension(330, maxH));
     controlPanel.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, maxH));
-    
+    nodeAttributesPanel.setPreferredSize(new Dimension(270, maxH));
+    Logo.setLocation(menuPanel.getSize().width-100, 0);
+   
     //Invalidate the panel so swing knows to resize 
     menuPanel.invalidate();
     

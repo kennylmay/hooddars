@@ -54,7 +54,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
           10));
   
   private JButton                  nodeAttributesButton    = new JButton("Attributes");
-  private JCheckBox                promiscuousModeCheckBox = new JCheckBox("Promiscous Mode Enabled");
+  private JCheckBox                promiscuousModeCheckBox = new JCheckBox("Promiscous Mode");
   private boolean                  blockChangeEvents       = false;
   private Vector<String>           nodeList                = new Vector<String>();
   private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
@@ -67,7 +67,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
     // Set keyboard shortcuts
     nodeAttributesButton.setMnemonic(KeyEvent.VK_A);
     promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
-
+  
     // Add action handlers
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
