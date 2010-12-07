@@ -3,8 +3,8 @@
  */
 package dars;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import dars.event.DARSEvent;
 
@@ -27,9 +27,22 @@ public class OutputHandler {
   }
 
   public static void dispatch(DARSEvent e) {
+    //Apply event filter
+    if(filteredEvents.contains(e.eventType)) {
+      return;
+    }
     for (OutputConsumer c : consumers) {
       c.consumeOutput(e);
     }
+  }
+  
+  private static final CopyOnWriteArraySet<DARSEvent.EventType> filteredEvents = new CopyOnWriteArraySet<DARSEvent.EventType>();
+  public static void addFilteredEvent(DARSEvent.EventType eType) {
+    filteredEvents.add(eType);
+  }
+  
+  public static void removeFilteredEvent(DARSEvent.EventType eType) {
+    filteredEvents.remove(eType);
   }
 
 }
