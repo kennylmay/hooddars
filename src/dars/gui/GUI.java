@@ -11,6 +11,7 @@ import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.Utilities;
 import dars.event.DARSEvent;
+import dars.event.DARSEvent.EventType;
 import dars.logger.Logger;
 import dars.replayer.Replayer;
 import dars.replayer.Replayer.ReplayMode;
@@ -181,7 +182,7 @@ public class GUI extends JFrame implements OutputConsumer {
         //select the node
         simArea.selectNode(e.nodeId);
         nodeAttributesArea.setNodeById(e.nodeId);   
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_MOVE_NODE:
@@ -193,34 +194,39 @@ public class GUI extends JFrame implements OutputConsumer {
         nodeAttributesArea.setNodeById(e.nodeId);
         
         //show the event in the visual log
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_SET_NODE_RANGE:
         // Refresh the node attributes panel
         nodeAttributesArea.setNodeById(e.nodeId);
         simArea.setNodeRange(e.nodeId, e.nodeRange);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
         
       case OUT_SET_NODE_PROMISCUITY:
         // Refresh the node attributes panel
         nodeAttributesArea.setNodeById(e.nodeId);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
     
       case OUT_MSG_RECEIVED:
-        // Refresh the node attributes panel
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         JOptionPane.showMessageDialog(null, "Successful Message Transmission!\n" +
                                             "Source Node: "+ e.sourceId + "\n" + 
                                             "Destination Node: " + e.destinationId + "\n" +
                                             "Message: " + e.transmittedMessage);
         break;
+      
+      case OUT_INSERT_MESSAGE:
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
+        break;
+        
   
       case OUT_NARRMSG_RECEIVED:
         // Animate the event
         simArea.traceMessage(e.sourceId, e.destinationId, Defaults.NARRMSG_COLOR, 5, Defaults.NARRMSG_THICKNESS, 1);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("NODE INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       
@@ -229,7 +235,7 @@ public class GUI extends JFrame implements OutputConsumer {
         //If the destination is BROADCAST, animate it.
         if(e.destinationId.equals(Message.BCAST_STRING)){
           simArea.nodeBroadcast(e.sourceId);
-          logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+          logArea.appendLog("NODE INFO: " + e.informationalMessage, e.currentQuantum);
         }
         break;
         
@@ -237,7 +243,7 @@ public class GUI extends JFrame implements OutputConsumer {
       case OUT_CONTROLMSG_RECEIVED:
         // Animate the event
         simArea.traceMessage(e.sourceId, e.destinationId, Defaults.CNTRLMSG_COLOR,1, Defaults.CNTRLMSG_THICKNESS,0);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("NODE INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
         
@@ -245,14 +251,17 @@ public class GUI extends JFrame implements OutputConsumer {
         // Remove the node
         simArea.deleteNode(e.nodeId);
         nodeAttributesArea.nodeDeleted(e.nodeId);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_DEBUG:
-        logArea.appendLog("DEBUG: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM DEBUG: " + e.informationalMessage, e.currentQuantum);
         break;
       case OUT_ERROR:
-        logArea.appendLog("ERROR: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM ERROR: " + e.informationalMessage, e.currentQuantum);
+        break;
+      case OUT_NODE_INFO:
+        logArea.appendLog("NODE INFO: " + e.informationalMessage, e.currentQuantum);
         break;
         
       case OUT_QUANTUM_ELAPSED:
@@ -269,7 +278,7 @@ public class GUI extends JFrame implements OutputConsumer {
         menuArea.simStarted();
         //Tell the simarea what the simulation speed is
         simArea.setSimSpeed(e.newSimSpeed);
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_STOP_SIM:
@@ -277,7 +286,7 @@ public class GUI extends JFrame implements OutputConsumer {
         menuArea.simStopped();
         simArea.simStopped();
         nodeAttributesArea.simStopped();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         
         //Prompt the user to save the log
         int ret = JOptionPane.showConfirmDialog(null,
@@ -294,20 +303,20 @@ public class GUI extends JFrame implements OutputConsumer {
         menuArea.simPaused();
         simArea.simPaused();
         nodeAttributesArea.simPaused();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_RESUME_SIM:
         //Notify the menu that the sim has resumed
         menuArea.simResumed();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
 
       case OUT_CLEAR_SIM:
         //Clear the sim area.
         nodeAttributesArea.clear();
         simArea.clear();
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
         break;
      
       case OUT_NEW_SIM:
@@ -326,7 +335,7 @@ public class GUI extends JFrame implements OutputConsumer {
         //Let the menu area know that a new sim has been created
         menuArea.newSim(e.nodeType);
         
-        logArea.appendLog("INFO: " + e.informationalMessage, e.currentQuantum);
+        logArea.appendLog("SIM INFO: " + e.informationalMessage, e.currentQuantum);
 
       }
     }

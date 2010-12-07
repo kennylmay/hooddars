@@ -6,6 +6,7 @@ import java.awt.Font;
 import javax.swing.plaf.FontUIResource;
 
 public class Defaults {
+  public static final boolean DEBUG_ENABLED = false;
   public static final int X = 100;
   public static final int Y = 100;
   public static final boolean IS_PROMISCUOUS = false;

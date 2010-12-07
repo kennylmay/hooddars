@@ -29,6 +29,12 @@ public class DARSMain {
     //Init images
     ImageFactory.checkInit();
     Utilities.setSwingFont(Defaults.FONT);
+    
+    //Set defaults
+    if(!Defaults.DEBUG_ENABLED) {
+      OutputHandler.addFilteredEvent(DARSEvent.EventType.OUT_DEBUG);
+    }
+    
 
     // Setup the logger to consume DARSEvents from both the input handler and
     // the output handler. From henceforth, all DARSEvents that pass through
