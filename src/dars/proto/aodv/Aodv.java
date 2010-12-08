@@ -1552,7 +1552,7 @@ public class Aodv extends Node {
        * This node does not have a route to the desired destination and thus
        * should not have been used in the route. ERROR.
        */
-      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+      OutputHandler.dispatch(DARSEvent.outNodeInfo(this.att.id
           + "Received a narrative message for " + MsgDestID
           + " but has no route to the destination.  Dropping message."));
     }
@@ -1627,7 +1627,7 @@ public class Aodv extends Node {
 
         OutputHandler
             .dispatch(DARSEvent
-                .outError("Message lifetime expired while waiting for valid Route. Message: "
+                .outNodeInfo("Message lifetime expired while waiting for valid Route. Dropping Message. Message: "
                     + WaitEntry.MsgString));
         WaitQueueIter.remove();
       }
