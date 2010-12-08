@@ -190,12 +190,12 @@ public class Animations extends JPanel implements ComponentListener,
     }
 
     
-    double stepX = (double) (x1 - x2) / 2500 ;
-    double stepY = (double) (y1 - y2) / 2500  ;
+    double stepX = (double) (x1 - x2) / Defaults.MESSAGE_ANISPEED_MILLISECONDS;
+    double stepY = (double) (y1 - y2) / Defaults.MESSAGE_ANISPEED_MILLISECONDS;
 
 
-    g.fillRect(x1 - (int) (stepX * (anicount % (2500))), y1
-        - (int) (stepY * (anicount % (2500 ))), 3+fatness*2, 3+fatness*2);
+    g.fillRect(x1 - (int) (stepX * (anicount % (Defaults.MESSAGE_ANISPEED_MILLISECONDS))), y1
+        - (int) (stepY * (anicount % (Defaults.MESSAGE_ANISPEED_MILLISECONDS))), 3+fatness*2, 3+fatness*2);
   }
 
   @Override
@@ -250,7 +250,7 @@ public class Animations extends JPanel implements ComponentListener,
       this.priority = priority;
       this.fatness  = fatness;
       startCount =  anicount;
-      dieCount =  anicount + Animations.connLifeTime;
+      dieCount =  anicount + Animations.connLifeTime * longevityFactor;
     }
 
     public boolean equals(Object b) {
@@ -356,7 +356,7 @@ public class Animations extends JPanel implements ComponentListener,
     }
 
     long startStep;
-    int totalSteps = 600;
+    int totalSteps = Defaults.BROADCAST_ANISPEED_MILLISECONDS;
 
     public boolean isActive() {
       return (Animations.anicount - startStep < totalSteps && Animations.anicount > startStep);

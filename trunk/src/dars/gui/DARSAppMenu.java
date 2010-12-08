@@ -376,7 +376,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
 
     debugCheckBox.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent arg0) {
-         if(debugCheckBox.getState()) {
+         if(!debugCheckBox.getState()) {
            OutputHandler.addFilteredEvent(EventType.OUT_DEBUG);
          }
          else {
