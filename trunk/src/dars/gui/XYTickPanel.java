@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import dars.Defaults;

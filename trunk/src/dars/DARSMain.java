@@ -4,11 +4,7 @@
 package dars;
 
 import java.awt.SplashScreen;
-import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.SwingUtilities;
-
-import dars.console.Console;
 import dars.event.DARSEvent;
 import dars.gui.GUI;
 import dars.gui.ImageFactory;

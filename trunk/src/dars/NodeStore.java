@@ -4,12 +4,8 @@
 package dars;
 
 import dars.proto.*;
-import dars.proto.aodv.AodvDialog;
-
 import java.util.HashMap;
 import java.util.Iterator;
-
-import javax.swing.JDialog;
 
 /**
  * @author Kenny

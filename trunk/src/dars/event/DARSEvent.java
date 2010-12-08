@@ -4,8 +4,6 @@
 package dars.event;
 
 import java.lang.reflect.Field;
-import java.math.BigInteger;
-
 import dars.NodeAttributes;
 import dars.Message;
 import dars.SimulationTimeKeeper;

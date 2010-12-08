@@ -38,7 +38,6 @@ public class Aodv extends Node {
   /**
    * Hidden no-argument constructor.
    */
-  @SuppressWarnings("unused")
   private Aodv() { super(null); };
   
   

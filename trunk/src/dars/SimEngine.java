@@ -178,8 +178,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     Message message = null;
     Iterator<Node> i;
     Iterator<Message> mi;
-    //Get a reference to the size of the Q
-    int msgQSize = messageQueue.size();  
    
     // If there are any messages in the newMessage Q, introduce them
     // into the network.
