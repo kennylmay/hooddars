@@ -254,8 +254,8 @@ public class Animations extends JPanel implements ComponentListener,
       this.color = color;
       this.priority = priority;
       this.fatness  = fatness;
-      startCount =  System.currentTimeMillis();
-      dieCount =  (System.currentTimeMillis() + Animations.connLifeTime);
+      startCount =  anicount;
+      dieCount =  anicount + Animations.connLifeTime;
     }
 
     public boolean equals(Object b) {
@@ -316,7 +316,7 @@ public class Animations extends JPanel implements ComponentListener,
     }
 
     public void fireBroadcast() {
-      startStep = System.currentTimeMillis();
+      startStep = anicount;
     }
 
     public void drop() {

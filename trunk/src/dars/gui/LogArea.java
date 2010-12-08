@@ -5,9 +5,7 @@ package dars.gui;
 
 import java.awt.BorderLayout;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -27,7 +25,6 @@ public class LogArea extends javax.swing.JPanel {
   /**
    * 
    */
-  private Object signal = new Object();
 
   private class Appender extends Thread {
     public void run() {
@@ -43,7 +40,7 @@ public class LogArea extends javax.swing.JPanel {
           continue;
         }
         String line;
-        while ((line = lines.poll()) != null)
+        while ((line = lines.poll()) != null && lineList.size() < 100)
           lineList.add(line);
 
         for (String l : lineList) {
