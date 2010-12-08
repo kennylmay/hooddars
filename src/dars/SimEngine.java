@@ -27,7 +27,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
   Queue<Message>              newMessages  = new LinkedList<Message>();
   MessageRelay                thread       = new MessageRelay();
   static public Object        lock         = new Object();
-  private volatile boolean    paused;
+  private volatile boolean    paused,throwPause;
   private volatile long       simTime      = 0;
 
   /**
@@ -82,9 +82,9 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
    * @param
    */
   void pauseSimulation() {
-      paused = true;
+      throwPause = true;
   }
-
+  
   /**
    * Function that will resume a simulation
    * 
@@ -139,10 +139,18 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
       while (KILL_THREAD == false) {
 
         iterationCount++;
+        
+        if(throwPause) {
+          OutputHandler.dispatch(DARSEvent.outPauseSim());
+          throwPause = false;
+          paused = true;
+        }
         // Only attempt to enter the critical area every 100th try
         if (iterationCount == 100) {
           // Reset the iterationCount after the 100th try
           iterationCount = 0;
+          
+
           if (paused == false) {
             
             //Increment sim time
@@ -283,7 +291,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         
       case IN_PAUSE_SIM:
         pauseSimulation();
-        OutputHandler.dispatch(DARSEvent.outPauseSim());
         break;
         
       case IN_RESUME_SIM:

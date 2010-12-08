@@ -277,12 +277,11 @@ public class SimArea extends JLayeredPane {
     if (gnodemap.size() != 0) {
       newFPS = (1000 / gnodemap.size());
     }
-    int minFPS = 1;
     int usedFPS;
     if (newFPS < Defaults.MAXFPS && newFPS > Defaults.MINFPS)
       usedFPS = newFPS;
     else if (newFPS <= Defaults.MINFPS) {
-      usedFPS = minFPS;
+      usedFPS = Defaults.MAXFPS;
     } else
       usedFPS = Defaults.MAXFPS;
 
