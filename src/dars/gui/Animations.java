@@ -139,12 +139,7 @@ public class Animations extends JPanel implements ComponentListener,
 
 
 
-  private Timer animationTimer = new Timer(33, new ActionListener() {
-                                 public void actionPerformed(ActionEvent e) {
-                                   //anicount++;
-                                 }
-                               });
-  static long    anicount       = 0;
+  static long    anicount       = System.currentTimeMillis();
   static int    connLifeTime   = 0;
 
   public static void setSimSpeed(int speed) {
