@@ -4,20 +4,15 @@
 package dars.gui;
 
 import java.awt.BorderLayout;
-import java.math.BigInteger;
-
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-
 import dars.Defaults;
 import dars.Utilities;
 
@@ -38,10 +33,6 @@ public class LogArea extends javax.swing.JPanel {
    * Debug flag to determine whether or not to show debug messages
    * in the log.
    */
-  private boolean DEBUG;
-  
-  static private int counter = 0;
-  static private String topLine = null;
   public void appendLog(String logType, String log, long quantum) {
     
     //Construct the log line

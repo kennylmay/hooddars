@@ -663,7 +663,9 @@ public class Dsdv extends Node {
     /**
      * Message Properties
      */
+    @SuppressWarnings("unused")
     String MsgType;
+    @SuppressWarnings("unused")
     String MsgFlags;
     int MsgDestCount;
 

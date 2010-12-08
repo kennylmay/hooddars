@@ -4,12 +4,9 @@ import javax.swing.*;
 
 import dars.Defaults;
 import dars.InputHandler;
-import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
-
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.*;
@@ -276,7 +273,6 @@ public class SimArea extends JLayeredPane {
 
   private void reassessFPS() {
     // reassess the FPS
-    int maxFPS = 100;
     int newFPS = 0;
     if (gnodemap.size() != 0) {
       newFPS = (1000 / gnodemap.size());

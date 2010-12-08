@@ -11,19 +11,13 @@ import dars.NodeInspector;
 import dars.OutputConsumer;
 import dars.Utilities;
 import dars.event.DARSEvent;
-import dars.event.DARSEvent.EventType;
-import dars.logger.Logger;
 import dars.replayer.Replayer;
 import dars.replayer.Replayer.ReplayMode;
 import dars.replayer.Replayer.ReplayerListener;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Queue;
 
 public class GUI extends JFrame implements OutputConsumer {
@@ -159,7 +153,6 @@ public class GUI extends JFrame implements OutputConsumer {
     // (selecting a new node, etc)
     nodeAttributesArea.setSimArea(simArea);
     menuArea.setSimArea(simArea);
-    menuArea.setLogArea(logArea);
     simArea.setNodeAttributesArea(nodeAttributesArea);
   }
 

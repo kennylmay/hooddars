@@ -15,6 +15,10 @@ import dars.Defaults;
 
 
 public class ColorLegend extends JPanel {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   private JPanel labelsGrid = new JPanel(new GridLayout(5,1,0,0));
   private JPanel colorsGrid = new JPanel(new GridLayout(5,1,0,0));
   public ColorLegend() {

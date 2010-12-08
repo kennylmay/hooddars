@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class GNode extends JPanel {
   /**
@@ -142,15 +141,10 @@ public class GNode extends JPanel {
   private void setEntered(boolean entered) {
     // If the node is selected, don't draw a hover image
     if (isSelected) {
-      isEntered = entered;
       return;
     }
 
     if (entered) {
-      isEntered = true;
-
-      // Set entered status
-      isEntered = true;
 
       // Set image to hover image
       img_ = ImageFactory.getHoveredNodeImg();
@@ -165,7 +159,7 @@ public class GNode extends JPanel {
   // ID of the node
   private String                      id_;
 
-  private boolean                     isEntered, isSelected;
+  private boolean                     isSelected;
 
   // DraggedNode boolean. Will be set true if the node is currently being
   // dragged

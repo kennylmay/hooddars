@@ -4,13 +4,8 @@
 package dars.logger;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import dars.InputHandler;
-import dars.NodeAttributes;
-import dars.OutputHandler;
 import dars.event.DARSEvent;
 
 /**
