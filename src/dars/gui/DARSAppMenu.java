@@ -66,7 +66,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JMenu              controlMenu            = new JMenu("Control");
   private JMenuItem          saveMenuItem        = new JMenuItem("Save Log");
   private JMenuItem          saveScreenMenuItem  = new JMenuItem("Take Screenshot");
-  private JMenuItem          clearNodesMenuItem       = new JMenuItem("Clear Nodes");
+  private JMenuItem          clearNodesMenuItem       = new JMenuItem("Delete All Nodes");
   private JMenuItem          exitMenuItem        = new JMenuItem("Exit");
   private JMenuItem          importMenuItem      = new JMenuItem("Import for Replay...");
   private JMenuItem          playMenuItem        = new JMenuItem("Play");
@@ -148,9 +148,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     helpMenu.add(aboutMenuItem);
 
     // Add elements to the create network 
-    createNetworkMenu.add(loadTopologyMenuItem);
     createNetworkMenu.add(addSingleNodeMenuItem);
     createNetworkMenu.add(addMultipleNodesMenuItem);
+    createNetworkMenu.add(loadTopologyMenuItem);
+    createNetworkMenu.addSeparator();
     createNetworkMenu.add(deleteNodeMenuItem);
     createNetworkMenu.add(clearNodesMenuItem);
  
