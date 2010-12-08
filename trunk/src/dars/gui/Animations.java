@@ -56,14 +56,15 @@ public class Animations extends JPanel implements ComponentListener,
   }
 
 
-  public void start() {
-    animationTimer.start();
-  }
 
   public void stop() {
-    animationTimer.stop();
+    repaintTimer.stop();
     dropAll();
     repaint();
+  }
+  
+  public void start() {
+    repaintTimer.start();
   }
 
   public void setFPS(int fps) {
@@ -79,6 +80,8 @@ public class Animations extends JPanel implements ComponentListener,
   public void paintComponent(Graphics g) {
 
     super.paintComponent(g);
+    
+    anicount = System.currentTimeMillis();
     
     //clear out the top list
     topList.clear();
@@ -138,16 +141,16 @@ public class Animations extends JPanel implements ComponentListener,
 
   private Timer animationTimer = new Timer(33, new ActionListener() {
                                  public void actionPerformed(ActionEvent e) {
-                                   anicount++;
+                                   //anicount++;
                                  }
                                });
-  static int    anicount       = 0;
+  static long    anicount       = 0;
   static int    connLifeTime   = 0;
 
   public static void setSimSpeed(int speed) {
     // There's no science here, I've just been guesstimating to arrive at this
     // multiplier.
-    connLifeTime = speed * 4 + 60;
+    connLifeTime = 1500 + speed * 300;
   }
 
   private static int xPoints[] = new int[4];
@@ -192,12 +195,12 @@ public class Animations extends JPanel implements ComponentListener,
     }
 
     
-    double stepX = (double) (x1 - x2) / 60;
-    double stepY = (double) (y1 - y2) / 60;
+    double stepX = (double) (x1 - x2) / 2500 ;
+    double stepY = (double) (y1 - y2) / 2500  ;
 
 
-    g.fillRect(x1 - (int) (stepX * (anicount % 60)), y1
-        - (int) (stepY * (anicount % 60)), 3+fatness*2, 3+fatness*2);
+    g.fillRect(x1 - (int) (stepX * (anicount % (2500))), y1
+        - (int) (stepY * (anicount % (2500 ))), 3+fatness*2, 3+fatness*2);
   }
 
   @Override
@@ -232,14 +235,14 @@ public class Animations extends JPanel implements ComponentListener,
   class Connection {
     GNode   fromNode;
     GNode   toNode;
-    int     dieCount;
-    int     startCount;
+    long     dieCount;
+    long     startCount;
     int     priority; //0 is lowest layer
     int     fatness;
     Color   color;
 
     public boolean shouldDie() {
-      if (Animations.anicount >= dieCount || Animations.anicount < startCount)
+      if (anicount >= dieCount)
         return true;
       else
         return false;
@@ -251,8 +254,8 @@ public class Animations extends JPanel implements ComponentListener,
       this.color = color;
       this.priority = priority;
       this.fatness  = fatness;
-      startCount = Animations.anicount;
-      dieCount = startCount + Animations.connLifeTime * longevityFactor;
+      startCount =  System.currentTimeMillis();
+      dieCount =  (System.currentTimeMillis() + Animations.connLifeTime);
     }
 
     public boolean equals(Object b) {
@@ -265,7 +268,7 @@ public class Animations extends JPanel implements ComponentListener,
     }
     
     public void drop() {
-      this.dieCount = Integer.MIN_VALUE;
+      this.dieCount = 0;
     }
   }
 
@@ -313,11 +316,11 @@ public class Animations extends JPanel implements ComponentListener,
     }
 
     public void fireBroadcast() {
-      startStep = Animations.anicount;
+      startStep = System.currentTimeMillis();
     }
 
     public void drop() {
-      startStep = Integer.MIN_VALUE;
+      startStep = 0;
     }
     
     
@@ -357,14 +360,14 @@ public class Animations extends JPanel implements ComponentListener,
       g2.setStroke(BASIC_STROKE);
     }
 
-    int startStep;
-    int totalSteps = 25;
+    long startStep;
+    int totalSteps = 600;
 
     public boolean isActive() {
       return (Animations.anicount - startStep < totalSteps && Animations.anicount > startStep);
     }
 
-    public int curStep() {
+    public long curStep() {
       return Animations.anicount - startStep;
     }
 
