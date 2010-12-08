@@ -85,7 +85,7 @@ public class DARSEvent {
   public static DARSEvent outInsertMessage(String sourceID, String destID, String message) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_INSERT_MESSAGE;
-    e.informationalMessage = "User message inserted into the network. Source ID: " + sourceID + ", Dest ID: " + destID + ", Message: " + message;
+    e.informationalMessage = "User message inserted into the network. Source ID: " + sourceID + " Dest ID: " + destID + " Message: " + message;
     return e;
   }
   
