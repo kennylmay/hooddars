@@ -29,38 +29,34 @@ public class LogArea extends javax.swing.JPanel {
   private class Appender extends Thread {
     public void run() {
       LinkedList<String> lineList = new LinkedList<String>();
-      StringBuilder sb = new StringBuilder(10000);
+      StringBuilder sb = new StringBuilder(1310);
       while (true) {
-
         try {
-          lineList.clear();
-          sb.setLength(0);
-          lineList.add(lines.take());
-        } catch (InterruptedException e) {
-          continue;
+        lineList.clear();
+        sb.setLength(0);
+        lineList.add(lines.take());
+        synchronized(lines) {
+          lines.drainTo(lineList);
         }
-        String line;
-        while ((line = lines.poll()) != null && lineList.size() < 100)
-          lineList.add(line);
-
+        System.out.println("Appending lines: " + lineList.size());
         for (String l : lineList) {
+          if(l == null) continue;
           sb.append(l);
         }
-
-        line = sb.toString();
-
-        // Append
-        textArea.append(line);
-
+       // Append
+        textArea.append(sb.toString());
         // Maintain the buffer
         clampBuffer();
-
         // Move the caret to chase the log as it grows downward
         textArea.setCaretPosition(textArea.getDocument().getLength());
+        }
+        catch(Exception e)     {
+            continue;
+        }
       }
     }
-  }
 
+  }
   private static final long           serialVersionUID = 1L;
   public static String                newline          = System
                                                            .getProperty("line.separator");
@@ -74,8 +70,10 @@ public class LogArea extends javax.swing.JPanel {
 
     // Construct the log line
     String line = (Utilities.timeStamp() + " Q" + quantum + " : " + logType
-        + " : " + log + newline);
-    lines.add(line);
+        + " : " + log + "\n");
+    synchronized(lines) {
+      lines.add(line);
+    }
 
   }
 
@@ -132,6 +130,5 @@ public class LogArea extends javax.swing.JPanel {
     textArea.setText("");
   }
 
-  // Add a text area
 
 }
