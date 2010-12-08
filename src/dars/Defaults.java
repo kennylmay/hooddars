@@ -27,4 +27,8 @@ public class Defaults {
   public static final int LOG_AREA_BUF_SIZE = 32768;
   public static final int MAXFPS = 50;
   public static final int MINFPS = 3;
+  
+  //Animation speeds. Total time for one cycle of animation. Smaller is faster.
+  public static final int BROADCAST_ANISPEED_MILLISECONDS = 700;
+  public static final int MESSAGE_ANISPEED_MILLISECONDS = 1000;
 }

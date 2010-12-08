@@ -139,11 +139,9 @@ public class Utilities {
         out.close();
 
       } catch (FileNotFoundException e1) {
-        e1.printStackTrace();
-        JOptionPane.showMessageDialog(parent, "Log file could not be saved at"
-            + chooser.getSelectedFile().getPath());
+        showError("Log file could not be saved at "+ chooser.getSelectedFile().getPath());
       } catch (IOException e1) {
-        e1.printStackTrace();
+        showError("Log file could not be saved due to an IO error.");
       }
     }
   }
