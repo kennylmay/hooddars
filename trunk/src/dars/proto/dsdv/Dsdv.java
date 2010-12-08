@@ -1059,7 +1059,7 @@ public class Dsdv extends Node {
       /**
        * Do not have a route to the destination node.
        */
-      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+      OutputHandler.dispatch(DARSEvent.outNodeInfo(this.att.id
           + " Wants to send to " + MsgDestID
           + " but has no Route.  The message will be dropped."));
     }
