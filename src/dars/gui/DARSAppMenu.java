@@ -509,8 +509,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     exitMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         // Before we exit make sure to clean up the temporary log file.
-        Logger logger = Logger.getInstance();
-        logger.deleteLogFile();
+        Logger.deleteLogFile();
         System.exit(0);
       }
     });
