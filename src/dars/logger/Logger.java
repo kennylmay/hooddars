@@ -33,6 +33,7 @@ public class Logger implements OutputConsumer, InputConsumer {
     // if file handle is not init, do it
     if (fstream == null) {
       try {
+        deleteLogFile();
         fstream = new FileWriter(Utilities.getTmpLogPath());
       } catch (IOException e2) {
         Utilities.showError("(Fatal) Could not write to the DARS temporary file due to an IO exception :" + e2.getMessage());
@@ -61,7 +62,7 @@ public class Logger implements OutputConsumer, InputConsumer {
 
   }
 
-  public void deleteLogFile() {
+  public static void deleteLogFile() {
     // Make sure the file handle is closed.
     closeLogFile();
     File tmp = null;
@@ -76,7 +77,7 @@ public class Logger implements OutputConsumer, InputConsumer {
 
   }
 
-  private void closeLogFile() {
+  private static void closeLogFile() {
     if (fstream != null) {
       try {
         if (out != null) {
@@ -102,26 +103,25 @@ public class Logger implements OutputConsumer, InputConsumer {
         e.printStackTrace();
       }
     }
-    fstream = null;
   }
 
   // Fulfills the DARSConsumer contract
   public void consumeOutput(DARSEvent e) {
+    
 
     // log the event
     Logger.log(e);
-
+    
+    
     switch (e.eventType) {
-    case OUT_NEW_SIM:
-      // Delete the log file if it exists.
-      deleteLogFile();
-      break;
 
     case OUT_STOP_SIM:
       // Close the log file
       closeLogFile();
       break;
     }
+
+
 
   }
 
