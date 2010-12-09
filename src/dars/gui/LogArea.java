@@ -26,10 +26,11 @@ public class LogArea extends javax.swing.JPanel {
    * 
    */
 
+  private static final StringBuilder sb = new StringBuilder(65535);
   private class Appender extends Thread {
     public void run() {
       LinkedList<String> lineList = new LinkedList<String>();
-      StringBuilder sb = new StringBuilder(1310);
+      
       while (true) {
         try {
         lineList.clear();
@@ -38,17 +39,20 @@ public class LogArea extends javax.swing.JPanel {
         synchronized(lines) {
           lines.drainTo(lineList);
         }
-        System.out.println("Appending lines: " + lineList.size());
         for (String l : lineList) {
           if(l == null) continue;
+          
           sb.append(l);
         }
-       // Append
+        
+        // Append
         textArea.append(sb.toString());
+        
         // Maintain the buffer
         clampBuffer();
         // Move the caret to chase the log as it grows downward
         textArea.setCaretPosition(textArea.getDocument().getLength());
+        
         }
         catch(Exception e)     {
             continue;
@@ -57,6 +61,8 @@ public class LogArea extends javax.swing.JPanel {
     }
 
   }
+  
+  
   private static final long           serialVersionUID = 1L;
   public static String                newline          = System
                                                            .getProperty("line.separator");
@@ -86,8 +92,8 @@ public class LogArea extends javax.swing.JPanel {
       try {
         // Chomp off from 0 to the end of the line where offset
         // LOG_AREA_BUF_SIZE/2 falls.
-        doc.remove(0, textArea.getLineEndOffset(textArea
-            .getLineOfOffset(Defaults.LOG_AREA_BUF_SIZE / 2)));
+       textArea.replaceRange("", 0, textArea.getLineEndOffset(textArea
+           .getLineOfOffset(doc.getLength()/2)));
       } catch (BadLocationException e) {
         Utilities
             .showError("An error occurred while truncating the buffer in the LogArea. Please file a bug report.");
