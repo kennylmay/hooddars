@@ -35,7 +35,7 @@ public class Logger implements OutputConsumer, InputConsumer {
       try {
         fstream = new FileWriter(Utilities.getTmpLogPath());
       } catch (IOException e2) {
-        Utilities.showError("Could not open the DARS temp file. Please file a bug report");
+        Utilities.showError("(Fatal) Could not write to the DARS temporary file due to an IO exception :" + e2.getMessage());
         System.exit(1);
       }
       out = new BufferedWriter(fstream);
@@ -43,9 +43,8 @@ public class Logger implements OutputConsumer, InputConsumer {
       try {
         out.append(DARSEvent.getLogHeader() + newline);
       } catch (IOException e1) {
-        Utilities.showError("Could not write to the DARS temp file2. Please file a bug report");
-        // TODO Auto-generated catch block
-        e1.printStackTrace();
+        Utilities.showError("(Fatal) Could not write to the DARS temporary file due to an IO exception :" + e1.getMessage());
+        System.exit(1);
       }
       
       //Arrange for the file to be deleted on exit
@@ -56,9 +55,8 @@ public class Logger implements OutputConsumer, InputConsumer {
     try {
       out.append(e.getLogString());
     } catch (IOException e1) {
-      Utilities.showError("Could not write to the DARS temp file1. Please file a bug report");
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+      Utilities.showError("(Fatal) Could not write to the DARS temporary file due to an IO exception :" + e1.getMessage());
+      System.exit(1);
     }
 
   }
