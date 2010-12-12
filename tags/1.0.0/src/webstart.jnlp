@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="" href="">
+    <information>
+        <title>Dynamic Ad-hoc Routing Simulator</title>
+        <vendor>Hood College</vendor>
+    </information>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+              href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="http://hooddars.googlecode.com/files/DARS.jar" main="true" />
+
+    </resources>
+    <application-desc
+         name="Dynamic Ad-hoc Routing Simulator"
+         main-class="dars.DARSMain"
+         >
+     </application-desc>
+     <security>
+       <all-permissions/>
+     </security>
+     <update check="always" policy="prompt-update"/>
+</jnlp>	
