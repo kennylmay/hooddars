@@ -6,6 +6,7 @@ package dars.gui;
 import java.awt.BorderLayout;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
@@ -13,7 +14,6 @@ import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-
 import dars.Defaults;
 import dars.Utilities;
 
@@ -43,9 +43,10 @@ public class LogArea extends javax.swing.JPanel {
             lines.drainTo(lineList);
           }
 
-          // Build the buffer from the end to the beginning
+          //Read the lines from the end to the beginning;
+          //If the maximum buffer threshold is reached, break
           int bufSize = 0;
-          int strLen = 0;
+          int strLen, numLines = 0;
           String l;
           Iterator<String> di = lineList.descendingIterator();
           boolean shouldBreak = false;
@@ -57,13 +58,19 @@ public class LogArea extends javax.swing.JPanel {
             if (bufSize + strLen > Defaults.LOG_AREA_BUF_SIZE) {
               shouldBreak = true;
             } else {
-              sb.insert(0, l);
               bufSize += strLen;
-
+              numLines++;
             }
           }
+          
+          //Re-iterate, building the buffer
+          ListIterator<String> li = lineList.listIterator(lineList.size()
+              - numLines);
+          while (li.hasNext()) {
+            sb.append(li.next());
+          }
 
-          // Maintain the buffer
+          // Maintain the text area size
           clampBuffer(bufSize);
 
           // Append
@@ -72,8 +79,11 @@ public class LogArea extends javax.swing.JPanel {
           // Move the caret to chase the log as it grows downward
           textArea.setCaretPosition(textArea.getDocument().getLength());
         } catch (Exception e) {
-          continue;
+          Utilities.showError("An error occurred while trying to append to the console. Please file a bug report.");
+          System.exit(1);
         }
+        
+        
       }
     }
 
@@ -109,9 +119,10 @@ public class LogArea extends javax.swing.JPanel {
       try {
         // Chomp off from 0 to the end of the line where offset
         // LOG_AREA_BUF_SIZE/2 falls.
-        textArea.replaceRange("", 0, textArea.getLineEndOffset(textArea
-            .getLineOfOffset(Math.min(doc.getLength(), doc.getLength()
-                - doc.getLength() / 2 + incomingBufSize))));
+        textArea.replaceRange(
+            "",
+            0,
+            textArea.getLineEndOffset(textArea.getLineOfOffset( Math.min(doc.getLength(), overLength))));
       } catch (BadLocationException e) {
         Utilities
             .showError("An error occurred while truncating the buffer in the LogArea. Please file a bug report.");
@@ -125,8 +136,8 @@ public class LogArea extends javax.swing.JPanel {
 
   public LogArea() {
 
-    setBorder(BorderFactory.createTitledBorder(BorderFactory
-        .createEtchedBorder(), "Console", TitledBorder.CENTER,
+    setBorder(BorderFactory.createTitledBorder(
+        BorderFactory.createEtchedBorder(), "Console", TitledBorder.CENTER,
         TitledBorder.TOP, Defaults.BOLDFACED_FONT));
 
     // Setup the text area.
