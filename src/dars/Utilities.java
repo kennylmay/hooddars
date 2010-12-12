@@ -151,9 +151,9 @@ public class Utilities {
     return nodeTypes;
   }
 
+  static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
   public static String timeStamp() {
     Calendar cal = Calendar.getInstance();
-    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     return sdf.format(cal.getTime());
   }
 
