@@ -1,11 +1,11 @@
 Name: DARS
 Version: 1.0.0
-Release: 4
+Release: 429
 Source0: http://hooddars.googlecode.com/svn/trunk/
 Distribution: Red hat Linux
 URL: http://hooddars.googlecode.com/svn/trunk/
 Packager: Kenny May <kennylmay@gmail.com>
-License: US Government Proprietary
+License: GNU General Public License v3
 Summary: Dynamic Ad-Hoc routing simulator
 Exclusiveos: linux
 Buildroot: %{_topdir}/BUILD/%{name}
@@ -39,15 +39,14 @@ find -iname *.java | xargs javac -d ../bin
 #Change to the bin directory
 cd ${BUILDDIR}/bin
 
-#Create manifest file
-echo "Main-Class: dars.DARSMain" >> manifest
-
 #Copy our images to the bin directory
 cp ${BUILDDIR}/img/* ${BUILDDIR}/bin/
+cp ${BUILDDIR}/src/*.txt ${BUILDDIR}/bin
+cp ${BUILDDIR}/src/manifest ${BUILDDIR}/bin
 
 #Create the jar file
 cd ${BUILDDIR}/bin
-find -iname *.class | xargs jar cfm DARSApp.jar manifest *.png
+find -iname *.class | xargs jar cfm DARSApp.jar manifest *.png *.txt
 
 cp ${BUILDDIR}/bin/DARSApp.jar $SRCDIR/
 
