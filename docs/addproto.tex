@@ -1,0 +1,157 @@
+\documentclass[a4paper,11pt,titlepage]{article}
+
+\newcommand{\MEM}{Moorman}
+\newcommand{\KM}{May}
+\newcommand{\SK}{Kress}
+\newcommand{\MM}{Marin}
+\newcommand{\JN}{Nanda}
+
+\usepackage{vhistory}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{xspace}
+\usepackage{amsmath}
+\usepackage{import}
+\usepackage{expdlist}
+
+
+% title definition
+\author{Seth Kress}
+\title{Adding a New Protocol to the Dynamic Ad-Hoc Routing Simulator  (v\vhCurrentVersion)}
+
+\date{\today}
+
+\begin{document}
+
+%generate the title page
+\maketitle
+
+
+%generate the table of contents
+\tableofcontents
+
+\newpage
+
+\begin{versionhistory}
+% Note the syntax of \vhEntry! Authors are separated by `|'         %%
+\vhEntry{1.0}{2010-12-15}{\SK}{Initial version.}            %%
+\end{versionhistory}
+
+\newpage
+
+\section{Adding a New Protocol}
+DARS is designed to easily accept the addition of new routing protocols. Adding a protocol can be divided into three major steps.
+\begin{itemize}
+   \item Updating the NodeFactory
+   \item Exteneding the Node Class
+   \item Creating a Protocol Dialog Box
+\end{itemize}
+
+\subsection{Updating the Node Factory}
+Updating the NodeFactory class indicates to DARS that there is an additional protocol. This automatically adds the new protocol into the GUI as well as giving the simumlation engine access to nodes of the new protocol type.
+
+Update dars/proto/NodeFactory.java
+
+\begin{enumerate}
+   \item[Step 1:] Add an import statement for the new protocol's class.
+
+      \texttt{import dars.proto.newproto.NewProto;}
+
+   \item[Step 2:] Add the protocol name to the NodeType enumeration.
+
+      \texttt{public enum NodeType \{ AODV, DSDV, NewProto \};}
+
+   \item[Step 3:] Handle new node requests for the new protocol type. Add a case to the node type switch statement. The new case should call the constructor for the protocol. The constructor will need to accept a single argument of NodeAttributes type. This constructor is required as part of the Node abstract base class.
+
+      \texttt{case NewProtoName : return NewProto(na);}
+\end{enumerate}
+
+\subsection{Extending the Node Class}
+The Node Class requires that a new protocol implement six functions. These functions provide interfaces rest of DARS to intereact with a node. The protocol implementation should not call any of these functions.
+
+A list of the functions and a description follows, but more detailed information is included in the source of the Node class implementation file (Node.java).
+
+\begin{itemize}
+   \item messageToNetwork - This function is used to return a message off the transmit queue of a node and return it for the simulation engine to consume. Effectively this is used to simulate the transmittal of a message into the network.
+   \item messageToNode - This function is used to deliver a message to a node. The message will be placed into the nodes receive queue effectively the node is receiving the message.
+   \item newNarrativeMessage - Send a narrative message from one node to another.
+   \item clockTick - Process an iteration of this node. This will do all the processing for a node's time interval.
+   \item getNodeDialog - Return a JDialog that will be displayed by the GUI.
+   \item updateNodeDialog - Update the previously returned JDialog with the latest information for a node that will be showed to the GUI.
+\end{itemize}
+
+\subsection{Creating a Protocol Dialog Box}
+Each protocol must provide a dialog box that can be displayed to the user to show information about a given node to the user. This dialog should extend the standard JDialog class. The implementation and design of the Protocol Dialog box is left up to the developer that is implementing the protocol.
+
+\section{Additional Topics}
+
+In the process of impleneting a new protocol in DARS the developer will undoubtably require knowledge of two additional areas of DARS, the Message class and DARSEvents.
+
+\subsection{The Message Class}
+The Message Class is the internal representation of a message. It contains three fields message, destinationId, and originId.
+
+The message field (Message.message) contains the payload of the message. The payload is normally a pipe, '\textbar', delimited string. An example of this is the narrative message payload that is used by both AODV and DSDV implementation. The simulation engine does not examine the message field except to display it to the user.
+
+\begin{center}
+NARR Message Format - TYPE \textbar FLAGS \textbar TTL \textbar DESTID \textbar ORIGID \textbar TEXT
+\end{center}
+
+The destinationId field is the desired destination node ID string. The message class also implents a special destination ID string that can be used for broadcast messages. To send a broadcase message assign destiationId equal to Message.BCAST\_STRING.
+
+The originId field is the ID of the node that is sending the message into the network.
+
+It is important to remember that origin and destination of a given message object are often different than the origin and desired destination of a message payload.
+
+\subsection{DARSEvents}
+DARSEvents are the way that DARS communicates from one area of the program to another. For the puroposes of a protocol implementer a DARSEvent can be thought of as a way to notify the rest of the program of an event. This will often end up in some form of output to the user.
+
+Some examples of calling a DARSEvent:
+
+\begin{enumerate}
+   \item[] \texttt{OutputHandler.dispatch(DARSEvent.outDebug("Debug Message"));}
+
+   \item[] \texttt{OutputHandler.dispatch(DARSEvent.outMsgRecieved(MsgOrigID, MsgDestID, MsgText));}
+\end{enumerate}
+
+For a protocol implementaion only a subset of the overall list of DARSEvents are relavent. That subset is listed below with additional information.
+
+\begin{itemize}
+   \item DARSEvent.outDebug(String DebugText)
+
+Outputs DebugText into the simulation log.
+
+   \item DARSEvent.outError(String ErrorText)
+
+Outputs ErrorText into the simulation log.
+
+   \item DARSEvent.outControlMsgReceived(String NodeID, Message msg)
+
+Informs the GUI that node NodeID received the protocol control message msg. This acction will also be logged.
+DARSEvent.outControlMsgReceived should be called anytime a node receives a message that is not a Narrative message.
+
+   \item DARSEvent.outControlMsgTransmitted(String NodeID, Message msg)
+
+Informs the GUI that node NodeID transmitted the protocol control message msg. This acction will also be logged.
+DARSEvent.outControlMsgTransmitted should be called anytime a node transmits a message that is not a Narrative message.
+
+   \item DARSEvent.outNarrMsgReceived(String NodeID, Message msg)
+
+Informs the GUI that node NodeID received the narrative message msg. This acction will also be logged.
+DARSEvent.outNarrMsgReceived should be called anytime a node receives a message that is a Narrative message.
+
+   \item DARSEvent.outNarrMsgTransmitted(String NodeID, Message msg)
+
+Informs the GUI that node NodeID transmitted the narrative message msg. This acction will also be logged.
+DARSEvent.outNarrMsgTransmitted should be called anytime a node transmits a message that is not a Narrative message.
+
+   \item DARSEvent.outMsgRecieved(MsgOrigID, MsgDestID, MsgText)
+
+outMsgRecieved is a special DARSEvent that results in a popup box being displayed to the user informing them of a message being received. This event is generally only used when a Narrative message successfully reaches its final destination.
+
+\end{itemize}
+
+\end{document}
+
+
+
+
