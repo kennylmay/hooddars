@@ -133,8 +133,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
 
     public void run() {
       
-
-      
       // Make sure the kill switch hasn't been thrown.
       while (KILL_THREAD == false) {
 
@@ -149,7 +147,6 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         if (iterationCount == 100) {
           // Reset the iterationCount after the 100th try
           iterationCount = 0;
-          
 
           if (paused == false) {
             
@@ -369,6 +366,9 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         //Clear the simulation
         clearSim();
         
+        //Reset the current quantum
+        simTime = 0;
+        
         //Set the sim type
         setNodeType(e.nodeType);
         
@@ -520,9 +520,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
     
     //Reset the node ID assigning sequence
     this.currId = 0;
-    
-    
   }
+  
   // Fulfills the "Node Inspector" contract.
   public JDialog getNodeDialog(String nodeId) {
     synchronized (lock) {
