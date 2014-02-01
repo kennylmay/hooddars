@@ -1,0 +1,31 @@
+************************************************************
+The Dynamic Ad-Hoc Routing Simulator (DARS) Version: 1.0
+************************************************************
+
+************************************************************
+ Code License
+************************************************************
+ GNU General Public License v3
+
+************************************************************
+ Developers
+************************************************************
+ Seth Kress		kresss@gmail.com
+ Michael Moorman	memjjay@yahoo.com
+ Kenneth May		kennylmay@gmail.com
+ Misael Marin		misael.marin@gmail.com
+ Jagriti Nanda		jagriti.nanda@gmail.com
+
+************************************************************
+ Contact Information
+************************************************************
+  Dr. George Dimitoglou 
+  Professor of Computer Science at Hood University
+  Email: dimitoglou@hood.edu
+ 
+************************************************************
+ Copyright 2010 The DARS Team & the Department of 
+ Computer Science, Hood College, Frederick, MD 21701
+************************************************************
+
+
