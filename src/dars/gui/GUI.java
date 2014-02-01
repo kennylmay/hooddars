@@ -232,13 +232,17 @@ public class GUI extends JFrame implements OutputConsumer {
         }
         break;
         
-        
+      case OUT_NARRMSG_DROPPED:
+        simArea.nodeBroadcast(e.sourceId);
+        simArea.traceMessage(e.sourceId, e.destinationId, Defaults.NARRMSG_COLOR, 5, Defaults.NARRMSG_THICKNESS, 1);
+        logArea.appendLog("NODE INFO", e.informationalMessage, e.currentQuantum);
+        break;
+          
       case OUT_CONTROLMSG_RECEIVED:
         // Animate the event
         simArea.traceMessage(e.sourceId, e.destinationId, Defaults.CNTRLMSG_COLOR,1, Defaults.CNTRLMSG_THICKNESS,0);
         logArea.appendLog("NODE INFO", e.informationalMessage, e.currentQuantum);
         break;
-
         
       case OUT_DEL_NODE:
         // Remove the node

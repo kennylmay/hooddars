@@ -12,4 +12,5 @@ public interface NodeControls {
   public JButton   getNodeAttributesButton();
   public JCheckBox getPromiscuityCheckBox();
   public JComboBox getNodeComboBox();
+  public JCheckBox getDropMessagesCheckBox();
 }

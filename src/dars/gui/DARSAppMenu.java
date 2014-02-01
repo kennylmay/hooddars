@@ -118,6 +118,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JLabel    RangeSpinnerLabel            = new JLabel("Range:");
   private JSpinner  RangeSpinner;
   private JCheckBox PromiscuityCheckBox;
+  private JCheckBox DroppingMessagesCheckBox;
+  
  // private JLabel Logo = new JLabel(new ImageIcon(getClass().getResource("/logo.png")));
   public DARSAppMenu(GUI g, NodeControls nodeControls) {
 
@@ -243,6 +245,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     YSpinner = nodeControls.getYSpinner();
     RangeSpinner = nodeControls.getRangeSpinner();
     PromiscuityCheckBox = nodeControls.getPromiscuityCheckBox();
+    DroppingMessagesCheckBox = nodeControls.getDropMessagesCheckBox();
     
     
     // Node Attributes panel layout
@@ -252,6 +255,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     nodeAttributesPanel.setLayout(new GridLayout(3,2,11,5));
        
+    JPanel CordPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
     JPanel XPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
     JPanel YPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
     JPanel RangePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5,0));
@@ -272,18 +276,25 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     YPanel.add(YSpinnerLabel);
     YPanel.add(YSpinner);
  
+    CordPanel.add(XPanel);
+    CordPanel.add(YPanel);
+    
     RangeSpinnerLabel.setFont(Defaults.BOLDFACED_FONT);
     RangePanel.add(RangeSpinnerLabel);
     RangePanel.add(RangeSpinner);
        
     nodeAttributesPanel.add(NodePanel);
-    nodeAttributesPanel.add(XPanel);
+
     AttributesButton.setFont(Defaults.BOLDFACED_FONT);
     nodeAttributesPanel.add(AttributesButton);
-    nodeAttributesPanel.add(YPanel);
-    PromiscuityCheckBox.setFont(Defaults.BOLDFACED_FONT);
-    nodeAttributesPanel.add(PromiscuityCheckBox);
+    nodeAttributesPanel.add(CordPanel);
     nodeAttributesPanel.add(RangePanel);
+    PromiscuityCheckBox.setFont(Defaults.BOLDFACED_FONT);
+    DroppingMessagesCheckBox.setFont(Defaults.BOLDFACED_FONT);
+  
+    nodeAttributesPanel.add(PromiscuityCheckBox);
+    nodeAttributesPanel.add(DroppingMessagesCheckBox);
+  
           
     menuPanel.add(statusPanel);
     menuPanel.add(controlPanel);

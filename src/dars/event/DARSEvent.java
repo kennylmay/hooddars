@@ -4,6 +4,7 @@
 package dars.event;
 
 import java.lang.reflect.Field;
+
 import dars.NodeAttributes;
 import dars.Message;
 import dars.SimulationTimeKeeper;
@@ -26,7 +27,7 @@ public class DARSEvent {
     OUT_MSG_TRANSMITTED,  OUT_DEBUG, OUT_ERROR, OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, 
     OUT_STOP_SIM, OUT_SIM_SPEED, OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, 
     OUT_CONTROLMSG_RECEIVED, OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, 
-    OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED, OUT_NODE_INFO
+    OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED, OUT_NODE_INFO, OUT_SET_NODE_DROP_MESSAGES, IN_SET_NODE_DROP_MESSAGES, OUT_NARRMSG_DROPPED
   };
 
   public EventType            eventType;
@@ -42,11 +43,13 @@ public class DARSEvent {
   public NodeFactory.NodeType nodeType;
   public long                 currentQuantum;
   public boolean              isPromiscuous;
+  public boolean              isDroppingMessages;
+  private String droppedMessage;
   
 
   //Provided for convenience.
   public NodeAttributes getNodeAttributes() {
-    return new NodeAttributes(nodeId, nodeX, nodeY, nodeRange, isPromiscuous);
+    return new NodeAttributes(nodeId, nodeX, nodeY, nodeRange, isPromiscuous, isDroppingMessages);
   }
   
 //Provided for convenience.
@@ -220,6 +223,15 @@ public class DARSEvent {
     return e;
   }
   
+  public static DARSEvent inSetNodeDropMessages(String id, boolean isDroppingMessages) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_SET_NODE_DROP_MESSAGES;
+    e.isDroppingMessages = isDroppingMessages;
+    e.nodeId = id;
+    return e;
+  }
+  
+  
   public static DARSEvent inMoveNode(String id, int x, int y) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_MOVE_NODE;
@@ -276,6 +288,18 @@ public class DARSEvent {
     e.informationalMessage = "Node " + id + " " + status + " promiscuous mode.";
     return e;
   }
+  
+  public static DARSEvent outSetNodeDropMessages(String id, boolean isDroppingMessages) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_SET_NODE_DROP_MESSAGES;
+    e.isDroppingMessages = isDroppingMessages;
+    String status;
+    if(isDroppingMessages) status = "enabled";
+    else status = "disabled";
+    e.informationalMessage = "Node " + id + " " + status + " dropping messages.";
+    return e;
+  }
+  
   public static DARSEvent outMsgRecieved(String sourceId, String destId, String message) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_MSG_RECEIVED;
@@ -335,6 +359,16 @@ public class DARSEvent {
     d.destinationId = msg.destinationId;
     d.transmittedMessage = msg.message;
     d.informationalMessage = d.sourceId + " transmitted narrative message to " + d.destinationId + " : " + msg.message;
+    return d;
+  }
+  
+  public static DARSEvent outNarrMsgDropped(String nodeId, Message msg) {
+    DARSEvent d = new DARSEvent();
+    d.eventType = EventType.OUT_NARRMSG_DROPPED;
+    d.sourceId = msg.originId;
+    d.destinationId = msg.destinationId;
+    d.droppedMessage = msg.message;
+    d.informationalMessage = nodeId + " dropped narrative message " + msg.message;
     return d;
   }
   
