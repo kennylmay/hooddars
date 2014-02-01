@@ -308,7 +308,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         String id = assignNodeId();
 
         // Make a new network node with these attributes
-        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous);
+        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous, ni.isDroppingMessages);
         n = NodeFactory.makeNewNode(getNodeType(), ni);
 
         // Add it to the node store
@@ -351,6 +351,18 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         // Set the new promiscuity level
         n.setPromiscuity(e.isPromiscuous);
         OutputHandler.dispatch(DARSEvent.outSetNodePromiscuity(e.nodeId, e.isPromiscuous));
+        break;
+        
+      case IN_SET_NODE_DROP_MESSAGES: 
+        //Get the node
+        n = store.getNode(e.nodeId);
+        if(n == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not set drop messages for node " + e.nodeId + ", node does not exist"));
+          return;
+        }
+        // Set the new promiscuity level
+        n.setDropMessages(e.isDroppingMessages);
+        OutputHandler.dispatch(DARSEvent.outSetNodeDropMessages(e.nodeId, e.isDroppingMessages));
         break;
         
       case IN_CLEAR_SIM:

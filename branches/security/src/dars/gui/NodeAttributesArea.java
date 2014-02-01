@@ -24,26 +24,31 @@ import dars.NodeAttributes;
 import dars.NodeInspector;
 import dars.event.DARSEvent;
 
-public class NodeAttributesArea extends JPanel implements GNodeListener, NodeControls {
+public class NodeAttributesArea extends JPanel implements GNodeListener,
+    NodeControls {
 
   private JComboBox                nodeSelectorComboBox    = new JComboBox();
   private JSpinner                 nodeRangeSpinner        = new JSpinner(
                                                                new SpinnerNumberModel(
-                                                                   0, -19, 1000,
-                                                                   20));
-  
-  private JSpinner                 XSpinner        = new JSpinner(
-      new SpinnerNumberModel(
-          0, -10, 9999,
-          10));
-  
-  private JSpinner                 YSpinner        = new JSpinner(
-      new SpinnerNumberModel(
-          0, -10, 9999,
-          10));
-  
-  private JButton                  nodeAttributesButton    = new JButton("Attributes");
-  private JCheckBox                promiscuousModeCheckBox = new JCheckBox("Promiscous Mode");
+                                                                   0, -19,
+                                                                   1000, 20));
+
+  private JSpinner                 XSpinner                = new JSpinner(
+                                                               new SpinnerNumberModel(
+                                                                   0, -10,
+                                                                   9999, 10));
+
+  private JSpinner                 YSpinner                = new JSpinner(
+                                                               new SpinnerNumberModel(
+                                                                   0, -10,
+                                                                   9999, 10));
+
+  private JButton                  nodeAttributesButton    = new JButton(
+                                                               "Attributes");
+  private JCheckBox                dropMessagesCheckBox    = new JCheckBox(
+                                                               "Drop Non-Control Messages");
+  private JCheckBox                promiscuousModeCheckBox = new JCheckBox(
+                                                               "Promiscous Mode");
   private boolean                  blockChangeEvents       = false;
   private Vector<String>           nodeList                = new Vector<String>();
   private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
@@ -53,10 +58,11 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
     // Set locked mode
     setLock(true);
 
-    //Set keyboard shortcuts
+    // Set keyboard shortcuts
     nodeAttributesButton.setMnemonic(KeyEvent.VK_A);
     promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
-  
+    dropMessagesCheckBox.setMnemonic(KeyEvent.VK_D);
+
     // Add action handlers
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
@@ -71,14 +77,13 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
 
         setAttributes(getAttributes((nodeSelectorComboBox.getSelectedItem()
             .toString())));
-        
-        if(!lockedReplayMode) {
+
+        if (!lockedReplayMode) {
           setLock(false);
         }
-        
+
         simArea.selectNode(nodeSelectorComboBox.getSelectedItem().toString());
-        
-        
+
       }
     });
 
@@ -92,10 +97,10 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
           return;
         }
 
-        //Enforce minumum range of zero
-        int range = (Integer)nodeRangeSpinner.getValue();
+        // Enforce minumum range of zero
+        int range = (Integer) nodeRangeSpinner.getValue();
         range = Math.max(0, range);
-        
+
         InputHandler.dispatch(DARSEvent.inSetNodeRange(nodeSelectorComboBox
             .getSelectedItem().toString(), range));
       }
@@ -103,7 +108,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
 
     // X Text Box Single Handler connected to the "Enter"
     XSpinner.addChangeListener(new ChangeListener() {
-      public void  stateChanged(ChangeEvent ie){
+      public void stateChanged(ChangeEvent ie) {
         if (blockChangeEvents) {
           return;
         }
@@ -134,7 +139,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
     });
 
     YSpinner.addChangeListener(new ChangeListener() {
-      public void  stateChanged(ChangeEvent ie){
+      public void stateChanged(ChangeEvent ie) {
         if (blockChangeEvents) {
           return;
         }
@@ -171,7 +176,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
-        // If the node attributes window has already been opened check to see if it 
+        // If the node attributes window has already been opened check to see if
+        // it
         // is still visible
         if (openNodeDialogs.containsKey((nodeSelectorComboBox.getSelectedItem()
             .toString()))) {
@@ -203,6 +209,20 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
         InputHandler.dispatch(DARSEvent.inSetNodePromiscuity(
             nodeSelectorComboBox.getSelectedItem().toString(),
             promiscuousModeCheckBox.isSelected()));
+      }
+    });
+
+    dropMessagesCheckBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        if (blockChangeEvents) {
+          return;
+        }
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
+        InputHandler.dispatch(DARSEvent.inSetNodeDropMessages(
+            nodeSelectorComboBox.getSelectedItem().toString(),
+            dropMessagesCheckBox.isSelected()));
       }
     });
   }
@@ -259,7 +279,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
   public void nodeSelected(GNode gnode) {
     NodeAttributes ni = getAttributes(gnode.getId());
     if (ni != null) {
-      //update the component
+      // update the component
       setAttributes(ni);
     }
   }
@@ -274,27 +294,27 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
       return;
     }
     blockChangeEvents = true;
-    
+
     nodeSelectorComboBox.setSelectedItem(n.id);
     XSpinner.setValue(n.x);
     YSpinner.setValue(n.y);
     nodeRangeSpinner.setValue(n.range);
     promiscuousModeCheckBox.setSelected(n.isPromiscuous);
-    
-    //Cludge alert. Reset the settings based on locked replay mode
+    dropMessagesCheckBox.setSelected(n.isDroppingMessages);
+
+    // Cludge alert. Reset the settings based on locked replay mode
     nodeRangeSpinner.setEnabled(!lockedReplayMode);
     promiscuousModeCheckBox.setEnabled(!lockedReplayMode);
+    dropMessagesCheckBox.setEnabled(!lockedReplayMode);
     XSpinner.setEnabled(!lockedReplayMode);
     YSpinner.setEnabled(!lockedReplayMode);
-    
-    
+
     blockChangeEvents = false;
   }
 
   public void setNodeInspector(NodeInspector ni) {
     this.nodeInspector = ni;
   }
-
 
   public Vector<String> getNodeList() {
     return nodeList;
@@ -307,6 +327,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
     YSpinner.setValue(0);
     nodeList.clear();
     promiscuousModeCheckBox.setSelected(false);
+    dropMessagesCheckBox.setSelected(false);
     nodeRangeSpinner.setValue(0);
 
     String nodeId;
@@ -320,7 +341,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
       }
     }
     openNodeDialogs.clear();
-    
+
     blockChangeEvents = false;
   }
 
@@ -329,14 +350,16 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
   }
 
   boolean isLocked = false;
+
   public void setLock(boolean isLocked) {
     // lock every field
-    this.isLocked = isLocked; 
+    this.isLocked = isLocked;
     nodeSelectorComboBox.setEnabled(!isLocked);
     XSpinner.setEnabled(!isLocked);
     YSpinner.setEnabled(!isLocked);
     nodeRangeSpinner.setEnabled(!isLocked);
     promiscuousModeCheckBox.setEnabled(!isLocked);
+    dropMessagesCheckBox.setEnabled(!isLocked);
     nodeAttributesButton.setEnabled(!isLocked);
   }
 
@@ -376,13 +399,15 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
 
   private NodeInspector nodeInspector;
 
-  private boolean lockedReplayMode = false;
+  private boolean       lockedReplayMode = false;
+
   public void setLockedReplayMode(boolean b) {
-    //lock/unlock all modifiers
+    // lock/unlock all modifiers
     XSpinner.setEnabled(!b);
     YSpinner.setEnabled(!b);
     nodeRangeSpinner.setEnabled(!b);
     promiscuousModeCheckBox.setEnabled(!b);
+    dropMessagesCheckBox.setEnabled(!b);
     lockedReplayMode = b;
   }
 
@@ -410,11 +435,15 @@ public class NodeAttributesArea extends JPanel implements GNodeListener, NodeCon
   public JCheckBox getPromiscuityCheckBox() {
     return promiscuousModeCheckBox;
   }
+  
+  @Override
+  public JCheckBox getDropMessagesCheckBox() {
+    return dropMessagesCheckBox;
+  }
 
   @Override
   public JComboBox getNodeComboBox() {
     return nodeSelectorComboBox;
   }
-  
 
 }

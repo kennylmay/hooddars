@@ -185,7 +185,7 @@ public abstract class Node {
    *          The new y coordinate.
    */
   public void setXY(int x, int y) {
-    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous);
+    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous, att.isDroppingMessages);
   }
 
   /**
@@ -195,7 +195,7 @@ public abstract class Node {
    */
   public void setRange(int range) {
     this.att = new NodeAttributes(att.id, att.x, att.y, range,
-        att.isPromiscuous);
+        att.isPromiscuous, att.isDroppingMessages);
   }
 
   /**
@@ -218,7 +218,20 @@ public abstract class Node {
    */
   public void setPromiscuity(boolean value) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
-        this.att.range, value);
+        this.att.range, value, this.att.isDroppingMessages);
+  }
+  
+  /**
+   * Set whether or not a node will drop non control messages in 
+   * an attempt to discrupt messaging traffic.
+   * 
+   * @author mayk
+   * 
+   * @param value
+   */
+  public void setDropMessages(boolean value) {
+    this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
+        this.att.range, this.att.isPromiscuous, value);
   }
 
 }

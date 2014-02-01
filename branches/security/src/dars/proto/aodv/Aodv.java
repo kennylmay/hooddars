@@ -357,9 +357,12 @@ public class Aodv extends Node {
       return;
     }
 
-    if (MsgType.equals("NARR")) {
+    if (MsgType.equals("NARR") && this.att.isDroppingMessages == false) {
       receiveNarrative(message);
       OutputHandler.dispatch(DARSEvent.outNarrMsgReceived(this.att.id, message));
+      return;
+    }else if (MsgType.equals("NARR") && this.att.isDroppingMessages == true){
+      OutputHandler.dispatch(DARSEvent.outNarrMsgDropped(this.att.id, message));
       return;
     }
 
