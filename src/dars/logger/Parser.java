@@ -22,6 +22,7 @@ public class Parser
     case IN_MOVE_NODE:
     case IN_SET_NODE_RANGE:
     case IN_SET_NODE_PROMISCUITY:
+    case IN_SET_NODE_DROP_MESSAGES:
     case IN_CLEAR_SIM:
     case IN_INSERT_MESSAGE: 
     case IN_STOP_SIM:

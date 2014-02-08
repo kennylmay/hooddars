@@ -18,17 +18,33 @@ public class GNode extends JPanel {
                                                  .getProperty("line.separator");
 
   static public GNode       SelectedNode;
+  private boolean           isMalicious = false;
+
+  public boolean isMalicious() {
+    return isMalicious;
+  }
+
+
+  public void setMalicious(boolean isMalicious) {
+    this.isMalicious = isMalicious;
+  }
+
 
   // /Constructor
-  public GNode(String id, int x, int y, int range, JLayeredPane layeredPane) {
+  public GNode(String id, int x, int y, int range, JLayeredPane layeredPane, boolean isMalicious) {
     // Copy in the id, coordinates, range
     id_ = id;
     this.layeredPane = layeredPane;
     this.range = range;
 
     // Setup the default graphic, state
-    img_ = ImageFactory.getNodeImg();
-
+    this.isMalicious = isMalicious;
+    if (isMalicious == false){
+      img_ = ImageFactory.getNodeImg();
+    }else{
+      img_ = ImageFactory.getBadNodeImg();
+    }
+    
     setOpaque(false);
 
     // Setup the bounds given by x and y, and the size of the node
@@ -57,7 +73,15 @@ public class GNode extends JPanel {
     super.paintComponent(g);
     
     // Draw the graphic
+    if (isMalicious == false){
+      img_ = ImageFactory.getNodeImg();
+      
+    }else{
+      img_ = ImageFactory.getBadNodeImg();
+    }      
+    
     g.drawImage(img_, 0, 0, null);
+
 
     // Draw the node id onto the graphic
     ImageFactory.drawNodeID(g, id_, r);
@@ -90,8 +114,11 @@ public class GNode extends JPanel {
     isSelected = true;
     GNode.SelectedNode = this;
     // System.out.println("selecting a node..");
-    this.img_ = ImageFactory.getSelectedNodeImg();
-
+    if (isMalicious == false){
+      this.img_ = ImageFactory.getSelectedNodeImg();
+    }else{
+      this.img_ = ImageFactory.getBadSelectedNodeImg();
+    }
     if (tmp != null) {
       tmp.repaint();
     }
@@ -104,7 +131,11 @@ public class GNode extends JPanel {
     // System.out.println("unselecting a node..");
     isSelected = false;
     GNode.SelectedNode = null;
-    this.img_ = ImageFactory.getNodeImg();
+    if (isMalicious == false){
+      this.img_ = ImageFactory.getNodeImg();
+    }else{
+      this.img_ = ImageFactory.getBadNodeImg();
+    }
 
     this.repaint();
 
@@ -147,11 +178,19 @@ public class GNode extends JPanel {
     if (entered) {
 
       // Set image to hover image
-      img_ = ImageFactory.getHoveredNodeImg();
+      if (isMalicious == false){
+        img_ = ImageFactory.getHoveredNodeImg();
+      }else{
+        img_ = ImageFactory.getBadHoveredNodeImg();
+      }
     }
     // unset hover image
     else {
-      img_ = ImageFactory.getNodeImg();
+      if (isMalicious == false){
+        img_ = ImageFactory.getNodeImg();
+      }else{
+        img_ = ImageFactory.getBadNodeImg();
+      }
     }
     this.repaint();
   }
@@ -312,8 +351,11 @@ public class GNode extends JPanel {
       parent_ = parent;
 
       // Setup the ghosted node graphic
-      img_ = ImageFactory.getGhostedNodeImg();
-
+      if (isMalicious == false){
+        img_ = ImageFactory.getGhostedNodeImg();
+      }else{
+        img_ = ImageFactory.getBadGhostedNodeImg();
+      }
       // Set the initial coordinates
       moveXYOffset(parent.getX(), parent.getY());
       setSize(new Dimension(img_.getWidth(null), img_.getHeight(null)));
@@ -357,5 +399,4 @@ public class GNode extends JPanel {
   public void setLockedReplayMode(boolean b) {
     lockedReplayMode = b;   
   }
-
 }

@@ -21,13 +21,15 @@ public class DARSEvent {
     // Input event types
     IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SET_NODE_PROMISCUITY, IN_SIM_SPEED, 
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_CLEAR_SIM, IN_NEW_SIM, IN_INSERT_MESSAGE,
+    IN_SET_NODE_DROP_MESSAGES,
     
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_SET_NODE_PROMISCUITY,  
     OUT_MSG_TRANSMITTED,  OUT_DEBUG, OUT_ERROR, OUT_START_SIM, OUT_PAUSE_SIM, OUT_RESUME_SIM, 
     OUT_STOP_SIM, OUT_SIM_SPEED, OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, 
     OUT_CONTROLMSG_RECEIVED, OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, 
-    OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED, OUT_NODE_INFO, OUT_SET_NODE_DROP_MESSAGES, IN_SET_NODE_DROP_MESSAGES, OUT_NARRMSG_DROPPED
+    OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED, OUT_NODE_INFO, OUT_SET_NODE_DROP_MESSAGES,
+    OUT_NARRMSG_DROPPED
   };
 
   public EventType            eventType;
@@ -44,6 +46,7 @@ public class DARSEvent {
   public long                 currentQuantum;
   public boolean              isPromiscuous;
   public boolean              isDroppingMessages;
+  public boolean              isMalicious;
   private String droppedMessage;
   
 
@@ -282,21 +285,29 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SET_NODE_PROMISCUITY;
     e.isPromiscuous = isPromiscuous;
+    e.nodeId = id;
     String status;
     if(isPromiscuous) status = "enabled";
     else status = "disabled";
     e.informationalMessage = "Node " + id + " " + status + " promiscuous mode.";
+    if (e.isPromiscuous || e.isDroppingMessages){
+       e.isMalicious = true;
+    }
     return e;
   }
   
   public static DARSEvent outSetNodeDropMessages(String id, boolean isDroppingMessages) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SET_NODE_DROP_MESSAGES;
+    e.nodeId = id;
     e.isDroppingMessages = isDroppingMessages;
     String status;
     if(isDroppingMessages) status = "enabled";
     else status = "disabled";
     e.informationalMessage = "Node " + id + " " + status + " dropping messages.";
+    if (e.isPromiscuous || e.isDroppingMessages){
+      e.isMalicious = true;
+    }
     return e;
   }
   
@@ -506,6 +517,8 @@ public class DARSEvent {
       e.nodeType = parseNodeType(details[10]);
       e.currentQuantum = Long.parseLong(details[11]);
       e.isPromiscuous = Boolean.parseBoolean(details[12]);
+      e.isDroppingMessages = Boolean.parseBoolean(details[13]);
+      e.isMalicious = Boolean.parseBoolean(details[14]);
       
     }
     catch (Exception ex){

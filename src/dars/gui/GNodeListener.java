@@ -7,4 +7,5 @@ public interface GNodeListener {
 	public void nodeMoved(GNode node, int new_x, int new_y);
 	public void nodePopupEvent(GNode node, int x, int y);
 	public void nodeSelected(GNode node);
+	public void nodeSetMalicious(GNode node);
 } 

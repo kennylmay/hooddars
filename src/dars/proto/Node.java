@@ -219,6 +219,11 @@ public abstract class Node {
   public void setPromiscuity(boolean value) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
         this.att.range, value, this.att.isDroppingMessages);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous){
+          this.att.isMaliciousNode = true;
+        }else{
+          this.att.isMaliciousNode = false;
+        }
   }
   
   /**
@@ -232,6 +237,11 @@ public abstract class Node {
   public void setDropMessages(boolean value) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
         this.att.range, this.att.isPromiscuous, value);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous){
+          this.att.isMaliciousNode = true;
+        }else{
+          this.att.isMaliciousNode = false;
+        }
   }
 
 }

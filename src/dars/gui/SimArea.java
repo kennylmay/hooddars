@@ -97,6 +97,13 @@ public class SimArea extends JLayeredPane {
       }
     }
 
+    public void nodeSetMalicious(GNode n) {
+      // propagate the signal to other listeners
+      for (GNodeListener g : nodeListeners) {
+        g.nodeSetMalicious(n);
+      }
+    }
+    
     public void nodeExited(GNode n) {
 
       // propagate the signal to other listeners
@@ -236,9 +243,9 @@ public class SimArea extends JLayeredPane {
 
   // This function adds a node to the GUI. It's assumed that the node now exists
   // in the simulator.
-  public void addNewNode(int x, int y, int range, String id) {
+  public void addNewNode(int x, int y, int range, String id, boolean isMalicious) {
     // instantiate a new GNode
-    GNode node = new GNode(id, x, y, range, this);
+    GNode node = new GNode(id, x, y, range, this, isMalicious);
 
     // add it to the gnode map
     gnodemap.put(id, node);
@@ -299,7 +306,7 @@ public class SimArea extends JLayeredPane {
       return;
     animations.nodeBroadcast(n);
   }
-
+  
   public void traceMessage(String fromId, String toId, Color color,
       int longevityFactor, int fatness, int priority) {
 
@@ -314,6 +321,10 @@ public class SimArea extends JLayeredPane {
 
     animations.traceMessage(a, b, color, longevityFactor, fatness, priority);
 
+  }
+  
+  public void setMalicious(String nodeId, boolean isMalicious){
+    animations.setMalicious(getGNode(nodeId), isMalicious);
   }
 
   // ////////////////////////Data
