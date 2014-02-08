@@ -169,7 +169,7 @@ public class GUI extends JFrame implements OutputConsumer {
       switch (e.eventType) {
       case OUT_ADD_NODE:
         // Add the node
-        simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId);
+        simArea.addNewNode(e.nodeX, e.nodeY, e.nodeRange, e.nodeId, e.isMalicious);
         nodeAttributesArea.nodeAdded(e.nodeId);
         
         //select the node
@@ -201,6 +201,14 @@ public class GUI extends JFrame implements OutputConsumer {
         // Refresh the node attributes panel
         nodeAttributesArea.setNodeById(e.nodeId);
         logArea.appendLog("SIM INFO" , e.informationalMessage, e.currentQuantum);
+        simArea.setMalicious(e.nodeId, e.isMalicious);
+        break;
+        
+      case OUT_SET_NODE_DROP_MESSAGES:
+        // Refresh the node attributes panel
+        nodeAttributesArea.setNodeById(e.nodeId);
+        logArea.appendLog("SIM INFO" , e.informationalMessage, e.currentQuantum);
+        simArea.setMalicious(e.nodeId, e.isMalicious);
         break;
     
       case OUT_MSG_RECEIVED:

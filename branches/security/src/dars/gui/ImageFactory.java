@@ -10,6 +10,10 @@ import java.awt.image.BufferedImage;
 
 public class ImageFactory {
   static private BufferedImage nodeImg_;
+  static private BufferedImage badNodeImg_;
+  static private BufferedImage badHoveredNodeImg_;
+  static private BufferedImage badSelectedNodeImg_;
+  static private BufferedImage badGhostedNodeImg_;
   static private BufferedImage hoveredNodeImg_;
   static private BufferedImage selectedNodeImg_;
   static private BufferedImage ghostedNodeImg_;
@@ -18,6 +22,26 @@ public class ImageFactory {
   static public BufferedImage getNodeImg() {
     checkInit();
     return nodeImg_;
+  }
+  
+  static public BufferedImage getBadNodeImg() {
+    checkInit();
+    return badNodeImg_;
+  }
+  
+  static public BufferedImage getBadHoveredNodeImg() {
+    checkInit();
+    return badHoveredNodeImg_;
+  }
+
+  static public BufferedImage getBadSelectedNodeImg() {
+    checkInit();
+    return badSelectedNodeImg_;
+  }
+
+  static public BufferedImage getBadGhostedNodeImg() {
+    checkInit();
+    return badGhostedNodeImg_;
   }
 
   static public BufferedImage getHoveredNodeImg() {
@@ -51,9 +75,13 @@ public class ImageFactory {
     //initalize images
     try {
       nodeImg_ = ImageIO.read(instance.getClass().getResource("/node.png"));
+      badNodeImg_= ImageIO.read(instance.getClass().getResource("/badnode.png"));
       hoveredNodeImg_  = getHoverImg(nodeImg_);
       selectedNodeImg_ = getSelectedImg(nodeImg_);
       ghostedNodeImg_ =  getTransparentImg(nodeImg_, 0.5f);
+      badHoveredNodeImg_  = getHoverImg(badNodeImg_);
+      badSelectedNodeImg_ = getSelectedImg(badNodeImg_);
+      badGhostedNodeImg_ =  getTransparentImg(badNodeImg_, 0.5f);
 
     } catch(Exception e) {
       Utilities.showError("Failed to load images. Please file a bug report");

@@ -446,4 +446,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     return nodeSelectorComboBox;
   }
 
+  @Override
+  public void nodeSetMalicious(GNode node) {
+  }
+
 }

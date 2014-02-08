@@ -47,6 +47,10 @@ public class Animations extends JPanel implements ComponentListener,
     connStore.add(c);
   }
 
+  public void setMalicious(GNode a, boolean isMalicious){
+    a.setMalicious(isMalicious);
+  }
+  
   public void nodeBroadcast(GNode gnode) {
     RangeIndicator ri = riStore.get(gnode);
     

@@ -7,6 +7,7 @@ public final class NodeAttributes {
   public final int range;
   public final boolean isPromiscuous;
   public final boolean isDroppingMessages;
+  public boolean isMaliciousNode = false;
 
   public NodeAttributes(String id, int x, int y, int range, boolean isPromiscuous, boolean isDroppingMessages) {
     this.id = id;
@@ -15,6 +16,9 @@ public final class NodeAttributes {
     this.range = range;
     this.isPromiscuous = isPromiscuous;
     this.isDroppingMessages = isDroppingMessages;
+    if( this.isPromiscuous || this.isDroppingMessages){
+      this.isMaliciousNode = true;
+    }
   }
  
   //Copy constructor
@@ -32,6 +36,7 @@ public final class NodeAttributes {
     this.range = 0;
     this.isPromiscuous = false;
     this.isDroppingMessages = false;
+    this.isMaliciousNode = false;
   }
 
 }
