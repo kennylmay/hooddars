@@ -502,8 +502,10 @@ public class Dsdv extends Node {
 
     if (MsgType.equals("RTUP")) {
       receiveUpdates(message);
-    } else if (MsgType.equals("NARR")) {
+    } else if (MsgType.equals("NARR")&& this.att.isDroppingMessages == false) {
       receiveNarrative(message);
+    } else if (MsgType.equals("NARR") && this.att.isDroppingMessages == true){
+      OutputHandler.dispatch(DARSEvent.outNarrMsgDropped(this.att.id, message));
     }
   }
 
