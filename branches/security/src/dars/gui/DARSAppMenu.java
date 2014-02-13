@@ -94,7 +94,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JPanel             simTypeArea         = new JPanel();
   private JPanel             statusPanel         = new JPanel();
   private JPanel             controlPanel        = new JPanel();
+  private JPanel             attributesPanel     = new JPanel();
   private JPanel             nodeAttributesPanel = new JPanel();
+  private JPanel             nodeMalitiousAttributesPanel = new JPanel();
 
   // Labels slider bar for the speed adjustment
   private JLabel             speedLabel          = new JLabel("Simulation Speed");
@@ -119,6 +121,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JSpinner  RangeSpinner;
   private JCheckBox PromiscuityCheckBox;
   private JCheckBox DroppingMessagesCheckBox;
+  private JPanel OverrideHopsPanel;
   
  // private JLabel Logo = new JLabel(new ImageIcon(getClass().getResource("/logo.png")));
   public DARSAppMenu(GUI g, NodeControls nodeControls) {
@@ -246,14 +249,18 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     RangeSpinner = nodeControls.getRangeSpinner();
     PromiscuityCheckBox = nodeControls.getPromiscuityCheckBox();
     DroppingMessagesCheckBox = nodeControls.getDropMessagesCheckBox();
-    
+    OverrideHopsPanel = nodeControls.getOverrideHopsJPanel();
     
     // Node Attributes panel layout
-    nodeAttributesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+    attributesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         "Node Controls", 
+        TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+    nodeMalitiousAttributesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        "Malitious Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
     nodeAttributesPanel.setLayout(new GridLayout(3,2,11,5));
+    nodeMalitiousAttributesPanel.setLayout(new GridLayout(3,1,11,5));
        
     JPanel CordPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
     JPanel XPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
@@ -269,8 +276,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     XSpinnerLabel.setFont(Defaults.BOLDFACED_FONT);
     XPanel.add(XSpinnerLabel);
     XPanel.add(XSpinner);
-    
-   
+       
     YSpinnerLabel.setFont(Defaults.BOLDFACED_FONT);
     YPanel.setFont(Defaults.BOLDFACED_FONT);
     YPanel.add(YSpinnerLabel);
@@ -282,23 +288,29 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     RangeSpinnerLabel.setFont(Defaults.BOLDFACED_FONT);
     RangePanel.add(RangeSpinnerLabel);
     RangePanel.add(RangeSpinner);
-       
-    nodeAttributesPanel.add(NodePanel);
 
     AttributesButton.setFont(Defaults.BOLDFACED_FONT);
+    
+    nodeAttributesPanel.add(NodePanel);
+    nodeAttributesPanel.add(new JLabel());
+    nodeAttributesPanel.add(XPanel);
+    nodeAttributesPanel.add(YPanel);
+    nodeAttributesPanel.add(RangePanel);    
     nodeAttributesPanel.add(AttributesButton);
-    nodeAttributesPanel.add(CordPanel);
-    nodeAttributesPanel.add(RangePanel);
+    
     PromiscuityCheckBox.setFont(Defaults.BOLDFACED_FONT);
     DroppingMessagesCheckBox.setFont(Defaults.BOLDFACED_FONT);
-  
-    nodeAttributesPanel.add(PromiscuityCheckBox);
-    nodeAttributesPanel.add(DroppingMessagesCheckBox);
-  
-          
+    nodeMalitiousAttributesPanel.add(PromiscuityCheckBox);
+    nodeMalitiousAttributesPanel.add(DroppingMessagesCheckBox);
+    nodeMalitiousAttributesPanel.add(OverrideHopsPanel);
+    
+    attributesPanel.add(nodeAttributesPanel);
+    attributesPanel.add(nodeMalitiousAttributesPanel);
+
     menuPanel.add(statusPanel);
     menuPanel.add(controlPanel);
-    menuPanel.add(nodeAttributesPanel);
+    menuPanel.add(attributesPanel);
+    
     //menuPanel.add(Logo);
     resumeButton.setVisible(false);
     resumeMenuItem.setVisible(false);

@@ -210,6 +210,13 @@ public class GUI extends JFrame implements OutputConsumer {
         logArea.appendLog("SIM INFO" , e.informationalMessage, e.currentQuantum);
         simArea.setMalicious(e.nodeId, e.isMalicious);
         break;
+        
+      case OUT_SET_OVERRIDE_HOPS:
+        // Refresh the node attributes panel
+        nodeAttributesArea.setNodeById(e.nodeId);
+        logArea.appendLog("SIM INFO" , e.informationalMessage, e.currentQuantum);
+        simArea.setMalicious(e.nodeId, e.isMalicious);
+        break;
     
       case OUT_MSG_RECEIVED:
         logArea.appendLog("SIM INFO" , e.informationalMessage, e.currentQuantum);

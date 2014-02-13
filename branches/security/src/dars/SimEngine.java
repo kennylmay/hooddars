@@ -308,7 +308,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         String id = assignNodeId();
 
         // Make a new network node with these attributes
-        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous, ni.isDroppingMessages);
+        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous, ni.isDroppingMessages, ni.isOverridingHops, ni.hops);
         n = NodeFactory.makeNewNode(getNodeType(), ni);
 
         // Add it to the node store
@@ -364,6 +364,31 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         n.setDropMessages(e.isDroppingMessages);
         OutputHandler.dispatch(DARSEvent.outSetNodeDropMessages(e.nodeId, e.isDroppingMessages));
         break;
+        
+      case IN_SET_OVERRIDE_HOPS: 
+        //Get the node
+        n = store.getNode(e.nodeId);
+        if(n == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not set override hops for node " + e.nodeId + ", node does not exist"));
+          return;
+        }
+        // Set the new promiscuity level
+        n.setOverrideHops(e.isOverridingHops,e.hops);
+        OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, e.isOverridingHops, e.hops));
+        break;
+        
+        
+       case IN_SET_HOPS_COUNT: 
+         //Get the node
+         n = store.getNode(e.nodeId);
+         if(n == null) {
+           OutputHandler.dispatch(DARSEvent.outError("Could not change override hop count for node " + e.nodeId + ", node does not exist"));
+           return;
+         }
+         // Set the new promiscuity level
+         n.setOverrideHops(e.isOverridingHops,e.hops);
+         OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, e.isOverridingHops, e.hops));
+         break;
         
       case IN_CLEAR_SIM:
         //Clear the simulation
