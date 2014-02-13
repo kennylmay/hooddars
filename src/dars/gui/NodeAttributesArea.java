@@ -21,6 +21,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import dars.Defaults;
 import dars.InputHandler;
 import dars.NodeAttributes;
 import dars.NodeInspector;
@@ -76,6 +77,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     FlowLayout flow = new FlowLayout();
     flow.setAlignment(FlowLayout.LEFT);
     overrideHopsPanel.setLayout(flow);
+    overrideHopsCheckBox.setFont(Defaults.BOLDFACED_FONT);
     overrideHopsPanel.add(overrideHopsCheckBox);
     overrideHopsPanel.add(overrideHopsSpinner);
     

@@ -1681,8 +1681,14 @@ public class Aodv extends Node {
      * Check each route entry's Lifetime and State.
      */
     while (RouteTableIter.hasNext()) {
+            
       TempRouteEntry = RouteTableIter.next();
 
+      // If it is supposed to override the number of hops fix all entries in the table
+      if(this.att.isOverridingHops){
+        TempRouteEntry.setHopCount(this.att.hops);
+      }
+      
       /**
        * See if the lifetime of a route has expired.
        */
@@ -1702,11 +1708,6 @@ public class Aodv extends Node {
           TempRouteEntry.setState(RouteEntry.StateFlags.EXPIRED);
           TempRouteEntry.setLifetime(this.CurrentTick + DELETE_PERIOD);
           sendRERR(TempRouteEntry.getDestIP());
-          // If it is supposed to override the number of hops fix all entries in the table
-          if(this.att.isOverridingHops){
-            System.out.println("IM OVERIDING THAT SHTI");
-            TempRouteEntry.setHopCount(this.att.hops);
-          }
         } else {
           RouteTableIter.remove();
         }
