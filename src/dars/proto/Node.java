@@ -185,7 +185,7 @@ public abstract class Node {
    *          The new y coordinate.
    */
   public void setXY(int x, int y) {
-    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous, att.isDroppingMessages);
+    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous, att.isDroppingMessages, att.isOverridingHops, att.hops);
   }
 
   /**
@@ -195,7 +195,7 @@ public abstract class Node {
    */
   public void setRange(int range) {
     this.att = new NodeAttributes(att.id, att.x, att.y, range,
-        att.isPromiscuous, att.isDroppingMessages);
+        att.isPromiscuous, att.isDroppingMessages, att.isOverridingHops, att.hops);
   }
 
   /**
@@ -218,8 +218,8 @@ public abstract class Node {
    */
   public void setPromiscuity(boolean value) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
-        this.att.range, value, this.att.isDroppingMessages);
-        if(this.att.isDroppingMessages || this.att.isPromiscuous){
+        this.att.range, value, this.att.isDroppingMessages, this.att.isOverridingHops, this.att.hops);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops){
           this.att.isMaliciousNode = true;
         }else{
           this.att.isMaliciousNode = false;
@@ -236,8 +236,27 @@ public abstract class Node {
    */
   public void setDropMessages(boolean value) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
-        this.att.range, this.att.isPromiscuous, value);
-        if(this.att.isDroppingMessages || this.att.isPromiscuous){
+        this.att.range, this.att.isPromiscuous, value, this.att.isOverridingHops, this.att.hops);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops){
+          this.att.isMaliciousNode = true;
+        }else{
+          this.att.isMaliciousNode = false;
+        }
+  }
+  
+  
+  /**
+   * Set whether or not a node will lie about its hope count to a 
+   * destination.
+   * 
+   * @author mayk
+   * 
+   * @param value
+   */
+  public void setOverrideHops(boolean value, int hops) {
+    this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
+        this.att.range, this.att.isPromiscuous, this.att.isDroppingMessages, value, hops);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops){
           this.att.isMaliciousNode = true;
         }else{
           this.att.isMaliciousNode = false;

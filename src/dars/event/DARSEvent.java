@@ -21,7 +21,7 @@ public class DARSEvent {
     // Input event types
     IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SET_NODE_PROMISCUITY, IN_SIM_SPEED, 
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_CLEAR_SIM, IN_NEW_SIM, IN_INSERT_MESSAGE,
-    IN_SET_NODE_DROP_MESSAGES,
+    IN_SET_NODE_DROP_MESSAGES,IN_SET_OVERRIDE_HOPS,IN_SET_HOPS_COUNT,
     
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_SET_NODE_PROMISCUITY,  
@@ -29,7 +29,7 @@ public class DARSEvent {
     OUT_STOP_SIM, OUT_SIM_SPEED, OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, 
     OUT_CONTROLMSG_RECEIVED, OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, 
     OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED, OUT_NODE_INFO, OUT_SET_NODE_DROP_MESSAGES,
-    OUT_NARRMSG_DROPPED
+    OUT_NARRMSG_DROPPED, OUT_SET_OVERRIDE_HOPS, OUT_SET_HOPS_COUNT
   };
 
   public EventType            eventType;
@@ -47,12 +47,14 @@ public class DARSEvent {
   public boolean              isPromiscuous;
   public boolean              isDroppingMessages;
   public boolean              isMalicious;
-  private String droppedMessage;
+  public boolean              isOverridingHops;
+  public int                  hops;
+  private String              droppedMessage;
   
 
   //Provided for convenience.
   public NodeAttributes getNodeAttributes() {
-    return new NodeAttributes(nodeId, nodeX, nodeY, nodeRange, isPromiscuous, isDroppingMessages);
+    return new NodeAttributes(nodeId, nodeX, nodeY, nodeRange, isPromiscuous, isDroppingMessages, isOverridingHops, hops);
   }
   
 //Provided for convenience.
@@ -234,6 +236,23 @@ public class DARSEvent {
     return e;
   }
   
+  public static DARSEvent inSetNodeOverrideHops(String id, boolean isOverridingHops, int hops) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_SET_OVERRIDE_HOPS;
+    e.isOverridingHops = isOverridingHops;
+    e.hops = hops;
+    e.nodeId = id;
+    return e;
+  }
+  
+  public static DARSEvent inSetNodeOverrideHopCount(String id, boolean isOverridingHops, int hops) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_SET_HOPS_COUNT;
+    e.isOverridingHops = isOverridingHops;
+    e.hops = hops;
+    e.nodeId = id;
+    return e;
+  }
   
   public static DARSEvent inMoveNode(String id, int x, int y) {
     DARSEvent e = new DARSEvent();
@@ -306,6 +325,38 @@ public class DARSEvent {
     else status = "disabled";
     e.informationalMessage = "Node " + id + " " + status + " dropping messages.";
     if (e.isPromiscuous || e.isDroppingMessages){
+      e.isMalicious = true;
+    }
+    return e;
+  }
+  
+  public static DARSEvent outSetOverRideHops(String id, boolean isOverridingHops, int hops) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_SET_OVERRIDE_HOPS;
+    e.nodeId = id;
+    e.isOverridingHops = isOverridingHops;
+    String status;
+    e.hops = hops;
+    if(isOverridingHops) status = "enabled";
+    else status = "disabled";
+    e.informationalMessage = "Node " + id + " " + status + " overriding the number of hops to destination.  Number of hops: "  + hops;
+    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops){
+      e.isMalicious = true;
+    }
+    return e;
+  }
+  
+  public static DARSEvent outSetOverRideHopCount(String id, boolean isOverridingHops, int hops) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_SET_HOPS_COUNT;
+    e.nodeId = id;
+    e.isOverridingHops = isOverridingHops;
+    String status;
+    e.hops = hops;
+    if(isOverridingHops) status = "enabled";
+    else status = "disabled";
+    e.informationalMessage = "Node " + id + " " + status + " overriding the number of hops to destination. Number of hops: "  + hops;
+    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops){
       e.isMalicious = true;
     }
     return e;

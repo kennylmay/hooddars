@@ -1,5 +1,6 @@
 package dars.gui;
 
+import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -49,6 +51,13 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
                                                                "Drop Non-Control Messages");
   private JCheckBox                promiscuousModeCheckBox = new JCheckBox(
                                                                "Promiscous Mode");
+  private JPanel                   overrideHopsPanel       = new JPanel();
+  private JCheckBox                overrideHopsCheckBox     = new JCheckBox(
+      "Override Hops");
+  private JSpinner                 overrideHopsSpinner      = new JSpinner(
+      new SpinnerNumberModel(
+          1, -1,
+          99, 1));
   private boolean                  blockChangeEvents       = false;
   private Vector<String>           nodeList                = new Vector<String>();
   private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
@@ -62,7 +71,14 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     nodeAttributesButton.setMnemonic(KeyEvent.VK_A);
     promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
     dropMessagesCheckBox.setMnemonic(KeyEvent.VK_D);
-
+    overrideHopsCheckBox.setMnemonic(KeyEvent.VK_O);
+    
+    FlowLayout flow = new FlowLayout();
+    flow.setAlignment(FlowLayout.LEFT);
+    overrideHopsPanel.setLayout(flow);
+    overrideHopsPanel.add(overrideHopsCheckBox);
+    overrideHopsPanel.add(overrideHopsSpinner);
+    
     // Add action handlers
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
@@ -225,6 +241,36 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
             dropMessagesCheckBox.isSelected()));
       }
     });
+    
+    overrideHopsCheckBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        if (blockChangeEvents) {
+          return;
+        }
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
+        InputHandler.dispatch(DARSEvent.inSetNodeOverrideHops(
+            nodeSelectorComboBox.getSelectedItem().toString(),
+            overrideHopsCheckBox.isSelected(), (Integer)overrideHopsSpinner.getValue()));
+      }
+    });
+    
+    overrideHopsSpinner.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent arg0) {
+        if (blockChangeEvents) {
+          return;
+        }
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
+        InputHandler.dispatch(DARSEvent.inSetNodeOverrideHops(
+            nodeSelectorComboBox.getSelectedItem().toString(),
+            overrideHopsCheckBox.isSelected(), (Integer)overrideHopsSpinner.getValue()));
+        
+      }
+    });
   }
 
   private static final long serialVersionUID = 1L;
@@ -308,6 +354,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     dropMessagesCheckBox.setEnabled(!lockedReplayMode);
     XSpinner.setEnabled(!lockedReplayMode);
     YSpinner.setEnabled(!lockedReplayMode);
+    overrideHopsCheckBox.setEnabled(!lockedReplayMode);
+    overrideHopsSpinner.setEnabled(!lockedReplayMode);
 
     blockChangeEvents = false;
   }
@@ -329,6 +377,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     promiscuousModeCheckBox.setSelected(false);
     dropMessagesCheckBox.setSelected(false);
     nodeRangeSpinner.setValue(0);
+    overrideHopsCheckBox.setSelected(false);
+    overrideHopsSpinner.setValue(1);
 
     String nodeId;
     JDialog dialog;
@@ -361,6 +411,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     promiscuousModeCheckBox.setEnabled(!isLocked);
     dropMessagesCheckBox.setEnabled(!isLocked);
     nodeAttributesButton.setEnabled(!isLocked);
+    overrideHopsCheckBox.setEnabled(!isLocked);
+    overrideHopsSpinner.setEnabled(!isLocked);
   }
 
   public void simPaused() {
@@ -408,6 +460,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     nodeRangeSpinner.setEnabled(!b);
     promiscuousModeCheckBox.setEnabled(!b);
     dropMessagesCheckBox.setEnabled(!b);
+    overrideHopsCheckBox.setEnabled(!b);
+    overrideHopsSpinner.setEnabled(!b);
     lockedReplayMode = b;
   }
 
@@ -448,6 +502,11 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
 
   @Override
   public void nodeSetMalicious(GNode node) {
+  }
+
+  @Override
+  public JPanel getOverrideHopsJPanel() {
+    return overrideHopsPanel;
   }
 
 }
