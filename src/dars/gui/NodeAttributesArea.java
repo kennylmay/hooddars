@@ -349,6 +349,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     nodeRangeSpinner.setValue(n.range);
     promiscuousModeCheckBox.setSelected(n.isPromiscuous);
     dropMessagesCheckBox.setSelected(n.isDroppingMessages);
+    overrideHopsCheckBox.setSelected(n.isOverridingHops);
+    overrideHopsSpinner.setValue(n.hops);
 
     // Cludge alert. Reset the settings based on locked replay mode
     nodeRangeSpinner.setEnabled(!lockedReplayMode);
