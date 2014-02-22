@@ -93,8 +93,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JPanel             speedArea           = new JPanel();
   private JPanel             simTypeArea         = new JPanel();
   private JPanel             statusPanel         = new JPanel();
-  private JPanel             controlPanel        = new JPanel();
-  private JPanel             attributesPanel     = new JPanel();
+  private JPanel             controlPanel        = new JPanel();  
+  private FlowLayout         attributesLayout    = new FlowLayout();
+  private JPanel             attributesPanel     = new JPanel(attributesLayout);
   private JPanel             nodeAttributesPanel = new JPanel();
   private JPanel             nodeMalitiousAttributesPanel = new JPanel();
 
@@ -252,20 +253,22 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     OverrideHopsPanel = nodeControls.getOverrideHopsJPanel();
     
     // Node Attributes panel layout
+    attributesLayout.setVgap(0);
     attributesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         "Node Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
+    
     nodeMalitiousAttributesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
         "Malitious Controls", 
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
-    nodeAttributesPanel.setLayout(new GridLayout(3,2,11,5));
+    nodeAttributesPanel.setLayout(new GridLayout(3,2,5,2));
     nodeMalitiousAttributesPanel.setLayout(new GridLayout(3,1,11,5));
        
-    JPanel CordPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
-    JPanel XPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
-    JPanel YPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 5,0));
-    JPanel RangePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5,0));
+    JPanel CordPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 0,0));
+    JPanel XPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 0,0));
+    JPanel YPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 0,0));
+    JPanel RangePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0,0));
     JPanel NodePanel = new JPanel(new GridLayout(1,2));
         
     NodeLabel.setFont(Defaults.BOLDFACED_FONT);

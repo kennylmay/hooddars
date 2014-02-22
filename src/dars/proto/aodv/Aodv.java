@@ -1739,8 +1739,8 @@ public class Aodv extends Node {
     /**
      * Try to send messages that are waiting on RREPs.
      */
-    processWaitQueue();
-
+     processWaitQueue();
+    
     /**
      * Send Hello Message if it is time.
      */

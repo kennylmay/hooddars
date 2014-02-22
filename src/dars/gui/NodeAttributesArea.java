@@ -76,6 +76,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     
     FlowLayout flow = new FlowLayout();
     flow.setAlignment(FlowLayout.LEFT);
+    flow.setVgap(0);
+    flow.setHgap(0);
     overrideHopsPanel.setLayout(flow);
     overrideHopsCheckBox.setFont(Defaults.BOLDFACED_FONT);
     overrideHopsPanel.add(overrideHopsCheckBox);
