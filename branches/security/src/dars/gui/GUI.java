@@ -32,7 +32,7 @@ public class GUI extends JFrame implements OutputConsumer {
 
   private LogArea            logArea             = new LogArea();
   private NodeAttributesArea nodeAttributesArea  = new NodeAttributesArea();
-  private ColorLegend         colorLegend         = new ColorLegend();
+  private ColorLegend        colorLegend         = new ColorLegend();
   private SimArea            simArea             = new SimArea();
 
   private DARSAppMenu        menuArea            ;

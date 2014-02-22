@@ -570,6 +570,8 @@ public class DARSEvent {
       e.isPromiscuous = Boolean.parseBoolean(details[12]);
       e.isDroppingMessages = Boolean.parseBoolean(details[13]);
       e.isMalicious = Boolean.parseBoolean(details[14]);
+      e.isOverridingHops = Boolean.parseBoolean(details[15]);
+      e.hops = Integer.parseInt(details[16]);
       
     }
     catch (Exception ex){
