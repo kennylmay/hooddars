@@ -1025,6 +1025,10 @@ public class Aodv extends Node {
           + " Tried to send a RREP for a node that it "
           + "did not have a valid Route For."));
 
+      // TODO: BLACKHOLE - If we implement Blackhole nodes we will want to make
+      // reply to ALL RREQ with a 0 hop message. Trying to get all traffic to 
+      // this node.
+      
       /**
        * This node can not send a RREP for the Destination needed so drop the
        * message.
@@ -1055,7 +1059,15 @@ public class Aodv extends Node {
     MsgHopCount = DestEntry.getHopCount();
     MsgDestSeqNum = DestEntry.getSeqNum();
     MsgLifetime = DestEntry.getLifetime() - this.CurrentTick;
-
+    
+    /** 
+     * If this node is overriding hop counts disregard the hop count.
+     */
+    if (this.att.isOverridingHops) {
+      MsgHopCount = this.att.hops;
+    }
+    
+    
     /**
      * Build Message Sting and Send.
      */
@@ -1326,13 +1338,27 @@ public class Aodv extends Node {
 
     }
 
-    /**
-     * Build the RREP Message Sting and Forward on the message. This message
-     * should be the same as this node received except for an increased hop
-     * count.
+    /** 
+     * If we are overriding hop counts then we need to build a malicious 
+     * RREP to forward instead of the normal.
      */
-    MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID
-        + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+    if (this.att.isOverridingHops) {
+      MsgStr = MsgType + '|' + MsgFlags + '|' + this.att.hops + '|' + MsgDestID
+          + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+      
+      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+          + "Forwarding on RREP with malicious hop count."));
+    } else {
+      /**
+       * Nothing Malicious here.  Carry on.
+       * 
+       * Build the RREP Message Sting and Forward on the message. This message
+       * should be the same as this node received except for an increased hop
+       * count.
+       */
+      MsgStr = MsgType + '|' + MsgFlags + '|' + MsgHopCount + '|' + MsgDestID
+          + '|' + MsgDestSeqNum + '|' + MsgOrigID + '|' + MsgLifetime;
+    }
 
     /**
      * Lookup the origin of original RREQ so that we can decide how to forward
@@ -1684,11 +1710,6 @@ public class Aodv extends Node {
             
       TempRouteEntry = RouteTableIter.next();
 
-      // If it is supposed to override the number of hops fix all entries in the table
-      if(this.att.isOverridingHops){
-        TempRouteEntry.setHopCount(this.att.hops);
-      }
-      
       /**
        * See if the lifetime of a route has expired.
        */
