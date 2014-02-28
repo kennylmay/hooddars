@@ -96,7 +96,12 @@ public class Utilities {
 
       // Define the new files to be saved.
       File logFile = new File(getTmpLogPath());
-      File saveFile = new File(chooser.getSelectedFile().getPath() + ".log");
+      File saveFile;
+      if (!chooser.getSelectedFile().getPath().endsWith(".log")){
+        saveFile = new File(chooser.getSelectedFile().getPath() + ".log");
+      }else{
+        saveFile = new File(chooser.getSelectedFile().getPath());
+      }
 
       if (!logFile.exists()) {
         JOptionPane.showMessageDialog(parent, "There is nothing to save yet.");

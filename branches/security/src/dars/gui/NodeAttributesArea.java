@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -30,38 +31,41 @@ import dars.event.DARSEvent;
 public class NodeAttributesArea extends JPanel implements GNodeListener,
     NodeControls {
 
-  private JComboBox                nodeSelectorComboBox    = new JComboBox();
-  private JSpinner                 nodeRangeSpinner        = new JSpinner(
-                                                               new SpinnerNumberModel(
-                                                                   0, -19,
-                                                                   1000, 20));
+  private JComboBox<String>                nodeSelectorComboBox      = new JComboBox<String>();
+  private JSpinner                 nodeRangeSpinner          = new JSpinner(
+                                                                 new SpinnerNumberModel(
+                                                                     0, -19,
+                                                                     1000, 20));
 
-  private JSpinner                 XSpinner                = new JSpinner(
-                                                               new SpinnerNumberModel(
-                                                                   0, -10,
-                                                                   9999, 10));
+  private JSpinner                 XSpinner                  = new JSpinner(
+                                                                 new SpinnerNumberModel(
+                                                                     0, -10,
+                                                                     9999, 10));
 
-  private JSpinner                 YSpinner                = new JSpinner(
-                                                               new SpinnerNumberModel(
-                                                                   0, -10,
-                                                                   9999, 10));
+  private JSpinner                 YSpinner                  = new JSpinner(
+                                                                 new SpinnerNumberModel(
+                                                                     0, -10,
+                                                                     9999, 10));
 
-  private JButton                  nodeAttributesButton    = new JButton(
-                                                               "Attributes");
-  private JCheckBox                dropMessagesCheckBox    = new JCheckBox(
-                                                               "Drop Non-Control Messages");
-  private JCheckBox                promiscuousModeCheckBox = new JCheckBox(
-                                                               "Promiscous Mode");
-  private JPanel                   overrideHopsPanel       = new JPanel();
-  private JCheckBox                overrideHopsCheckBox     = new JCheckBox(
-      "Override Hops");
-  private JSpinner                 overrideHopsSpinner      = new JSpinner(
-      new SpinnerNumberModel(
-          1, -1,
-          99, 1));
-  private boolean                  blockChangeEvents       = false;
-  private Vector<String>           nodeList                = new Vector<String>();
-  private HashMap<String, JDialog> openNodeDialogs         = new HashMap<String, JDialog>();
+  private JButton                  nodeAttributesButton      = new JButton(
+                                                                 "Attributes");
+  private JCheckBox                dropMessagesCheckBox      = new JCheckBox(
+                                                                 "Drop Mess.");
+  private JCheckBox                promiscuousModeCheckBox   = new JCheckBox(
+                                                                 "Listen Mode");
+  private JPanel                   overrideHopsPanel         = new JPanel();
+  private JCheckBox                overrideHopsCheckBox      = new JCheckBox(
+                                                                 "Set Hops");
+  private JCheckBox                changeNarrMessageCheckBox = new JCheckBox(
+                                                                 "Change Mess.");
+  private JSpinner                 overrideHopsSpinner       = new JSpinner(
+                                                                 new SpinnerNumberModel(
+                                                                     1, -1, 99,
+                                                                     1));
+
+  private boolean                  blockChangeEvents         = false;
+  private Vector<String>           nodeList                  = new Vector<String>();
+  private HashMap<String, JDialog> openNodeDialogs           = new HashMap<String, JDialog>();
 
   public NodeAttributesArea() {
 
@@ -73,7 +77,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     promiscuousModeCheckBox.setMnemonic(KeyEvent.VK_M);
     dropMessagesCheckBox.setMnemonic(KeyEvent.VK_D);
     overrideHopsCheckBox.setMnemonic(KeyEvent.VK_O);
-    
+    changeNarrMessageCheckBox.setMnemonic(KeyEvent.VK_C);
+
     FlowLayout flow = new FlowLayout();
     flow.setAlignment(FlowLayout.LEFT);
     flow.setVgap(0);
@@ -82,7 +87,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     overrideHopsCheckBox.setFont(Defaults.BOLDFACED_FONT);
     overrideHopsPanel.add(overrideHopsCheckBox);
     overrideHopsPanel.add(overrideHopsSpinner);
-    
+   
     // Add action handlers
     nodeSelectorComboBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent ie) {
@@ -202,7 +207,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
         if (openNodeDialogs.containsKey((nodeSelectorComboBox.getSelectedItem()
             .toString()))) {
           JDialog dialog = openNodeDialogs.get((nodeSelectorComboBox
-              .getSelectedItem().toString()));
+              .getSelectedItem().toString())); 
           // If it is not still visible, show it.
           if (dialog.isVisible() == false) {
             dialog.setVisible(true);
@@ -226,6 +231,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
+               
         InputHandler.dispatch(DARSEvent.inSetNodePromiscuity(
             nodeSelectorComboBox.getSelectedItem().toString(),
             promiscuousModeCheckBox.isSelected()));
@@ -240,12 +246,13 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
+                
         InputHandler.dispatch(DARSEvent.inSetNodeDropMessages(
             nodeSelectorComboBox.getSelectedItem().toString(),
             dropMessagesCheckBox.isSelected()));
       }
     });
-    
+
     overrideHopsCheckBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         if (blockChangeEvents) {
@@ -254,12 +261,14 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
+
         InputHandler.dispatch(DARSEvent.inSetNodeOverrideHops(
             nodeSelectorComboBox.getSelectedItem().toString(),
-            overrideHopsCheckBox.isSelected(), (Integer)overrideHopsSpinner.getValue()));
+            overrideHopsCheckBox.isSelected(),
+            (Integer) overrideHopsSpinner.getValue()));
       }
     });
-    
+
     overrideHopsSpinner.addChangeListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent arg0) {
@@ -269,16 +278,32 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
         if (nodeSelectorComboBox.getSelectedItem() == null) {
           return;
         }
+
         InputHandler.dispatch(DARSEvent.inSetNodeOverrideHops(
             nodeSelectorComboBox.getSelectedItem().toString(),
-            overrideHopsCheckBox.isSelected(), (Integer)overrideHopsSpinner.getValue()));
-        
+            overrideHopsCheckBox.isSelected(),
+            (Integer) overrideHopsSpinner.getValue()));
+
+      }
+    });
+
+    changeNarrMessageCheckBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        if (blockChangeEvents) {
+          return;
+        }
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
+
+        InputHandler.dispatch(DARSEvent.inSetNodeChangeMessages(
+            nodeSelectorComboBox.getSelectedItem().toString(),
+            changeNarrMessageCheckBox.isSelected()));
       }
     });
   }
 
   private static final long serialVersionUID = 1L;
-
   public void setSimArea(SimArea simArea) {
     this.simArea = simArea;
   }
@@ -353,16 +378,18 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     dropMessagesCheckBox.setSelected(n.isDroppingMessages);
     overrideHopsCheckBox.setSelected(n.isOverridingHops);
     overrideHopsSpinner.setValue(n.hops);
+    changeNarrMessageCheckBox.setSelected(n.isChangingMessages);
 
     // Cludge alert. Reset the settings based on locked replay mode
     nodeRangeSpinner.setEnabled(!lockedReplayMode);
     promiscuousModeCheckBox.setEnabled(!lockedReplayMode);
+    changeNarrMessageCheckBox.setEnabled(!lockedReplayMode);
     dropMessagesCheckBox.setEnabled(!lockedReplayMode);
     XSpinner.setEnabled(!lockedReplayMode);
     YSpinner.setEnabled(!lockedReplayMode);
+    
     overrideHopsCheckBox.setEnabled(!lockedReplayMode);
     overrideHopsSpinner.setEnabled(!lockedReplayMode);
-
     blockChangeEvents = false;
   }
 
@@ -385,7 +412,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     nodeRangeSpinner.setValue(0);
     overrideHopsCheckBox.setSelected(false);
     overrideHopsSpinner.setValue(1);
-
+    changeNarrMessageCheckBox.setSelected(false);
+    
     String nodeId;
     JDialog dialog;
     Iterator<String> iter = openNodeDialogs.keySet().iterator();
@@ -416,9 +444,11 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     nodeRangeSpinner.setEnabled(!isLocked);
     promiscuousModeCheckBox.setEnabled(!isLocked);
     dropMessagesCheckBox.setEnabled(!isLocked);
+    changeNarrMessageCheckBox.setEnabled(!isLocked);
     nodeAttributesButton.setEnabled(!isLocked);
     overrideHopsCheckBox.setEnabled(!isLocked);
     overrideHopsSpinner.setEnabled(!isLocked);
+    promiscuousModeCheckBox.setEnabled(!isLocked);
   }
 
   public void simPaused() {
@@ -466,6 +496,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     nodeRangeSpinner.setEnabled(!b);
     promiscuousModeCheckBox.setEnabled(!b);
     dropMessagesCheckBox.setEnabled(!b);
+    changeNarrMessageCheckBox.setEnabled(!b);
     overrideHopsCheckBox.setEnabled(!b);
     overrideHopsSpinner.setEnabled(!b);
     lockedReplayMode = b;
@@ -495,17 +526,21 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
   public JCheckBox getPromiscuityCheckBox() {
     return promiscuousModeCheckBox;
   }
-  
+
   @Override
   public JCheckBox getDropMessagesCheckBox() {
     return dropMessagesCheckBox;
   }
 
   @Override
-  public JComboBox getNodeComboBox() {
+  public JComboBox<String> getNodeComboBox() {
     return nodeSelectorComboBox;
   }
-
+  @Override
+  public JCheckBox getChangeNarrMessageCheckBox() {
+    return changeNarrMessageCheckBox;
+  }
+  
   @Override
   public void nodeSetMalicious(GNode node) {
   }

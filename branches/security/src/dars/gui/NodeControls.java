@@ -12,7 +12,8 @@ public interface NodeControls {
   public JSpinner  getRangeSpinner();
   public JButton   getNodeAttributesButton();
   public JCheckBox getPromiscuityCheckBox();
-  public JComboBox getNodeComboBox();
+  public JComboBox<?> getNodeComboBox();
   public JCheckBox getDropMessagesCheckBox();
   public JPanel    getOverrideHopsJPanel();
-}
+  public JCheckBox getChangeNarrMessageCheckBox();
+} 
