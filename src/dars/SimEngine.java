@@ -308,7 +308,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         String id = assignNodeId();
 
         // Make a new network node with these attributes
-        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous, ni.isDroppingMessages, ni.isOverridingHops, ni.hops);
+        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous, ni.isDroppingMessages, ni.isOverridingHops, ni.hops, ni.isChangingMessages);
         n = NodeFactory.makeNewNode(getNodeType(), ni);
 
         // Add it to the node store
@@ -363,6 +363,18 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         // Set the new promiscuity level
         n.setDropMessages(e.isDroppingMessages);
         OutputHandler.dispatch(DARSEvent.outSetNodeDropMessages(e.nodeId, e.isDroppingMessages));
+        break;
+        
+      case IN_SET_NODE_CHANGE_MESSAGES: 
+        //Get the node
+        n = store.getNode(e.nodeId);
+        if(n == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not set change messages for node " + e.nodeId + ", node does not exist"));
+          return;
+        }
+        // Set the new promiscuity level
+        n.setChangeMessages(e.isChangingMessages);
+        OutputHandler.dispatch(DARSEvent.outSetNodeChangeMessages(e.nodeId, e.isChangingMessages));
         break;
         
       case IN_SET_OVERRIDE_HOPS: 

@@ -790,6 +790,11 @@ public class Dsdv extends Node {
             this.LastUpdate = -1;
           }
         }
+        
+        // If it is supposed to override the number of hops fix all entries in the table
+        if(this.att.isOverridingHops){
+          TempRouteEntry.setHopCount(this.att.hops);
+        }
 
       }
 

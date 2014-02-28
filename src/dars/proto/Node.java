@@ -185,7 +185,7 @@ public abstract class Node {
    *          The new y coordinate.
    */
   public void setXY(int x, int y) {
-    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous, att.isDroppingMessages, att.isOverridingHops, att.hops);
+    this.att = new NodeAttributes(att.id, x, y, att.range, att.isPromiscuous, att.isDroppingMessages, att.isOverridingHops, att.hops, att.isChangingMessages);
   }
 
   /**
@@ -195,7 +195,7 @@ public abstract class Node {
    */
   public void setRange(int range) {
     this.att = new NodeAttributes(att.id, att.x, att.y, range,
-        att.isPromiscuous, att.isDroppingMessages, att.isOverridingHops, att.hops);
+        att.isPromiscuous, att.isDroppingMessages, att.isOverridingHops, att.hops, att.isChangingMessages);
   }
 
   /**
@@ -218,8 +218,8 @@ public abstract class Node {
    */
   public void setPromiscuity(boolean value) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
-        this.att.range, value, this.att.isDroppingMessages, this.att.isOverridingHops, this.att.hops);
-        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops){
+        this.att.range, value, this.att.isDroppingMessages, this.att.isOverridingHops, this.att.hops, this.att.isChangingMessages);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops || this.att.isChangingMessages){
           this.att.isMaliciousNode = true;
         }else{
           this.att.isMaliciousNode = false;
@@ -228,7 +228,7 @@ public abstract class Node {
   
   /**
    * Set whether or not a node will drop non control messages in 
-   * an attempt to discrupt messaging traffic.
+   * an attempt to disrupt messaging traffic.
    * 
    * @author mayk
    * 
@@ -236,14 +236,31 @@ public abstract class Node {
    */
   public void setDropMessages(boolean value) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
-        this.att.range, this.att.isPromiscuous, value, this.att.isOverridingHops, this.att.hops);
-        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops){
+        this.att.range, this.att.isPromiscuous, value, this.att.isOverridingHops, this.att.hops,this.att.isChangingMessages);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops || this.att.isChangingMessages){
           this.att.isMaliciousNode = true;
         }else{
           this.att.isMaliciousNode = false;
         }
   }
   
+  /**
+   * Set whether or not a node will change the contents of non control messages in 
+   * an attempt to disrupt messaging traffic.
+   * 
+   * @author mayk
+   * 
+   * @param value
+   */
+  public void setChangeMessages(boolean value) {
+    this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
+        this.att.range, this.att.isPromiscuous, this.att.isDroppingMessages, this.att.isOverridingHops, this.att.hops, value);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops || this.att.isChangingMessages){
+          this.att.isMaliciousNode = true;
+        }else{
+          this.att.isMaliciousNode = false;
+        }
+  }
   
   /**
    * Set whether or not a node will lie about its hope count to a 
@@ -255,12 +272,11 @@ public abstract class Node {
    */
   public void setOverrideHops(boolean value, int hops) {
     this.att = new NodeAttributes(this.att.id, this.att.x, this.att.y,
-        this.att.range, this.att.isPromiscuous, this.att.isDroppingMessages, value, hops);
-        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops){
+        this.att.range, this.att.isPromiscuous, this.att.isDroppingMessages, value, hops,this.att.isChangingMessages);
+        if(this.att.isDroppingMessages || this.att.isPromiscuous || this.att.isOverridingHops || this.att.isChangingMessages){
           this.att.isMaliciousNode = true;
         }else{
           this.att.isMaliciousNode = false;
         }
   }
-
 }

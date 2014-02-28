@@ -1538,12 +1538,18 @@ public class Aodv extends Node {
        * Get the Route Entry.
        */
       DestEntry = RouteTable.get(MsgDestID);
-
+      
+      
       /**
        * Create the message string that will be sent.
        */
-      MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID + '|'
-          + MsgOrigID + '|' + MsgText;
+      if(this.att.isChangingMessages){
+        MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID + '|'
+            + MsgOrigID + '|' + "THIS MESSAGE HAS BEEN CHANGED BY NODE: " + this.att.id;  
+      }else{
+        MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID + '|'
+          + MsgOrigID + '|' + MsgText;        
+      }
 
       /**
        * The destination is in our RouteTable. Make sure that the route is valid
