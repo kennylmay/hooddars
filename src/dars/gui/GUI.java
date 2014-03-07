@@ -211,6 +211,20 @@ public class GUI extends JFrame implements OutputConsumer {
         simArea.setMalicious(e.nodeId, e.isMalicious);
         break;
         
+      case OUT_SET_NODE_REPLAY_MESSAGES:
+        // Refresh the node attributes panel
+        nodeAttributesArea.setNodeById(e.nodeId);
+        logArea.appendLog("SIM INFO" , e.informationalMessage, e.currentQuantum);
+        simArea.setMalicious(e.nodeId, e.isMalicious);
+        break;
+        
+      case OUT_SET_NODE_NO_ROUTE_TIMEOUT:
+        // Refresh the node attributes panel
+        nodeAttributesArea.setNodeById(e.nodeId);
+        logArea.appendLog("SIM INFO" , e.informationalMessage, e.currentQuantum);
+        simArea.setMalicious(e.nodeId, e.isMalicious);
+        break;
+        
       case OUT_SET_NODE_CHANGE_MESSAGES:
         // Refresh the node attributes panel
         nodeAttributesArea.setNodeById(e.nodeId);

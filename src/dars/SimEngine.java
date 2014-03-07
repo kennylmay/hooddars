@@ -308,7 +308,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         String id = assignNodeId();
 
         // Make a new network node with these attributes
-        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous, ni.isDroppingMessages, ni.isOverridingHops, ni.hops, ni.isChangingMessages);
+        ni = new NodeAttributes(id, ni.x, ni.y, ni.range, ni.isPromiscuous, ni.isDroppingMessages, ni.isOverridingHops, ni.hops, ni.isChangingMessages, ni.isReplayingMessages, ni.isNotExpiringRoutes);
         n = NodeFactory.makeNewNode(getNodeType(), ni);
 
         // Add it to the node store
@@ -350,7 +350,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         }
         // Set the new promiscuity level
         n.setPromiscuity(e.isPromiscuous);
-        OutputHandler.dispatch(DARSEvent.outSetNodePromiscuity(e.nodeId, e.isPromiscuous));
+        OutputHandler.dispatch(DARSEvent.outSetNodePromiscuity(e.nodeId, n.getAttributes()));
         break;
         
       case IN_SET_NODE_DROP_MESSAGES: 
@@ -362,7 +362,31 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         }
         // Set the new promiscuity level
         n.setDropMessages(e.isDroppingMessages);
-        OutputHandler.dispatch(DARSEvent.outSetNodeDropMessages(e.nodeId, e.isDroppingMessages));
+        OutputHandler.dispatch(DARSEvent.outSetNodeDropMessages(e.nodeId,  n.getAttributes()));
+        break;
+        
+      case IN_SET_NODE_REPLAY_MESSAGES: 
+        //Get the node
+        n = store.getNode(e.nodeId);
+        if(n == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not set replay messages for node " + e.nodeId + ", node does not exist"));
+          return;
+        }
+        // Set the new promiscuity level
+        n.setReplayingMessages(e.isReplayingMessages);
+        OutputHandler.dispatch(DARSEvent.outSetNodeReplayingMessages(e.nodeId,  n.getAttributes()));
+        break;
+        
+      case IN_SET_NODE_NO_ROUTE_TIMEOUT: 
+        //Get the node
+        n = store.getNode(e.nodeId);
+        if(n == null) {
+          OutputHandler.dispatch(DARSEvent.outError("Could not no route expiration for node " + e.nodeId + ", node does not exist"));
+          return;
+        }
+        // Set the new promiscuity level
+        n.setNotExpringRoutes(e.isNotExpiringRoutes);
+        OutputHandler.dispatch(DARSEvent.outSetNodeNotExpiringRoutes(e.nodeId,  n.getAttributes()));
         break;
         
       case IN_SET_NODE_CHANGE_MESSAGES: 
@@ -373,8 +397,8 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           return;
         }
         // Set the new promiscuity level
-        n.setChangeMessages(e.isChangingMessages);
-        OutputHandler.dispatch(DARSEvent.outSetNodeChangeMessages(e.nodeId, e.isChangingMessages));
+        n.setChangeMessages(e.isChangingMessages);        
+        OutputHandler.dispatch(DARSEvent.outSetNodeChangeMessages(e.nodeId, n.getAttributes()));
         break;
         
       case IN_SET_OVERRIDE_HOPS: 
@@ -386,7 +410,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
         }
         // Set the new promiscuity level
         n.setOverrideHops(e.isOverridingHops,e.hops);
-        OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, e.isOverridingHops, e.hops));
+        OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, n.getAttributes()));
         break;
         
         
@@ -399,7 +423,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
          }
          // Set the new promiscuity level
          n.setOverrideHops(e.isOverridingHops,e.hops);
-         OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, e.isOverridingHops, e.hops));
+         OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, n.getAttributes()));
          break;
         
       case IN_CLEAR_SIM:

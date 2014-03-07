@@ -16,4 +16,6 @@ public interface NodeControls {
   public JCheckBox getDropMessagesCheckBox();
   public JPanel    getOverrideHopsJPanel();
   public JCheckBox getChangeNarrMessageCheckBox();
+  public JCheckBox getReplayMessageCheckBox();
+  public JCheckBox getDontExpireRoutesCheckBox();
 } 

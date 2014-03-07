@@ -123,6 +123,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JCheckBox PromiscuityCheckBox;
   private JCheckBox DroppingMessagesCheckBox;
   private JCheckBox ChangingMessagesCheckBox;
+  private JCheckBox ReplayingMessagesCheckBox;
+  private JCheckBox NotExpiringRoutesCheckBox;
   private JPanel    OverrideHopsPanel;
   
  // private JLabel Logo = new JLabel(new ImageIcon(getClass().getResource("/logo.png")));
@@ -254,6 +256,8 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     DroppingMessagesCheckBox = nodeControls.getDropMessagesCheckBox();
     OverrideHopsPanel = nodeControls.getOverrideHopsJPanel();
     ChangingMessagesCheckBox = nodeControls.getChangeNarrMessageCheckBox();    
+    ReplayingMessagesCheckBox = nodeControls.getReplayMessageCheckBox();
+    NotExpiringRoutesCheckBox = nodeControls.getDontExpireRoutesCheckBox();
     
     // Node Attributes panel layout
     attributesLayout.setVgap(0);
@@ -266,7 +270,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
         TitledBorder.CENTER, TitledBorder.TOP, Defaults.BOLDFACED_FONT) );
     
     nodeAttributesPanel.setLayout(new GridLayout(3,2,5,2));
-    nodeMalitiousAttributesPanel.setLayout(new GridLayout(2,2,11,5));
+    nodeMalitiousAttributesPanel.setLayout(new GridLayout(3,2,0,0));
        
     JPanel CordPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 0,0));
     JPanel XPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 0,0));
@@ -307,11 +311,15 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     PromiscuityCheckBox.setFont(Defaults.BOLDFACED_FONT);
     DroppingMessagesCheckBox.setFont(Defaults.BOLDFACED_FONT);
     ChangingMessagesCheckBox.setFont(Defaults.BOLDFACED_FONT);
+    ReplayingMessagesCheckBox.setFont(Defaults.BOLDFACED_FONT);
+    NotExpiringRoutesCheckBox.setFont(Defaults.BOLDFACED_FONT);
     nodeMalitiousAttributesPanel.add(PromiscuityCheckBox);
     nodeMalitiousAttributesPanel.add(ChangingMessagesCheckBox);
     nodeMalitiousAttributesPanel.add(DroppingMessagesCheckBox);
     nodeMalitiousAttributesPanel.add(OverrideHopsPanel);
-    
+    nodeMalitiousAttributesPanel.add(ReplayingMessagesCheckBox);
+    nodeMalitiousAttributesPanel.add(NotExpiringRoutesCheckBox);
+        
     attributesPanel.add(nodeAttributesPanel);
     attributesPanel.add(nodeMalitiousAttributesPanel);
 

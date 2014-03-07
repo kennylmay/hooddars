@@ -62,6 +62,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
                                                                  new SpinnerNumberModel(
                                                                      1, -1, 99,
                                                                      1));
+  private JCheckBox                dontExpireRoutesCheckBox  = new JCheckBox("No Rt Expiration.");
+  private JCheckBox                replayMessagesCheckBox = new JCheckBox("Replay Mess.");
 
   private boolean                  blockChangeEvents         = false;
   private Vector<String>           nodeList                  = new Vector<String>();
@@ -78,6 +80,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     dropMessagesCheckBox.setMnemonic(KeyEvent.VK_D);
     overrideHopsCheckBox.setMnemonic(KeyEvent.VK_O);
     changeNarrMessageCheckBox.setMnemonic(KeyEvent.VK_C);
+    dontExpireRoutesCheckBox.setMnemonic(KeyEvent.VK_E);
+    replayMessagesCheckBox.setMnemonic(KeyEvent.VK_R);
 
     FlowLayout flow = new FlowLayout();
     flow.setAlignment(FlowLayout.LEFT);
@@ -252,7 +256,37 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
             dropMessagesCheckBox.isSelected()));
       }
     });
+    
+    replayMessagesCheckBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        if (blockChangeEvents) {
+          return;
+        }
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
+                
+        InputHandler.dispatch(DARSEvent.inSetNodeReplayMessages(
+            nodeSelectorComboBox.getSelectedItem().toString(),
+            replayMessagesCheckBox.isSelected()));
+      }
+    });
 
+    dontExpireRoutesCheckBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        if (blockChangeEvents) {
+          return;
+        }
+        if (nodeSelectorComboBox.getSelectedItem() == null) {
+          return;
+        }
+                
+        InputHandler.dispatch(DARSEvent.inSetNodeNoRouteTimeout(
+            nodeSelectorComboBox.getSelectedItem().toString(),
+            dontExpireRoutesCheckBox.isSelected()));
+      }
+    });
+    
     overrideHopsCheckBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         if (blockChangeEvents) {
@@ -379,12 +413,16 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     overrideHopsCheckBox.setSelected(n.isOverridingHops);
     overrideHopsSpinner.setValue(n.hops);
     changeNarrMessageCheckBox.setSelected(n.isChangingMessages);
+    replayMessagesCheckBox.setSelected(n.isReplayingMessages);
+    dontExpireRoutesCheckBox.setSelected(n.isNotExpiringRoutes);
 
     // Cludge alert. Reset the settings based on locked replay mode
     nodeRangeSpinner.setEnabled(!lockedReplayMode);
     promiscuousModeCheckBox.setEnabled(!lockedReplayMode);
     changeNarrMessageCheckBox.setEnabled(!lockedReplayMode);
     dropMessagesCheckBox.setEnabled(!lockedReplayMode);
+    dontExpireRoutesCheckBox.setEnabled(!lockedReplayMode);
+    replayMessagesCheckBox.setEnabled(!lockedReplayMode);
     XSpinner.setEnabled(!lockedReplayMode);
     YSpinner.setEnabled(!lockedReplayMode);
     
@@ -413,6 +451,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     overrideHopsCheckBox.setSelected(false);
     overrideHopsSpinner.setValue(1);
     changeNarrMessageCheckBox.setSelected(false);
+    dontExpireRoutesCheckBox.setSelected(false);
+    replayMessagesCheckBox.setSelected(false);
     
     String nodeId;
     JDialog dialog;
@@ -449,6 +489,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     overrideHopsCheckBox.setEnabled(!isLocked);
     overrideHopsSpinner.setEnabled(!isLocked);
     promiscuousModeCheckBox.setEnabled(!isLocked);
+    dontExpireRoutesCheckBox.setEnabled(!isLocked);
+    replayMessagesCheckBox.setEnabled(!isLocked);
   }
 
   public void simPaused() {
@@ -499,6 +541,8 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
     changeNarrMessageCheckBox.setEnabled(!b);
     overrideHopsCheckBox.setEnabled(!b);
     overrideHopsSpinner.setEnabled(!b);
+    dontExpireRoutesCheckBox.setEnabled(!b);
+    replayMessagesCheckBox.setEnabled(!b);
     lockedReplayMode = b;
   }
 
@@ -539,6 +583,16 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
   @Override
   public JCheckBox getChangeNarrMessageCheckBox() {
     return changeNarrMessageCheckBox;
+  }
+  
+  @Override
+  public JCheckBox getReplayMessageCheckBox() {
+    return replayMessagesCheckBox;
+  }
+  
+  @Override
+  public JCheckBox getDontExpireRoutesCheckBox() {
+    return dontExpireRoutesCheckBox;
   }
   
   @Override
