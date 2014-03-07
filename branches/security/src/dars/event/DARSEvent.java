@@ -22,6 +22,7 @@ public class DARSEvent {
     IN_ADD_NODE, IN_MOVE_NODE, IN_DEL_NODE, IN_SET_NODE_RANGE, IN_SET_NODE_PROMISCUITY, IN_SIM_SPEED, 
     IN_START_SIM, IN_PAUSE_SIM, IN_RESUME_SIM, IN_STOP_SIM, IN_CLEAR_SIM, IN_NEW_SIM, IN_INSERT_MESSAGE,
     IN_SET_NODE_DROP_MESSAGES,IN_SET_OVERRIDE_HOPS,IN_SET_HOPS_COUNT, IN_SET_NODE_CHANGE_MESSAGES,
+    IN_SET_NODE_NO_ROUTE_TIMEOUT, IN_SET_NODE_REPLAY_MESSAGES, 
     
     // Output event types
     OUT_ADD_NODE, OUT_MOVE_NODE, OUT_DEL_NODE, OUT_SET_NODE_RANGE, OUT_SET_NODE_PROMISCUITY,  
@@ -29,7 +30,8 @@ public class DARSEvent {
     OUT_STOP_SIM, OUT_SIM_SPEED, OUT_NEW_SIM, OUT_INSERT_MESSAGE, OUT_NARRMSG_RECEIVED, 
     OUT_CONTROLMSG_RECEIVED, OUT_NARRMSG_TRANSMITTED, OUT_CONTROLMSG_TRANSMITTED, 
     OUT_QUANTUM_ELAPSED, OUT_CLEAR_SIM, OUT_MSG_RECEIVED, OUT_NODE_INFO, OUT_SET_NODE_DROP_MESSAGES,
-    OUT_NARRMSG_DROPPED, OUT_SET_OVERRIDE_HOPS, OUT_SET_HOPS_COUNT, OUT_SET_NODE_CHANGE_MESSAGES
+    OUT_NARRMSG_DROPPED, OUT_SET_OVERRIDE_HOPS, OUT_SET_HOPS_COUNT, OUT_SET_NODE_CHANGE_MESSAGES, 
+    OUT_SET_NODE_NO_ROUTE_TIMEOUT, OUT_SET_NODE_REPLAY_MESSAGES
   };
 
   public EventType            eventType;
@@ -49,13 +51,15 @@ public class DARSEvent {
   public boolean              isMalicious;
   public boolean              isOverridingHops;
   public boolean              isChangingMessages;
+  public boolean              isReplayingMessages;
+  public boolean              isNotExpiringRoutes;
   public int                  hops;
   private String              droppedMessage;
   
 
   //Provided for convenience.
   public NodeAttributes getNodeAttributes() {
-    return new NodeAttributes(nodeId, nodeX, nodeY, nodeRange, isPromiscuous, isDroppingMessages, isOverridingHops, hops, isChangingMessages);
+    return new NodeAttributes(nodeId, nodeX, nodeY, nodeRange, isPromiscuous, isDroppingMessages, isOverridingHops, hops, isChangingMessages, isReplayingMessages, isNotExpiringRoutes);
   }
   
 //Provided for convenience.
@@ -250,6 +254,23 @@ public class DARSEvent {
     return e;
   }
   
+  public static DARSEvent inSetNodeReplayMessages(String id, boolean isReplayingMessages) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_SET_NODE_REPLAY_MESSAGES;
+    e.isReplayingMessages = isReplayingMessages;
+    e.nodeId = id;
+    return e;
+  }
+  
+  public static DARSEvent inSetNodeNoRouteTimeout(String id, boolean isNotExpiringRoutes) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.IN_SET_NODE_NO_ROUTE_TIMEOUT;
+    e.isNotExpiringRoutes = isNotExpiringRoutes;
+    e.nodeId = id;
+    return e;
+  }
+  
+  
   public static DARSEvent inSetNodeOverrideHops(String id, boolean isOverridingHops, int hops) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.IN_SET_OVERRIDE_HOPS;
@@ -314,64 +335,83 @@ public class DARSEvent {
     return e;
   }
 
-  public static DARSEvent outSetNodePromiscuity(String id, boolean isPromiscuous) {
+  public static DARSEvent outSetNodePromiscuity(String id, NodeAttributes att) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SET_NODE_PROMISCUITY;
-    e.isPromiscuous = isPromiscuous;
+    e.isPromiscuous = att.isPromiscuous;
     e.nodeId = id;
     String status;
-    if(isPromiscuous) status = "enabled";
+    if(att.isPromiscuous) status = "enabled";
     else status = "disabled";
     e.informationalMessage = "Node " + id + " " + status + " promiscuous mode.";
-    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops || e.isChangingMessages){
-       e.isMalicious = true;
-    }
+    e.isMalicious = isNodeMalicious(att);
     return e;
   }
   
-  public static DARSEvent outSetNodeDropMessages(String id, boolean isDroppingMessages) {
+  public static DARSEvent outSetNodeDropMessages(String id, NodeAttributes att) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SET_NODE_DROP_MESSAGES;
     e.nodeId = id;
-    e.isDroppingMessages = isDroppingMessages;
+    e.isDroppingMessages = att.isDroppingMessages;
     String status;
-    if(isDroppingMessages) status = "enabled";
+    if(att.isDroppingMessages) status = "enabled";
     else status = "disabled";
     e.informationalMessage = "Node " + id + " " + status + " dropping messages.";
-    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops || e.isChangingMessages){
-      e.isMalicious = true;
-    }
+    e.isMalicious = isNodeMalicious(att);
     return e;
   }
   
-  public static DARSEvent outSetNodeChangeMessages(String id, boolean isChangingMessages) {
+  public static DARSEvent outSetNodeChangeMessages(String id, NodeAttributes att) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SET_NODE_CHANGE_MESSAGES;
     e.nodeId = id;
-    e.isChangingMessages = isChangingMessages;
+    e.isChangingMessages = att.isChangingMessages;
     String status;
-    if(isChangingMessages) status = "enabled";
+    if(att.isChangingMessages) status = "enabled";
     else status = "disabled";
     e.informationalMessage = "Node " + id + " " + status + " changing narrative messages.";
-    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops || e.isChangingMessages){
-      e.isMalicious = true;
-    }
+    e.isMalicious = isNodeMalicious(att);
     return e;
   }
   
-  public static DARSEvent outSetOverRideHops(String id, boolean isOverridingHops, int hops) {
+  public static DARSEvent outSetNodeReplayingMessages(String id,NodeAttributes att) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_SET_NODE_REPLAY_MESSAGES;
+    e.nodeId = id;
+    e.isReplayingMessages = att.isReplayingMessages;
+    String status;
+    if(att.isReplayingMessages) status = "enabled";
+    else status = "disabled";
+    e.informationalMessage = "Node " + id + " " + status + " replaying narrative messages.";
+    e.isMalicious = isNodeMalicious(att);
+    return e;
+  }
+  
+  public static DARSEvent outSetNodeNotExpiringRoutes(String id, NodeAttributes att) {
+    DARSEvent e = new DARSEvent();
+    e.eventType = EventType.OUT_SET_NODE_NO_ROUTE_TIMEOUT;
+    e.nodeId = id;
+    e.isNotExpiringRoutes = att.isNotExpiringRoutes;
+    String status;
+    if(att.isNotExpiringRoutes) status = "disabled";
+    else status = "enabled";
+    e.informationalMessage = "Node " + id + " " + status + " expiring routes in its routing table.";
+    e.isMalicious = isNodeMalicious(att);
+    return e;
+  }
+  
+  
+  public static DARSEvent outSetOverRideHops(String id, NodeAttributes att) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_SET_OVERRIDE_HOPS;
     e.nodeId = id;
-    e.isOverridingHops = isOverridingHops;
+    e.isOverridingHops = att.isOverridingHops;
     String status;
-    e.hops = hops;
-    if(isOverridingHops) status = "enabled";
+    e.hops = att.hops;
+    if(att.isOverridingHops) status = "enabled";
     else status = "disabled";
-    e.informationalMessage = "Node " + id + " " + status + " overriding the number of hops to destination.  Number of hops: "  + hops;
-    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops || e.isChangingMessages){
-      e.isMalicious = true;
-    }
+    e.informationalMessage = "Node " + id + " " + status + " overriding the number of hops to destination.  Number of hops: "  + att.hops;
+    e.isMalicious = isNodeMalicious(att);
     return e;
   }
   
@@ -385,7 +425,7 @@ public class DARSEvent {
     if(isOverridingHops) status = "enabled";
     else status = "disabled";
     e.informationalMessage = "Node " + id + " " + status + " overriding the number of hops to destination. Number of hops: "  + hops;
-    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops || e.isChangingMessages){
+    if (e.isPromiscuous || e.isDroppingMessages || e.isOverridingHops || e.isChangingMessages || e.isReplayingMessages || e.isNotExpiringRoutes){
       e.isMalicious = true;
     }
     return e;
@@ -483,7 +523,6 @@ public class DARSEvent {
     return d;
   }
   
-  
   public static DARSEvent outNodeInfo(String infoMsg) {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_NODE_INFO;
@@ -495,6 +534,14 @@ public class DARSEvent {
     DARSEvent e = new DARSEvent();
     e.eventType = EventType.OUT_QUANTUM_ELAPSED;
     return e;
+  }
+  
+  public static boolean isNodeMalicious(NodeAttributes att){
+    if (att.isPromiscuous || att.isDroppingMessages || att.isOverridingHops || att.isChangingMessages || att.isReplayingMessages || att.isNotExpiringRoutes){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   static final Class<DARSEvent> c = DARSEvent.class;
@@ -601,7 +648,9 @@ public class DARSEvent {
       e.isMalicious = Boolean.parseBoolean(details[14]);
       e.isOverridingHops = Boolean.parseBoolean(details[15]);
       e.isChangingMessages = Boolean.parseBoolean(details[16]);
-      e.hops = Integer.parseInt(details[17]);
+      e.isReplayingMessages = Boolean.parseBoolean(details[17]);
+      e.isNotExpiringRoutes = Boolean.parseBoolean(details[18]);
+      e.hops = Integer.parseInt(details[19]);
       
     }
     catch (Exception ex){
