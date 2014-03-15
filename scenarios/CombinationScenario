@@ -1,0 +1,55 @@
+eventType,nodeId,sourceId,destinationId,informationalMessage,transmittedMessage,newSimSpeed,nodeX,nodeY,nodeRange,nodeType,currentQuantum,isPromiscuous,isDroppingMessages,isMalicious,isOverridingHops,isChangingMessages,isReplayingMessages,isNotExpiringRoutes,hops
+IN_NEW_SIM,,,,,,0,0,0,0,AODV,0,false,false,false,false,false,false,false,0
+OUT_NEW_SIM,,,,New AODV Simulation Created.,,0,0,0,0,AODV,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,412,47,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,A,,,Node Added: A.,,0,412,47,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,506,101,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,B,,,Node Added: B.,,0,506,101,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,594,144,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,C,,,Node Added: C.,,0,594,144,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,690,178,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,D,,,Node Added: D.,,0,690,178,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,857,201,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,E,,,Node Added: E.,,0,857,201,150,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,E,,,,,0,809,205,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,E,,,Node E moved to X:809 Y:205.,,0,809,205,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_PROMISCUITY,A,,,,,0,0,0,0,,0,true,false,false,false,false,false,false,0
+OUT_SET_NODE_PROMISCUITY,A,,,Node A enabled promiscuous mode.,,0,0,0,0,,0,true,false,true,false,false,false,false,0
+IN_SET_NODE_CHANGE_MESSAGES,B,,,,,0,0,0,0,,0,false,false,false,false,true,false,false,0
+OUT_SET_NODE_CHANGE_MESSAGES,B,,,Node B enabled changing narrative messages.,,0,0,0,0,,0,false,false,true,false,true,false,false,0
+IN_SET_NODE_DROP_MESSAGES,C,,,,,0,0,0,0,,0,false,true,false,false,false,false,false,0
+OUT_SET_NODE_DROP_MESSAGES,C,,,Node C enabled dropping messages.,,0,0,0,0,,0,false,true,true,false,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,true,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D enabled replaying narrative messages.,,0,0,0,0,,0,false,false,true,false,false,true,false,0
+IN_SET_OVERRIDE_HOPS,D,,,,,0,0,0,0,,0,false,false,false,true,false,false,false,0
+OUT_SET_OVERRIDE_HOPS,D,,,Node D enabled overriding the number of hops to destination.  Number of hops: 0,,0,0,0,0,,0,false,false,true,true,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D disabled replaying narrative messages.,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,true,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D enabled replaying narrative messages.,,0,0,0,0,,0,false,false,true,false,false,true,false,0
+IN_SET_OVERRIDE_HOPS,D,,,,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SET_OVERRIDE_HOPS,D,,,Node D disabled overriding the number of hops to destination.  Number of hops: 0,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D disabled replaying narrative messages.,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,true,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D enabled replaying narrative messages.,,0,0,0,0,,0,false,false,true,false,false,true,false,0
+IN_SET_OVERRIDE_HOPS,D,,,,,0,0,0,0,,0,false,false,false,true,false,false,false,0
+OUT_SET_OVERRIDE_HOPS,D,,,Node D enabled overriding the number of hops to destination.  Number of hops: 0,,0,0,0,0,,0,false,false,true,true,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D disabled replaying narrative messages.,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,true,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D enabled replaying narrative messages.,,0,0,0,0,,0,false,false,true,false,false,true,false,0
+IN_SET_NODE_REPLAY_MESSAGES,D,,,,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,D,,,Node D disabled replaying narrative messages.,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SET_OVERRIDE_HOPS,D,,,,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SET_OVERRIDE_HOPS,D,,,Node D disabled overriding the number of hops to destination.  Number of hops: 0,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SET_OVERRIDE_HOPS,D,,,,,0,0,0,0,,0,false,false,false,true,false,false,false,0
+OUT_SET_OVERRIDE_HOPS,D,,,Node D enabled overriding the number of hops to destination.  Number of hops: 0,,0,0,0,0,,0,false,false,true,true,false,false,false,0
+IN_ADD_NODE,,,,,,0,890,221,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,F,,,Node Added: F.,,0,890,221,150,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,E,,,,,0,792,210,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,E,,,Node E moved to X:792 Y:210.,,0,792,210,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_REPLAY_MESSAGES,E,,,,,0,0,0,0,,0,false,false,false,false,false,true,false,0
+OUT_SET_NODE_REPLAY_MESSAGES,E,,,Node E enabled replaying narrative messages.,,0,0,0,0,,0,false,false,true,false,false,true,false,0
+IN_SET_NODE_NO_ROUTE_TIMEOUT,F,,,,,0,0,0,0,,0,false,false,false,false,false,false,true,0
+OUT_SET_NODE_NO_ROUTE_TIMEOUT,F,,,Node F disabled expiring routes in its routing table.,,0,0,0,0,,0,false,false,true,false,false,false,true,0

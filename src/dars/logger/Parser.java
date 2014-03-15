@@ -6,6 +6,8 @@ package dars.logger;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import dars.Utilities;
 import dars.event.DARSEvent;
 
 /**
@@ -55,7 +57,7 @@ public class Parser
     try {
       LogFile = new FileReader(file);
     } catch (FileNotFoundException e1) {
-      // TODO Auto-generated catch block
+      Utilities.showError("File not found" + file);
       e1.printStackTrace();
     }
     return new BufferedReader(LogFile); 

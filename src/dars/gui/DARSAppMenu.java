@@ -57,7 +57,15 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JMenu              newMenu             = new JMenu("New");
   private JMenu              createNetworkMenu   = new JMenu("Create Network");
   private JMenu              modeMenu            = new JMenu("Mode");
-  private JMenu              controlMenu            = new JMenu("Control");
+  private JMenu              controlMenu         = new JMenu("Control");
+  private JMenuItem          loadScenarioMenuItem = new JMenu("Load Scenario");
+  private JMenuItem          loadMaliciousScenarioMenuItem = new JMenu("Load Malicious Scenario");
+  private JMenuItem          hopOverrideScenarioMenuItem = new JMenuItem("Hop Override");
+  private JMenuItem          dropNarrScenarioMenuItem = new JMenuItem("Drop Narrative Message");
+  private JMenuItem          noRouteExpireScenarioMenuItem = new JMenuItem("No Route Expire");
+  private JMenuItem          replayNarrScenarioMenuItem = new JMenuItem("Replay Narrative Message");
+  private JMenuItem          changeNarrScenarioMenuItem = new JMenuItem("Change Narrative Message");
+  private JMenuItem          combinationScenarioMenuItem = new JMenuItem("Combination of All");
   private JMenuItem          saveMenuItem        = new JMenuItem("Save Log");
   private JMenuItem          saveScreenMenuItem  = new JMenuItem("Take Screenshot");
   private JMenuItem          clearNodesMenuItem       = new JMenuItem("Delete All Nodes");
@@ -128,7 +136,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JPanel    OverrideHopsPanel;
   
  // private JLabel Logo = new JLabel(new ImageIcon(getClass().getResource("/logo.png")));
-  public DARSAppMenu(GUI g, NodeControls nodeControls) {
+  public DARSAppMenu(final GUI g, NodeControls nodeControls) {
 
     guiInstance = g;
    
@@ -157,6 +165,16 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     createNetworkMenu.add(deleteNodeMenuItem);
     createNetworkMenu.add(clearNodesMenuItem);
  
+    
+    // Add elements to the scenario menu item
+    loadMaliciousScenarioMenuItem.add(hopOverrideScenarioMenuItem);
+    loadMaliciousScenarioMenuItem.add(dropNarrScenarioMenuItem);
+    loadMaliciousScenarioMenuItem.add(noRouteExpireScenarioMenuItem);
+    loadMaliciousScenarioMenuItem.add(replayNarrScenarioMenuItem);
+    loadMaliciousScenarioMenuItem.add(changeNarrScenarioMenuItem);
+    loadMaliciousScenarioMenuItem.add(combinationScenarioMenuItem);
+    loadScenarioMenuItem.add(loadMaliciousScenarioMenuItem);
+   
     // Add elements to the mode 
     debugCheckBox.setState(Defaults.DEBUG_ENABLED);
     modeMenu.add(debugCheckBox);
@@ -170,6 +188,7 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     
     // Add elements to the sim  and their sub menus
     simMenu.add(newMenu);
+    simMenu.add(loadScenarioMenuItem);
     simMenu.add(createNetworkMenu);
     
     //Add node  items dynamically using reflection
@@ -258,6 +277,26 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     ChangingMessagesCheckBox = nodeControls.getChangeNarrMessageCheckBox();    
     ReplayingMessagesCheckBox = nodeControls.getReplayMessageCheckBox();
     NotExpiringRoutesCheckBox = nodeControls.getDontExpireRoutesCheckBox();
+    
+    stopButton.setToolTipText("The simulation will be stopped and cannot be resumed.");
+    pauseButton.setToolTipText("The simulation will be stopped, but it can be resumed.");
+    resumeButton.setToolTipText("Continue running the simulatoin");
+    playButton.setToolTipText("Begin the simulation");
+    
+    slideBar.setToolTipText("The speed at which clock ticks that occur.");
+    
+    AttributesButton.setToolTipText("View more of the nodes attributes, normally a routing table.");
+    NodeComboBox.setToolTipText("The currently selected node ID");   
+    XSpinner.setToolTipText("The current X coordiante of the selected node.");
+    YSpinner.setToolTipText("The current Y coordiante of the selected node.");
+    RangeSpinner.setToolTipText("The current broadcast range of the selected node.");
+    PromiscuityCheckBox.setToolTipText("The node will only listen to network traffic. It will never send outbound messages.");
+    DroppingMessagesCheckBox.setToolTipText("The node will drop any narritive messages, but will continue to respond to control messages.");
+    nodeControls.getOverrideHopsCheckBox().setToolTipText("The node will lie abot the hop count to another node in the network.");
+    nodeControls.getOverrideHopsSpinner().setToolTipText("The number of hops the node will say every other node is away.");
+    ChangingMessagesCheckBox.setToolTipText("The node will change the text of a narritive message.");
+    ReplayingMessagesCheckBox.setToolTipText("The node will resend a narritive message after is has already transmitted it once.");
+    NotExpiringRoutesCheckBox.setToolTipText("After the node learns of a route it will never expire.");
     
     // Node Attributes panel layout
     attributesLayout.setVgap(0);
@@ -579,6 +618,43 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
                                              "About");
       }
     });
+    
+    hopOverrideScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadScenario(Utilities.scenarioType.HOP_OVERRIDE, g);
+      }
+    });
+    
+    dropNarrScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadScenario(Utilities.scenarioType.DROP_NARR, g);
+      }
+    });
+    
+    noRouteExpireScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadScenario(Utilities.scenarioType.NO_ROUTE_EXPIRE, g);
+      }
+    });
+    
+    changeNarrScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadScenario(Utilities.scenarioType.CHANGE_NARR, g);
+      }
+    });
+    
+    replayNarrScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadScenario(Utilities.scenarioType.REPLAY_NARR, g);
+      }
+    });
+    
+    combinationScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadScenario(Utilities.scenarioType.COMBINATION, g);
+      }
+    });
+    
 
     playButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {

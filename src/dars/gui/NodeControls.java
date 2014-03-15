@@ -18,4 +18,6 @@ public interface NodeControls {
   public JCheckBox getChangeNarrMessageCheckBox();
   public JCheckBox getReplayMessageCheckBox();
   public JCheckBox getDontExpireRoutesCheckBox();
+  public JCheckBox getOverrideHopsCheckBox();
+  public JSpinner getOverrideHopsSpinner();
 } 
