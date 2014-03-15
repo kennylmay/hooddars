@@ -14,15 +14,29 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Queue;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import dars.event.DARSEvent;
+import dars.gui.GUI;
+import dars.gui.ImageFactory;
 import dars.logger.Logger;
+import dars.logger.Parser;
 import dars.proto.NodeFactory.NodeType;
+import dars.replayer.Replayer;
+import dars.replayer.Replayer.ReplayMode;
 
 public class Utilities {
+  static private Utilities instance = new Utilities();
+  public enum scenarioType {
+    HOP_OVERRIDE, DROP_NARR, NO_ROUTE_EXPIRE, CHANGE_NARR, REPLAY_NARR, COMBINATION
+  };
+
   public static void setSwingFont(javax.swing.plaf.FontUIResource f) {
     java.util.Enumeration<Object> keys = UIManager.getDefaults().keys();
     while (keys.hasMoreElements()) {
@@ -43,10 +57,99 @@ public class Utilities {
         JOptionPane.INFORMATION_MESSAGE);
   }
 
-  
-  public static String popupAskUser(String question, String[] answers, String title) {
-    int answer = JOptionPane.showOptionDialog(null,
-        question, title, 0,
+  public static void loadScenario(scenarioType type, GUI g) {
+    String osname = System.getProperty("os.name");
+    String filename;
+    
+    if(osname.contains("Windows")){
+       filename = ".\\scenarios\\";
+    }else{
+       filename = "./scenarios/";
+    }
+    
+    switch (type) {
+    case HOP_OVERRIDE:
+      JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
+          "Hop Override Scenario",
+          JOptionPane.INFORMATION_MESSAGE);
+      filename += "HopOverrideScenario";
+      
+      break;
+
+    case DROP_NARR:
+      JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
+          "Drop Narrative Message Scenario",
+          JOptionPane.INFORMATION_MESSAGE);
+      filename += "DropNarrScenario";
+      break;
+
+    case NO_ROUTE_EXPIRE:
+      JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
+          "No Route Expire Scenario",
+          JOptionPane.INFORMATION_MESSAGE);
+      filename += "NoRouteExpireScenario";
+      break;
+
+    case CHANGE_NARR:
+      JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
+          "Change Narritive Message Scenario",
+          JOptionPane.INFORMATION_MESSAGE);
+      filename += "ChangeNarrScenario";
+      break;
+
+    case REPLAY_NARR:
+      JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
+          "Replay Narrative Message Scenario",
+          JOptionPane.INFORMATION_MESSAGE);
+      filename += "ReplayNarrScenario";
+      break;
+
+    case COMBINATION:
+      JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
+          "Combination Scenario",
+          JOptionPane.INFORMATION_MESSAGE);
+      filename += "CombinationScenario";
+      break;
+    }
+    
+    loadReplayFile(filename, g);
+  }
+
+  public static void loadReplayFile(String fileName, GUI g) {
+    Queue<DARSEvent> Q = Parser.parseReplay(fileName);
+
+    if (Q == null) {
+      Utilities.showError("Log file can not be parsed.");
+      return;
+    }
+
+    // Okay. New simulation. Have to ask the user what type of sim they want..
+    NodeType nt = Utilities.popupAskNodeType();
+    if (nt == null) {
+      // User canceled..
+      return;
+    }
+
+    // Start a new simualation
+    InputHandler.dispatch(DARSEvent.inNewSim(nt));
+
+    // Ask the user what mode of replay they want
+    ReplayMode mode = Replayer.askReplayMode();
+    if (mode == null) {
+      return;
+    }
+
+    // Instantiate a new replayer with the replay events
+    // Name the gui as the replayerListener.
+    GUI guiInstance = g; 
+    Replayer replayer = new Replayer(Q,
+        (Replayer.ReplayerListener) guiInstance.getReplayerListener(), mode);
+
+  }
+
+  public static String popupAskUser(String question, String[] answers,
+      String title) {
+    int answer = JOptionPane.showOptionDialog(null, question, title, 0,
         JOptionPane.QUESTION_MESSAGE, null, answers, answers[0]);
     // Return null if the user closed the dialog box
     if (answer == JOptionPane.CLOSED_OPTION) {
@@ -57,7 +160,7 @@ public class Utilities {
     return answers[answer];
 
   }
-  
+
   public static NodeType popupAskNodeType() {
     // Get every node type
     NodeType nTypes[] = getNodeTypes();
@@ -97,9 +200,9 @@ public class Utilities {
       // Define the new files to be saved.
       File logFile = new File(getTmpLogPath());
       File saveFile;
-      if (!chooser.getSelectedFile().getPath().endsWith(".log")){
+      if (!chooser.getSelectedFile().getPath().endsWith(".log")) {
         saveFile = new File(chooser.getSelectedFile().getPath() + ".log");
-      }else{
+      } else {
         saveFile = new File(chooser.getSelectedFile().getPath());
       }
 
@@ -144,7 +247,8 @@ public class Utilities {
         out.close();
 
       } catch (FileNotFoundException e1) {
-        showError("Log file could not be saved at "+ chooser.getSelectedFile().getPath());
+        showError("Log file could not be saved at "
+            + chooser.getSelectedFile().getPath());
       } catch (IOException e1) {
         showError("Log file could not be saved due to an IO error.");
       }
@@ -152,11 +256,13 @@ public class Utilities {
   }
 
   private static final NodeType[] nodeTypes = NodeType.values();
+
   public static NodeType[] getNodeTypes() {
     return nodeTypes;
   }
 
   static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
   public static String timeStamp() {
     Calendar cal = Calendar.getInstance();
     return sdf.format(cal.getTime());
@@ -187,7 +293,7 @@ public class Utilities {
       }
     }
     // If they didn't hit approve, return
-    else{
+    else {
       return;
     }
 
@@ -200,7 +306,7 @@ public class Utilities {
     screenRectangle.y = Area.getLocationOnScreen().y;
 
     // Here we have to make the GUI Thread sleep for 1/4 of a second
-    // just to give the save dialog enough time to close off of the 
+    // just to give the save dialog enough time to close off of the
     // screen. On slower computers they were capturing the screen
     // before the dialog was out of the way.
     try {

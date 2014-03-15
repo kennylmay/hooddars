@@ -603,5 +603,16 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
   public JPanel getOverrideHopsJPanel() {
     return overrideHopsPanel;
   }
+  
+  @Override
+  public JCheckBox getOverrideHopsCheckBox() {
+    return overrideHopsCheckBox;
+  }
+  
+  @Override
+  public JSpinner getOverrideHopsSpinner() {
+    return overrideHopsSpinner;
+  }
+  
 
 }
