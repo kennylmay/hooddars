@@ -1766,6 +1766,14 @@ public class Aodv extends Node {
       TempRouteEntry = RouteTableIter.next();
 
       /**
+       * If we are not expiring route entries then always mark them for 
+       * max life.
+       */
+      if (this.att.isNotExpiringRoutes) {
+        TempRouteEntry.setLifetime(this.CurrentTick + MY_ROUTE_TIMEOUT);
+        TempRouteEntry.setState(RouteEntry.StateFlags.VALID);
+      }
+      /**
        * See if the lifetime of a route has expired.
        */
       if (TempRouteEntry.getLifetime() <= this.CurrentTick) {
