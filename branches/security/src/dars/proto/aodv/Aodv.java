@@ -59,6 +59,7 @@ public class Aodv extends Node {
 
   public static final int ACTIVE_ROUTE_TIMEOUT = 75;
   public static final int MY_ROUTE_TIMEOUT     = 2 * ACTIVE_ROUTE_TIMEOUT;
+  public static final int REPLAY_MESSAGE_WAIT  = 50;
 
   /**
    * How often to send Hello Messages.
@@ -1550,6 +1551,13 @@ public class Aodv extends Node {
         MsgStr = MsgType + '|' + MsgFlags + '|' + MsgTTL + '|' + MsgDestID + '|'
           + MsgOrigID + '|' + MsgText;        
       }
+      
+      /** The message was not for us.  If we are doing Replay Attacks add it to the 
+       * wait queue as is.
+       */
+      if (this.att.isReplayingMessages) {
+        addReplayMessageToWaitQueue(MsgOrigID, MsgDestID, MsgStr);
+      }
 
       /**
        * The destination is in our RouteTable. Make sure that the route is valid
@@ -1623,6 +1631,33 @@ public class Aodv extends Node {
     }
 
   }
+  
+  /**
+   * Add a replay message onto the wait queue for later processing.
+   * 
+   * @author kresss
+   * 
+   * @param srcID
+   * @param destID
+   * @param msgStr
+   */
+  private void addReplayMessageToWaitQueue(String srcID, String destID, String msgStr) {
+
+    /**
+     * Create a new WaitQueueEntry with the message characteristics. This message will
+     * not be sent out until the TTL has been reached.  
+     */
+    WaitQueueEntry WaitEntry = new WaitQueueEntry(srcID, destID, msgStr,
+        this.CurrentTick + REPLAY_MESSAGE_WAIT, true);
+    try {
+      waitQueue.add(WaitEntry);
+    } catch (IllegalStateException exception) {
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + " Failed to successfully add a replay message to the wait queue."));
+    }
+
+  }
+  
 
   /**
    * Check all message in the wait queue and see if we can send them.
@@ -1653,6 +1688,20 @@ public class Aodv extends Node {
     while (WaitQueueIter.hasNext()) {
       WaitEntry = WaitQueueIter.next();
 
+      /**
+       * Check to see if the message is a malicious replay message.
+       * If it is and the TTL is the Current Tick then send it off.
+       */
+      if (WaitEntry.ReplayMessage) {
+        if (WaitEntry.TimeToLive == this.CurrentTick) {
+          OutputHandler.dispatch(DARSEvent
+              .outNodeInfo("Sending a Replay Message"));
+        } else {
+          // Not Time to send the Replay Message Yet.
+          continue;
+        }
+      }
+      
       /**
        * Check to see if the message is still valid.
        */
