@@ -149,7 +149,7 @@ public class Animations extends JPanel implements ComponentListener,
   public static void setSimSpeed(int speed) {
     // There's no science here, I've just been guesstimating to arrive at this
     // multiplier.
-    connLifeTime = 1500 + speed * 300;
+    connLifeTime = speed * 100;
   }
 
   private static int xPoints[] = new int[4];
