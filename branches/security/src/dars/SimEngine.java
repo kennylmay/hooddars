@@ -360,7 +360,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           OutputHandler.dispatch(DARSEvent.outError("Could not set drop messages for node " + e.nodeId + ", node does not exist"));
           return;
         }
-        // Set the new promiscuity level
+        // Set the Drop Narrative Messages Attribute.
         n.setDropMessages(e.isDroppingMessages);
         OutputHandler.dispatch(DARSEvent.outSetNodeDropMessages(e.nodeId,  n.getAttributes()));
         break;
@@ -372,7 +372,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           OutputHandler.dispatch(DARSEvent.outError("Could not set replay messages for node " + e.nodeId + ", node does not exist"));
           return;
         }
-        // Set the new promiscuity level
+        // Set the Replay Narrative Messages Attribute.
         n.setReplayingMessages(e.isReplayingMessages);
         OutputHandler.dispatch(DARSEvent.outSetNodeReplayingMessages(e.nodeId,  n.getAttributes()));
         break;
@@ -384,7 +384,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           OutputHandler.dispatch(DARSEvent.outError("Could not no route expiration for node " + e.nodeId + ", node does not exist"));
           return;
         }
-        // Set the new promiscuity level
+        // Set the no route timeout Attribute.
         n.setNotExpringRoutes(e.isNotExpiringRoutes);
         OutputHandler.dispatch(DARSEvent.outSetNodeNotExpiringRoutes(e.nodeId,  n.getAttributes()));
         break;
@@ -396,7 +396,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           OutputHandler.dispatch(DARSEvent.outError("Could not set change messages for node " + e.nodeId + ", node does not exist"));
           return;
         }
-        // Set the new promiscuity level
+        // Set the change narrative message attribute.
         n.setChangeMessages(e.isChangingMessages);        
         OutputHandler.dispatch(DARSEvent.outSetNodeChangeMessages(e.nodeId, n.getAttributes()));
         break;
@@ -408,7 +408,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
           OutputHandler.dispatch(DARSEvent.outError("Could not set override hops for node " + e.nodeId + ", node does not exist"));
           return;
         }
-        // Set the new promiscuity level
+        // Set the override hop count attribute. 
         n.setOverrideHops(e.isOverridingHops,e.hops);
         OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, n.getAttributes()));
         break;
@@ -421,7 +421,7 @@ public class SimEngine implements InputConsumer, SimulationTimeKeeper, NodeInspe
            OutputHandler.dispatch(DARSEvent.outError("Could not change override hop count for node " + e.nodeId + ", node does not exist"));
            return;
          }
-         // Set the new promiscuity level
+         // Set the number of hops to override.
          n.setOverrideHops(e.isOverridingHops,e.hops);
          OutputHandler.dispatch(DARSEvent.outSetOverRideHops(e.nodeId, n.getAttributes()));
          break;

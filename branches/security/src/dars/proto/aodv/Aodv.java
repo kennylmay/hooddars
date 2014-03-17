@@ -59,7 +59,7 @@ public class Aodv extends Node {
 
   public static final int ACTIVE_ROUTE_TIMEOUT = 75;
   public static final int MY_ROUTE_TIMEOUT     = 2 * ACTIVE_ROUTE_TIMEOUT;
-  public static final int REPLAY_MESSAGE_WAIT  = 50;
+  public static final int REPLAY_MESSAGE_WAIT  = 25;
 
   /**
    * How often to send Hello Messages.
