@@ -122,6 +122,11 @@ public class Dsdv extends Node {
    */
   void checkRoute() {
 
+    /**
+     * Iterator and RouteEntry for going through the values in the RouteTable.
+     */
+    Iterator<RouteEntry> RouteTableIter;
+    RouteEntry TempRouteEntry;
 
     /**
      * List of Broken Route Entry Destinations used to find other routes that
@@ -133,29 +138,29 @@ public class Dsdv extends Node {
      * Get Iterator for RouteTable and then traverse it looking for entries that
      * are newer than tick.
      */
+    RouteTableIter = RouteTable.values().iterator();
 
+    while (RouteTableIter.hasNext()) {
+      TempRouteEntry = RouteTableIter.next();
 
-    for(String key : RouteTable.keySet() ) {
       /**
        * If this entry has not been updated in ROUTE_LIFETIME mark it as a
        * broken link.
        */
-      if ((RouteTable.get(key).getInstTime() + ROUTE_TIMEOUT) <= this.CurrentTick) {
-        
+      if ((TempRouteEntry.getInstTime() + ROUTE_TIMEOUT) <= this.CurrentTick) {
         /**
          * If this entry is already marked as broken drop it from the route
          * table.
          */
-        if (RouteTable.get(key).getHopCount() == INFINITY_HOPS) {
-          RouteTable.remove(key);
-          break;
+        if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
+          RouteTableIter.remove();
         }
 
-        RouteTable.get(key).setHopCount(INFINITY_HOPS);
-        RouteTable.get(key).setInstTime(CurrentTick);
-        RouteTable.get(key).setSeqNum(RouteTable.get(key).getSeqNum() + 1);
+        TempRouteEntry.setHopCount(INFINITY_HOPS);
+        TempRouteEntry.setInstTime(CurrentTick);
+        TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
 
-        this.RouteTable.put(RouteTable.get(key).getDestIP(), RouteTable.get(key));
+        this.RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
 
         /**
          * Since the Route Table was modified, set the last update time to -1 to
@@ -167,7 +172,7 @@ public class Dsdv extends Node {
          * Add this destination to the list of Destination that need to be check
          * for as next hops.
          */
-        DestList.add(RouteTable.get(key).getDestIP());
+        DestList.add(TempRouteEntry.getDestIP());
       }
     }
 
@@ -176,7 +181,11 @@ public class Dsdv extends Node {
      * the routes us an entry in the DestList as their next hop. If any are
      * found mark them as broken just like was done above.
      */
-    for(RouteEntry TempRouteEntry : RouteTable.values()) {
+    RouteTableIter = RouteTable.values().iterator();
+
+    while (RouteTableIter.hasNext()) {
+      TempRouteEntry = RouteTableIter.next();
+
       /**
        * If this entry has a next hop that is in the list of links that were
        * just marked as broken then mark it broken.
@@ -589,19 +598,12 @@ public class Dsdv extends Node {
        */
       DestEntry = RouteTable.get(MsgDestID);
 
-      
       /**
        * Create the message string that will be sent.
        */
-      if(this.att.isChangingMessages){
-        MsgStr = MsgType + '|' + MsgFlags + '|' + MsgDestID + '|' + MsgOrigID
-            + '|' + "THIS MESSAGE HAS BEEN CHANGED BY NODE: " + this.att.id;  
-      }else{
-        MsgStr = MsgType + '|' + MsgFlags + '|' + MsgDestID + '|' + MsgOrigID
-            + '|' + MsgText;       
-      }
-      
-      
+      MsgStr = MsgType + '|' + MsgFlags + '|' + MsgDestID + '|' + MsgOrigID
+          + '|' + MsgText;
+
       /**
        * The destination is in our RouteTable. Create the message to be sent.
        */
@@ -1072,13 +1074,12 @@ public class Dsdv extends Node {
 
   @Override
   public void clockTick() {
- 
+
     /**
      * Increment the CurrentTick for this time quantum.
      */
     this.CurrentTick++;
 
- 
     /**
      * Receive and process each message on the Receive Queue.
      */
@@ -1089,12 +1090,12 @@ public class Dsdv extends Node {
     /**
      * Check for link breakage.
      */
-    checkRoute();
+    // check routes.
 
     if (this.CurrentTick >= (this.LastUpdate + UPDATE_INTERVAL)) {
       sendUpdates();
     }
-    
+
   }
 
   /**
