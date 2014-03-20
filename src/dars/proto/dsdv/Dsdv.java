@@ -153,26 +153,35 @@ public class Dsdv extends Node {
          * table.
          */
         if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
+          /**
+           * Since the Route Table was modified, set the last update time to -1 to
+           * force an update message.
+           */
+          this.LastUpdate = -1;
+          
           RouteTableIter.remove();
+          
+          
+        } else {
+
+          TempRouteEntry.setHopCount(INFINITY_HOPS);
+          TempRouteEntry.setInstTime(CurrentTick);
+          TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
+  
+          this.RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
+  
+          /**
+           * Since the Route Table was modified, set the last update time to -1 to
+           * force an update message.
+           */
+          this.LastUpdate = -1;
+  
+          /**
+           * Add this destination to the list of Destination that need to be check
+           * for as next hops.
+           */
+          DestList.add(TempRouteEntry.getDestIP());
         }
-
-        TempRouteEntry.setHopCount(INFINITY_HOPS);
-        TempRouteEntry.setInstTime(CurrentTick);
-        TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
-
-        this.RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
-
-        /**
-         * Since the Route Table was modified, set the last update time to -1 to
-         * force an update message.
-         */
-        this.LastUpdate = -1;
-
-        /**
-         * Add this destination to the list of Destination that need to be check
-         * for as next hops.
-         */
-        DestList.add(TempRouteEntry.getDestIP());
       }
     }
 
@@ -1091,6 +1100,8 @@ public class Dsdv extends Node {
      * Check for link breakage.
      */
     // check routes.
+    
+    checkRoute();
 
     if (this.CurrentTick >= (this.LastUpdate + UPDATE_INTERVAL)) {
       sendUpdates();
