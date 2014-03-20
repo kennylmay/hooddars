@@ -72,7 +72,7 @@ public class Utilities {
       JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
           "Hop Override Scenario",
           JOptionPane.INFORMATION_MESSAGE);
-      filename += "HopOverrideScenario";
+      filename += "HopOverrideScenario.scn";
       
       break;
 
@@ -80,35 +80,35 @@ public class Utilities {
       JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
           "Drop Narrative Message Scenario",
           JOptionPane.INFORMATION_MESSAGE);
-      filename += "DropNarrScenario";
+      filename += "DropNarrScenario.scn";
       break;
 
     case NO_ROUTE_EXPIRE:
       JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
           "No Route Expire Scenario",
           JOptionPane.INFORMATION_MESSAGE);
-      filename += "NoRouteExpireScenario";
+      filename += "NoRouteExpireScenario.scn";
       break;
 
     case CHANGE_NARR:
       JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
           "Change Narritive Message Scenario",
           JOptionPane.INFORMATION_MESSAGE);
-      filename += "ChangeNarrScenario";
+      filename += "ChangeNarrScenario.scn";
       break;
 
     case REPLAY_NARR:
       JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
           "Replay Narrative Message Scenario",
           JOptionPane.INFORMATION_MESSAGE);
-      filename += "ReplayNarrScenario";
+      filename += "ReplayNarrScenario.scn";
       break;
 
     case COMBINATION:
       JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
           "Combination Scenario",
           JOptionPane.INFORMATION_MESSAGE);
-      filename += "CombinationScenario";
+      filename += "CombinationScenario.scn";
       break;
     }
     
