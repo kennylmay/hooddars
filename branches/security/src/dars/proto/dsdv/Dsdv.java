@@ -152,16 +152,8 @@ public class Dsdv extends Node {
          * If this entry is already marked as broken drop it from the route
          * table.
          */
-        if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
-          /**
-           * Since the Route Table was modified, set the last update time to -1 to
-           * force an update message.
-           */
-          this.LastUpdate = -1;
-          
-          RouteTableIter.remove();
-          
-          
+        if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {          
+          RouteTableIter.remove();       
         } else {
 
           TempRouteEntry.setHopCount(INFINITY_HOPS);
@@ -354,6 +346,15 @@ public class Dsdv extends Node {
       TempRouteEntry = RouteTableIter.next();
 
       /**
+       * Only Add the entry if it is Valid!
+       */
+      if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
+        /**
+         * Skip
+         */
+        continue;
+      }
+      /**
        * Add this route entry to the Destination Entries List.
        */
       MsgDestCount++;
@@ -453,8 +454,10 @@ public class Dsdv extends Node {
 
       /**
        * If this entry has been updated since LastFullUpdate then include it.
+       * AND
+       * It is still valid.
        */
-      if (TempRouteEntry.getInstTime() > this.LastFullUpdate) {
+      if (TempRouteEntry.getInstTime() > this.LastFullUpdate && TempRouteEntry.getHopCount() != INFINITY_HOPS) {
         MsgDestCount++;
         MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP()
             + '|' + TempRouteEntry.getSeqNum() + '|'
@@ -1099,8 +1102,6 @@ public class Dsdv extends Node {
     /**
      * Check for link breakage.
      */
-    // check routes.
-    
     checkRoute();
 
     if (this.CurrentTick >= (this.LastUpdate + UPDATE_INTERVAL)) {
