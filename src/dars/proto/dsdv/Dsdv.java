@@ -152,8 +152,8 @@ public class Dsdv extends Node {
          * If this entry is already marked as broken drop it from the route
          * table.
          */
-        if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {          
-          RouteTableIter.remove();       
+        if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
+            RouteTableIter.remove();       
         } else {
 
           TempRouteEntry.setHopCount(INFINITY_HOPS);
@@ -358,9 +358,13 @@ public class Dsdv extends Node {
        * Add this route entry to the Destination Entries List.
        */
       MsgDestCount++;
-      MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
-          + TempRouteEntry.getSeqNum() + '|' + TempRouteEntry.getHopCount();
-
+      if(this.att.isOverridingHops){
+        MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
+            + TempRouteEntry.getSeqNum() + '|' + this.att.hops;
+      }else{
+        MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
+            + TempRouteEntry.getSeqNum() + '|' + TempRouteEntry.getHopCount();
+      }
       /**
        * If the update message is full then send it and start a new message.
        */
@@ -459,9 +463,13 @@ public class Dsdv extends Node {
        */
       if (TempRouteEntry.getInstTime() > this.LastFullUpdate && TempRouteEntry.getHopCount() != INFINITY_HOPS) {
         MsgDestCount++;
-        MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP()
-            + '|' + TempRouteEntry.getSeqNum() + '|'
-            + TempRouteEntry.getHopCount();
+        if(this.att.isOverridingHops){
+          MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
+              + TempRouteEntry.getSeqNum() + '|' + this.att.hops;
+        }else{
+          MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
+              + TempRouteEntry.getSeqNum() + '|' + TempRouteEntry.getHopCount();
+        }
       }
     }
 
@@ -802,14 +810,7 @@ public class Dsdv extends Node {
             this.LastUpdate = -1;
           }
         }
-        
-        // If it is supposed to override the number of hops fix all entries in the table
-        if(this.att.isOverridingHops){
-          TempRouteEntry.setHopCount(this.att.hops);
-        }
-
       }
-
     }
   }
 
@@ -1102,7 +1103,9 @@ public class Dsdv extends Node {
     /**
      * Check for link breakage.
      */
-    checkRoute();
+    if(!this.att.isNotExpiringRoutes){
+      checkRoute();
+    }
 
     if (this.CurrentTick >= (this.LastUpdate + UPDATE_INTERVAL)) {
       sendUpdates();
