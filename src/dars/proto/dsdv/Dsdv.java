@@ -604,6 +604,11 @@ public class Dsdv extends Node {
           MsgText));
       return;
     }
+    
+    if (this.att.isDroppingMessages) {
+      OutputHandler.dispatch(DARSEvent.outNarrMsgDropped(this.att.id, message));
+      return;
+    }
 
     /**
      * Need to forward the message on.
@@ -627,12 +632,21 @@ public class Dsdv extends Node {
       /**
        * The destination is in our RouteTable. Create the message to be sent.
        */
-
-      Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
-      sendMessage(Msg);
-
-      OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
-          + " Forwarded Narrative Message: " + MsgStr));
+      if (this.att.isChangingMessages) {
+        Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr + "THIS MESSAGE HAS BEEN CHANGED BY NODE: " + this.att.id);
+        sendMessage(Msg);
+        
+        //TODO: Need a Changed Message DARSEvent.
+  
+        OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+            + " Changed & Forwarded Narrative Message: " + MsgStr));
+      } else {
+        Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
+        sendMessage(Msg);
+  
+        OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
+            + " Forwarded Narrative Message: " + MsgStr));
+      }
     } else {
       /**
        * This node does not have a route to the desired destination and thus
