@@ -15,10 +15,10 @@ import javax.swing.JDialog;
 import dars.NodeAttributes;
 import dars.OutputHandler;
 import dars.proto.Node;
+import dars.proto.WaitQueueEntry;
 import dars.Message;
 import dars.proto.aodv.RouteEntry.StateFlags;
 import dars.event.DARSEvent;
-import dars.proto.aodv.WaitQueueEntry;
 
 /**
  * AODV Node Class.

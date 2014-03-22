@@ -1,4 +1,4 @@
-package dars.proto.aodv;
+package dars.proto;
 
 /**
  * Entry Class for the Message Wait Queue
@@ -6,14 +6,14 @@ package dars.proto.aodv;
  * @author kresss
  * 
  */
-class WaitQueueEntry {
+public class WaitQueueEntry {
 
-  String SourceID;
+  public String SourceID;
   // type.
-  String DestinationID;
-  String MsgString;
-  int    TimeToLive;
-  boolean ReplayMessage;
+  public String DestinationID;
+  public String MsgString;
+  public int    TimeToLive;
+  public boolean ReplayMessage;
 
   /**
    * Constructor with all normal fields defined.
@@ -25,7 +25,7 @@ class WaitQueueEntry {
    * @param msgString
    * @param timeToLive
    */
-  WaitQueueEntry(String sourceID, String destinationID, String msgString,
+  public WaitQueueEntry(String sourceID, String destinationID, String msgString,
       int timeToLive) {
     super();
     SourceID = sourceID;
@@ -46,7 +46,7 @@ class WaitQueueEntry {
    * @param timeToLive
    * @param replayMessage
    */
-  WaitQueueEntry(String sourceID, String destinationID, String msgString,
+  public WaitQueueEntry(String sourceID, String destinationID, String msgString,
       int timeToLive, boolean replayMessage) {
     super();
     SourceID = sourceID;
