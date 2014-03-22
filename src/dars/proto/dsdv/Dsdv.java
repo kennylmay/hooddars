@@ -14,6 +14,7 @@ import dars.NodeAttributes;
 import dars.OutputHandler;
 import dars.event.DARSEvent;
 import dars.proto.Node;
+import dars.proto.WaitQueueEntry;
 import dars.proto.dsdv.DsdvDialog;
 import dars.proto.dsdv.RouteEntry;
 
@@ -33,7 +34,7 @@ public class Dsdv extends Node {
    * Each node periodically sends routing table updates. This is the interval
    * between transmissions. Measured in clock ticks.
    */
-  public static final int             UPDATE_INTERVAL = 10;
+  public static final int             UPDATE_INTERVAL     = 10;
 
   /**
    * Maximum Size of Network Protocol Data Unit(NPDU)
@@ -41,7 +42,7 @@ public class Dsdv extends Node {
    * This is basically the maximum number of route updates that can be sent in
    * one message.
    */
-  public static final int             MAX_NPDU        = 10;
+  public static final int             MAX_NPDU            = 10;
 
   /**
    * Route Timeout
@@ -49,14 +50,14 @@ public class Dsdv extends Node {
    * If a route has not been updated in ROUTE_TIMEOUT then it will be considered
    * a broken link.
    */
-  public static final int             ROUTE_TIMEOUT   = UPDATE_INTERVAL * 3;
+  public static final int             ROUTE_TIMEOUT       = UPDATE_INTERVAL * 3;
 
   /**
    * Infinity Hop Count
    * 
    * Infinity Hop Count is a sentinel value that is used to mark a broken Link.
    */
-  public static final int             INFINITY_HOPS   = -1;
+  public static final int             INFINITY_HOPS       = -1;
 
   /**
    * **************************************************************************
@@ -70,7 +71,7 @@ public class Dsdv extends Node {
    * Time is loosely defined in the simulation. This is the current tick count
    * for the node. Basically this is the node's time.
    */
-  private int                         CurrentTick     = 0;
+  private int                         CurrentTick         = 0;
 
   /**
    * Node Sequence Number
@@ -79,36 +80,46 @@ public class Dsdv extends Node {
    * control messages(RREQ, RREP, RERR) for a node. It is incremented
    * immediately before a protocol control message is generated.
    */
-  private int                         LastSeqNum      = 1;
+  private int                         LastSeqNum          = 1;
 
   /**
    * Last Tick that a Route Table Update Message was Sent
    */
-  private int                         LastUpdate      = 0;
+  private int                         LastUpdate          = 0;
 
   /**
    * Last Tick that a Route Table Full Dump Update Message was Sent
    */
-  private int                         LastFullUpdate  = -1;
+  private int                         LastFullUpdate      = -1;
 
   /**
    * Route Table
    */
-  private HashMap<String, RouteEntry> RouteTable      = new HashMap<String, RouteEntry>();
+  private HashMap<String, RouteEntry> RouteTable          = new HashMap<String, RouteEntry>();
 
   /**
    * Transmit Queue
    * 
    * Queue of messages that are waiting to be transmitted into the network.
    */
-  private Queue<Message>              txQueue         = new LinkedList<Message>();
+  private Queue<Message>              txQueue             = new LinkedList<Message>();
 
   /**
    * Receive Queue
    * 
    * Queue of messages that have been received from the network.
    */
-  private Queue<Message>              rxQueue         = new LinkedList<Message>();
+  private Queue<Message>              rxQueue             = new LinkedList<Message>();
+
+  /**
+   * Wait Queue
+   * 
+   * Queue of message that can not be sent yet. Most likely waiting for a replay
+   * attack.
+   */
+  private LinkedList<WaitQueueEntry>  waitQueue           = new LinkedList<WaitQueueEntry>();
+
+  public static final int             REPLAY_MESSAGE_WAIT = 50;
 
   /**
    * Private Member Functions
@@ -153,24 +164,24 @@ public class Dsdv extends Node {
          * table.
          */
         if (TempRouteEntry.getHopCount() == INFINITY_HOPS) {
-            RouteTableIter.remove();       
+          RouteTableIter.remove();
         } else {
 
           TempRouteEntry.setHopCount(INFINITY_HOPS);
           TempRouteEntry.setInstTime(CurrentTick);
           TempRouteEntry.setSeqNum(TempRouteEntry.getSeqNum() + 1);
-  
+
           this.RouteTable.put(TempRouteEntry.getDestIP(), TempRouteEntry);
-  
+
           /**
-           * Since the Route Table was modified, set the last update time to -1 to
-           * force an update message.
+           * Since the Route Table was modified, set the last update time to -1
+           * to force an update message.
            */
           this.LastUpdate = -1;
-  
+
           /**
-           * Add this destination to the list of Destination that need to be check
-           * for as next hops.
+           * Add this destination to the list of Destination that need to be
+           * check for as next hops.
            */
           DestList.add(TempRouteEntry.getDestIP());
         }
@@ -358,12 +369,13 @@ public class Dsdv extends Node {
        * Add this route entry to the Destination Entries List.
        */
       MsgDestCount++;
-      if(this.att.isOverridingHops){
-        MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
-            + TempRouteEntry.getSeqNum() + '|' + this.att.hops;
-      }else{
-        MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
-            + TempRouteEntry.getSeqNum() + '|' + TempRouteEntry.getHopCount();
+      if (this.att.isOverridingHops) {
+        MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP()
+            + '|' + TempRouteEntry.getSeqNum() + '|' + this.att.hops;
+      } else {
+        MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP()
+            + '|' + TempRouteEntry.getSeqNum() + '|'
+            + TempRouteEntry.getHopCount();
       }
       /**
        * If the update message is full then send it and start a new message.
@@ -458,17 +470,18 @@ public class Dsdv extends Node {
 
       /**
        * If this entry has been updated since LastFullUpdate then include it.
-       * AND
-       * It is still valid.
+       * AND It is still valid.
        */
-      if (TempRouteEntry.getInstTime() > this.LastFullUpdate && TempRouteEntry.getHopCount() != INFINITY_HOPS) {
+      if (TempRouteEntry.getInstTime() > this.LastFullUpdate
+          && TempRouteEntry.getHopCount() != INFINITY_HOPS) {
         MsgDestCount++;
-        if(this.att.isOverridingHops){
-          MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
-              + TempRouteEntry.getSeqNum() + '|' + this.att.hops;
-        }else{
-          MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP() + '|'
-              + TempRouteEntry.getSeqNum() + '|' + TempRouteEntry.getHopCount();
+        if (this.att.isOverridingHops) {
+          MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP()
+              + '|' + TempRouteEntry.getSeqNum() + '|' + this.att.hops;
+        } else {
+          MsgDestEntries = MsgDestEntries + '|' + TempRouteEntry.getDestIP()
+              + '|' + TempRouteEntry.getSeqNum() + '|'
+              + TempRouteEntry.getHopCount();
         }
       }
     }
@@ -522,9 +535,9 @@ public class Dsdv extends Node {
 
     if (MsgType.equals("RTUP")) {
       receiveUpdates(message);
-    } else if (MsgType.equals("NARR")&& this.att.isDroppingMessages == false) {
+    } else if (MsgType.equals("NARR") && this.att.isDroppingMessages == false) {
       receiveNarrative(message);
-    } else if (MsgType.equals("NARR") && this.att.isDroppingMessages == true){
+    } else if (MsgType.equals("NARR") && this.att.isDroppingMessages == true) {
       OutputHandler.dispatch(DARSEvent.outNarrMsgDropped(this.att.id, message));
     }
   }
@@ -604,7 +617,7 @@ public class Dsdv extends Node {
           MsgText));
       return;
     }
-    
+
     if (this.att.isDroppingMessages) {
       OutputHandler.dispatch(DARSEvent.outNarrMsgDropped(this.att.id, message));
       return;
@@ -633,19 +646,28 @@ public class Dsdv extends Node {
        * The destination is in our RouteTable. Create the message to be sent.
        */
       if (this.att.isChangingMessages) {
-        Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr + "THIS MESSAGE HAS BEEN CHANGED BY NODE: " + this.att.id);
+        Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr
+            + "THIS MESSAGE HAS BEEN CHANGED BY NODE: " + this.att.id);
         sendMessage(Msg);
-        
-        //TODO: Need a Changed Message DARSEvent.
-  
+
+        // TODO: Need a Changed Message DARSEvent.
+
         OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
             + " Changed & Forwarded Narrative Message: " + MsgStr));
       } else {
         Msg = new Message(DestEntry.getNextHopIP(), this.att.id, MsgStr);
         sendMessage(Msg);
-  
+
         OutputHandler.dispatch(DARSEvent.outDebug(this.att.id
             + " Forwarded Narrative Message: " + MsgStr));
+      }
+
+      /**
+       * The message was not for us. If we are doing Replay Attacks add it to
+       * the wait queue as is.
+       */
+      if (this.att.isReplayingMessages) {
+        addReplayMessageToWaitQueue(MsgOrigID, MsgDestID, MsgText);
       }
     } else {
       /**
@@ -1115,9 +1137,40 @@ public class Dsdv extends Node {
     }
 
     /**
+     * Wait Queue Entry used for working with the Wait Queue
+     */
+    WaitQueueEntry WaitEntry;
+    /**
+     * Iterator for walking through the Wait Queue
+     */
+    Iterator<WaitQueueEntry> WaitQueueIter;
+
+    WaitQueueIter = this.waitQueue.iterator();
+
+    while (WaitQueueIter.hasNext()) {
+      WaitEntry = WaitQueueIter.next();
+      /**
+       * Check to see if the message is a malicious replay message. If it is and
+       * the TTL is the Current Tick then send it off.
+       */
+      if (WaitEntry.ReplayMessage) {
+        if (WaitEntry.TimeToLive == this.CurrentTick) {
+          OutputHandler.dispatch(DARSEvent
+              .outNodeInfo("Sending a Replay Message"));
+          newNarrativeMessage(WaitEntry.SourceID, WaitEntry.DestinationID,
+              WaitEntry.MsgString);
+          WaitQueueIter.remove();
+        } else {
+          // Not Time to send the Replay Message Yet.
+          continue;
+        }
+      }
+    }
+
+    /**
      * Check for link breakage.
      */
-    if(!this.att.isNotExpiringRoutes){
+    if (!this.att.isNotExpiringRoutes) {
       checkRoute();
     }
 
@@ -1157,6 +1210,33 @@ public class Dsdv extends Node {
     // Cast the JDialog into our type
     DsdvDialog dsdvDlg = (DsdvDialog) dialog;
     dsdvDlg.updateInformation(this.CurrentTick, this.RouteTable);
+  }
+
+  /**
+   * Add a replay message onto the wait queue for later processing.
+   * 
+   * @author kresss
+   * 
+   * @param srcID
+   * @param destID
+   * @param msgStr
+   */
+  private void addReplayMessageToWaitQueue(String srcID, String destID,
+      String msgStr) {
+
+    /**
+     * Create a new WaitQueueEntry with the message characteristics. This
+     * message will not be sent out until the TTL has been reached.
+     */
+    WaitQueueEntry WaitEntry = new WaitQueueEntry(srcID, destID, msgStr,
+        this.CurrentTick + REPLAY_MESSAGE_WAIT, true);
+    try {
+      waitQueue.add(WaitEntry);
+    } catch (IllegalStateException exception) {
+      OutputHandler.dispatch(DARSEvent.outError(this.att.id
+          + " Failed to successfully add a replay message to the wait queue."));
+    }
+
   }
 
   /**
