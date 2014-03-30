@@ -1,61 +1,75 @@
 eventType,nodeId,sourceId,destinationId,informationalMessage,transmittedMessage,newSimSpeed,nodeX,nodeY,nodeRange,nodeType,currentQuantum,isPromiscuous,isDroppingMessages,isMalicious,isOverridingHops,isChangingMessages,isReplayingMessages,isNotExpiringRoutes,hops
 IN_NEW_SIM,,,,,,0,0,0,0,AODV,0,false,false,false,false,false,false,false,0
 OUT_NEW_SIM,,,,New AODV Simulation Created.,,0,0,0,0,AODV,0,false,false,false,false,false,false,false,0
-IN_ADD_NODE,,,,,,0,500,200,150,,0,false,false,false,false,false,false,false,0
-OUT_ADD_NODE,A,,,Node Added: A.,,0,500,200,150,,0,false,false,false,false,false,false,false,0
-IN_ADD_NODE,,,,,,0,625,200,150,,0,false,false,false,false,false,false,false,0
-OUT_ADD_NODE,B,,,Node Added: B.,,0,625,200,150,,0,false,false,false,false,false,false,false,0
-IN_ADD_NODE,,,,,,0,750,200,150,,0,false,false,false,false,false,false,false,0
-OUT_ADD_NODE,C,,,Node Added: C.,,0,750,200,150,,0,false,false,false,false,false,false,false,0
-IN_ADD_NODE,,,,,,0,875,200,150,,0,false,false,false,false,false,false,false,0
-OUT_ADD_NODE,D,,,Node Added: D.,,0,875,200,150,,0,false,false,false,false,false,false,false,0
-IN_ADD_NODE,,,,,,0,1000,200,150,,0,false,false,false,false,false,false,false,0
-OUT_ADD_NODE,E,,,Node Added: E.,,0,1000,200,150,,0,false,false,false,false,false,false,false,0
-IN_INSERT_MESSAGE,,A,E,,Sample Message,0,0,0,0,,0,false,false,false,false,false,false,false,0
-OUT_INSERT_MESSAGE,,,,User message inserted into the network. Source ID: A Dest ID: E Message: Sample Message,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,456,173,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,A,,,Node Added: A.,,0,456,173,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,564,175,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,B,,,Node Added: B.,,0,564,175,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,671,190,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,C,,,Node Added: C.,,0,671,190,150,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,B,,,,,0,573,186,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,B,,,Node B moved to X:573 Y:186.,,0,573,186,0,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,B,,,,,0,563,187,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,B,,,Node B moved to X:563 Y:187.,,0,563,187,0,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,A,,,,,0,375,177,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,A,,,Node A moved to X:375 Y:177.,,0,375,177,0,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,B,,,,,0,476,178,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,B,,,Node B moved to X:476 Y:178.,,0,476,178,0,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,C,,,,,0,579,179,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,C,,,Node C moved to X:579 Y:179.,,0,579,179,0,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,998,193,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,D,,,Node Added: D.,,0,998,193,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,1117,203,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,E,,,Node Added: E.,,0,1117,203,150,,0,false,false,false,false,false,false,false,0
+IN_ADD_NODE,,,,,,0,1211,197,150,,0,false,false,false,false,false,false,false,0
+OUT_ADD_NODE,F,,,Node Added: F.,,0,1211,197,150,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,E,,,,,0,1108,203,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,E,,,Node E moved to X:1108 Y:203.,,0,1108,203,0,,0,false,false,false,false,false,false,false,0
+IN_MOVE_NODE,E,,,,,0,1101,192,0,,0,false,false,false,false,false,false,false,0
+OUT_MOVE_NODE,E,,,Node E moved to X:1101 Y:192.,,0,1101,192,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_NO_ROUTE_TIMEOUT,B,,,,,0,0,0,0,,0,false,false,false,false,false,false,true,0
+OUT_SET_NODE_NO_ROUTE_TIMEOUT,B,,,Node B disabled expiring routes in its routing table.,,0,0,0,0,,0,false,false,true,false,false,false,true,0
+IN_SET_NODE_NO_ROUTE_TIMEOUT,B,,,,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SET_NODE_NO_ROUTE_TIMEOUT,B,,,Node B enabled expiring routes in its routing table.,,0,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SET_NODE_DROP_MESSAGES,B,,,,,0,0,0,0,,0,false,true,false,false,false,false,false,0
+OUT_SET_NODE_DROP_MESSAGES,B,,,Node B enabled dropping messages.,,0,0,0,0,,0,false,true,true,false,false,false,false,0
 IN_START_SIM,,,,,,11,0,0,0,,0,false,false,false,false,false,false,false,0
 OUT_START_SIM,,,,Simulation Started.,,11,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,11,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 11.,,11,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,10,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 10.,,10,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,9,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 9.,,9,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,8,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 8.,,8,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,7,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 7.,,7,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,6,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 6.,,6,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,5,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 5.,,5,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,4,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 4.,,4,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,3,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 3.,,3,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,2,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 2.,,2,0,0,0,,0,false,false,false,false,false,false,false,0
+IN_SIM_SPEED,,,,,,1,0,0,0,,0,false,false,false,false,false,false,false,0
+OUT_SIM_SPEED,,,,Simulation Speed Set: 1.,,1,0,0,0,,0,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,1,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,A,BROADCAST,A transmitted control message to BROADCAST : RREQ|U|5|0|2|E|0|A|2,RREQ|U|5|0|2|E|0|A|2,0,0,0,0,,1,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,2,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,B,BROADCAST,B transmitted control message to BROADCAST : RREQ|U|4|1|2|E|0|A|2,RREQ|U|4|1|2|E|0|A|2,0,0,0,0,,2,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,A,B,A received control message from B : RREQ|U|5|0|2|E|0|A|2,RREQ|U|5|0|2|E|0|A|2,0,0,0,0,,2,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,3,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,B,A,B received control message from A : RREQ|U|4|1|2|E|0|A|2,RREQ|U|4|1|2|E|0|A|2,0,0,0,0,,3,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,C,BROADCAST,C transmitted control message to BROADCAST : RREQ|U|3|2|2|E|0|A|2,RREQ|U|3|2|2|E|0|A|2,0,0,0,0,,3,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,B,C,B received control message from C : RREQ|U|4|1|2|E|0|A|2,RREQ|U|4|1|2|E|0|A|2,0,0,0,0,,3,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,4,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,D,BROADCAST,D transmitted control message to BROADCAST : RREQ|U|2|3|2|E|0|A|2,RREQ|U|2|3|2|E|0|A|2,0,0,0,0,,4,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,C,D,C received control message from D : RREQ|U|3|2|2|E|0|A|2,RREQ|U|3|2|2|E|0|A|2,0,0,0,0,,4,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,C,B,C received control message from B : RREQ|U|3|2|2|E|0|A|2,RREQ|U|3|2|2|E|0|A|2,0,0,0,0,,4,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,5,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,E,D,E transmitted control message to D : RREP||0|E|2|A|150,RREP||0|E|2|A|150,0,0,0,0,,5,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,D,E,D received control message from E : RREQ|U|2|3|2|E|0|A|2,RREQ|U|2|3|2|E|0|A|2,0,0,0,0,,5,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,D,C,D received control message from C : RREQ|U|2|3|2|E|0|A|2,RREQ|U|2|3|2|E|0|A|2,0,0,0,0,,5,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,6,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,D,C,D transmitted control message to C : RREP||1|E|2|A|150,RREP||1|E|2|A|150,0,0,0,0,,6,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,E,D,E received control message from D : RREP||0|E|2|A|150,RREP||0|E|2|A|150,0,0,0,0,,6,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,7,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,C,B,C transmitted control message to B : RREP||2|E|2|A|150,RREP||2|E|2|A|150,0,0,0,0,,7,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,D,C,D received control message from C : RREP||1|E|2|A|150,RREP||1|E|2|A|150,0,0,0,0,,7,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,8,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,B,A,B transmitted control message to A : RREP||3|E|2|A|150,RREP||3|E|2|A|150,0,0,0,0,,8,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,C,B,C received control message from B : RREP||2|E|2|A|150,RREP||2|E|2|A|150,0,0,0,0,,8,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,9,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,B,A,B received control message from A : RREP||3|E|2|A|150,RREP||3|E|2|A|150,0,0,0,0,,9,false,false,false,false,false,false,false,0
-OUT_NARRMSG_TRANSMITTED,,A,B,A transmitted narrative message to B : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,9,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,10,false,false,false,false,false,false,false,0
-OUT_NARRMSG_TRANSMITTED,,B,C,B transmitted narrative message to C : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,10,false,false,false,false,false,false,false,0
-OUT_NARRMSG_RECEIVED,,A,B,A received narrative message from B : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,10,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,11,false,false,false,false,false,false,false,0
-OUT_NARRMSG_TRANSMITTED,,C,D,C transmitted narrative message to D : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,11,false,false,false,false,false,false,false,0
-OUT_NARRMSG_RECEIVED,,B,C,B received narrative message from C : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,11,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,12,false,false,false,false,false,false,false,0
-OUT_NARRMSG_TRANSMITTED,,D,E,D transmitted narrative message to E : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,12,false,false,false,false,false,false,false,0
-OUT_NARRMSG_RECEIVED,,C,D,C received narrative message from D : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,12,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,13,false,false,false,false,false,false,false,0
-OUT_MSG_RECEIVED,,A,E,Node A successfuly sent a message to Node E,Sample Message,0,0,0,0,,13,false,false,false,false,false,false,false,0
-OUT_NARRMSG_RECEIVED,,D,E,D received narrative message from E : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,13,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,14,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,15,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,16,false,false,false,false,false,false,false,0
@@ -69,68 +83,87 @@ OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,23,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,24,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,25,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_TRANSMITTED,,D,BROADCAST,D transmitted control message to BROADCAST : RREP||0|D|1|D|50,RREP||0|D|1|D|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,E,BROADCAST,E transmitted control message to BROADCAST : RREP||0|E|2|E|50,RREP||0|E|2|E|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,A,BROADCAST,A transmitted control message to BROADCAST : RREP||0|A|2|A|50,RREP||0|A|2|A|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,E,BROADCAST,E transmitted control message to BROADCAST : RREP||0|E|1|E|50,RREP||0|E|1|E|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,F,BROADCAST,F transmitted control message to BROADCAST : RREP||0|F|1|F|50,RREP||0|F|1|F|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,A,BROADCAST,A transmitted control message to BROADCAST : RREP||0|A|1|A|50,RREP||0|A|1|A|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_TRANSMITTED,,B,BROADCAST,B transmitted control message to BROADCAST : RREP||0|B|1|B|50,RREP||0|B|1|B|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_TRANSMITTED,,C,BROADCAST,C transmitted control message to BROADCAST : RREP||0|C|1|C|50,RREP||0|C|1|C|50,0,0,0,0,,25,false,false,false,false,false,false,false,0
+IN_INSERT_MESSAGE,,A,C,,Sample Message,0,0,0,0,,25,false,false,false,false,false,false,false,0
+OUT_INSERT_MESSAGE,,,,User message inserted into the network. Source ID: A Dest ID: C Message: Sample Message,,0,0,0,0,,25,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,26,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,E,D,E received control message from D : RREP||0|E|2|E|50,RREP||0|E|2|E|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,C,D,C received control message from D : RREP||0|C|1|C|50,RREP||0|C|1|C|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,A,BROADCAST,A transmitted control message to BROADCAST : RREQ|U|5|0|2|C|0|A|2,RREQ|U|5|0|2|C|0|A|2,0,0,0,0,,26,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,E,D,E received control message from D : RREP||0|E|1|E|50,RREP||0|E|1|E|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,D,E,D received control message from E : RREP||0|D|1|D|50,RREP||0|D|1|D|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,F,E,F received control message from E : RREP||0|F|1|F|50,RREP||0|F|1|F|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,E,F,E received control message from F : RREP||0|E|1|E|50,RREP||0|E|1|E|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,B,A,B received control message from A : RREP||0|B|1|B|50,RREP||0|B|1|B|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,A,B,A received control message from B : RREP||0|A|2|A|50,RREP||0|A|2|A|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,A,B,A received control message from B : RREP||0|A|1|A|50,RREP||0|A|1|A|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,C,B,C received control message from B : RREP||0|C|1|C|50,RREP||0|C|1|C|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,D,C,D received control message from C : RREP||0|D|1|D|50,RREP||0|D|1|D|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,B,C,B received control message from C : RREP||0|B|1|B|50,RREP||0|B|1|B|50,0,0,0,0,,26,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,27,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,B,A,B transmitted control message to A : RREP||1|C|1|A|49,RREP||1|C|1|A|49,0,0,0,0,,27,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,A,B,A received control message from B : RREQ|U|5|0|2|C|0|A|2,RREQ|U|5|0|2|C|0|A|2,0,0,0,0,,27,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,28,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,B,A,B received control message from A : RREP||1|C|1|A|49,RREP||1|C|1|A|49,0,0,0,0,,28,false,false,false,false,false,false,false,0
+OUT_NARRMSG_TRANSMITTED,,A,B,A transmitted narrative message to B : NARR||0|C|A|Sample Message,NARR||0|C|A|Sample Message,0,0,0,0,,28,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,29,false,false,false,false,false,false,false,0
+OUT_NARRMSG_DROPPED,,A,B,B dropped narrative message NARR||0|C|A|Sample Message,,0,0,0,0,,29,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,30,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,31,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,32,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,33,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,34,false,false,false,false,false,false,false,0
-IN_SET_NODE_DROP_MESSAGES,D,,,,,0,0,0,0,,34,false,true,false,false,false,false,false,0
-OUT_SET_NODE_DROP_MESSAGES,D,,,Node D enabled dropping messages.,,0,0,0,0,,34,false,true,true,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,35,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,36,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,37,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,38,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,39,false,false,false,false,false,false,false,0
-IN_INSERT_MESSAGE,,A,E,,Sample Message,0,0,0,0,,39,false,false,false,false,false,false,false,0
-OUT_INSERT_MESSAGE,,,,User message inserted into the network. Source ID: A Dest ID: E Message: Sample Message,,0,0,0,0,,39,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,40,false,false,false,false,false,false,false,0
-OUT_NARRMSG_TRANSMITTED,,A,B,A transmitted narrative message to B : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,40,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,41,false,false,false,false,false,false,false,0
-OUT_NARRMSG_TRANSMITTED,,B,C,B transmitted narrative message to C : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,41,false,false,false,false,false,false,false,0
-OUT_NARRMSG_RECEIVED,,A,B,A received narrative message from B : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,41,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,42,false,false,false,false,false,false,false,0
-OUT_NARRMSG_TRANSMITTED,,C,D,C transmitted narrative message to D : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,42,false,false,false,false,false,false,false,0
-OUT_NARRMSG_RECEIVED,,B,C,B received narrative message from C : NARR||0|E|A|Sample Message,NARR||0|E|A|Sample Message,0,0,0,0,,42,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,43,false,false,false,false,false,false,false,0
-OUT_NARRMSG_DROPPED,,C,D,D dropped narrative message NARR||0|E|A|Sample Message,,0,0,0,0,,43,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,44,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,45,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,46,false,false,false,false,false,false,false,0
+IN_INSERT_MESSAGE,,D,F,,Sample Message,0,0,0,0,,46,false,false,false,false,false,false,false,0
+OUT_INSERT_MESSAGE,,,,User message inserted into the network. Source ID: D Dest ID: F Message: Sample Message,,0,0,0,0,,46,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,47,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,D,BROADCAST,D transmitted control message to BROADCAST : RREQ|U|5|0|2|F|0|D|2,RREQ|U|5|0|2|F|0|D|2,0,0,0,0,,47,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,48,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,E,D,E transmitted control message to D : RREP||1|F|1|D|28,RREP||1|F|1|D|28,0,0,0,0,,48,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,D,E,D received control message from E : RREQ|U|5|0|2|F|0|D|2,RREQ|U|5|0|2|F|0|D|2,0,0,0,0,,48,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,49,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,E,D,E received control message from D : RREP||1|F|1|D|28,RREP||1|F|1|D|28,0,0,0,0,,49,false,false,false,false,false,false,false,0
+OUT_NARRMSG_TRANSMITTED,,D,E,D transmitted narrative message to E : NARR||0|F|D|Sample Message,NARR||0|F|D|Sample Message,0,0,0,0,,49,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,50,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,D,BROADCAST,D transmitted control message to BROADCAST : RREP||0|D|1|D|50,RREP||0|D|1|D|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_TRANSMITTED,,E,BROADCAST,E transmitted control message to BROADCAST : RREP||0|E|2|E|50,RREP||0|E|2|E|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,D,BROADCAST,D transmitted control message to BROADCAST : RREP||0|D|2|D|50,RREP||0|D|2|D|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
+OUT_NARRMSG_TRANSMITTED,,E,F,E transmitted narrative message to F : NARR||0|F|D|Sample Message,NARR||0|F|D|Sample Message,0,0,0,0,,50,false,false,false,false,false,false,false,0
+OUT_NARRMSG_RECEIVED,,D,E,D received narrative message from E : NARR||0|F|D|Sample Message,NARR||0|F|D|Sample Message,0,0,0,0,,50,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,E,BROADCAST,E transmitted control message to BROADCAST : RREP||0|E|1|E|50,RREP||0|E|1|E|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_TRANSMITTED,,F,BROADCAST,F transmitted control message to BROADCAST : RREP||0|F|1|F|50,RREP||0|F|1|F|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_TRANSMITTED,,A,BROADCAST,A transmitted control message to BROADCAST : RREP||0|A|2|A|50,RREP||0|A|2|A|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_TRANSMITTED,,B,BROADCAST,B transmitted control message to BROADCAST : RREP||0|B|1|B|50,RREP||0|B|1|B|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_TRANSMITTED,,C,BROADCAST,C transmitted control message to BROADCAST : RREP||0|C|1|C|50,RREP||0|C|1|C|50,0,0,0,0,,50,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,51,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,E,D,E received control message from D : RREP||0|E|2|E|50,RREP||0|E|2|E|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,C,D,C received control message from D : RREP||0|C|1|C|50,RREP||0|C|1|C|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,D,E,D received control message from E : RREP||0|D|1|D|50,RREP||0|D|1|D|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,E,D,E received control message from D : RREP||0|E|1|E|50,RREP||0|E|1|E|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,D,E,D received control message from E : RREP||0|D|2|D|50,RREP||0|D|2|D|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,F,E,F received control message from E : RREP||0|F|1|F|50,RREP||0|F|1|F|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
+OUT_MSG_RECEIVED,,D,F,Node D successfuly sent a message to Node F,Sample Message,0,0,0,0,,51,false,false,false,false,false,false,false,0
+OUT_NARRMSG_RECEIVED,,E,F,E received narrative message from F : NARR||0|F|D|Sample Message,NARR||0|F|D|Sample Message,0,0,0,0,,51,false,false,false,false,false,false,false,0
+OUT_CONTROLMSG_RECEIVED,,E,F,E received control message from F : RREP||0|E|1|E|50,RREP||0|E|1|E|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,B,A,B received control message from A : RREP||0|B|1|B|50,RREP||0|B|1|B|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,A,B,A received control message from B : RREP||0|A|2|A|50,RREP||0|A|2|A|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,C,B,C received control message from B : RREP||0|C|1|C|50,RREP||0|C|1|C|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
-OUT_CONTROLMSG_RECEIVED,,D,C,D received control message from C : RREP||0|D|1|D|50,RREP||0|D|1|D|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
 OUT_CONTROLMSG_RECEIVED,,B,C,B received control message from C : RREP||0|B|1|B|50,RREP||0|B|1|B|50,0,0,0,0,,51,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,52,false,false,false,false,false,false,false,0
 OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,53,false,false,false,false,false,false,false,0
-IN_STOP_SIM,,,,,,0,0,0,0,,53,false,false,false,false,false,false,false,0
-OUT_STOP_SIM,,,,Simulation Stopped.,,0,0,0,0,,53,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,54,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,55,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,56,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,57,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,58,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,59,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,60,false,false,false,false,false,false,false,0
+OUT_QUANTUM_ELAPSED,,,,,,0,0,0,0,,61,false,false,false,false,false,false,false,0
+IN_STOP_SIM,,,,,,0,0,0,0,,61,false,false,false,false,false,false,false,0
+OUT_STOP_SIM,,,,Simulation Stopped.,,0,0,0,0,,61,false,false,false,false,false,false,false,0
