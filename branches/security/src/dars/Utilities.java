@@ -154,7 +154,11 @@ public class Utilities {
       break;
 
     case COMBINATION:
-      JOptionPane.showMessageDialog(null, "This is infomration about the hop override scenario", 
+      JOptionPane.showMessageDialog(null, "The combination scenario uses to hop override attack to force almost all messages to \n"
+          + "traverse the malcious node while changing all the messages that is receives. It will then \n"
+          + "use the replay attack to send the incorrect message at a later date. The routes will not \n"
+          + "expire for any nodes that the malcious node is aware of so future messages to nodes that \n"
+          + "have been removed will still continue to flow through the malacious node.", 
           "Combination Scenario",
           JOptionPane.INFORMATION_MESSAGE);
       filename += "CombinationScenario.scn";
