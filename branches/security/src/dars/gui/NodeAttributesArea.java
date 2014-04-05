@@ -60,7 +60,7 @@ public class NodeAttributesArea extends JPanel implements GNodeListener,
                                                                  "Change Mess.");
   private JSpinner                 overrideHopsSpinner       = new JSpinner(
                                                                  new SpinnerNumberModel(
-                                                                     1, -1, 99,
+                                                                     1, -99, 99,
                                                                      1));
   private JCheckBox                dontExpireRoutesCheckBox  = new JCheckBox("No Rt Expiration.");
   private JCheckBox                replayMessagesCheckBox = new JCheckBox("Replay Mess.");

@@ -60,6 +60,9 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
   private JMenu              controlMenu         = new JMenu("Control");
   private JMenuItem          loadScenarioMenuItem = new JMenu("Load Scenario");
   private JMenuItem          loadMaliciousScenarioMenuItem = new JMenu("Load Malicious Scenario");
+  private JMenuItem          loadChallengeScenarioMenuItem = new JMenu("Load Challenge Scenario");
+  private JMenuItem          loadChallenge1ScenarioMenuItem = new JMenuItem("Load Challenge 1");
+  private JMenuItem          loadChallenge2ScenarioMenuItem = new JMenuItem("Load Challenge 2");
   private JMenuItem          hopOverrideScenarioMenuItem = new JMenuItem("Hop Override");
   private JMenuItem          dropNarrScenarioMenuItem = new JMenuItem("Drop Narrative Message");
   private JMenuItem          noRouteExpireScenarioMenuItem = new JMenuItem("No Route Expire");
@@ -175,6 +178,10 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
     loadMaliciousScenarioMenuItem.add(combinationScenarioMenuItem);
     loadScenarioMenuItem.add(loadMaliciousScenarioMenuItem);
    
+    loadChallengeScenarioMenuItem.add(loadChallenge1ScenarioMenuItem);
+    loadChallengeScenarioMenuItem.add(loadChallenge2ScenarioMenuItem);
+    loadScenarioMenuItem.add(loadChallengeScenarioMenuItem);
+
     // Add elements to the mode 
     debugCheckBox.setState(Defaults.DEBUG_ENABLED);
     modeMenu.add(debugCheckBox);
@@ -655,6 +662,17 @@ public class DARSAppMenu implements ReplayerListener, ComponentListener {
       }
     });
     
+    loadChallenge1ScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadChallengeScenario(Utilities.challengeNumber.CHALLENGE_1, g);
+      }
+    });
+    
+    loadChallenge2ScenarioMenuItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Utilities.loadChallengeScenario(Utilities.challengeNumber.CHALLENGE_2, g);
+      }
+    });
 
     playButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
