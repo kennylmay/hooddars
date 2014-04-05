@@ -57,7 +57,7 @@ public class Dsdv extends Node {
    * 
    * Infinity Hop Count is a sentinel value that is used to mark a broken Link.
    */
-  public static final int             INFINITY_HOPS       = -1;
+  public static final int             INFINITY_HOPS       = Integer.MAX_VALUE;
 
   /**
    * **************************************************************************
