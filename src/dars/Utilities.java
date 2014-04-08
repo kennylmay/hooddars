@@ -32,7 +32,6 @@ import dars.replayer.Replayer;
 import dars.replayer.Replayer.ReplayMode;
 
 public class Utilities {
-  static private Utilities instance = new Utilities();
 
   public enum scenarioType {
     HOP_OVERRIDE, DROP_NARR, NO_ROUTE_EXPIRE, CHANGE_NARR, REPLAY_NARR, COMBINATION, CHALLENGE_SOLUTION_1, CHALLENGE_SOLUTION_2,
@@ -63,15 +62,7 @@ public class Utilities {
   }
 
   public static void loadScenario(scenarioType type, GUI g) {
-    String osname = System.getProperty("os.name");
-    String filename;
-
-    if (osname.contains("Windows")) {
-      filename = ".\\scenarios\\";
-    } else {
-      filename = "./scenarios/";
-    }
-
+    String filename = "";
     switch (type) {
     case HOP_OVERRIDE:
       JOptionPane
@@ -189,15 +180,7 @@ public class Utilities {
   }
 
   public static void loadChallengeScenario(challengeNumber number, GUI g) {
-    String osname = System.getProperty("os.name");
-    String filename;
-
-    if (osname.contains("Windows")) {
-      filename = ".\\scenarios\\";
-    } else {
-      filename = "./scenarios/";
-    }
-
+    String filename = "";
     switch (number) {
     case CHALLENGE_1:
       JOptionPane
