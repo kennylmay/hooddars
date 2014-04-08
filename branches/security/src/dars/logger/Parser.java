@@ -7,6 +7,8 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javax.imageio.ImageIO;
+
 import dars.Utilities;
 import dars.event.DARSEvent;
 
@@ -16,6 +18,7 @@ import dars.event.DARSEvent;
  */
 public class Parser 
 {
+  static private Parser instance = new Parser();
   
   static private boolean isReplayEvent(DARSEvent d) {
     switch(d.eventType) {
@@ -54,13 +57,24 @@ public class Parser
   private static BufferedReader getBufferedReader(String file) {
     //Open up the file
     FileReader LogFile = null;
+    BufferedReader buff = null;
     try {
       LogFile = new FileReader(file);
     } catch (FileNotFoundException e1) {
-      Utilities.showError("File not found" + file);
-      e1.printStackTrace();
+      String filename = "/"+ file;
+      try{
+        InputStream input = instance.getClass().getResourceAsStream(filename);
+        buff = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+      }catch(Exception e){
+        Utilities.showError("File not found" + filename);      
+        e1.printStackTrace();
+      }
     }
-    return new BufferedReader(LogFile); 
+    if(buff != null){
+      return buff;
+    }else{
+      return new BufferedReader(LogFile);
+    }
   }
   
   
