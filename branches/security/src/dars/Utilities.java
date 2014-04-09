@@ -186,9 +186,11 @@ public class Utilities {
       JOptionPane
           .showMessageDialog(
               null,
-              "The goal of challenge 1 is to use the minimum number of malacious nodes to intercept and \n"
-                  + "change all messages in the network. The nodes should not be moved from their beginning locations.\n"
-                  + "The solutions for each protocol will vary.",
+              "The goal of challenge 1 is to use node 'C' to institute a Black Hole attack.\n"
+              + "The premise of a black hole attack is to intercept and destroy all message traffic \n"
+              + "in a network.  The nodes should not be moved from their beginning locations.\n"
+              + "The solutions for each protocol will vary. It is impossible to get a 100% solution"
+              + "using the AODV protocol, Why?",
               "Challenge 1", JOptionPane.INFORMATION_MESSAGE);
       filename += "Challenge_1_Scenario.scn";
       break;
@@ -196,11 +198,10 @@ public class Utilities {
       JOptionPane
           .showMessageDialog(
               null,
-              "The combination scenario uses to hop override attack to force almost all messages to \n"
-                  + "traverse the malcious node while changing all the messages that is receives. It will then \n"
-                  + "use the replay attack to send the incorrect message at a later date. The routes will not \n"
-                  + "expire for any nodes that the malcious node is aware of so future messages to nodes that \n"
-                  + "have been removed will still continue to flow through the malacious node.",
+              "The goal of challenge 2 is a Denial of Service attack using node 'H' to force \n"
+              + "all message network traffic to flow through node 'G'. In real life this \n"
+              + "slow all network traffic to a crawl and use most of the resources provided by \n"
+              + "node 'G' The nodes should not be moved from their beginning locations. \n",
               "Challenge 2", JOptionPane.INFORMATION_MESSAGE);
       filename += "Challenge_2_Scenario.scn";
       break;
